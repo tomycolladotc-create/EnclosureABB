@@ -62,7 +62,11 @@
         0.095,
         0.68,
         "ABB"
-      ]
+      ],
+      "inscription": {
+        "y": 0.19,
+        "color": "#ffffff"
+      }
     },
     "abb.tmax.xt2.4p.fixed.front": {
       "source": "https://library.e.abb.com/public/562d7d51a06f4967a7b084c6f1fd657c/1SDH002293A1001%20-%20Disassembly%20instructions%20Tmax%20XT%20XT2%20Electronic.pdf",
@@ -123,7 +127,11 @@
         0.095,
         0.68,
         "ABB"
-      ]
+      ],
+      "inscription": {
+        "y": 0.19,
+        "color": "#ffffff"
+      }
     },
     "abb.s804n.4p.front": {
       "source": "https://new.abb.com/products/2CCS894001R0404/s804n-c40",
@@ -177,7 +185,11 @@
         0.075,
         0.69,
         "ABB"
-      ]
+      ],
+      "inscription": {
+        "y": 0.19,
+        "color": "#1d2327"
+      }
     },
     "abb.s200m.1pn.front": {
       "source": "https://new.abb.com/products/2CDS271103R0104/s201m-c10na",
@@ -224,7 +236,11 @@
         0.12,
         0.7,
         "ABB"
-      ]
+      ],
+      "inscription": {
+        "y": 0.28,
+        "color": "#1d2327"
+      }
     },
     "abb.ot400e04.4p.front": {
       "source": "https://new.abb.com/products/1SCA022727R8000/ot400e04",
@@ -292,7 +308,58 @@
         0.08,
         0.69,
         "ABB"
-      ]
+      ],
+      "inscription": {
+        "y": 0.1,
+        "color": "#ffffff"
+      }
+    },
+    "abb.s200m.1p.front": {
+      "source": "https://new.abb.com/products/2CDS271001R0324/s201m-c32",
+      "lineColor": "#5a6469",
+      "base": "#e0e3e1",
+      "parts": [
+        [
+          0,
+          0.82,
+          1,
+          0.18,
+          "#cfd4d2"
+        ],
+        [
+          0,
+          0,
+          1,
+          0.16,
+          "#cfd4d2"
+        ],
+        [
+          0.04,
+          0.22,
+          0.92,
+          0.54,
+          "#f0f1ef"
+        ],
+        [
+          0.09,
+          0.38,
+          0.82,
+          0.18,
+          "#282d31"
+        ],
+        [
+          0.08,
+          0.69,
+          0.84,
+          0.045,
+          "#e00016"
+        ]
+      ],
+      "inscription": {
+        "y": 0.28,
+        "color": "#1d2327"
+      }
     }
-  }
+  },
+  "inscriptionHelp": "inscription.y = altura relativa (0 abajo, 1 arriba) donde se graba el modelo leído del plano; color del texto. En carcasas por polo se graba una vez, centrada en el ancho total."
 }

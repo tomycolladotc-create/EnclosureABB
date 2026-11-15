@@ -10,11 +10,13 @@ import logging
 import unittest
 from pathlib import Path
 
-from importador import detect_devices
+from importador import detect_devices, shell_size
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = json.loads((ROOT / "datos" / "catalogo_abb.json").read_text(encoding="utf-8"))
-SHELL_POLES = {s["id"]: s["match"]["poles"] for s in CATALOG["deviceShells"]}
+SERIES = {s["id"]: s for s in CATALOG["series"] if "id" in s}
+SHELLS = {s["id"]: s for s in CATALOG["deviceShells"]}
+FRONTS = json.loads((ROOT / "datos" / "frentes_cad.json").read_text(encoding="utf-8"))["items"]
 
 TS4_ESPERADO = {
     "QF7": None, "QS1": "abb.ot400e04.4p.front",
@@ -52,6 +54,19 @@ class TS4(unittest.TestCase):
         self.assertEqual(self.devices["QS1"]["poles"], 4)
 
 
+class Catalogo(unittest.TestCase):
+    def test_series_apuntan_a_carcasas_con_frente(self):
+        for serie in SERIES.values():
+            with self.subTest(serie=serie["id"]):
+                self.assertIn(serie["shell"], SHELLS)
+                self.assertIn(serie["shell"], FRONTS, "la carcasa no tiene frente 2D en frentes_cad.json")
+                self.assertTrue(serie.get("basis"), "toda serie necesita su fuente")
+
+    def test_ancho_por_polos(self):
+        s200 = SHELLS["abb.s200m.1p.front"]
+        self.assertEqual(shell_size(s200, 3), (52.5, 88))
+
+
 class UnifilaresReales(unittest.TestCase):
     PDFS = sorted((ROOT / "tests" / "unifilares").glob("*.pdf"))
 
@@ -63,7 +78,8 @@ class UnifilaresReales(unittest.TestCase):
             for d in detect_devices(pdf_text(pdf), CATALOG):
                 if d["shell"] and d["poles"] is not None:
                     with self.subTest(pdf=pdf.name, tag=d["tag"]):
-                        self.assertEqual(SHELL_POLES[d["shell"]], d["poles"])
+                        self.assertIn(d["poles"], SERIES[d["series"]]["poles"])
+                        self.assertEqual((d["w"], d["h"]), shell_size(SHELLS[d["shell"]], d["poles"]))
 
     def test_salidas_tienen_modelo_y_polos(self):
         for pdf in self.PDFS:

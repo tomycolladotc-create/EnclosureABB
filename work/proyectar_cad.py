@@ -31,6 +31,7 @@ SOURCES = [
     ("abb.tmax.xt1.4p.fixed.front", "cad/abb/xt1/1SDH001295R0080_XT1_4P_FIXED_F.stp", "step", (0, 1, 0), (-1, 0, 0)),
     ("abb.tmax.xt2.4p.fixed.front", "cad/abb/xt2/1SDH002230A1002_XT2_4P_FIXED_F.stp", "step", (0, 1, 0), (-1, 0, 0)),
     ("abb.s804n.4p.front", "cad/abb/s800/2D_S800_4pole_drawing.DXF", "dxf", None, None),
+    ("abb.s200m.1p.front", "cad/abb/s201m/S200M_1P_3D_9AKK106930A4834.stp", "step", (0, 1, 0), (0, 0, 1)),
     ("abb.s200m.1pn.front", "cad/abb/s201m_na/S200M_1PN_2P_3D_9AKK106930A4835.stp", "step", (0, 1, 0), (0, 0, 1)),
     ("abb.ot400e04.4p.front", "cad/abb/ot400/OT315_400E04.igs", "iges", (0, 0, 1), (0, -1, 0)),
 ]

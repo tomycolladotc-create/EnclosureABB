@@ -3,7 +3,8 @@
 Todo lo específico (formato de etiquetas, cómo se marca el alimentador, qué texto
 corresponde a qué carcasa ABB) vive en datos/catalogo_abb.json:
   - importRules: expresiones para cortar el texto y leer modelo y polos.
-  - deviceShells[].match: {modelRegex, poles} que identifica cada carcasa.
+  - series: qué modelos usan cada carcasa (deviceShells) y con qué polos.
+    Varias series pueden compartir carcasa: solo cambia la inscripción.
   - modelHints: modelos conocidos sin carcasa CAD (p. ej. montaje en riel).
 Para que reconozca un equipo nuevo se edita el catálogo, no este archivo.
 """
@@ -28,20 +29,28 @@ def parse_model(snippet, rules):
     return snippet[:cut].strip()
 
 
-def find_shell(model, poles, catalog):
-    """Devuelve (carcasa, motivo). La carcasa exige modelo y polos coincidentes."""
+def shell_size(shell, poles):
+    """Medidas fijas del equipo: de la carcasa, o polos × módulo si la carcasa es por polo."""
+    module = shell.get("poleModule")
+    if module and poles:
+        return module["width"] * poles, shell["height"]
+    return shell["width"], shell["height"]
+
+
+def find_series(model, poles, catalog):
+    """Devuelve (serie, carcasa, motivo). Exige modelo y polos admitidos por la serie."""
+    shells = {s["id"]: s for s in catalog["deviceShells"]}
     same_family = []
-    for shell in catalog["deviceShells"]:
-        rule = shell.get("match")
-        if not rule or not re.search(rule["modelRegex"], model, re.IGNORECASE):
+    for serie in catalog.get("series", []):
+        if "modelRegex" not in serie or not re.search(serie["modelRegex"], model, re.IGNORECASE):
             continue
-        same_family.append(shell)
-        if poles is None or rule.get("poles") in (None, poles):
-            return shell, None
+        same_family.append(serie)
+        if poles is None or poles in serie["poles"]:
+            return serie, shells[serie["shell"]], None
     if same_family:
-        known = ", ".join(f'{s["match"].get("poles")}P' for s in same_family)
-        return None, f"familia en catálogo, pero sin carcasa de {poles}P (hay: {known})"
-    return None, "familia sin carcasa en el catálogo"
+        known = sorted({p for s in same_family for p in s["poles"]})
+        return None, None, f"serie en catálogo, pero sin carcasa de {poles}P (hay: {known})"
+    return None, None, "serie sin carcasa en el catálogo"
 
 
 def detect_devices(text, catalog):
@@ -58,23 +67,23 @@ def detect_devices(text, catalog):
         snippet = " ".join(block[:rules["evidenceChars"]].split())
         model = parse_model(snippet, rules)
         poles = _first_group(rules["polesPatterns"], block)
-        shell, reason = find_shell(model, poles, catalog)
+        serie, shell, reason = find_series(model, poles, catalog)
         hint = next((h for h in hints if re.search(h["modelRegex"], model, re.IGNORECASE)), None)
         if upstream:
             status = "alimentador externo; no pertenece al tablero"
         elif shell:
-            status = "detectado; revisar modelo y polos"
+            status = "detectado; revisar modelo y polos" if serie["verified"] else "detectado; carcasa compartida sin confirmar"
         elif hint:
             status = hint["note"]
         else:
             status = reason
         if poles is None and not upstream:
             status += "; polos no indicados en el plano"
-        item = shell or {}
+        width, height = shell_size(shell, poles) if shell else (80, 100)
         found.append({
-            "tag": match.group(1), "evidence": snippet, "shell": item.get("id"),
-            "model": model[:40], "poles": poles,
-            "w": item.get("width", 80), "h": item.get("height", 100),
+            "tag": match.group(1), "evidence": snippet, "shell": shell and shell["id"],
+            "series": serie and serie["id"], "model": model[:40], "poles": poles,
+            "w": width, "h": height,
             "status": status, "upstream": upstream,
             **({"mounting": hint["mounting"]} if hint and not shell else {}),
         })

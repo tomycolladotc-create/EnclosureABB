@@ -1,6 +1,6 @@
 # ESTADO — Topográficos de tableros ABB
 > Foto actual del proyecto. Se reescribe (no se acumula). El historial va en BITACORA.md.
-> Actualizado: 2026-11-15 17:45 · Claude
+> Actualizado: 2026-11-15 18:30 · Claude
 
 ## Objetivo
 PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tablero con dispositivos y envolvente ABB reales → editar en interfaz → exportar DXF (AutoCAD, 1:1 mm, bloques y capas), PNG, SVG, PDF.
@@ -16,7 +16,7 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 | Ruta | Qué es |
 |---|---|
 | `app.py` | servidor del editor (`iniciar_editor.bat` → http://127.0.0.1:8765) |
-| `importador.py` | lee el PDF y propone equipos; reglas en `catalogo_abb.json` (`importRules`, `deviceShells[].match`, `modelHints`) |
+| `importador.py` | lee el PDF y propone equipos; reglas en `catalogo_abb.json`: `importRules`, `series` (modelo → carcasa, con polos y fuente), `modelHints` |
 | `cad_export.py` | exporta DXF con bloques por familia |
 | `web/index.html` | interfaz |
 | `datos/` | catálogo ABB, colores (`apariencias_abb.json`), bloques 2D (`frentes_cad.json`), inventario CAD (`cad_argentina.json`), proyecto TS4 |
@@ -27,13 +27,13 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 ## Situación
 - Editor funcionando con el TS4: importa, edita, rieles por envolvente, zoom, DXF/PNG/SVG/PDF con colores.
 - Envolvente: ABB System pro E power 185 (1000×2100×500 funcional). Rieles y kits: posición **preliminar**.
-- Catálogo: 6 carcasas (XT1 4P, XT2 4P, S804N 4P, S201M 1P y 1P+N, OT400E04). **Cubre 41 de 206 equipos** de los 6 unifilares.
-- Faltan sobre todo S201L 1P+N (76 equipos), S203, S204, S203M, S293, S201 (ver `docs/cobertura_unifilares.md`).
+- Modelo de datos: **carcasa** (geometría CAD, `deviceShells`) ≠ **serie** (qué modelos la usan, `series`) ≠ **inscripción** (modelo del plano grabado en el frente; atributo `MODELO` en el DXF). Carcasas por polo (`poleModule`, S200): 2P-4P = polos repetidos.
+- **Cubre 167 de 206 equipos** de los 6 unifilares. Faltan: S293, SN201L, XT3S, S251, OT varios, T2S/T4S, E2.2N, S803S (ver `docs/cobertura_unifilares.md`).
+- Series sin confirmar con fuente (`verified: false`): XT1 y XT2 para todas las versiones de poder de corte.
 
 ## Pendiente (anotarse con [Claude] / [Codex] antes de empezar)
-1. Agregar familias faltantes al catálogo por orden de cantidad: medidas oficiales + CAD + oferta en Argentina. Aprovechar carcasas compartidas (S200: S201/S201L/S201M/S201P, solo cambia la inscripción, si las medidas lo confirman).
-2. Separar la lámina GENERAL (varios tableros en una hoja) en un tablero por bloque.
-3. Inscripciones exactas en los frentes.
-4. Manija y eje del OT400E04P. QF89 S251: CAD o reemplazo actual vendido en Argentina.
-5. Sacar textos fijos del TS4 en `generar_topografico.py` (notas de la lámina).
-6. Validar con ABB Argentina gabinete, rieles y kits; cerrar BOM.
+1. Robustez/funcionalidad (prioridad del usuario): separar la lámina GENERAL por tablero; un proyecto por tablero (hoy `app.py` guarda siempre en `datos/ts4_topografia.json`); ubicación automática de los equipos importados en rieles/kits.
+2. Familias faltantes (no prioritario; OT quedan así por ahora): primero ver si comparten carcasa con una existente.
+3. Manija y eje del OT400E04P. QF89 S251: CAD o reemplazo actual vendido en Argentina.
+4. Sacar textos fijos del TS4 en `generar_topografico.py` (notas de la lámina).
+5. Validar con ABB Argentina gabinete, rieles y kits; cerrar BOM.

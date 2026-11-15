@@ -8,7 +8,7 @@ import os
 
 from pypdf import PdfReader
 from cad_export import build_dxf
-from importador import detect_devices
+from importador import detect_devices, shell_size
 
 ROOT = Path(__file__).resolve().parent
 PROJECT = ROOT / "datos" / "ts4_topografia.json"
@@ -70,7 +70,7 @@ class Handler(BaseHTTPRequestHandler):
                 for device in project["devices"]:
                     spec = shells.get(device.get("shell"))
                     if spec:
-                        device["w"], device["h"] = spec["width"], spec["height"]
+                        device["w"], device["h"] = shell_size(spec, device.get("poles"))
                 PROJECT.write_text(json.dumps(project, ensure_ascii=False, indent=2), encoding="utf-8")
                 return self.send_data(200, {"saved": True})
             except (ValueError, UnicodeDecodeError) as exc:

@@ -1,26 +1,17 @@
 # Cobertura del catálogo sobre 6 unifilares
 
-Equipos con carcasa: **41 de 206**. Faltan estas familias (serie + polos), ordenadas por cantidad:
+Equipos con carcasa: **167 de 206**. Faltan estas familias (serie + polos), ordenadas por cantidad:
 
 | Serie | Polos | Equipos | Tableros | Ejemplos |
 |---|---|---|---|---|
-| S201L | 2 | 76 | 12_TSB, 19_TSEP, 21_T_AUX_Locales_2, 25_GENERAL | S201L-C10 NA; S201L-C16 NA; S201L-C20 NA |
-| S203 | 3 | 13 | 04_TS_AUX_1, 12_TSB, 25_GENERAL | S203-C10; S203-C16; S203-C25 |
-| S204 | 4 | 9 | 25_GENERAL | S204-C20; S204-C25; S204-C32 |
-| S203M | 3 | 8 | 25_GENERAL | S203M-C16; S203M-C20; S203M-C25 |
 | S293 | 3 | 7 | 04_TS_AUX_1, 12_TSB, 25_GENERAL | S 293-C 80 |
-| S201 | 2 | 6 | 25_GENERAL | S201-B10 NA; S201-B16 NA; S201-C20 NA |
-| S204L | 4 | 5 | 10_TSFT3, 25_GENERAL | S204L-C16; S204L-C32 |
-| S804S | 4 | 5 | 25_GENERAL | S804S-C100; S804S-C25; S804S-C32 |
 | SN201L | 2 | 3 | 21_T_AUX_Locales_2, 25_GENERAL | SN201L B16 |
 | XT3S | 4 | 3 | 25_GENERAL | XT3S 250 TMD 200-2000 N=50%; XT3S 250 TMD 250-2500 N=50% |
 | S251 | 2 | 3 | 25_GENERAL | S 251 Na C 10 |
 | OT160EV03 | 3 | 2 | 04_TS_AUX_1, 25_GENERAL | OT160EV03 |
 | OT100F4 | 4 | 2 | 12_TSB, 25_GENERAL | OT100F4 |
-| S202 | 2 | 2 | 12_TSB, 25_GENERAL | S202-C10 |
 | XT1S | 3 | 2 | 25_GENERAL | XT1S 160 TMD 125-1250 |
 | OT200E04 | 4 | 2 | 25_GENERAL | OT200E04 |
-| S204M | 4 | 2 | 25_GENERAL | S204M-C32; S204M-C40 |
 | OT80F4 | 4 | 2 | 25_GENERAL | OT80F4 |
 | S204P | 4 | 2 | 25_GENERAL | S204P-C25 |
 | OT125F3 | 3 | 2 | 25_GENERAL | OT125F3 |
