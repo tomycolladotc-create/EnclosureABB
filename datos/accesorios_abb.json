@@ -36,13 +36,16 @@
         "S200"
       ],
       "availability": "por-confirmar",
-      "source": "automa.net (código PS1/4); plc-direct.com/products/2cdl210001r1004; proax.ca/en/product/1672332/abb2cdl210001r1004 (distribuidor oficial ABB); ficha ABB reproducida por Sonepar (res.cloudinary.com/sonepar-fr .../15776815_FT.pdf)",
-      "status": "corriente 63 A, 25 kA, 690 V y 4 polos leídos de la ficha ABB reproducida por distribuidores; faltan largo y ancho (sin dibujo); falta confirmar Argentina",
+      "source": "automa.net (código PS1/4); plc-direct.com/products/2cdl210001r1004; proax.ca/en/product/1672332/abb2cdl210001r1004 (distribuidor oficial ABB); ficha ABB reproducida por Sonepar (res.cloudinary.com/sonepar-fr .../15776815_FT.pdf); fichas ABB leídas 2026-11-15 (Sonepar 15776815_FT.pdf): ancho 21, alto 18, largo 67 mm",
+      "status": "63 A, 25 kA, 690 V; medidas de la ficha ABB (21 x 18 x 67 mm; el orden ancho/alto/largo es el que da la ficha, sin dibujo); falta confirmar Argentina",
       "marca": "ABB",
       "icwKA": 25,
       "tensionV": 690,
-      "pesoKg": 0.018,
-      "seccionMm2": 10
+      "pesoKg": 0.03,
+      "seccionMm2": 10,
+      "anchoMm": 21,
+      "alturaMm": 18,
+      "largoMm": 67
     },
     {
       "id": "abb-ps1-60",
@@ -58,11 +61,15 @@
         "DDA200"
       ],
       "availability": "por-confirmar",
-      "source": "RS Online (ph.rs-online.com/web/p/busbars/4896568); ficha ABB PS1/60 (pood.esvika.ee/ProductSpecifications/Download?id=12224; cdn.erply.com/files/396198/2CDL210001R1060.pdf)",
-      "status": "corriente 63 A, 25 kA, 690 V de la ficha ABB (esvika/erply); se corta a medida; faltan largo y ancho; falta confirmar Argentina",
+      "source": "RS Online (ph.rs-online.com/web/p/busbars/4896568); ficha ABB PS1/60 (pood.esvika.ee/ProductSpecifications/Download?id=12224; cdn.erply.com/files/396198/2CDL210001R1060.pdf); ficha ABB PS1/60 leída 2026-11-15 (cdn.erply.com): 20 x 17 x 1050 mm, 0,26 kg",
+      "status": "63 A, 25 kA, 690 V; 20 x 17 x 1050 mm de la ficha ABB; se corta a medida; falta confirmar Argentina",
       "marca": "ABB",
       "icwKA": 25,
-      "tensionV": 690
+      "tensionV": 690,
+      "anchoMm": 20,
+      "alturaMm": 17,
+      "largoMm": 1050,
+      "pesoKg": 0.26
     },
     {
       "id": "abb-ps3-12",
@@ -114,12 +121,15 @@
         "DDA200"
       ],
       "availability": "por-confirmar",
-      "source": "RS Online (pt.rs-online.com/web/p/peines-de-conexion/5391648); ficha ABB PS3/60 (cdn.erply.com/files/396198/2CDL230001R1060.pdf); largo 1056 mm: ahlsell.se (artículo 2102712)",
-      "status": "63 A, 25 kA, 690 V, 20 equipos de 3 polos, largo 1056 mm; se corta a medida; falta ancho/alto y confirmar Argentina",
+      "source": "RS Online (pt.rs-online.com/web/p/peines-de-conexion/5391648); ficha ABB PS3/60 (cdn.erply.com/files/396198/2CDL230001R1060.pdf); largo 1056 mm: ahlsell.se (artículo 2102712); ficha ABB PS3/60 leída 2026-11-15 (cdn.erply.com): 14,8 x 29 x 1056 mm, 0,487 kg",
+      "status": "63 A, 25 kA, 690 V; 14,8 x 29 x 1056 mm de la ficha ABB; se corta a medida; falta confirmar Argentina",
       "marca": "ABB",
       "icwKA": 25,
       "tensionV": 690,
-      "largoMm": 1056
+      "largoMm": 1056,
+      "anchoMm": 14.8,
+      "alturaMm": 29,
+      "pesoKg": 0.487
     },
     {
       "id": "abb-ps2",
@@ -156,14 +166,18 @@
         "S200"
       ],
       "availability": "por-confirmar",
-      "source": "voltimum.co.uk/product-details/w6bhVWP9/abb/ps-412-busbar (código 2CDL240101R1012, EAN 4016779656054); ficha ABB reproducida por Tameson: storage.tameson.com/asset/Products/Manuals/EN/e2zy2_chr_en_1.pdf",
-      "status": "PS4/12 para equipos de 4 polos, 63 A, 25 kA, 690 V; falta medidas (largo/ancho) y confirmar Argentina",
+      "source": "voltimum.co.uk/product-details/w6bhVWP9/abb/ps-412-busbar (código 2CDL240101R1012, EAN 4016779656054); ficha ABB reproducida por Tameson: storage.tameson.com/asset/Products/Manuals/EN/e2zy2_chr_en_1.pdf; ficha ABB PS4/12 leída 2026-11-15 (Tameson): 19,3 x 30,5 x 212 mm, 0,105 kg",
+      "status": "63 A, 25 kA, 690 V; 19,3 x 30,5 x 212 mm de la ficha ABB; falta confirmar Argentina",
       "modulos": 12,
       "pasoMm": 17.5,
       "corrienteA": 63,
       "icwKA": 25,
       "tensionV": 690,
-      "claseProducto": "equipos de 4 polos (S204, F204)"
+      "claseProducto": "equipos de 4 polos (S204, F204)",
+      "anchoMm": 19.3,
+      "alturaMm": 30.5,
+      "largoMm": 212,
+      "pesoKg": 0.105
     },
     {
       "id": "schneider-domae-14804",
@@ -255,9 +269,9 @@
     "Disponibilidad en Argentina de cada código: ABB tiene un buscador de distribuidores autorizados (new.abb.com/low-voltage/efinder-country/ar) que muestra stock por código; falta consultarlo para PS1/PS3 y el resto (el buscador exige entrar al sitio).",
     "Medidas de frente del Schneider Distribloc, Legrand y Steck (módulos DIN y alto) si se eligen.",
     "S800: el peine S803-BB250 es de 3 fases (S803); un S804 (4 polos) no tiene peine con neutro en las fuentes leídas.",
-    "1P+N (S201 y similares): corresponde el peine PS2/12 (equipos de 2 polos L1+N); falta largo/ancho de PS1/4, PS1/60, PS3/60 y PS4, e Icw de PS2.",
     "PS3/12 sigue con dos versiones de medidas distintas en las fuentes; elegir cuál vende ABB Argentina.",
-    "Barra de fase de cobre con dimensionado propio (IEC 61439 / tabla del fabricante): no cargada; AA8010 es de neutro/tierra según el catálogo."
+    "Barra de fase de cobre con dimensionado propio (IEC 61439 / tabla del fabricante): no cargada; AA8010 es de neutro/tierra según el catálogo.",
+    "Icw del PS2/12 y corriente de PBFC2005: no figuran en las fichas leídas. Las fichas dan 'Pitch 44698' (error de hoja de cálculo): se usa 17,5 mm de otras fuentes. CAD de los peines: la página ABB lo ofrece en un visor dinámico ('CAD outline drawing (40)') que no se pudo bajar desde el navegador integrado; pendiente."
   ],
   "distributionBars": [
     {

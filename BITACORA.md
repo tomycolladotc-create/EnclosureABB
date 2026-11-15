@@ -3,6 +3,9 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-15 22:10 · Claude
+- Medidas (ancho x alto x largo, mm) de las fichas ABB leídas por WebFetch: PS1/4 21x18x67, PS1/60 20x17x1050, PS3/60 14,8x29x1056, PS4/12 19,3x30,5x212. La ficha trae 'Pitch 44698' (error de planilla): no se copió. El CAD de ABB está en un visor dinámico de la página del producto (new.abb.com/products/<código>, sección 'CAD outline drawing') que no se pudo bajar con el navegador integrado; pendiente [Claude/Codex]: probar con Chrome o pedirlo al usuario.
+
 ## 2026-11-15 21:50 · Claude
 - Pedido del usuario: el programa propone y el usuario elige (barra de cobre / bloque); completar los datos faltantes de peines y barras.
 - Datos cargados con fuente (web, fichas ABB reproducidas por distribuidores; nada se bajó como archivo): PS1/4, PS1/60, PS3/60, PS2/12 (código 2CDL220001R1012), PS4/12 (código 2CDL240101R1012 según Voltimum), S803-BB250 (2CCS800900R0071) con alimentación S803-BBPC120, barras AA8010 (320 A, 20x5, 1000 mm, soportes AA8011) y PBFC2005. Lo que no figuraba en ninguna fuente quedó en null y anotado (Icw del PS2, medidas de varios, corriente de PBFC2005).
