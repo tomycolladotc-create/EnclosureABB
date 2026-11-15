@@ -24,3 +24,8 @@ Equipos con carcasa: **165 de 204**. Faltan estas familias (serie + polos), orde
 | S201P | 2 | 1 | 25_GENERAL | S201P-B6 NA |
 | OT125F4 | 4 | 1 | 25_GENERAL | OT125F4 |
 | OT63F3 | 3 | 1 | 25_GENERAL | OT63F3 |
+
+## Modelos más usados (lámina GENERAL, 163 equipos de salida)
+
+La GENERAL es la referencia de lo que el usuario usa más. Ranking por cantidad: S201L 2P (47), XT1B 4P (12), S204 4P (9), S804N 4P (8), S203 3P (8), S203M 3P (8), S201 2P (6), XT1C 4P (6), XT1N 4P (6), S804S 4P (5), S204L 4P (4). Todos tienen carcasa.
+Familias frecuentes SIN carcasa todavía: S293 3P (7 en los 6 planos), SN201L 2P (3), XT3S 4P (3), S251 2P (3), XT1S 3P (2), OT200E04/OT80F4/OT125F3 (OT queda como está por pedido del usuario).

@@ -35,7 +35,7 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 
 ## Pendiente (anotarse con [Claude] / [Codex] antes de empezar)
 0. Marcado hecho para S200 (2P-4P, 1P+N) y S800. Falta medir foto frontal de XT1, XT2 y OT400 (sin `marking` no se imprime nada).
-1. Robustez/funcionalidad (prioridad del usuario): separar la lámina GENERAL por tablero; (HECHO: un proyecto por tablero en `datos/proyectos/<id>.json` con `proyectos.py`; el TS4 sigue en `datos/ts4_topografia.json`; selector y 'Crear' en el editor; falta duplicar y borrar); ubicación automática de los equipos importados en rieles/kits.
+1. Robustez/funcionalidad (prioridad del usuario): (DESCARTADO: la lámina GENERAL no se separa; el usuario la pasó como referencia de los modelos que más usa — ver ranking en docs/cobertura_unifilares.md); (HECHO: un proyecto por tablero en `datos/proyectos/<id>.json` con `proyectos.py`; el TS4 sigue en `datos/ts4_topografia.json`; selector y 'Crear' en el editor; falta duplicar y borrar); (HECHO para riel DIN: `colocar.py`, botón 'Agregar todos y ubicar en el riel'; falta ubicar equipos de kit XT/OT y varios rieles según gabinete) ubicación automática de los equipos importados en rieles/kits.
 2. Familias faltantes (no prioritario; OT quedan así por ahora): primero ver si comparten carcasa con una existente.
 3. Manija y eje del OT400E04P. QF89 S251: CAD o reemplazo actual vendido en Argentina.
 4. Sacar textos fijos del TS4 en `generar_topografico.py` (notas de la lámina).

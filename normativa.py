@@ -85,6 +85,9 @@ def comb_current_ok(project, rule):
 
 def accessories_placed(project, rule):
     out = []
+    for dev in project.get("devices", []):
+        if dev.get("unplaced"):
+            out.append(f"{dev.get('tag')}: sin ubicar ({dev.get('placementNote') or 'pendiente de ubicar'}).")
     for acc in project.get("accessories", []):
         if acc.get("placed") is False:
             detail = acc.get("note") or "no entra en el riel"

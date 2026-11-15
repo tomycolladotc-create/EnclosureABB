@@ -3,6 +3,12 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-15 23:10 · Claude
+- Aclaración del usuario: la lámina GENERAL NO es un tablero a separar, es referencia de los modelos que más usa. Descartada la separación; agregado el ranking de uso a docs/cobertura_unifilares.md. Prioridad de carcasas faltantes: S293 3P, SN201L, XT3S, S251, XT1S 3P.
+- Hecho: ubicación automática en riel DIN (`colocar.py`, ruta /api/place, botón 'Agregar todos y ubicar en el riel'). Misma carcasa pegada (para el peine), distinta con 4 mm. Si no entra, el equipo queda `unplaced` y la normativa lo avisa. Probado con el TSB: 15 equipos entran en el riel de 600 mm. Tests: 39 OK. Rótulos de equipo más chicos para que no se pisen.
+- Pendiente: equipos de kit (XT/OT) y varios rieles según gabinete (solo hay 1 riel en el catálogo); elegir gabinete según contenido.
+- Tarea para Codex: carcasas S293 3P, SN201L, XT3S, XT1S 3P y S251 (CAD ABB).
+
 ## 2026-11-15 22:45 · Claude
 - Hecho: un proyecto por tablero. `proyectos.py` (listar, cargar, guardar, crear), rutas `/api/projects`, `/api/project?id=`, `/api/save?id=`, `/api/project-new`; selector y 'Crear' en el editor (la URL lleva `?id=`). Tests: 33 OK. Probado en el navegador: crear 'Prueba TSB' lo guardó aparte y el TS4 quedó idéntico (mismo md5).
 - Pendiente: duplicar y borrar proyectos; el proyecto nuevo copia el gabinete del TS4 (elegir gabinete al crear).

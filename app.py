@@ -10,6 +10,7 @@ from pypdf import PdfReader
 from cad_export import build_dxf
 from importador import detect_devices, ensure_marking, shell_size
 from accesorios import complete
+from colocar import place_din
 from normativa import check_project
 import proyectos
 
@@ -88,6 +89,14 @@ class Handler(BaseHTTPRequestHandler):
                 proyectos.save(self.project_id(), project)
                 return self.send_data(200, {"saved": True, "id": self.project_id()})
             except (ValueError, UnicodeDecodeError) as exc:
+                return self.send_data(422, {"error": str(exc)})
+        if route == "/api/place":
+            try:
+                project = json.loads(blob)
+                catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
+                failed = place_din(project, catalog)
+                return self.send_data(200, {"devices": project["devices"], "failed": failed})
+            except (ValueError, UnicodeDecodeError, KeyError) as exc:
                 return self.send_data(422, {"error": str(exc)})
         if route == "/api/project-new":
             try:

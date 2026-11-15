@@ -81,7 +81,7 @@
     },
     {
       "id": "accesorio-sin-lugar",
-      "descripcion": "Todo accesorio necesario (bornes de tierra, bloque de distribución) tiene lugar en el riel o en el tablero.",
+      "descripcion": "Todo equipo y accesorio necesario (bornes de tierra, bloque de distribución) tiene lugar en el riel o en el tablero.",
       "check": "accessories_placed",
       "severity": "error",
       "norma": null,
