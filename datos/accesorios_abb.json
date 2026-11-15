@@ -1,0 +1,30 @@
+{
+  "_ayuda": "Accesorios de tablero (peines, bornes y barras de tierra). Regla del proyecto: NADA inventado; cada ítem con fuente y estado. availability: 'argentina-confirmada' (ABB Argentina lo lista/certifica), 'solo-distribuidor-exterior' (código real visto en distribuidor, sin confirmar venta en Argentina), 'por-confirmar'. Sin CAD ni medidas de frente todavía: se agregan al bajar el CAD oficial (misma metodología que deviceShells). Las 'pendientes' listan lo que falta buscar.",
+  "version": 1,
+  "combs": [
+    {"id": "abb-ps1-12", "familia": "PS1", "orderCode": "2CDL210001R1012", "fases": 1, "modulos": 12, "pasoMm": 17.5, "corrienteA": 63, "compatibleCon": ["S200", "F200", "DDA200"], "availability": "por-confirmar",
+     "source": "RS Online (ph.rs-online.com/web/p/busbars/4896489)", "status": "datos de distribuidor; falta ficha ABB"},
+    {"id": "abb-ps1-4", "familia": "PS1", "orderCode": "2CDL210001R1004", "fases": 1, "modulos": 4, "pasoMm": 17.5, "corrienteA": null, "compatibleCon": ["S200"], "availability": "por-confirmar",
+     "source": "automa.net (código PS1/4)", "status": "solo código; faltan corriente y medidas"},
+    {"id": "abb-ps1-60", "familia": "PS1", "orderCode": "2CDL210001R1060", "fases": 1, "modulos": 60, "pasoMm": 17.5, "corrienteA": null, "compatibleCon": ["S200", "F200", "DDA200"], "availability": "por-confirmar",
+     "source": "RS Online (ph.rs-online.com/web/p/busbars/4896568)", "status": "se corta a medida; faltan datos de corriente"},
+    {"id": "abb-ps3-12", "familia": "PS3", "orderCode": "2CDL230001R1012", "fases": 3, "modulos": 12, "pasoMm": 17.5, "corrienteA": null, "compatibleCon": ["S200", "F200", "DDA200"], "availability": "por-confirmar",
+     "source": "RS Online (pt.rs-online.com, listado relacionado de PS3)", "status": "solo código; faltan corriente y medidas"},
+    {"id": "abb-ps3-60", "familia": "PS3", "orderCode": "2CDL230001R1060", "fases": 3, "modulos": 60, "pasoMm": 17.5, "corrienteA": null, "compatibleCon": ["S200", "F200", "DDA200"], "availability": "por-confirmar",
+     "source": "RS Online (pt.rs-online.com/web/p/peines-de-conexion/5391648)", "status": "se corta a medida; faltan datos de corriente"}
+  ],
+  "earthTerminals": [
+    {"id": "entrelec-m4-6p", "orderCode": "1SNA165113R1600", "tipo": "M4/6.P", "seccionMm2": 4, "pasoMm": 6, "color": "verde-amarillo", "contactoRiel": true, "riel": ["TH35-7.5", "G32"], "profundidadMm": 40.5, "alturaMm": 44.5, "availability": "solo-distribuidor-exterior",
+     "source": "Hoja de datos M4/6.P (static.chipdip.ru/lib/568/DOC028568289.pdf)", "status": "OJO: la línea de borneras DIN de ABB pasó a TE Connectivity; confirmar quién la vende en Argentina"},
+    {"id": "entrelec-m6-8p", "orderCode": "1SNA165114R1700", "tipo": "M6/8.P", "seccionMm2": 6, "pasoMm": 8, "color": "verde-amarillo", "contactoRiel": true, "riel": ["G32", "TH35-7.5", "TH35-15"], "availability": "solo-distribuidor-exterior",
+     "source": "Hoja de datos M6/8.P (electricautomationnetwork.com/PDF/ENGLISH/ENTRELEC/1SNA165114R1700.pdf)", "status": "mismo aviso de TE Connectivity"}
+  ],
+  "pendientes": [
+    "Confirmar con ABB Argentina qué códigos PSx se venden (su sitio certifica 'Peines de conexión PSx': new.abb.com/south-america/argentina/certificaciones-y-declaraciones-juradas).",
+    "Peines para S800 (paso 27 mm): no se encontró un peine de fase; solo S802-LINK50 y similares. Confirmar si existe y si se usa.",
+    "Peines para 1P+N (S201 y similares): no confirmado cuál corresponde.",
+    "Bornes de neutro (azul) y barras de tierra y neutro para gabinete: solo se vio la serie DBTI de Entrelec en RS; falta ficha y estado en Argentina.",
+    "Tapas ciegas y cubrebornes transparentes: no buscado todavía.",
+    "CAD de peines y bornes: bajar de ABB/TE para dibujarlos en el frente."
+  ]
+}
