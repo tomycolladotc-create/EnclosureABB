@@ -3,6 +3,11 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-15 21:20 · Claude
+- Hecho: medidas y corrientes de peines PS1/12 y PS3/12 (63 A, 25 kA), BRT125A (128 mm de ancho), bloques Steck (5 referencias), Legrand y Schneider Domae (listado en se.com/ar). Todo por-confirmar salvo lo indicado.
+- Conflictos anotados en el JSON: PS3/12 tiene dos versiones con medidas distintas; BRT125A figura con 4x12 y con 11 vías.
+- Para Codex: consultar el buscador de ABB Argentina (new.abb.com/low-voltage/efinder-country/ar) por 2CDL210001R1012 y 2CDL230001R1012; elegir qué versión de PS3/12 se vende.
+
 ## 2026-11-15 20:50 · Claude
 - Hecho: catálogo con `distributionBlocks` (ABB BRT125A, Steck SDM9904/9907, Schneider Distribloc 125/160 A) y familias de peine PS2/PS4; todo por-confirmar. El aviso de `peine-corriente` ahora manda al bloque de distribución.
 - Layout: el peine no ocupa ancho extra; el bloque de distribución sí (módulos DIN a confirmar con ficha). Pendiente: fichas y medidas.

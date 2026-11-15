@@ -16,9 +16,13 @@
         "DDA200"
       ],
       "availability": "por-confirmar",
-      "source": "RS Online (ph.rs-online.com/web/p/busbars/4896489)",
-      "status": "datos de distribuidor; falta ficha ABB",
-      "marca": "ABB"
+      "source": "RS Online (ph.rs-online.com/web/p/busbars/4896489); hoja PS1/12 (pood.esvika.ee/ProductSpecifications/Download?id=12220); ipd.com.au",
+      "status": "medidas y corriente de hojas de datos de distribuidores (esvika, ipd.com.au); falta hoja ABB y Argentina",
+      "marca": "ABB",
+      "anchoMm": 20,
+      "largoMm": 211,
+      "icwKA": 25,
+      "tensionV": 690
     },
     {
       "id": "abb-ps1-4",
@@ -61,7 +65,7 @@
       "fases": 3,
       "modulos": 12,
       "pasoMm": 17.5,
-      "corrienteA": null,
+      "corrienteA": 63,
       "compatibleCon": [
         "S200",
         "F200",
@@ -69,8 +73,26 @@
       ],
       "availability": "por-confirmar",
       "source": "RS Online (pt.rs-online.com, listado relacionado de PS3)",
-      "status": "solo código; faltan corriente y medidas",
-      "marca": "ABB"
+      "status": "dos versiones con medidas distintas en las fuentes (18x30,3x214 y 21x27x211): confirmar cuál vende ABB Argentina",
+      "marca": "ABB",
+      "icwKA": 25,
+      "tensionV": 690,
+      "variantes": [
+        {
+          "orderCode": "2CDL230001R1012",
+          "anchoMm": 18,
+          "alturaMm": 30.3,
+          "largoMm": 214,
+          "source": "hoja PS3/12 (pood.esvika.ee id=12222; static.rapidonline.com/pdf/01-0073_v1.pdf)"
+        },
+        {
+          "orderCode": "2CDL231001R1012",
+          "anchoMm": 21,
+          "alturaMm": 27,
+          "largoMm": 211,
+          "source": "plc-direct.com/products/2cdl231001r1012; novapart.co (farnell 3411464)"
+        }
+      ]
     },
     {
       "id": "abb-ps3-60",
@@ -115,6 +137,19 @@
       "availability": "por-confirmar",
       "source": "adjditec.com (PS4/60/16SP); RS Online lista PS4 17,5 mm",
       "status": "existe la familia; faltan códigos propios y corriente"
+    },
+    {
+      "id": "schneider-domae-14804",
+      "marca": "Schneider Electric",
+      "familia": "Domae",
+      "orderCode": "14804",
+      "fases": 4,
+      "corrienteA": 80,
+      "largoMm": 54,
+      "anchoMm": 18,
+      "availability": "argentina-listado",
+      "source": "se.com/ar: 'Comb busbar Domae 4 poles 80 A L 54 x 18 mm' (www.se.com/ar/es/product/14804)",
+      "status": "figura en el sitio de Schneider Argentina; compatibilidad con S200 no aplica (línea Domae)"
     }
   ],
   "earthTerminals": [
@@ -162,8 +197,9 @@
     "Bornes de neutro (azul) y barras de tierra y neutro para gabinete: solo se vio la serie DBTI de Entrelec en RS; falta ficha y estado en Argentina.",
     "Tapas ciegas y cubrebornes transparentes: no buscado todavía.",
     "CAD de peines y bornes: bajar de ABB/TE para dibujarlos en el frente.",
-    "Confirmar disponibilidad en Argentina de cada código (ABB o equivalente de otra marca).",
-    "Fichas de los bloques de distribución (corriente, módulos DIN y medidas) y cuáles hay en Argentina: ABB BRT125A, Steck SDM9904/SDM9907, Schneider Distribloc."
+    "Disponibilidad en Argentina de cada código: ABB tiene un buscador de distribuidores autorizados (new.abb.com/low-voltage/efinder-country/ar) que muestra stock por código; falta consultarlo para PS1/PS3 y el resto (el buscador exige entrar al sitio).",
+    "Elegir 1 versión de PS3/12 (dos con medidas distintas) y completar paso y largo de PS2 y PS4.",
+    "Medidas de frente del Schneider Distribloc, Legrand y Steck (módulos DIN y alto) si se eligen."
   ],
   "distributionBars": [],
   "distributionBlocks": [
@@ -181,8 +217,16 @@
         "TH35-15"
       ],
       "availability": "por-confirmar",
-      "source": "automa.net (1SNA179535R2300): BRT125A, bloque de distribución, 4 polos, 125 A",
-      "status": "datos de distribuidor; faltan medidas de frente"
+      "source": "automa.net (1SNA179535R2300): BRT125A, bloque de distribución, 4 polos, 125 A; Farnell (farnell.com/datasheets/2917447.pdf): ancho 128 mm; RS Online 413-2331: 11 vías, 128 x 85 x 60 mm",
+      "status": "la línea de borneras de ABB ahora es de TE Connectivity; la descripción ABB dice 4x12 conexiones y RS lista 11 vías: confirmar con la hoja 1SNC160001C0207; falta confirmar Argentina",
+      "anchoMm": 128,
+      "profundidadMm": null,
+      "vias": 11,
+      "dimensionesRS": {
+        "largoMm": 128,
+        "anchoMm": 85,
+        "alturaMm": 60
+      }
     },
     {
       "id": "steck-sdm9904",
@@ -203,7 +247,7 @@
       ],
       "availability": "por-confirmar",
       "source": "Ingeniería Eléctrica (editores-srl.com.ar, ie333_steck_bloques.pdf): referencias SDM9904 y SDM9907, 100 A y 125 A, 4/6/8 módulos DIN, 2 y 4 polos",
-      "status": "la fuente no empareja cada referencia con su corriente y módulos: falta la ficha"
+      "status": "Steck publicó en Argentina (Ingeniería Eléctrica, julio 2018) cinco referencias SDM9904, SDM9907, SDM9911, SDM9906 y SDM9915; la tabla no se puede emparejar (módulos 4/6/8, polos 2/4, 100 y 125 A). Hoja: isaindustrial.com/wp-content/uploads/2025/01/Serie-SDM.pdf"
     },
     {
       "id": "steck-sdm9907",
@@ -224,7 +268,7 @@
       ],
       "availability": "por-confirmar",
       "source": "idem steck-sdm9904",
-      "status": "idem"
+      "status": "Steck publicó en Argentina (Ingeniería Eléctrica, julio 2018) cinco referencias SDM9904, SDM9907, SDM9911, SDM9906 y SDM9915; la tabla no se puede emparejar (módulos 4/6/8, polos 2/4, 100 y 125 A). Hoja: isaindustrial.com/wp-content/uploads/2025/01/Serie-SDM.pdf"
     },
     {
       "id": "schneider-distribloc-125",
@@ -247,6 +291,96 @@
       "availability": "por-confirmar",
       "source": "idem schneider-distribloc-125",
       "status": "idem"
+    },
+    {
+      "id": "steck-sdm9911",
+      "marca": "Steck",
+      "orderCode": "SDM9911",
+      "polos": [
+        2,
+        4
+      ],
+      "corrienteA": null,
+      "modulosDin": [
+        4,
+        6,
+        8
+      ],
+      "availability": "por-confirmar",
+      "source": "Ingeniería Eléctrica julio 2018 (editores-srl.com.ar/sites/default/files/ie333_steck_bloques.pdf)",
+      "status": "tabla sin emparejar; falta hoja de datos"
+    },
+    {
+      "id": "steck-sdm9906",
+      "marca": "Steck",
+      "orderCode": "SDM9906",
+      "polos": [
+        2,
+        4
+      ],
+      "corrienteA": null,
+      "modulosDin": [
+        4,
+        6,
+        8
+      ],
+      "availability": "por-confirmar",
+      "source": "Ingeniería Eléctrica julio 2018 (editores-srl.com.ar/sites/default/files/ie333_steck_bloques.pdf)",
+      "status": "tabla sin emparejar; falta hoja de datos"
+    },
+    {
+      "id": "steck-sdm9915",
+      "marca": "Steck",
+      "orderCode": "SDM9915",
+      "polos": [
+        2,
+        4
+      ],
+      "corrienteA": null,
+      "modulosDin": [
+        4,
+        6,
+        8
+      ],
+      "availability": "por-confirmar",
+      "source": "Ingeniería Eléctrica julio 2018 (editores-srl.com.ar/sites/default/files/ie333_steck_bloques.pdf)",
+      "status": "tabla sin emparejar; falta hoja de datos"
+    },
+    {
+      "id": "legrand-400408",
+      "marca": "Legrand",
+      "orderCode": "400408",
+      "polos": 4,
+      "corrienteA": 125,
+      "salidas": 10,
+      "modulosDin": 6,
+      "availability": "por-confirmar",
+      "source": "legrand.es/productos/repartidor-modular-barras-escalonadas-4-polos-125a-10-salidas-6-modulos-400408",
+      "status": "catálogo España; falta Argentina"
+    },
+    {
+      "id": "legrand-400407",
+      "marca": "Legrand",
+      "orderCode": "400407",
+      "polos": 4,
+      "corrienteA": 125,
+      "salidas": 14,
+      "modulosDin": 8,
+      "availability": "por-confirmar",
+      "source": "legrand.es (listado repartidores modulares 40-250)",
+      "status": "catálogo España; falta Argentina"
+    },
+    {
+      "id": "legrand-004873",
+      "marca": "Legrand",
+      "orderCode": "004873",
+      "polos": 4,
+      "corrienteA": 160,
+      "salidas": 14,
+      "modulosDin": 10,
+      "availability": "por-confirmar",
+      "source": "legrand.es (listado repartidores modulares 40-250)",
+      "status": "catálogo España; falta Argentina"
     }
   ]
 }
