@@ -206,9 +206,10 @@
       "y": 761.0,
       "w": 35,
       "h": 88,
-      "status": "modelo histórico ABB identificado; CAD exacto y disponibilidad argentina pendientes",
-      "shell": null,
-      "abbHistoricCode": "16060722 / EF0722"
+      "status": "detectado; carcasa compartida sin confirmar (S251 Na tratado como S201 NA)",
+      "shell": "abb.s200m.1pn.front",
+      "abbHistoricCode": "16060722 / EF0722",
+      "poles": 2
     },
     {
       "tag": "QF90",
