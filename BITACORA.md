@@ -3,6 +3,12 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-15 20:40 · Claude
+- Cierre de sesión por límite de uso: ESTADO.md actualizado (Situación y Pendiente completos, con el punto 0 en curso).
+- Estado exacto de lo que estaba haciendo: leí la tabla de selección SR2 (pág. 2/4, imagen) con las filas KD por gabinete; NO hay cambios de código de ese tema todavía. Punto de partida para [Codex]/[Claude]: agregar `kdKit` a los `enclosures` SR2 (datos en ESTADO.md punto 0) y extender `layout_auto._try` para poner los modulares en filas de 185 mm y los XT/OT en la placa.
+- Pedido del usuario: 'segui así' con la posición de los rieles según el gabinete; supuestos sin dato a marcar en el JSON con su `status`.
+- Último commit antes de esto: 297039d (SR2 como candidatos). Tests 48 OK.
+
 ## 2026-11-15 20:10 · Claude
 - Pedido del usuario: el gabinete seguía siendo demasiado grande para el TS4.
 - Hecho: catálogo ABB 'Enclosures for Automation' 1STC804013D0201 (02.2011) bajado con el navegador (Descargas del usuario) y leído. Cargados los 23 gabinetes SR2 con puerta ciega (códigos SRN...K, págs. 2/5 y 9/6): externo = nominal + 3 mm, placa interna = (ancho-40) x (alto-40) (coincide con la tabla de placas PF.... de la pág. 9/7), rieles GD4006/6006/8006 (pág. 2/8). `layout_auto.py` ahora usa `railOptions` y `functionalOffset` por gabinete y descarta gabinetes con profundidad menor a `minDepthForKitDevicesMm` (200, propuesta de diseño en `datos/reglas_layout.json`). TS4 -> SRN12630K 1200 x 600 x 300 con riel GD4006. Tests: 48 OK.
