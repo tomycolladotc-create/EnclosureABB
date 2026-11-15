@@ -3,6 +3,10 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-15 21:20 · Claude
+- Pedido del usuario: más detalle en la vista. Agregado: cotas (exterior, placa, altura de cada riel desde la placa) en el editor y en el DXF (capa ABB_COTAS, cotas lineales reales de ezdxf) y porta-etiquetas con el tag bajo cada equipo (tamaño propuesto, no dato ABB).
+- Evaluado y NO hecho por falta de dato claro: canaletas (el catálogo 1STC804013D0201 las trae en págs. 9/40-9/43 y 6/2-6/3, pero las medidas de sección no se leen bien del texto; hay que mirar la imagen) y barra PE AA8010 (1000 mm, no entra en la placa de 560 mm). Siguiente [Claude]: canaletas con medidas de la imagen de la pág. 9/40 y propuesta de ubicación (sobre y bajo cada riel); barra de tierra que entre en la placa.
+
 ## 2026-11-15 20:55 · Claude
 - Pedido del usuario: la vista se sentía plana, todo en una capa. Hecho en `web/index.html` (sólo estética, no cambia medidas ni datos): degradado de chapa en gabinete y placa, sombra de la placa sobre el fondo, sombra proyectada de cada equipo, riel DIN con relieve/ranuras/tornillos de fijación, bloque de tierra con terminales, tornillos de la placa (a 14 mm del borde, pág. 9/7 del catálogo SR2), cerraduras en las posiciones del catálogo (pág. 9/6) y bisagras esquemáticas. Título y subtítulo con el gabinete real (antes decía System pro E fijo). Datos nuevos: `structure.locks` en los SR2.
 - Pendiente de esta línea [Claude/Codex]: el DXF todavía no dibuja relieve (es 2D plano por diseño); herrajes de los gabinetes System pro E (manijas PHLS0013, bisagras) sin posición; ranuras del riel y bisagras son esquemáticas (pitch 25 mm y posición de bisagras son supuestos visuales, no datos ABB).

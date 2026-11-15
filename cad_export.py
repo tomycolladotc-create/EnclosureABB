@@ -27,7 +27,7 @@ def build_dxf(project, catalog, fronts, appearances):
     layers = {
         "ABB_ENVOLVENTE": 7, "ABB_AREA_FUNCIONAL": 8,
         "ABB_RIEL_DIN_PROPUESTO": 4, "ABB_CAD_COLORES": 7, "ABB_CAD_FRENTE": 7,
-        "ABB_SIN_CAD": 2, "ABB_ETIQUETAS": 3, "ABB_NOTAS": 1, "ABB_MARCADO": 7, "ABB_ACCESORIOS": 3, "ABB_ESTRUCTURA": 8, "ABB_PUERTAS": 9, "ABB_CAJETIN": 7,
+        "ABB_SIN_CAD": 2, "ABB_ETIQUETAS": 3, "ABB_NOTAS": 1, "ABB_MARCADO": 7, "ABB_ACCESORIOS": 3, "ABB_ESTRUCTURA": 8, "ABB_PUERTAS": 9, "ABB_CAJETIN": 7, "ABB_COTAS": 6,
     }
     for name, color in layers.items():
         doc.layers.new(name, dxfattribs={"color": color})
@@ -170,6 +170,10 @@ def build_dxf(project, catalog, fronts, appearances):
         tag = "ERROR" if finding["severity"] == "error" else "AVISO"
         note = f"NORMATIVA {tag}: {finding['message']}" + ("" if finding["ruleStatus"] == "verificada" else " (regla por verificar)")
         space.add_text(note.encode("ascii", "replace").decode("ascii"), dxfattribs={"height": 8, "layer": "ABB_NOTAS", "insert": (35, 60 + 14 * n)})
+    # Cotas: exterior y placa/área funcional (valores del catálogo y del proyecto)
+    for base, p1, p2, ang in (((0, -28), (0, 0), (body["width"], 0), 0), ((body["width"] + 40, 0), (body["width"], 0), (body["width"], body["height"] + plinth), 90)):
+        dim = space.add_linear_dim(base=base, p1=p1, p2=p2, angle=ang, dxfattribs={"layer": "ABB_COTAS"})
+        dim.render()
     # Cajetín debajo del tablero: lista de partes del gabinete con códigos ABB y página del catálogo.
     if structure:
         top = -60

@@ -86,7 +86,7 @@ function tieBarSvg(d,x,y,tiles){const b=appearances.items[d.shell]?.tieBar;if(!b
 function notice(s){$('message').textContent=s}
 function snapshot(){history.push(clone(project));if(history.length>40)history.shift();$('undo').disabled=false}
 function dimensions(){const e=project.enclosure;return {w:e.externalBody.width,h:e.overallHeightWithPlinth,fx:e.functionalAreaOffset.x,fy:e.functionalAreaOffset.y}}
-function setView(){const {w,h}=dimensions();if(!view)view={x:-80,y:-80,w:w+160,h:h+160};$('board').setAttribute('viewBox',`${view.x} ${view.y} ${view.w} ${view.h}`)}
+function setView(){const {w,h}=dimensions();if(!view)view={x:-140,y:-90,w:w+270,h:h+260};$('board').setAttribute('viewBox',`${view.x} ${view.y} ${view.w} ${view.h}`)}
 function fitView(){view=null;setView()}
 function focusView(){const {fx,fy,h}=dimensions(),ds=project.devices;if(!ds.length)return fitView();const x0=Math.min(...ds.map(d=>fx+d.x)),x1=Math.max(...ds.map(d=>fx+d.x+d.w)),y0=Math.min(...ds.map(d=>h-fy-d.y-d.h)),y1=Math.max(...ds.map(d=>h-fy-d.y));view={x:x0-100,y:y0-120,w:x1-x0+200,h:y1-y0+240};setView()}
 function zoomView(factor){setView();const cx=view.x+view.w/2,cy=view.y+view.h/2;view.w*=factor;view.h*=factor;view.x=cx-view.w/2;view.y=cy-view.h/2;setView()}
@@ -97,11 +97,14 @@ function structureSvg(w,h,plinth){const st=encSpec()?.structure;if(!st)return ''
  // gabinete de estructura: marco de montantes/travesaños (banda = externo - funcional); el monobloc (SR2) no tiene banda ni zócalo
  if(!mono)o+=`<path d="M0 0H${w}V${bh}H0Z M${b} ${b}V${bh-b}H${w-b}V${b}Z" fill-rule="evenodd" style="fill:${fill};stroke:${ln};stroke-width:1.5"/>`;
  // hojas de puerta (vista con puertas retiradas): contorno de trazos
- let x=0;st.doorLeaves.forEach((lw,i)=>{o+=`<rect x="${x+3}" y="3" width="${lw-6}" height="${bh-6}" style="fill:none;stroke:#8b97a6;stroke-width:1.5;stroke-dasharray:14 8"/>`;if(i===0)o+=`<text x="${x+lw/2}" y="${bh+22}" text-anchor="middle" font-size="14" fill="#6b7d90">vista con la puerta retirada</text>`;x+=lw});
+ let x=0;st.doorLeaves.forEach((lw,i)=>{o+=`<rect x="${x+3}" y="3" width="${lw-6}" height="${bh-6}" style="fill:none;stroke:#8b97a6;stroke-width:1.5;stroke-dasharray:14 8"/>`;if(i===0)o+=``;x+=lw});
  if(plinth)o+=`<rect x="0" y="${bh}" width="${w}" height="${plinth}" style="fill:${plinthFill};stroke:#3b4344;stroke-width:2"/><line x1="40" y1="${bh+plinth*.5}" x2="${w-40}" y2="${bh+plinth*.5}" style="stroke:#7d8586;stroke-width:1"/>`;
  return o+'</g>'}
 const projectId=new URLSearchParams(location.search).get('id')||'ts4';
 // Accesorios de normativa: rectángulos esquemáticos con las medidas del catálogo (hasta tener el CAD de cada pieza).
+// Porta-etiqueta de identificación bajo el equipo (rótulo con el tag del plano). Tamaño propuesto, no dato ABB.
+function labelHolder(d,x,y){const lw=Math.min(Math.max(d.w-4,14),64),lh=12,lx=x+(d.w-lw)/2,ly=y+d.h+4;
+ return `<g style="pointer-events:none"><g filter="url(#shDev)"><rect x="${lx}" y="${ly}" width="${lw}" height="${lh}" rx="1.5" fill="#f4f1e6" stroke="#6d6a5c" stroke-width=".8"/></g><text x="${lx+lw/2}" y="${ly+8.6}" text-anchor="middle" font-size="${Math.min(8.5,lw/Math.max(d.tag.length,1)/.62).toFixed(1)}" fill="#1c1c1c" font-weight="700">${esc(d.tag)}</text></g>`}
 function accessoriesSvg(fx,fy,h){return (project.accessories||[]).filter(a=>a.placed!==false&&a.w&&a.x!==undefined).map(a=>{
  const color=a.type==='pe_terminal'?'#c9d400':a.type==='distribution_block'?'#b8865b':'#9aa7b4',x=fx+a.x,y=h-fy-a.y-a.h;
  const n=a.type==='pe_terminal'?+((/x\s*(\d+)/i.exec(a.label||'')||[])[1]||0):0,seps=n>1?Array.from({length:n-1},(_,i)=>`<line x1="${x+a.w*(i+1)/n}" y1="${y}" x2="${x+a.w*(i+1)/n}" y2="${y+a.h}" stroke="#5f6a00" stroke-width=".8"/>`).join(''):'',
@@ -136,17 +139,27 @@ function railSvg(r,fx,h,fy){const x=fx+r.x,y=h-fy-r.y-r.height/2,slots=[];for(le
 function plateSvg(fx,fy,h,f){const st=encSpec()?.structure,mono=st?.kind==='monobloc',y=h-fy-f.height,inset=st?.locks?.plateScrews?.inset;
  return `<g filter="url(#shPlate)"><rect x="${fx}" y="${y}" width="${f.width}" height="${f.height}" fill="${mono?'url(#gPlate)':'#d6dbdf'}" stroke="#7d8a96" stroke-width="2"/></g><rect x="${fx}" y="${y}" width="${f.width}" height="${f.height}" fill="url(#gInset)" style="pointer-events:none"/>`+
  (inset?[[fx+inset,y+inset],[fx+f.width-inset,y+inset],[fx+inset,y+f.height-inset],[fx+f.width-inset,y+f.height-inset]].map(p=>screw(p[0],p[1])).join(''):'')}
+// Cotas (líneas de medida) con los valores del gabinete y de la placa; todo sale de los datos del catálogo y del proyecto.
+function dimLine(x1,y1,x2,y2,text,vertical){const m=vertical?`M${x1} ${y1}V${y2}`:`M${x1} ${y1}H${x2}`,mx=(x1+x2)/2,my=(y1+y2)/2,t=vertical?`transform="rotate(-90 ${x1-8} ${my})"`:'' ;
+ const tick=(x,y)=>vertical?`<line x1="${x-7}" y1="${y}" x2="${x+7}" y2="${y}"/>`:`<line x1="${x}" y1="${y-7}" x2="${x}" y2="${y+7}"/>`;
+ return `<g style="pointer-events:none" stroke="#51657a" stroke-width="1.4" fill="none"><path d="${m}"/>${tick(x1,y1)}${tick(vertical?x1:x2,vertical?y2:y1)}<text x="${vertical?x1-8:mx}" y="${vertical?my:y1-8}" ${t} text-anchor="middle" fill="#2c3f52" stroke="none" font-size="17">${text}</text></g>`}
+function cotasSvg(w,h,fx,fy,f){const rs=rails();let o='';
+ o+=dimLine(0,h+38,w,h+38,`${w} mm (exterior)`)+dimLine(fx,h+78,fx+f.width,h+78,`${f.width} mm (placa de montaje)`);
+ o+=dimLine(-38,0,-38,h,`${h} mm`,true)+dimLine(-78,h-fy-f.height,-78,h-fy,`${f.height} mm (placa)`,true);
+ rs.forEach(r=>{o+=dimLine(w+34,h-fy,w+34,h-fy-r.y,`${r.id}: ${r.y} mm`,true)});
+ return o}
 function render(){
  const {w,h,fx,fy}=dimensions(),f=project.enclosure.functional;
  setView();
  $('board').innerHTML=frontDefs()+depthDefs()+`<rect width="${w}" height="${h}" fill="url(#gBody)" stroke="#172c43" stroke-width="6"/>
 ${structureSvg(w,h,project.enclosure.plinthHeight)||`<rect y="${h-project.enclosure.plinthHeight}" width="${w}" height="${project.enclosure.plinthHeight}" fill="#e4eaf0" stroke="#66778a" stroke-width="2"/>`}
- ${plateSvg(fx,fy,h,f)}${hardwareSvg(w,h)}
- <text x="0" y="-22" fill="#344962" font-size="25">${esc(project.project)}</text><text x="0" y="-2" fill="#6b7d90" font-size="15">${esc(project.enclosure.line||'ABB')} · ${esc(encSpec()?.label||'')}</text>`+
+ ${plateSvg(fx,fy,h,f)}${hardwareSvg(w,h)}${cotasSvg(w,h,fx,fy,f)}
+ <text x="0" y="-52" fill="#344962" font-size="25">${esc(project.project)}</text><text x="0" y="-28" fill="#6b7d90" font-size="15">${esc(encSpec()?.label||project.enclosure.line||'ABB')} · vista frontal con la puerta retirada</text>`+
  rails().map(r=>railSvg(r,fx,h,fy)).join('')+
  accessoriesSvg(fx,fy,h)+
  project.devices.map((d,i)=>{const yy=h-fy-d.y-d.h,pending=/confirm|placeholder|conflict|variant|revisar|pendiente/i.test(d.status||'');return `<g class="device ${i===selected?'active':''} ${pending?'pending':''}" data-index="${i}">
  <g filter="url(#shDev)">${frontSvg(d,fx+d.x,yy)}</g>
+ ${labelHolder(d,fx+d.x,yy)}
  <rect class="hitbox" x="${fx+d.x}" y="${yy}" width="${d.w}" height="${d.h}" style="fill:transparent;stroke:none;pointer-events:all"/>
  ${i===selected?`<rect x="${fx+d.x-2}" y="${yy-2}" width="${d.w+4}" height="${d.h+4}" style="fill:none;stroke:#156bca;stroke-width:3;stroke-dasharray:6 3;pointer-events:none"/>`:''}
  <text x="${fx+d.x+d.w/2}" y="${yy-6}" text-anchor="middle" fill="#142b41" font-size="${Math.min(20,d.w*.8/Math.max(d.tag.length,1)/.62).toFixed(1)}" font-weight="700">${esc(d.tag)}</text>
