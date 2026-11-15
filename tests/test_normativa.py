@@ -18,7 +18,7 @@ class Normativa(unittest.TestCase):
     def test_tablero_con_accesorios_pasa_lo_comprobable(self):
         project = {"devices": [dev("QF1", 100), dev("QF2", 135.5)],
                    "accessories": [{"type": "pe_terminal", "count": 2}, {"type": "terminal_cover"},
-                                   {"type": "comb", "devices": ["QF1", "QF2"]}]}
+                                   {"type": "comb", "corrienteA": 63, "devices": ["QF1", "QF2"]}]}
         self.assertEqual(self.ids(project), {"instrumentos-a-tierra"})  # solo queda la verificación manual
 
     def test_equipos_juntos_sin_peine(self):
