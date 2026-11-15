@@ -243,6 +243,16 @@
       "basis": "El CAD ABB S800 4P ('3D_S800_(-C,_-N,_-S,_-U)_4pole') cubre las variantes C, N, S y U."
     },
     {
+      "id": "s251-na",
+      "modelRegex": "^S\\s?251\\b.*\\bNA\\b",
+      "poles": [
+        2
+      ],
+      "shell": "abb.s200m.1pn.front",
+      "verified": false,
+      "basis": "HIPOTESIS A CONFIRMAR: 'S 251 Na C 10' del plano e-Design no es un código vigente de ABB; el equivalente probable es el S201-C NA (1P+N, 2 módulos, 35 x 88 x 69 mm, dibujo 2CDC022007F0010), mismo envolvente que S201M NA. Apoyo: el plano da 2x10 A, 6 kA, igual al S201 (el S201M daría 10 kA). El marcado impreso NO está validado para esta designación."
+    },
+    {
       "id": "s200-1pn",
       "modelRegex": "^S\\s?201[LM]?\\b.*\\bNA\\b",
       "poles": [

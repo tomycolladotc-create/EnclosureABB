@@ -26,7 +26,7 @@ TS4_ESPERADO = {
     "QF82": "abb.tmax.xt1.4p.fixed.front", "QF83": "abb.tmax.xt1.4p.fixed.front",
     "QF84": "abb.tmax.xt1.4p.fixed.front", "QF86": "abb.tmax.xt1.4p.fixed.front",
     "QF87": "abb.tmax.xt1.4p.fixed.front", "QF163": "abb.tmax.xt1.4p.fixed.front",
-    "QF88": "abb.tmax.xt2.4p.fixed.front", "QF89": None, "QF90": "abb.s200m.1pn.front",
+    "QF88": "abb.tmax.xt2.4p.fixed.front", "QF89": "abb.s200m.1pn.front", "QF90": "abb.s200m.1pn.front",
 }
 
 
@@ -51,7 +51,8 @@ class TS4(unittest.TestCase):
     def test_modelos_y_polos(self):
         self.assertEqual(self.devices["QF81"]["model"], "S804N-C32")
         self.assertEqual(self.devices["QF89"]["model"], "S 251 Na C 10")
-        self.assertEqual(self.devices["QF89"].get("mounting"), "din")
+        # S251 Na: hipótesis (serie s251-na, verified=false): comparte la carcasa del S201 NA y lo dice en el estado.
+        self.assertIn("sin confirmar", self.devices["QF89"]["status"])
         self.assertEqual(self.devices["QF90"]["poles"], 2)
         self.assertEqual(self.devices["QS1"]["poles"], 4)
 

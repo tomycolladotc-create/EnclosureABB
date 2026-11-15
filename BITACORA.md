@@ -3,6 +3,10 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-15 23:55 · Claude
+- S251 resuelto como hipótesis: 'S 251 Na C 10' (QF79, QF80, QF89) se importa con la carcasa del S201 NA (35 x 88 x 69 mm, ficha ABB vía RS) en la serie `s251-na` con `verified: false`. El estado del equipo dice 'carcasa compartida sin confirmar'. Falta confirmar con ABB Argentina; el marcado impreso de esa designación no está validado.
+- Pendiente sin CAD: S293 (S290), SN201L, XT1 3P, XT3S 4P. Detalle en `datos/carcasas_pendientes.json`.
+
 ## 2026-11-15 23:40 · Claude
 - Búsqueda de las carcasas que faltan (pedido del usuario): resultados en `datos/carcasas_pendientes.json`, con fuente y estado por familia.
 - Mejor cubiertas: XT1 3P (76,2 x 130 x 70 mm, CAD 1SDH001295R0008) y XT3S 4P (140 x 150 x 70 mm, dos códigos de dibujo en conflicto). Parciales: S293 (S290, 26,25 mm por polo), SN201L (conflicto de profundidad 69/85). S251: nombre antiguo, sin carcasa asignada.
