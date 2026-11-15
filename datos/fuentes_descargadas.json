@@ -1,0 +1,25 @@
+{
+  "_ayuda": "Todo archivo bajado de internet para este proyecto se guarda en el repo y se registra acá (origen, fecha, hash, para qué se usó). Los PDF son catálogos públicos de ABB, guardados para uso interno en este repo privado. El texto por página (texto/*.json) sirve para buscar sin abrir el PDF; las tablas pierden encabezados, verificar mirando la imagen de la página.",
+  "archivos": [
+    {
+      "archivo": "docs/catalogos_abb/ABB_SPEP185_catalogo_1STC803009D0103.pdf",
+      "documento": "System pro E power - Empty enclosures and 185 mm Busbar System, Technical Catalogue (1STC803009D0103)",
+      "origen": "https://library.e.abb.com/public/ea19569e71bd4a55ac10d34ebc2c89d8/Katalog_185_1STC803009D0103%20SPEP%20185%20catalogue%202024%20Rev%203.pdf",
+      "bajado": "2026-11-15",
+      "bytes": 44649801,
+      "sha256": "27cf77cfc939dafec3d0b2411529291e6f0f5d16027c4836f5ca09b218c9de54",
+      "texto": "docs/catalogos_abb/texto/1STC803009D0103_paginas.json",
+      "usado_en": "datos/catalogo_abb.json -> enclosures[] de estructura System pro E (structure, páginas 20-24, 31, 46, 129-136)"
+    },
+    {
+      "archivo": "docs/catalogos_abb/ABB_Enclosures_Automation_1STC804013D0201.pdf",
+      "documento": "General Catalogue - Enclosures for Automation (1STC804013D0201, 02.2011)",
+      "origen": "https://content.voltimum.com/au/190/ABB_-_Enclosures_for_Automation_1stc804013d0201.pdf (copia del catálogo de ABB SACE en Voltimum)",
+      "bajado": "2026-11-15",
+      "bytes": 19516707,
+      "sha256": "6ec8fb831401d370e514cc74eafca51cf5d94eecaf940dce3230481de1980543",
+      "texto": "docs/catalogos_abb/texto/1STC804013D0201_paginas.json",
+      "usado_en": "datos/catalogo_abb.json -> enclosures[] SR2 (págs. 2/4-2/10, 9/6-9/7); pendiente: kits KD (pág. 2/4 y 2/8), IS2, AM2"
+    }
+  ]
+}

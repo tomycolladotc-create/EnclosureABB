@@ -17,3 +17,4 @@
 
 No subir: salidas generadas (`salida/`), ZIPs, capturas de prueba. Los CAD de ABB sí van, en `cad/abb/<familia>/`, registrados en `datos/cad_argentina.json`.
 Idioma: español.
+- Todo archivo descargado (catálogos, CAD, hojas de datos) se guarda en el repo y se registra en `datos/fuentes_descargadas.json` (origen, fecha, hash, uso). Pedido del usuario 2026-11-15.
