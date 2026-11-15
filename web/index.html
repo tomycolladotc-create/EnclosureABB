@@ -97,31 +97,56 @@ function structureSvg(w,h,plinth){const st=encSpec()?.structure;if(!st)return ''
  // gabinete de estructura: marco de montantes/travesaños (banda = externo - funcional); el monobloc (SR2) no tiene banda ni zócalo
  if(!mono)o+=`<path d="M0 0H${w}V${bh}H0Z M${b} ${b}V${bh-b}H${w-b}V${b}Z" fill-rule="evenodd" style="fill:${fill};stroke:${ln};stroke-width:1.5"/>`;
  // hojas de puerta (vista con puertas retiradas): contorno de trazos
- let x=0;st.doorLeaves.forEach((lw,i)=>{o+=`<rect x="${x+3}" y="3" width="${lw-6}" height="${bh-6}" style="fill:none;stroke:#8b97a6;stroke-width:1.5;stroke-dasharray:14 8"/>`;if(i===0)o+=`<text x="${x+lw/2}" y="${bh-14}" text-anchor="middle" font-size="16" fill="#7a8796">puerta retirada</text>`;x+=lw});
+ let x=0;st.doorLeaves.forEach((lw,i)=>{o+=`<rect x="${x+3}" y="3" width="${lw-6}" height="${bh-6}" style="fill:none;stroke:#8b97a6;stroke-width:1.5;stroke-dasharray:14 8"/>`;if(i===0)o+=`<text x="${x+lw/2}" y="${bh+22}" text-anchor="middle" font-size="14" fill="#6b7d90">vista con la puerta retirada</text>`;x+=lw});
  if(plinth)o+=`<rect x="0" y="${bh}" width="${w}" height="${plinth}" style="fill:${plinthFill};stroke:#3b4344;stroke-width:2"/><line x1="40" y1="${bh+plinth*.5}" x2="${w-40}" y2="${bh+plinth*.5}" style="stroke:#7d8586;stroke-width:1"/>`;
  return o+'</g>'}
 const projectId=new URLSearchParams(location.search).get('id')||'ts4';
 // Accesorios de normativa: rectángulos esquemáticos con las medidas del catálogo (hasta tener el CAD de cada pieza).
 function accessoriesSvg(fx,fy,h){return (project.accessories||[]).filter(a=>a.placed!==false&&a.w&&a.x!==undefined).map(a=>{
  const color=a.type==='pe_terminal'?'#c9d400':a.type==='distribution_block'?'#b8865b':'#9aa7b4',x=fx+a.x,y=h-fy-a.y-a.h;
- return `<g style="pointer-events:none"><rect x="${x}" y="${y}" width="${a.w}" height="${a.h}" style="fill:${color};stroke:#3d4a57;stroke-width:1;stroke-dasharray:${a.provisional?'4 2':'0'}"/><text x="${x+a.w/2}" y="${y-3}" text-anchor="middle" font-size="9" fill="#344962">${esc(a.label||a.type)}</text></g>`}).join('')}
+ const n=a.type==='pe_terminal'?+((/x\s*(\d+)/i.exec(a.label||'')||[])[1]||0):0,seps=n>1?Array.from({length:n-1},(_,i)=>`<line x1="${x+a.w*(i+1)/n}" y1="${y}" x2="${x+a.w*(i+1)/n}" y2="${y+a.h}" stroke="#5f6a00" stroke-width=".8"/>`).join(''):'',
+  screws=n?Array.from({length:n},(_,i)=>`<circle cx="${x+a.w*(i+.5)/n}" cy="${y+a.h*.3}" r="${Math.min(2.2,a.w/n*.28).toFixed(2)}" fill="#6d7478" stroke="#3d4a57" stroke-width=".4"/>`).join(''):'';
+ return `<g style="pointer-events:none"><g filter="url(#shDev)"><rect x="${x}" y="${y}" width="${a.w}" height="${a.h}" rx="1.5" style="fill:${color};stroke:#3d4a57;stroke-width:1;stroke-dasharray:${a.provisional?'4 2':'0'}"/></g><rect x="${x}" y="${y}" width="${a.w}" height="${a.h*.22}" rx="1.5" fill="#fff" opacity=".35"/>${seps}${screws}<text x="${x+a.w/2}" y="${y-3}" text-anchor="middle" font-size="9" fill="#344962">${esc(a.label||a.type)}</text></g>`}).join('')}
 function renderNorma(){const box=$('norma');if(!box)return;const bad=findings.filter(f=>f.severity==='error'&&!f.manual).length;
  box.innerHTML=(findings.length?`<div class="${bad?'info warn':'info'}">${bad?bad+' error(es) de normativa':'Sin errores comprobables'}</div>`:'<div class="info">Sin avisos.</div>')+findings.map(f=>`<div class="detected" style="border-left:4px solid ${f.severity==='error'?'#c0392b':'#b87715'}"><b>${f.severity==='error'?'Error':'Aviso'}</b>${f.manual?' · manual':''}: ${esc(f.message)}${f.ruleStatus==='verificada'?'':'<br><span class="hint">regla por verificar</span>'}</div>`).join('')}
 async function placeUnplaced(){const r=await fetch('/api/place',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(project)});const data=await r.json();if(!r.ok)return notice(data.error);
  project.devices=data.devices;render();if(data.failed.length)notice('No entran en los rieles del gabinete: '+data.failed.join(', '))}
 async function runNormativa(complete){const r=await fetch(complete?'/api/normativa/complete':'/api/normativa',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(project)});const data=await r.json();if(!r.ok)return notice(data.error);
  if(complete){snapshot();project.accessories=data.accessories;render()}findings=data.findings;renderNorma()}
+// Capas de profundidad: sombras, degradados de chapa y riel con relieve (sólo estética; las medidas siguen siendo las del catálogo).
+function depthDefs(){return `<defs>
+ <filter id="shDev" x="-10%" y="-10%" width="125%" height="130%"><feDropShadow dx="2.5" dy="4" stdDeviation="3" flood-color="#10202e" flood-opacity=".45"/></filter>
+ <filter id="shPlate" x="-5%" y="-3%" width="110%" height="108%"><feDropShadow dx="3" dy="6" stdDeviation="6" flood-color="#0b1824" flood-opacity=".4"/></filter>
+ <filter id="shRail" x="-5%" y="-30%" width="110%" height="190%"><feDropShadow dx="1.5" dy="3" stdDeviation="2" flood-color="#0b1824" flood-opacity=".5"/></filter>
+ <linearGradient id="gBody" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e3e7e4"/><stop offset=".08" stop-color="#cbd0cc"/><stop offset=".92" stop-color="#c3c8c4"/><stop offset="1" stop-color="#a9afab"/></linearGradient>
+ <linearGradient id="gPlate" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d3d8db"/><stop offset=".5" stop-color="#bfc5c9"/><stop offset="1" stop-color="#aab1b6"/></linearGradient>
+ <linearGradient id="gRail" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#eef2f5"/><stop offset=".18" stop-color="#b9c2cb"/><stop offset=".5" stop-color="#8f9aa5"/><stop offset=".85" stop-color="#b3bcc5"/><stop offset="1" stop-color="#7c8792"/></linearGradient>
+ <radialGradient id="gScrew"><stop offset="0" stop-color="#f4f6f7"/><stop offset=".6" stop-color="#9aa3aa"/><stop offset="1" stop-color="#5d666d"/></radialGradient>
+ <linearGradient id="gInset" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset=".04" stop-color="#000" stop-opacity="0"/></linearGradient>
+</defs>`}
+const screw=(x,y,r=6)=>`<g style="pointer-events:none"><circle cx="${x}" cy="${y}" r="${r}" fill="url(#gScrew)" stroke="#4a535a" stroke-width="1"/><line x1="${x-r*.6}" y1="${y-r*.6}" x2="${x+r*.6}" y2="${y+r*.6}" stroke="#4a535a" stroke-width="1.4"/></g>`;
+// Herrajes de la puerta (vista con puerta retirada): cerraduras en las posiciones del catálogo (F desde el borde); bisagras esquemáticas del lado izquierdo.
+function hardwareSvg(w,h){const st=encSpec()?.structure;if(!st?.locks||st.kind!=='monobloc')return '';const L=st.locks,ys=L.count===1?[h/2]:[L.F,h-L.F];
+ return `<g style="pointer-events:none">`+ys.map(y=>`<rect x="${w-26}" y="${y-22}" width="20" height="44" rx="3" fill="#8e969c" stroke="#4a535a" stroke-width="1.5"/><circle cx="${w-16}" cy="${y}" r="6" fill="#2f363b"/>`).join('')+
+ [h*.12,h*.88].map(y=>`<rect x="2" y="${y-18}" width="16" height="36" rx="3" fill="#a3abb1" stroke="#4a535a" stroke-width="1.3"/><line x1="2" y1="${y}" x2="18" y2="${y}" stroke="#4a535a" stroke-width="1.2"/>`).join('')+`</g>`}
+// Riel DIN con relieve: perfil con degradado, ranuras y tornillos de fijación en los extremos.
+function railSvg(r,fx,h,fy){const x=fx+r.x,y=h-fy-r.y-r.height/2,slots=[];for(let sx=x+18;sx<x+r.length-12;sx+=25)slots.push(`<rect x="${sx}" y="${y+r.height/2-3}" width="14" height="6" rx="3" fill="#4d5862" opacity=".85"/>`);
+ return `<g filter="url(#shRail)"><rect x="${x}" y="${y}" width="${r.length}" height="${r.height}" fill="url(#gRail)" stroke="#4e5e70" stroke-width="1.5"/><line x1="${x}" y1="${y+r.height*.2}" x2="${x+r.length}" y2="${y+r.height*.2}" stroke="#fff" stroke-opacity=".7"/><line x1="${x}" y1="${y+r.height*.8}" x2="${x+r.length}" y2="${y+r.height*.8}" stroke="#46525d" stroke-opacity=".6"/>${slots.join('')}</g>${screw(x+7,y+r.height/2,4)}${screw(x+r.length-7,y+r.height/2,4)}<text x="${x-15}" y="${y+r.height/2+6}" text-anchor="end" fill="#354b60" font-size="18">${esc(r.id)}</text>`}
+// Placa de montaje / área funcional: chapa con degradado, sombra proyectada sobre el fondo del gabinete y tornillos de fijación.
+function plateSvg(fx,fy,h,f){const st=encSpec()?.structure,mono=st?.kind==='monobloc',y=h-fy-f.height,inset=st?.locks?.plateScrews?.inset;
+ return `<g filter="url(#shPlate)"><rect x="${fx}" y="${y}" width="${f.width}" height="${f.height}" fill="${mono?'url(#gPlate)':'#d6dbdf'}" stroke="#7d8a96" stroke-width="2"/></g><rect x="${fx}" y="${y}" width="${f.width}" height="${f.height}" fill="url(#gInset)" style="pointer-events:none"/>`+
+ (inset?[[fx+inset,y+inset],[fx+f.width-inset,y+inset],[fx+inset,y+f.height-inset],[fx+f.width-inset,y+f.height-inset]].map(p=>screw(p[0],p[1])).join(''):'')}
 function render(){
  const {w,h,fx,fy}=dimensions(),f=project.enclosure.functional;
  setView();
- $('board').innerHTML=frontDefs()+`<rect width="${w}" height="${h}" fill="${encSpec()?.structure?.colors?.enclosure?.hex||'white'}" stroke="#172c43" stroke-width="6"/>
+ $('board').innerHTML=frontDefs()+depthDefs()+`<rect width="${w}" height="${h}" fill="url(#gBody)" stroke="#172c43" stroke-width="6"/>
 ${structureSvg(w,h,project.enclosure.plinthHeight)||`<rect y="${h-project.enclosure.plinthHeight}" width="${w}" height="${project.enclosure.plinthHeight}" fill="#e4eaf0" stroke="#66778a" stroke-width="2"/>`}
- <rect x="${fx}" y="${h-fy-f.height}" width="${f.width}" height="${f.height}" fill="none" stroke="#8394a6" stroke-width="2"/>
- <text x="0" y="-22" fill="#344962" font-size="25">ABB System pro E power 185 · ${esc(project.project)}</text>`+
- rails().map(r=>`<g><rect x="${fx+r.x}" y="${h-fy-r.y-r.height/2}" width="${r.length}" height="${r.height}" fill="#b9c3ce" stroke="#4e5e70" stroke-width="2"/><text x="${fx+r.x-15}" y="${h-fy-r.y+6}" text-anchor="end" fill="#354b60" font-size="18">${esc(r.id)}</text></g>`).join('')+
+ ${plateSvg(fx,fy,h,f)}${hardwareSvg(w,h)}
+ <text x="0" y="-22" fill="#344962" font-size="25">${esc(project.project)}</text><text x="0" y="-2" fill="#6b7d90" font-size="15">${esc(project.enclosure.line||'ABB')} · ${esc(encSpec()?.label||'')}</text>`+
+ rails().map(r=>railSvg(r,fx,h,fy)).join('')+
  accessoriesSvg(fx,fy,h)+
  project.devices.map((d,i)=>{const yy=h-fy-d.y-d.h,pending=/confirm|placeholder|conflict|variant|revisar|pendiente/i.test(d.status||'');return `<g class="device ${i===selected?'active':''} ${pending?'pending':''}" data-index="${i}">
- ${frontSvg(d,fx+d.x,yy)}
+ <g filter="url(#shDev)">${frontSvg(d,fx+d.x,yy)}</g>
  <rect class="hitbox" x="${fx+d.x}" y="${yy}" width="${d.w}" height="${d.h}" style="fill:transparent;stroke:none;pointer-events:all"/>
  ${i===selected?`<rect x="${fx+d.x-2}" y="${yy-2}" width="${d.w+4}" height="${d.h+4}" style="fill:none;stroke:#156bca;stroke-width:3;stroke-dasharray:6 3;pointer-events:none"/>`:''}
  <text x="${fx+d.x+d.w/2}" y="${yy-6}" text-anchor="middle" fill="#142b41" font-size="${Math.min(20,d.w*.8/Math.max(d.tag.length,1)/.62).toFixed(1)}" font-weight="700">${esc(d.tag)}</text>

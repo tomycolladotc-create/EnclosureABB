@@ -3,6 +3,10 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-15 20:55 · Claude
+- Pedido del usuario: la vista se sentía plana, todo en una capa. Hecho en `web/index.html` (sólo estética, no cambia medidas ni datos): degradado de chapa en gabinete y placa, sombra de la placa sobre el fondo, sombra proyectada de cada equipo, riel DIN con relieve/ranuras/tornillos de fijación, bloque de tierra con terminales, tornillos de la placa (a 14 mm del borde, pág. 9/7 del catálogo SR2), cerraduras en las posiciones del catálogo (pág. 9/6) y bisagras esquemáticas. Título y subtítulo con el gabinete real (antes decía System pro E fijo). Datos nuevos: `structure.locks` en los SR2.
+- Pendiente de esta línea [Claude/Codex]: el DXF todavía no dibuja relieve (es 2D plano por diseño); herrajes de los gabinetes System pro E (manijas PHLS0013, bisagras) sin posición; ranuras del riel y bisagras son esquemáticas (pitch 25 mm y posición de bisagras son supuestos visuales, no datos ABB).
+
 ## 2026-11-15 20:40 · Claude
 - Cierre de sesión por límite de uso: ESTADO.md actualizado (Situación y Pendiente completos, con el punto 0 en curso).
 - Estado exacto de lo que estaba haciendo: leí la tabla de selección SR2 (pág. 2/4, imagen) con las filas KD por gabinete; NO hay cambios de código de ese tema todavía. Punto de partida para [Codex]/[Claude]: agregar `kdKit` a los `enclosures` SR2 (datos en ESTADO.md punto 0) y extender `layout_auto._try` para poner los modulares en filas de 185 mm y los XT/OT en la placa.
