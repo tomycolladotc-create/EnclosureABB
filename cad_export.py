@@ -47,13 +47,14 @@ def build_dxf(project, catalog, fronts, appearances):
     rect(0, plinth, body["width"], body["height"], "ABB_ENVOLVENTE")
     rect(0, 0, body["width"], plinth, "ABB_ENVOLVENTE")
     # Estructura real (catalogo_abb.json -> enclosures[].structure): banda de montantes/travesaños y hojas de puerta.
-    spec = next((e for e in catalog["enclosures"] if e["functional"]["height"] == cabinet["functional"]["height"]
-                 and e["functional"]["width"] == cabinet["functional"]["width"]), None)
+    spec = next((e for e in catalog["enclosures"] if e["id"] == cabinet.get("id")), None) or next(
+        (e for e in catalog["enclosures"] if e["functional"] == cabinet["functional"]), None)
     structure = (spec or {}).get("structure")
     if structure:
         band = structure["frameBand"]
-        space.add_lwpolyline([(band, plinth + band), (body["width"] - band, plinth + band), (body["width"] - band, plinth + body["height"] - band),
-                              (band, plinth + body["height"] - band)], close=True, dxfattribs={"layer": "ABB_ESTRUCTURA"})
+        if band:  # gabinete de estructura (montantes/travesaños); el monobloc no tiene banda
+            space.add_lwpolyline([(band, plinth + band), (body["width"] - band, plinth + band), (body["width"] - band, plinth + body["height"] - band),
+                                  (band, plinth + body["height"] - band)], close=True, dxfattribs={"layer": "ABB_ESTRUCTURA"})
         left = 0
         for leaf in structure["doorLeaves"]:
             space.add_lwpolyline([(left + 3, plinth + 3), (left + leaf - 3, plinth + 3), (left + leaf - 3, plinth + body["height"] - 3),

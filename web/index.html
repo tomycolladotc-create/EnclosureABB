@@ -92,15 +92,14 @@ function focusView(){const {fx,fy,h}=dimensions(),ds=project.devices;if(!ds.leng
 function zoomView(factor){setView();const cx=view.x+view.w/2,cy=view.y+view.h/2;view.w*=factor;view.h*=factor;view.x=cx-view.w/2;view.y=cy-view.h/2;setView()}
 let findings=[],normaTimer=null;
 // Estructura real del gabinete (montantes/travesaños, hojas de puerta) a partir de catalogo_abb.json -> enclosures[].structure
-const encSpec=()=>catalog.enclosures.find(v=>v.functional.height===project.enclosure.functional.height&&v.functional.width===project.enclosure.functional.width);
-function structureSvg(w,h,plinth){const st=encSpec()?.structure;if(!st)return '';const bh=h-plinth,b=st.frameBand,fill=st.colors?.frame?.hex||'#cfd6de',ln='#6c7b8c',plinthFill=st.colors?.plinth?.hex||'#dfe4ea';let o='';
- // marco: montantes (izq/der) y travesaños (arriba/abajo), banda de 50 mm = externo - funcional
- o+=`<g style="pointer-events:none"><path d="M0 0H${w}V${bh}H0Z M${b} ${b}V${bh-b}H${w-b}V${b}Z" fill-rule="evenodd" style="fill:${fill};stroke:${ln};stroke-width:1.5"/>`;
+const encSpec=()=>catalog.enclosures.find(v=>v.id===project.enclosure.id)||catalog.enclosures.find(v=>v.functional.height===project.enclosure.functional.height&&v.functional.width===project.enclosure.functional.width);
+function structureSvg(w,h,plinth){const st=encSpec()?.structure;if(!st)return '';const mono=!st.frameBand,bh=h-plinth,b=st.frameBand,fill=st.colors?.frame?.hex||'#cfd6de',ln='#6c7b8c',plinthFill=st.colors?.plinth?.hex||'#dfe4ea';let o='<g style="pointer-events:none">';
+ // gabinete de estructura: marco de montantes/travesaños (banda = externo - funcional); el monobloc (SR2) no tiene banda ni zócalo
+ if(!mono)o+=`<path d="M0 0H${w}V${bh}H0Z M${b} ${b}V${bh-b}H${w-b}V${b}Z" fill-rule="evenodd" style="fill:${fill};stroke:${ln};stroke-width:1.5"/>`;
  // hojas de puerta (vista con puertas retiradas): contorno de trazos
- let x=0;st.doorLeaves.forEach((lw,i)=>{o+=`<rect x="${x+3}" y="3" width="${lw-6}" height="${bh-6}" style="fill:none;stroke:#8b97a6;stroke-width:1.5;stroke-dasharray:14 8"/>`;if(i===0)o+=`<text x="${x+lw/2}" y="${bh-14}" text-anchor="middle" font-size="16" fill="#7a8796">hojas de puerta retiradas</text>`;x+=lw});
- // zócalo con sus pestañas frontal y laterales
- o+=`<rect x="0" y="${bh}" width="${w}" height="${plinth}" style="fill:${plinthFill};stroke:#3b4344;stroke-width:2"/><line x1="40" y1="${bh+plinth*.5}" x2="${w-40}" y2="${bh+plinth*.5}" style="stroke:#7d8586;stroke-width:1"/></g>`;
- return o}
+ let x=0;st.doorLeaves.forEach((lw,i)=>{o+=`<rect x="${x+3}" y="3" width="${lw-6}" height="${bh-6}" style="fill:none;stroke:#8b97a6;stroke-width:1.5;stroke-dasharray:14 8"/>`;if(i===0)o+=`<text x="${x+lw/2}" y="${bh-14}" text-anchor="middle" font-size="16" fill="#7a8796">puerta retirada</text>`;x+=lw});
+ if(plinth)o+=`<rect x="0" y="${bh}" width="${w}" height="${plinth}" style="fill:${plinthFill};stroke:#3b4344;stroke-width:2"/><line x1="40" y1="${bh+plinth*.5}" x2="${w-40}" y2="${bh+plinth*.5}" style="stroke:#7d8586;stroke-width:1"/>`;
+ return o+'</g>'}
 const projectId=new URLSearchParams(location.search).get('id')||'ts4';
 // Accesorios de normativa: rectángulos esquemáticos con las medidas del catálogo (hasta tener el CAD de cada pieza).
 function accessoriesSvg(fx,fy,h){return (project.accessories||[]).filter(a=>a.placed!==false&&a.w&&a.x!==undefined).map(a=>{
@@ -138,7 +137,7 @@ ${structureSvg(w,h,project.enclosure.plinthHeight)||`<rect y="${h-project.enclos
  const spec=shell(d.shell);$('cadInfo').innerHTML=spec?.cadSource?`${esc(spec.cadStatus)}<br><a href="${esc(spec.cadSource)}" target="_blank" rel="noopener">Abrir fuente CAD ABB</a>`:'CAD de variante pendiente de identificar';}
 }
 function select(i){selected=i;render()}
-function loadEnclosure(){const e=catalog.enclosures.find(x=>x.id===$('enclosure').value);if(!e)return;snapshot();project.enclosure={...project.enclosure,functional:clone(e.functional),externalBody:clone(e.externalBody),plinthHeight:e.plinthHeight,overallHeightWithPlinth:e.externalBody.height+e.plinthHeight,functionalAreaOffset:{x:50,y:e.plinthHeight+50},mountingLayout:clone(e.mountingLayout),structuralComponentReferences:{parts:e.parts},sources:[e.source]};project.devices.forEach(alignDin);view=null;$('enclosureInfo').textContent=`Exterior ${e.externalBody.width} × ${e.externalBody.height} × ${e.externalBody.depth} mm; zócalo ${e.plinthHeight} mm. Riel: ${e.mountingLayout.dinRails.map(r=>r.type+' a Y='+r.y+' mm').join(', ')}. Posición a validar con ABB.`;render()}
+function loadEnclosure(){const e=catalog.enclosures.find(x=>x.id===$('enclosure').value);if(!e)return;snapshot();project.enclosure={...project.enclosure,functional:clone(e.functional),externalBody:clone(e.externalBody),plinthHeight:e.plinthHeight,overallHeightWithPlinth:e.externalBody.height+e.plinthHeight,id:e.id,functionalAreaOffset:clone(e.functionalOffset||{x:50,y:e.plinthHeight+50}),mountingLayout:clone(e.mountingLayout),structuralComponentReferences:{parts:e.parts},sources:[e.source]};project.devices.forEach(alignDin);view=null;$('enclosureInfo').textContent=`Exterior ${e.externalBody.width} × ${e.externalBody.height} × ${e.externalBody.depth} mm; zócalo ${e.plinthHeight} mm. Riel: ${e.mountingLayout.dinRails.map(r=>r.type+' a Y='+r.y+' mm').join(', ')}. Posición a validar con ABB.`;render()}
 function download(name,data,mime){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:mime}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 function filename(ext){return (project.project||'tablero').replace(/[^\w-]+/g,'_')+'.'+ext}
 function saveSvg(){const copy=$('board').cloneNode(true),{w,h}=dimensions();copy.setAttribute('viewBox',`-80 -80 ${w+160} ${h+160}`);copy.setAttribute('width',w+'mm');copy.setAttribute('height',h+'mm');return new XMLSerializer().serializeToString(copy)}

@@ -25,6 +25,11 @@ class LayoutAuto(unittest.TestCase):
         ext = self.new["enclosure"]["externalBody"]
         self.assertLess(ext["width"] * ext["height"], 1100 * 2200)
 
+    def test_ts4_entra_en_un_sr2_con_riel_gd(self):
+        self.assertTrue(self.new["enclosure"]["id"].startswith("sr2-"))
+        self.assertTrue(all(r["type"].startswith("GD") for r in self.new["enclosure"]["mountingLayout"]["dinRails"]))
+        self.assertGreaterEqual(self.new["enclosure"]["functional"]["depth"], 200)  # reglas_layout.json: minDepthForKitDevicesMm
+
     def test_es_el_primero_que_entra_del_mas_chico_al_mas_grande(self):
         tried = self.summary["intentos"]
         self.assertTrue(tried[-1]["entra"])

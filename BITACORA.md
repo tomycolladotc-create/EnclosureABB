@@ -3,6 +3,13 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-15 20:10 · Claude
+- Pedido del usuario: el gabinete seguía siendo demasiado grande para el TS4.
+- Hecho: catálogo ABB 'Enclosures for Automation' 1STC804013D0201 (02.2011) bajado con el navegador (Descargas del usuario) y leído. Cargados los 23 gabinetes SR2 con puerta ciega (códigos SRN...K, págs. 2/5 y 9/6): externo = nominal + 3 mm, placa interna = (ancho-40) x (alto-40) (coincide con la tabla de placas PF.... de la pág. 9/7), rieles GD4006/6006/8006 (pág. 2/8). `layout_auto.py` ahora usa `railOptions` y `functionalOffset` por gabinete y descarta gabinetes con profundidad menor a `minDepthForKitDevicesMm` (200, propuesta de diseño en `datos/reglas_layout.json`). TS4 -> SRN12630K 1200 x 600 x 300 con riel GD4006. Tests: 48 OK.
+- Supuestos marcados: la placa está centrada en el gabinete (el catálogo no da su posición); profundidad externa = nominal; la profundidad mínima de 200 mm para XT/OT es criterio propio, no dato ABB (no tenemos profundidades de los equipos). Los códigos de las págs. 2/5 se leyeron de texto; las medidas de la pág. 9/6 se verificaron mirando la imagen.
+- No cargado: versiones con puerta vidriada (VK), zócalos ZA...., IS2 (gabinetes de piso) y el catálogo SR2 de dimensiones internas de kits KD.
+- Siguiente [Claude]: profundidades reales de XT/OT/S800 para validar el gabinete; kits KD con paneles modulares para el riel; verificar disponibilidad SR2 en Argentina.
+
 ## 2026-11-15 01:10 · Claude
 - Pedido del usuario: criterio al elegir el gabinete (el 1100 x 2200 era desproporcionado para 12 equipos) y colores reales en el dibujo (no fondo blanco).
 - Hecho: `layout_auto.py` elige el gabinete más chico del catálogo que aloja el contenido y acomoda seccionadores, equipos de kit (filas por módulo de kit de 200 mm) y equipos de riel (riel PDRS0600 centrado, misma carcasa pegada, lugar para bornes PE). Criterios en `datos/reglas_layout.json` (propuestas ajustables, no datos de ABB). Ruta `/api/autolayout` y botón 'Armar tablero automático'. Catálogo ampliado con los tamaños del catálogo ABB 1STC803009D0103 (anchos 500/750/1000/1250 funcionales, alturas 1800/2100). Colores: RAL 7035 gabinete y RAL 7012 zócalo (pág. 46 del catálogo; hex aproximados), chapa galvanizada como gris representativo. TS4 -> 850 x 1900 x 600. Tests: 47 OK.

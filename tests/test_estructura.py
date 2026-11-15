@@ -20,7 +20,10 @@ class Estructura(unittest.TestCase):
         for e in load("catalogo_abb.json")["enclosures"]:
             st = e["structure"]
             ext, fun = e["externalBody"]["width"], e["functional"]["width"]
-            self.assertEqual(ext - fun, 2 * st["frameBand"], e["id"])  # funcional = externo - 100 (cat. ABB pág. 46)
+            if st.get("kind") == "monobloc":  # SR2: placa = (nominal - 40), externo = nominal + 3 (cat. 1STC804013D0201 págs. 9/6-9/7)
+                self.assertEqual(ext - fun, 43, e["id"])
+            else:
+                self.assertEqual(ext - fun, 2 * st["frameBand"], e["id"])  # funcional = externo - 100 (cat. ABB pág. 46)
             self.assertEqual(sum(st["doorLeaves"]), ext, e["id"])
             self.assertTrue(all(p.get("pagina") for p in st["bom"]), e["id"])  # cada parte dice de qué página sale
 

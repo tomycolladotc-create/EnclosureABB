@@ -113,7 +113,20 @@
           },
           "fuente": "RAL 7035 gabinete y RAL 7012 zócalo: pág. 46 del catálogo; los hex son aproximación RGB estándar de cada RAL; la chapa galvanizada es un gris representativo, no medido"
         }
-      }
+      },
+      "functionalOffset": {
+        "x": 50,
+        "y": 150
+      },
+      "railOptions": [
+        {
+          "type": "PDRS0600",
+          "orderCode": "1STQ008042A0000",
+          "length": 600,
+          "height": 35
+        }
+      ],
+      "line": "ABB System pro E power 185 mm Busbar System"
     },
     {
       "id": "spep185-1000-1800-500",
@@ -227,7 +240,20 @@
           },
           "fuente": "RAL 7035 gabinete y RAL 7012 zócalo: pág. 46 del catálogo; los hex son aproximación RGB estándar de cada RAL; la chapa galvanizada es un gris representativo, no medido"
         }
-      }
+      },
+      "functionalOffset": {
+        "x": 50,
+        "y": 150
+      },
+      "railOptions": [
+        {
+          "type": "PDRS0600",
+          "orderCode": "1STQ008042A0000",
+          "length": 600,
+          "height": 35
+        }
+      ],
+      "line": "ABB System pro E power 185 mm Busbar System"
     },
     {
       "id": "spep185-500-1800-500",
@@ -336,7 +362,20 @@
             "pagina": 23
           }
         ]
-      }
+      },
+      "functionalOffset": {
+        "x": 50,
+        "y": 150
+      },
+      "railOptions": [
+        {
+          "type": "PDRS0600",
+          "orderCode": "1STQ008042A0000",
+          "length": 600,
+          "height": 35
+        }
+      ],
+      "line": "ABB System pro E power 185 mm Busbar System"
     },
     {
       "id": "spep185-500-2100-500",
@@ -445,7 +484,20 @@
             "pagina": 23
           }
         ]
-      }
+      },
+      "functionalOffset": {
+        "x": 50,
+        "y": 150
+      },
+      "railOptions": [
+        {
+          "type": "PDRS0600",
+          "orderCode": "1STQ008042A0000",
+          "length": 600,
+          "height": 35
+        }
+      ],
+      "line": "ABB System pro E power 185 mm Busbar System"
     },
     {
       "id": "spep185-750-1800-500",
@@ -554,7 +606,20 @@
             "pagina": 23
           }
         ]
-      }
+      },
+      "functionalOffset": {
+        "x": 50,
+        "y": 150
+      },
+      "railOptions": [
+        {
+          "type": "PDRS0600",
+          "orderCode": "1STQ008042A0000",
+          "length": 600,
+          "height": 35
+        }
+      ],
+      "line": "ABB System pro E power 185 mm Busbar System"
     },
     {
       "id": "spep185-750-2100-500",
@@ -663,7 +728,20 @@
             "pagina": 23
           }
         ]
-      }
+      },
+      "functionalOffset": {
+        "x": 50,
+        "y": 150
+      },
+      "railOptions": [
+        {
+          "type": "PDRS0600",
+          "orderCode": "1STQ008042A0000",
+          "length": 600,
+          "height": 35
+        }
+      ],
+      "line": "ABB System pro E power 185 mm Busbar System"
     },
     {
       "id": "spep185-1250-1800-500",
@@ -773,7 +851,20 @@
             "pagina": 23
           }
         ]
-      }
+      },
+      "functionalOffset": {
+        "x": 50,
+        "y": 150
+      },
+      "railOptions": [
+        {
+          "type": "PDRS0600",
+          "orderCode": "1STQ008042A0000",
+          "length": 600,
+          "height": 35
+        }
+      ],
+      "line": "ABB System pro E power 185 mm Busbar System"
     },
     {
       "id": "spep185-1250-2100-500",
@@ -883,7 +974,2159 @@
             "pagina": 23
           }
         ]
-      }
+      },
+      "functionalOffset": {
+        "x": 50,
+        "y": 150
+      },
+      "railOptions": [
+        {
+          "type": "PDRS0600",
+          "orderCode": "1STQ008042A0000",
+          "length": 600,
+          "height": 35
+        }
+      ],
+      "line": "ABB System pro E power 185 mm Busbar System"
+    },
+    {
+      "id": "sr2-srn3215k",
+      "family": "SR2",
+      "label": "ABB SR2 SRN3215K · 300 × 200 × 150 (placa 160 × 260)",
+      "functional": {
+        "width": 160,
+        "height": 260,
+        "depth": 150
+      },
+      "externalBody": {
+        "width": 203,
+        "height": 303,
+        "depth": 150
+      },
+      "plinthHeight": 0,
+      "overallHeightWithPlinth": 303,
+      "functionalOffset": {
+        "x": 21.5,
+        "y": 21.5
+      },
+      "parts": [
+        "SRN3215K",
+        "PF3020"
+      ],
+      "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
+      "railOptions": [
+        {
+          "type": "GD4006",
+          "orderCode": "GD4006",
+          "length": 400,
+          "height": 35
+        },
+        {
+          "type": "GD6006",
+          "orderCode": "GD6006",
+          "length": 600,
+          "height": 35
+        },
+        {
+          "type": "GD8006",
+          "orderCode": "GD8006",
+          "length": 800,
+          "height": 35
+        }
+      ],
+      "mountingLayout": {
+        "status": "placa interna ciega PF3020; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad en Argentina no verificada",
+      "structure": {
+        "kind": "monobloc",
+        "frameBand": 0,
+        "doorLeaves": [
+          203
+        ],
+        "source": "ABB 1STC804013D0201 'General Catalogue Enclosures for Automation' (02.2011): SR2 págs. 2/4-2/10 (códigos), 9/6-9/7 (medidas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plate": {
+            "nombre": "chapa galvanizada",
+            "hex": "#b9bec2"
+          },
+          "fuente": "RAL 7035 (pág. 2/10 del catálogo SR2, pintura de retoque); hex aproximado; la placa galvanizada es un gris representativo, no medido"
+        },
+        "note": "Medida externa = nominal + 3 mm (pág. 9/6, columnas A y B); profundidad externa = nominal (no hay otro dato). Placa = (ancho-40) x (alto-40), coincide con la tabla de placas internas de la pág. 9/7. Puerta ciega incluida en el código.",
+        "status": "datos de catálogo ABB; dibujo esquemático",
+        "bom": [
+          {
+            "parte": "Gabinete con puerta ciega y placa",
+            "codigo": "SRN3215K",
+            "orden": null,
+            "pagina": 35
+          },
+          {
+            "parte": "Placa interna ciega",
+            "codigo": "PF3020",
+            "orden": null,
+            "pagina": 36
+          },
+          {
+            "parte": "Riel DIN con soportes (400/600/800 mm)",
+            "codigo": "GD4006 / GD6006 / GD8006",
+            "orden": null,
+            "pagina": 38
+          }
+        ]
+      },
+      "line": "ABB SR2 · gabinete monobloc IP65"
+    },
+    {
+      "id": "sr2-srn3315k",
+      "family": "SR2",
+      "label": "ABB SR2 SRN3315K · 300 × 300 × 150 (placa 260 × 260)",
+      "functional": {
+        "width": 260,
+        "height": 260,
+        "depth": 150
+      },
+      "externalBody": {
+        "width": 303,
+        "height": 303,
+        "depth": 150
+      },
+      "plinthHeight": 0,
+      "overallHeightWithPlinth": 303,
+      "functionalOffset": {
+        "x": 21.5,
+        "y": 21.5
+      },
+      "parts": [
+        "SRN3315K",
+        "PF3030"
+      ],
+      "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
+      "railOptions": [
+        {
+          "type": "GD4006",
+          "orderCode": "GD4006",
+          "length": 400,
+          "height": 35
+        },
+        {
+          "type": "GD6006",
+          "orderCode": "GD6006",
+          "length": 600,
+          "height": 35
+        },
+        {
+          "type": "GD8006",
+          "orderCode": "GD8006",
+          "length": 800,
+          "height": 35
+        }
+      ],
+      "mountingLayout": {
+        "status": "placa interna ciega PF3030; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad en Argentina no verificada",
+      "structure": {
+        "kind": "monobloc",
+        "frameBand": 0,
+        "doorLeaves": [
+          303
+        ],
+        "source": "ABB 1STC804013D0201 'General Catalogue Enclosures for Automation' (02.2011): SR2 págs. 2/4-2/10 (códigos), 9/6-9/7 (medidas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plate": {
+            "nombre": "chapa galvanizada",
+            "hex": "#b9bec2"
+          },
+          "fuente": "RAL 7035 (pág. 2/10 del catálogo SR2, pintura de retoque); hex aproximado; la placa galvanizada es un gris representativo, no medido"
+        },
+        "note": "Medida externa = nominal + 3 mm (pág. 9/6, columnas A y B); profundidad externa = nominal (no hay otro dato). Placa = (ancho-40) x (alto-40), coincide con la tabla de placas internas de la pág. 9/7. Puerta ciega incluida en el código.",
+        "status": "datos de catálogo ABB; dibujo esquemático",
+        "bom": [
+          {
+            "parte": "Gabinete con puerta ciega y placa",
+            "codigo": "SRN3315K",
+            "orden": null,
+            "pagina": 35
+          },
+          {
+            "parte": "Placa interna ciega",
+            "codigo": "PF3030",
+            "orden": null,
+            "pagina": 36
+          },
+          {
+            "parte": "Riel DIN con soportes (400/600/800 mm)",
+            "codigo": "GD4006 / GD6006 / GD8006",
+            "orden": null,
+            "pagina": 38
+          }
+        ]
+      },
+      "line": "ABB SR2 · gabinete monobloc IP65"
+    },
+    {
+      "id": "sr2-srn3415k",
+      "family": "SR2",
+      "label": "ABB SR2 SRN3415K · 300 × 400 × 150 (placa 360 × 260)",
+      "functional": {
+        "width": 360,
+        "height": 260,
+        "depth": 150
+      },
+      "externalBody": {
+        "width": 403,
+        "height": 303,
+        "depth": 150
+      },
+      "plinthHeight": 0,
+      "overallHeightWithPlinth": 303,
+      "functionalOffset": {
+        "x": 21.5,
+        "y": 21.5
+      },
+      "parts": [
+        "SRN3415K",
+        "PF3040"
+      ],
+      "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
+      "railOptions": [
+        {
+          "type": "GD4006",
+          "orderCode": "GD4006",
+          "length": 400,
+          "height": 35
+        },
+        {
+          "type": "GD6006",
+          "orderCode": "GD6006",
+          "length": 600,
+          "height": 35
+        },
+        {
+          "type": "GD8006",
+          "orderCode": "GD8006",
+          "length": 800,
+          "height": 35
+        }
+      ],
+      "mountingLayout": {
+        "status": "placa interna ciega PF3040; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad en Argentina no verificada",
+      "structure": {
+        "kind": "monobloc",
+        "frameBand": 0,
+        "doorLeaves": [
+          403
+        ],
+        "source": "ABB 1STC804013D0201 'General Catalogue Enclosures for Automation' (02.2011): SR2 págs. 2/4-2/10 (códigos), 9/6-9/7 (medidas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plate": {
+            "nombre": "chapa galvanizada",
+            "hex": "#b9bec2"
+          },
+          "fuente": "RAL 7035 (pág. 2/10 del catálogo SR2, pintura de retoque); hex aproximado; la placa galvanizada es un gris representativo, no medido"
+        },
+        "note": "Medida externa = nominal + 3 mm (pág. 9/6, columnas A y B); profundidad externa = nominal (no hay otro dato). Placa = (ancho-40) x (alto-40), coincide con la tabla de placas internas de la pág. 9/7. Puerta ciega incluida en el código.",
+        "status": "datos de catálogo ABB; dibujo esquemático",
+        "bom": [
+          {
+            "parte": "Gabinete con puerta ciega y placa",
+            "codigo": "SRN3415K",
+            "orden": null,
+            "pagina": 35
+          },
+          {
+            "parte": "Placa interna ciega",
+            "codigo": "PF3040",
+            "orden": null,
+            "pagina": 36
+          },
+          {
+            "parte": "Riel DIN con soportes (400/600/800 mm)",
+            "codigo": "GD4006 / GD6006 / GD8006",
+            "orden": null,
+            "pagina": 38
+          }
+        ]
+      },
+      "line": "ABB SR2 · gabinete monobloc IP65"
+    },
+    {
+      "id": "sr2-srn4315k",
+      "family": "SR2",
+      "label": "ABB SR2 SRN4315K · 400 × 300 × 150 (placa 260 × 360)",
+      "functional": {
+        "width": 260,
+        "height": 360,
+        "depth": 150
+      },
+      "externalBody": {
+        "width": 303,
+        "height": 403,
+        "depth": 150
+      },
+      "plinthHeight": 0,
+      "overallHeightWithPlinth": 403,
+      "functionalOffset": {
+        "x": 21.5,
+        "y": 21.5
+      },
+      "parts": [
+        "SRN4315K",
+        "PF4030"
+      ],
+      "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
+      "railOptions": [
+        {
+          "type": "GD4006",
+          "orderCode": "GD4006",
+          "length": 400,
+          "height": 35
+        },
+        {
+          "type": "GD6006",
+          "orderCode": "GD6006",
+          "length": 600,
+          "height": 35
+        },
+        {
+          "type": "GD8006",
+          "orderCode": "GD8006",
+          "length": 800,
+          "height": 35
+        }
+      ],
+      "mountingLayout": {
+        "status": "placa interna ciega PF4030; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad en Argentina no verificada",
+      "structure": {
+        "kind": "monobloc",
+        "frameBand": 0,
+        "doorLeaves": [
+          303
+        ],
+        "source": "ABB 1STC804013D0201 'General Catalogue Enclosures for Automation' (02.2011): SR2 págs. 2/4-2/10 (códigos), 9/6-9/7 (medidas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plate": {
+            "nombre": "chapa galvanizada",
+            "hex": "#b9bec2"
+          },
+          "fuente": "RAL 7035 (pág. 2/10 del catálogo SR2, pintura de retoque); hex aproximado; la placa galvanizada es un gris representativo, no medido"
+        },
+        "note": "Medida externa = nominal + 3 mm (pág. 9/6, columnas A y B); profundidad externa = nominal (no hay otro dato). Placa = (ancho-40) x (alto-40), coincide con la tabla de placas internas de la pág. 9/7. Puerta ciega incluida en el código.",
+        "status": "datos de catálogo ABB; dibujo esquemático",
+        "bom": [
+          {
+            "parte": "Gabinete con puerta ciega y placa",
+            "codigo": "SRN4315K",
+            "orden": null,
+            "pagina": 35
+          },
+          {
+            "parte": "Placa interna ciega",
+            "codigo": "PF4030",
+            "orden": null,
+            "pagina": 36
+          },
+          {
+            "parte": "Riel DIN con soportes (400/600/800 mm)",
+            "codigo": "GD4006 / GD6006 / GD8006",
+            "orden": null,
+            "pagina": 38
+          }
+        ]
+      },
+      "line": "ABB SR2 · gabinete monobloc IP65"
+    },
+    {
+      "id": "sr2-srn4320k",
+      "family": "SR2",
+      "label": "ABB SR2 SRN4320K · 400 × 300 × 200 (placa 260 × 360)",
+      "functional": {
+        "width": 260,
+        "height": 360,
+        "depth": 200
+      },
+      "externalBody": {
+        "width": 303,
+        "height": 403,
+        "depth": 200
+      },
+      "plinthHeight": 0,
+      "overallHeightWithPlinth": 403,
+      "functionalOffset": {
+        "x": 21.5,
+        "y": 21.5
+      },
+      "parts": [
+        "SRN4320K",
+        "PF4030"
+      ],
+      "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
+      "railOptions": [
+        {
+          "type": "GD4006",
+          "orderCode": "GD4006",
+          "length": 400,
+          "height": 35
+        },
+        {
+          "type": "GD6006",
+          "orderCode": "GD6006",
+          "length": 600,
+          "height": 35
+        },
+        {
+          "type": "GD8006",
+          "orderCode": "GD8006",
+          "length": 800,
+          "height": 35
+        }
+      ],
+      "mountingLayout": {
+        "status": "placa interna ciega PF4030; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad en Argentina no verificada",
+      "structure": {
+        "kind": "monobloc",
+        "frameBand": 0,
+        "doorLeaves": [
+          303
+        ],
+        "source": "ABB 1STC804013D0201 'General Catalogue Enclosures for Automation' (02.2011): SR2 págs. 2/4-2/10 (códigos), 9/6-9/7 (medidas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plate": {
+            "nombre": "chapa galvanizada",
+            "hex": "#b9bec2"
+          },
+          "fuente": "RAL 7035 (pág. 2/10 del catálogo SR2, pintura de retoque); hex aproximado; la placa galvanizada es un gris representativo, no medido"
+        },
+        "note": "Medida externa = nominal + 3 mm (pág. 9/6, columnas A y B); profundidad externa = nominal (no hay otro dato). Placa = (ancho-40) x (alto-40), coincide con la tabla de placas internas de la pág. 9/7. Puerta ciega incluida en el código.",
+        "status": "datos de catálogo ABB; dibujo esquemático",
+        "bom": [
+          {
+            "parte": "Gabinete con puerta ciega y placa",
+            "codigo": "SRN4320K",
+            "orden": null,
+            "pagina": 35
+          },
+          {
+            "parte": "Placa interna ciega",
+            "codigo": "PF4030",
+            "orden": null,
+            "pagina": 36
+          },
+          {
+            "parte": "Riel DIN con soportes (400/600/800 mm)",
+            "codigo": "GD4006 / GD6006 / GD8006",
+            "orden": null,
+            "pagina": 38
+          }
+        ]
+      },
+      "line": "ABB SR2 · gabinete monobloc IP65"
+    },
+    {
+      "id": "sr2-srn4420k",
+      "family": "SR2",
+      "label": "ABB SR2 SRN4420K · 400 × 400 × 200 (placa 360 × 360)",
+      "functional": {
+        "width": 360,
+        "height": 360,
+        "depth": 200
+      },
+      "externalBody": {
+        "width": 403,
+        "height": 403,
+        "depth": 200
+      },
+      "plinthHeight": 0,
+      "overallHeightWithPlinth": 403,
+      "functionalOffset": {
+        "x": 21.5,
+        "y": 21.5
+      },
+      "parts": [
+        "SRN4420K",
+        "PF4040"
+      ],
+      "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
+      "railOptions": [
+        {
+          "type": "GD4006",
+          "orderCode": "GD4006",
+          "length": 400,
+          "height": 35
+        },
+        {
+          "type": "GD6006",
+          "orderCode": "GD6006",
+          "length": 600,
+          "height": 35
+        },
+        {
+          "type": "GD8006",
+          "orderCode": "GD8006",
+          "length": 800,
+          "height": 35
+        }
+      ],
+      "mountingLayout": {
+        "status": "placa interna ciega PF4040; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad en Argentina no verificada",
+      "structure": {
+        "kind": "monobloc",
+        "frameBand": 0,
+        "doorLeaves": [
+          403
+        ],
+        "source": "ABB 1STC804013D0201 'General Catalogue Enclosures for Automation' (02.2011): SR2 págs. 2/4-2/10 (códigos), 9/6-9/7 (medidas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plate": {
+            "nombre": "chapa galvanizada",
+            "hex": "#b9bec2"
+          },
+          "fuente": "RAL 7035 (pág. 2/10 del catálogo SR2, pintura de retoque); hex aproximado; la placa galvanizada es un gris representativo, no medido"
+        },
+        "note": "Medida externa = nominal + 3 mm (pág. 9/6, columnas A y B); profundidad externa = nominal (no hay otro dato). Placa = (ancho-40) x (alto-40), coincide con la tabla de placas internas de la pág. 9/7. Puerta ciega incluida en el código.",
+        "status": "datos de catálogo ABB; dibujo esquemático",
+        "bom": [
+          {
+            "parte": "Gabinete con puerta ciega y placa",
+            "codigo": "SRN4420K",
+            "orden": null,
+            "pagina": 35
+          },
+          {
+            "parte": "Placa interna ciega",
+            "codigo": "PF4040",
+            "orden": null,
+            "pagina": 36
+          },
+          {
+            "parte": "Riel DIN con soportes (400/600/800 mm)",
+            "codigo": "GD4006 / GD6006 / GD8006",
+            "orden": null,
+            "pagina": 38
+          }
+        ]
+      },
+      "line": "ABB SR2 · gabinete monobloc IP65"
+    },
+    {
+      "id": "sr2-srn4620k",
+      "family": "SR2",
+      "label": "ABB SR2 SRN4620K · 400 × 600 × 200 (placa 560 × 360)",
+      "functional": {
+        "width": 560,
+        "height": 360,
+        "depth": 200
+      },
+      "externalBody": {
+        "width": 603,
+        "height": 403,
+        "depth": 200
+      },
+      "plinthHeight": 0,
+      "overallHeightWithPlinth": 403,
+      "functionalOffset": {
+        "x": 21.5,
+        "y": 21.5
+      },
+      "parts": [
+        "SRN4620K",
+        "PF4060"
+      ],
+      "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
+      "railOptions": [
+        {
+          "type": "GD4006",
+          "orderCode": "GD4006",
+          "length": 400,
+          "height": 35
+        },
+        {
+          "type": "GD6006",
+          "orderCode": "GD6006",
+          "length": 600,
+          "height": 35
+        },
+        {
+          "type": "GD8006",
+          "orderCode": "GD8006",
+          "length": 800,
+          "height": 35
+        }
+      ],
+      "mountingLayout": {
+        "status": "placa interna ciega PF4060; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad en Argentina no verificada",
+      "structure": {
+        "kind": "monobloc",
+        "frameBand": 0,
+        "doorLeaves": [
+          603
+        ],
+        "source": "ABB 1STC804013D0201 'General Catalogue Enclosures for Automation' (02.2011): SR2 págs. 2/4-2/10 (códigos), 9/6-9/7 (medidas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plate": {
+            "nombre": "chapa galvanizada",
+            "hex": "#b9bec2"
+          },
+          "fuente": "RAL 7035 (pág. 2/10 del catálogo SR2, pintura de retoque); hex aproximado; la placa galvanizada es un gris representativo, no medido"
+        },
+        "note": "Medida externa = nominal + 3 mm (pág. 9/6, columnas A y B); profundidad externa = nominal (no hay otro dato). Placa = (ancho-40) x (alto-40), coincide con la tabla de placas internas de la pág. 9/7. Puerta ciega incluida en el código.",
+        "status": "datos de catálogo ABB; dibujo esquemático",
+        "bom": [
+          {
+            "parte": "Gabinete con puerta ciega y placa",
+            "codigo": "SRN4620K",
+            "orden": null,
+            "pagina": 35
+          },
+          {
+            "parte": "Placa interna ciega",
+            "codigo": "PF4060",
+            "orden": null,
+            "pagina": 36
+          },
+          {
+            "parte": "Riel DIN con soportes (400/600/800 mm)",
+            "codigo": "GD4006 / GD6006 / GD8006",
+            "orden": null,
+            "pagina": 38
+          }
+        ]
+      },
+      "line": "ABB SR2 · gabinete monobloc IP65"
+    },
+    {
+      "id": "sr2-srn5320k",
+      "family": "SR2",
+      "label": "ABB SR2 SRN5320K · 500 × 300 × 200 (placa 260 × 460)",
+      "functional": {
+        "width": 260,
+        "height": 460,
+        "depth": 200
+      },
+      "externalBody": {
+        "width": 303,
+        "height": 503,
+        "depth": 200
+      },
+      "plinthHeight": 0,
+      "overallHeightWithPlinth": 503,
+      "functionalOffset": {
+        "x": 21.5,
+        "y": 21.5
+      },
+      "parts": [
+        "SRN5320K",
+        "PF5030"
+      ],
+      "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
+      "railOptions": [
+        {
+          "type": "GD4006",
+          "orderCode": "GD4006",
+          "length": 400,
+          "height": 35
+        },
+        {
+          "type": "GD6006",
+          "orderCode": "GD6006",
+          "length": 600,
+          "height": 35
+        },
+        {
+          "type": "GD8006",
+          "orderCode": "GD8006",
+          "length": 800,
+          "height": 35
+        }
+      ],
+      "mountingLayout": {
+        "status": "placa interna ciega PF5030; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad en Argentina no verificada",
+      "structure": {
+        "kind": "monobloc",
+        "frameBand": 0,
+        "doorLeaves": [
+          303
+        ],
+        "source": "ABB 1STC804013D0201 'General Catalogue Enclosures for Automation' (02.2011): SR2 págs. 2/4-2/10 (códigos), 9/6-9/7 (medidas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plate": {
+            "nombre": "chapa galvanizada",
+            "hex": "#b9bec2"
+          },
+          "fuente": "RAL 7035 (pág. 2/10 del catálogo SR2, pintura de retoque); hex aproximado; la placa galvanizada es un gris representativo, no medido"
+        },
+        "note": "Medida externa = nominal + 3 mm (pág. 9/6, columnas A y B); profundidad externa = nominal (no hay otro dato). Placa = (ancho-40) x (alto-40), coincide con la tabla de placas internas de la pág. 9/7. Puerta ciega incluida en el código.",
+        "status": "datos de catálogo ABB; dibujo esquemático",
+        "bom": [
+          {
+            "parte": "Gabinete con puerta ciega y placa",
+            "codigo": "SRN5320K",
+            "orden": null,
+            "pagina": 35
+          },
+          {
+            "parte": "Placa interna ciega",
+            "codigo": "PF5030",
+            "orden": null,
+            "pagina": 36
+          },
+          {
+            "parte": "Riel DIN con soportes (400/600/800 mm)",
+            "codigo": "GD4006 / GD6006 / GD8006",
+            "orden": null,
+            "pagina": 38
+          }
+        ]
+      },
+      "line": "ABB SR2 · gabinete monobloc IP65"
+    },
+    {
+      "id": "sr2-srn5420k",
+      "family": "SR2",
+      "label": "ABB SR2 SRN5420K · 500 × 400 × 200 (placa 360 × 460)",
+      "functional": {
+        "width": 360,
+        "height": 460,
+        "depth": 200
+      },
+      "externalBody": {
+        "width": 403,
+        "height": 503,
+        "depth": 200
+      },
+      "plinthHeight": 0,
+      "overallHeightWithPlinth": 503,
+      "functionalOffset": {
+        "x": 21.5,
+        "y": 21.5
+      },
+      "parts": [
+        "SRN5420K",
+        "PF5040"
+      ],
+      "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
+      "railOptions": [
+        {
+          "type": "GD4006",
+          "orderCode": "GD4006",
+          "length": 400,
+          "height": 35
+        },
+        {
+          "type": "GD6006",
+          "orderCode": "GD6006",
+          "length": 600,
+          "height": 35
+        },
+        {
+          "type": "GD8006",
+          "orderCode": "GD8006",
+          "length": 800,
+          "height": 35
+        }
+      ],
+      "mountingLayout": {
+        "status": "placa interna ciega PF5040; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad en Argentina no verificada",
+      "structure": {
+        "kind": "monobloc",
+        "frameBand": 0,
+        "doorLeaves": [
+          403
+        ],
+        "source": "ABB 1STC804013D0201 'General Catalogue Enclosures for Automation' (02.2011): SR2 págs. 2/4-2/10 (códigos), 9/6-9/7 (medidas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plate": {
+            "nombre": "chapa galvanizada",
+            "hex": "#b9bec2"
+          },
+          "fuente": "RAL 7035 (pág. 2/10 del catálogo SR2, pintura de retoque); hex aproximado; la placa galvanizada es un gris representativo, no medido"
+        },
+        "note": "Medida externa = nominal + 3 mm (pág. 9/6, columnas A y B); profundidad externa = nominal (no hay otro dato). Placa = (ancho-40) x (alto-40), coincide con la tabla de placas internas de la pág. 9/7. Puerta ciega incluida en el código.",
+        "status": "datos de catálogo ABB; dibujo esquemático",
+        "bom": [
+          {
+            "parte": "Gabinete con puerta ciega y placa",
+            "codigo": "SRN5420K",
+            "orden": null,
+            "pagina": 35
+          },
+          {
+            "parte": "Placa interna ciega",
+            "codigo": "PF5040",
+            "orden": null,
+            "pagina": 36
+          },
+          {
+            "parte": "Riel DIN con soportes (400/600/800 mm)",
+            "codigo": "GD4006 / GD6006 / GD8006",
+            "orden": null,
+            "pagina": 38
+          }
+        ]
+      },
+      "line": "ABB SR2 · gabinete monobloc IP65"
+    },
+    {
+      "id": "sr2-srn5425k",
+      "family": "SR2",
+      "label": "ABB SR2 SRN5425K · 500 × 400 × 250 (placa 360 × 460)",
+      "functional": {
+        "width": 360,
+        "height": 460,
+        "depth": 250
+      },
+      "externalBody": {
+        "width": 403,
+        "height": 503,
+        "depth": 250
+      },
+      "plinthHeight": 0,
+      "overallHeightWithPlinth": 503,
+      "functionalOffset": {
+        "x": 21.5,
+        "y": 21.5
+      },
+      "parts": [
+        "SRN5425K",
+        "PF5040"
+      ],
+      "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
+      "railOptions": [
+        {
+          "type": "GD4006",
+          "orderCode": "GD4006",
+          "length": 400,
+          "height": 35
+        },
+        {
+          "type": "GD6006",
+          "orderCode": "GD6006",
+          "length": 600,
+          "height": 35
+        },
+        {
+          "type": "GD8006",
+          "orderCode": "GD8006",
+          "length": 800,
+          "height": 35
+        }
+      ],
+      "mountingLayout": {
+        "status": "placa interna ciega PF5040; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad en Argentina no verificada",
+      "structure": {
+        "kind": "monobloc",
+        "frameBand": 0,
+        "doorLeaves": [
+          403
+        ],
+        "source": "ABB 1STC804013D0201 'General Catalogue Enclosures for Automation' (02.2011): SR2 págs. 2/4-2/10 (códigos), 9/6-9/7 (medidas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plate": {
+            "nombre": "chapa galvanizada",
+            "hex": "#b9bec2"
+          },
+          "fuente": "RAL 7035 (pág. 2/10 del catálogo SR2, pintura de retoque); hex aproximado; la placa galvanizada es un gris representativo, no medido"
+        },
+        "note": "Medida externa = nominal + 3 mm (pág. 9/6, columnas A y B); profundidad externa = nominal (no hay otro dato). Placa = (ancho-40) x (alto-40), coincide con la tabla de placas internas de la pág. 9/7. Puerta ciega incluida en el código.",
+        "status": "datos de catálogo ABB; dibujo esquemático",
+        "bom": [
+          {
+            "parte": "Gabinete con puerta ciega y placa",
+            "codigo": "SRN5425K",
+            "orden": null,
+            "pagina": 35
+          },
+          {
+            "parte": "Placa interna ciega",
+            "codigo": "PF5040",
+            "orden": null,
+            "pagina": 36
+          },
+          {
+            "parte": "Riel DIN con soportes (400/600/800 mm)",
+            "codigo": "GD4006 / GD6006 / GD8006",
+            "orden": null,
+            "pagina": 38
+          }
+        ]
+      },
+      "line": "ABB SR2 · gabinete monobloc IP65"
+    },
+    {
+      "id": "sr2-srn6420k",
+      "family": "SR2",
+      "label": "ABB SR2 SRN6420K · 600 × 400 × 200 (placa 360 × 560)",
+      "functional": {
+        "width": 360,
+        "height": 560,
+        "depth": 200
+      },
+      "externalBody": {
+        "width": 403,
+        "height": 603,
+        "depth": 200
+      },
+      "plinthHeight": 0,
+      "overallHeightWithPlinth": 603,
+      "functionalOffset": {
+        "x": 21.5,
+        "y": 21.5
+      },
+      "parts": [
+        "SRN6420K",
+        "PF6040"
+      ],
+      "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
+      "railOptions": [
+        {
+          "type": "GD4006",
+          "orderCode": "GD4006",
+          "length": 400,
+          "height": 35
+        },
+        {
+          "type": "GD6006",
+          "orderCode": "GD6006",
+          "length": 600,
+          "height": 35
+        },
+        {
+          "type": "GD8006",
+          "orderCode": "GD8006",
+          "length": 800,
+          "height": 35
+        }
+      ],
+      "mountingLayout": {
+        "status": "placa interna ciega PF6040; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad en Argentina no verificada",
+      "structure": {
+        "kind": "monobloc",
+        "frameBand": 0,
+        "doorLeaves": [
+          403
+        ],
+        "source": "ABB 1STC804013D0201 'General Catalogue Enclosures for Automation' (02.2011): SR2 págs. 2/4-2/10 (códigos), 9/6-9/7 (medidas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plate": {
+            "nombre": "chapa galvanizada",
+            "hex": "#b9bec2"
+          },
+          "fuente": "RAL 7035 (pág. 2/10 del catálogo SR2, pintura de retoque); hex aproximado; la placa galvanizada es un gris representativo, no medido"
+        },
+        "note": "Medida externa = nominal + 3 mm (pág. 9/6, columnas A y B); profundidad externa = nominal (no hay otro dato). Placa = (ancho-40) x (alto-40), coincide con la tabla de placas internas de la pág. 9/7. Puerta ciega incluida en el código.",
+        "status": "datos de catálogo ABB; dibujo esquemático",
+        "bom": [
+          {
+            "parte": "Gabinete con puerta ciega y placa",
+            "codigo": "SRN6420K",
+            "orden": null,
+            "pagina": 35
+          },
+          {
+            "parte": "Placa interna ciega",
+            "codigo": "PF6040",
+            "orden": null,
+            "pagina": 36
+          },
+          {
+            "parte": "Riel DIN con soportes (400/600/800 mm)",
+            "codigo": "GD4006 / GD6006 / GD8006",
+            "orden": null,
+            "pagina": 38
+          }
+        ]
+      },
+      "line": "ABB SR2 · gabinete monobloc IP65"
+    },
+    {
+      "id": "sr2-srn6425k",
+      "family": "SR2",
+      "label": "ABB SR2 SRN6425K · 600 × 400 × 250 (placa 360 × 560)",
+      "functional": {
+        "width": 360,
+        "height": 560,
+        "depth": 250
+      },
+      "externalBody": {
+        "width": 403,
+        "height": 603,
+        "depth": 250
+      },
+      "plinthHeight": 0,
+      "overallHeightWithPlinth": 603,
+      "functionalOffset": {
+        "x": 21.5,
+        "y": 21.5
+      },
+      "parts": [
+        "SRN6425K",
+        "PF6040"
+      ],
+      "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
+      "railOptions": [
+        {
+          "type": "GD4006",
+          "orderCode": "GD4006",
+          "length": 400,
+          "height": 35
+        },
+        {
+          "type": "GD6006",
+          "orderCode": "GD6006",
+          "length": 600,
+          "height": 35
+        },
+        {
+          "type": "GD8006",
+          "orderCode": "GD8006",
+          "length": 800,
+          "height": 35
+        }
+      ],
+      "mountingLayout": {
+        "status": "placa interna ciega PF6040; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad en Argentina no verificada",
+      "structure": {
+        "kind": "monobloc",
+        "frameBand": 0,
+        "doorLeaves": [
+          403
+        ],
+        "source": "ABB 1STC804013D0201 'General Catalogue Enclosures for Automation' (02.2011): SR2 págs. 2/4-2/10 (códigos), 9/6-9/7 (medidas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plate": {
+            "nombre": "chapa galvanizada",
+            "hex": "#b9bec2"
+          },
+          "fuente": "RAL 7035 (pág. 2/10 del catálogo SR2, pintura de retoque); hex aproximado; la placa galvanizada es un gris representativo, no medido"
+        },
+        "note": "Medida externa = nominal + 3 mm (pág. 9/6, columnas A y B); profundidad externa = nominal (no hay otro dato). Placa = (ancho-40) x (alto-40), coincide con la tabla de placas internas de la pág. 9/7. Puerta ciega incluida en el código.",
+        "status": "datos de catálogo ABB; dibujo esquemático",
+        "bom": [
+          {
+            "parte": "Gabinete con puerta ciega y placa",
+            "codigo": "SRN6425K",
+            "orden": null,
+            "pagina": 35
+          },
+          {
+            "parte": "Placa interna ciega",
+            "codigo": "PF6040",
+            "orden": null,
+            "pagina": 36
+          },
+          {
+            "parte": "Riel DIN con soportes (400/600/800 mm)",
+            "codigo": "GD4006 / GD6006 / GD8006",
+            "orden": null,
+            "pagina": 38
+          }
+        ]
+      },
+      "line": "ABB SR2 · gabinete monobloc IP65"
+    },
+    {
+      "id": "sr2-srn6625k",
+      "family": "SR2",
+      "label": "ABB SR2 SRN6625K · 600 × 600 × 250 (placa 560 × 560)",
+      "functional": {
+        "width": 560,
+        "height": 560,
+        "depth": 250
+      },
+      "externalBody": {
+        "width": 603,
+        "height": 603,
+        "depth": 250
+      },
+      "plinthHeight": 0,
+      "overallHeightWithPlinth": 603,
+      "functionalOffset": {
+        "x": 21.5,
+        "y": 21.5
+      },
+      "parts": [
+        "SRN6625K",
+        "PF6060"
+      ],
+      "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
+      "railOptions": [
+        {
+          "type": "GD4006",
+          "orderCode": "GD4006",
+          "length": 400,
+          "height": 35
+        },
+        {
+          "type": "GD6006",
+          "orderCode": "GD6006",
+          "length": 600,
+          "height": 35
+        },
+        {
+          "type": "GD8006",
+          "orderCode": "GD8006",
+          "length": 800,
+          "height": 35
+        }
+      ],
+      "mountingLayout": {
+        "status": "placa interna ciega PF6060; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad en Argentina no verificada",
+      "structure": {
+        "kind": "monobloc",
+        "frameBand": 0,
+        "doorLeaves": [
+          603
+        ],
+        "source": "ABB 1STC804013D0201 'General Catalogue Enclosures for Automation' (02.2011): SR2 págs. 2/4-2/10 (códigos), 9/6-9/7 (medidas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plate": {
+            "nombre": "chapa galvanizada",
+            "hex": "#b9bec2"
+          },
+          "fuente": "RAL 7035 (pág. 2/10 del catálogo SR2, pintura de retoque); hex aproximado; la placa galvanizada es un gris representativo, no medido"
+        },
+        "note": "Medida externa = nominal + 3 mm (pág. 9/6, columnas A y B); profundidad externa = nominal (no hay otro dato). Placa = (ancho-40) x (alto-40), coincide con la tabla de placas internas de la pág. 9/7. Puerta ciega incluida en el código.",
+        "status": "datos de catálogo ABB; dibujo esquemático",
+        "bom": [
+          {
+            "parte": "Gabinete con puerta ciega y placa",
+            "codigo": "SRN6625K",
+            "orden": null,
+            "pagina": 35
+          },
+          {
+            "parte": "Placa interna ciega",
+            "codigo": "PF6060",
+            "orden": null,
+            "pagina": 36
+          },
+          {
+            "parte": "Riel DIN con soportes (400/600/800 mm)",
+            "codigo": "GD4006 / GD6006 / GD8006",
+            "orden": null,
+            "pagina": 38
+          }
+        ]
+      },
+      "line": "ABB SR2 · gabinete monobloc IP65"
+    },
+    {
+      "id": "sr2-srn7520k",
+      "family": "SR2",
+      "label": "ABB SR2 SRN7520K · 700 × 500 × 200 (placa 460 × 660)",
+      "functional": {
+        "width": 460,
+        "height": 660,
+        "depth": 200
+      },
+      "externalBody": {
+        "width": 503,
+        "height": 703,
+        "depth": 200
+      },
+      "plinthHeight": 0,
+      "overallHeightWithPlinth": 703,
+      "functionalOffset": {
+        "x": 21.5,
+        "y": 21.5
+      },
+      "parts": [
+        "SRN7520K",
+        "PF7050"
+      ],
+      "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
+      "railOptions": [
+        {
+          "type": "GD4006",
+          "orderCode": "GD4006",
+          "length": 400,
+          "height": 35
+        },
+        {
+          "type": "GD6006",
+          "orderCode": "GD6006",
+          "length": 600,
+          "height": 35
+        },
+        {
+          "type": "GD8006",
+          "orderCode": "GD8006",
+          "length": 800,
+          "height": 35
+        }
+      ],
+      "mountingLayout": {
+        "status": "placa interna ciega PF7050; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad en Argentina no verificada",
+      "structure": {
+        "kind": "monobloc",
+        "frameBand": 0,
+        "doorLeaves": [
+          503
+        ],
+        "source": "ABB 1STC804013D0201 'General Catalogue Enclosures for Automation' (02.2011): SR2 págs. 2/4-2/10 (códigos), 9/6-9/7 (medidas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plate": {
+            "nombre": "chapa galvanizada",
+            "hex": "#b9bec2"
+          },
+          "fuente": "RAL 7035 (pág. 2/10 del catálogo SR2, pintura de retoque); hex aproximado; la placa galvanizada es un gris representativo, no medido"
+        },
+        "note": "Medida externa = nominal + 3 mm (pág. 9/6, columnas A y B); profundidad externa = nominal (no hay otro dato). Placa = (ancho-40) x (alto-40), coincide con la tabla de placas internas de la pág. 9/7. Puerta ciega incluida en el código.",
+        "status": "datos de catálogo ABB; dibujo esquemático",
+        "bom": [
+          {
+            "parte": "Gabinete con puerta ciega y placa",
+            "codigo": "SRN7520K",
+            "orden": null,
+            "pagina": 35
+          },
+          {
+            "parte": "Placa interna ciega",
+            "codigo": "PF7050",
+            "orden": null,
+            "pagina": 36
+          },
+          {
+            "parte": "Riel DIN con soportes (400/600/800 mm)",
+            "codigo": "GD4006 / GD6006 / GD8006",
+            "orden": null,
+            "pagina": 38
+          }
+        ]
+      },
+      "line": "ABB SR2 · gabinete monobloc IP65"
+    },
+    {
+      "id": "sr2-srn7525k",
+      "family": "SR2",
+      "label": "ABB SR2 SRN7525K · 700 × 500 × 250 (placa 460 × 660)",
+      "functional": {
+        "width": 460,
+        "height": 660,
+        "depth": 250
+      },
+      "externalBody": {
+        "width": 503,
+        "height": 703,
+        "depth": 250
+      },
+      "plinthHeight": 0,
+      "overallHeightWithPlinth": 703,
+      "functionalOffset": {
+        "x": 21.5,
+        "y": 21.5
+      },
+      "parts": [
+        "SRN7525K",
+        "PF7050"
+      ],
+      "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
+      "railOptions": [
+        {
+          "type": "GD4006",
+          "orderCode": "GD4006",
+          "length": 400,
+          "height": 35
+        },
+        {
+          "type": "GD6006",
+          "orderCode": "GD6006",
+          "length": 600,
+          "height": 35
+        },
+        {
+          "type": "GD8006",
+          "orderCode": "GD8006",
+          "length": 800,
+          "height": 35
+        }
+      ],
+      "mountingLayout": {
+        "status": "placa interna ciega PF7050; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad en Argentina no verificada",
+      "structure": {
+        "kind": "monobloc",
+        "frameBand": 0,
+        "doorLeaves": [
+          503
+        ],
+        "source": "ABB 1STC804013D0201 'General Catalogue Enclosures for Automation' (02.2011): SR2 págs. 2/4-2/10 (códigos), 9/6-9/7 (medidas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plate": {
+            "nombre": "chapa galvanizada",
+            "hex": "#b9bec2"
+          },
+          "fuente": "RAL 7035 (pág. 2/10 del catálogo SR2, pintura de retoque); hex aproximado; la placa galvanizada es un gris representativo, no medido"
+        },
+        "note": "Medida externa = nominal + 3 mm (pág. 9/6, columnas A y B); profundidad externa = nominal (no hay otro dato). Placa = (ancho-40) x (alto-40), coincide con la tabla de placas internas de la pág. 9/7. Puerta ciega incluida en el código.",
+        "status": "datos de catálogo ABB; dibujo esquemático",
+        "bom": [
+          {
+            "parte": "Gabinete con puerta ciega y placa",
+            "codigo": "SRN7525K",
+            "orden": null,
+            "pagina": 35
+          },
+          {
+            "parte": "Placa interna ciega",
+            "codigo": "PF7050",
+            "orden": null,
+            "pagina": 36
+          },
+          {
+            "parte": "Riel DIN con soportes (400/600/800 mm)",
+            "codigo": "GD4006 / GD6006 / GD8006",
+            "orden": null,
+            "pagina": 38
+          }
+        ]
+      },
+      "line": "ABB SR2 · gabinete monobloc IP65"
+    },
+    {
+      "id": "sr2-srn8625k",
+      "family": "SR2",
+      "label": "ABB SR2 SRN8625K · 800 × 600 × 250 (placa 560 × 760)",
+      "functional": {
+        "width": 560,
+        "height": 760,
+        "depth": 250
+      },
+      "externalBody": {
+        "width": 603,
+        "height": 803,
+        "depth": 250
+      },
+      "plinthHeight": 0,
+      "overallHeightWithPlinth": 803,
+      "functionalOffset": {
+        "x": 21.5,
+        "y": 21.5
+      },
+      "parts": [
+        "SRN8625K",
+        "PF8060"
+      ],
+      "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
+      "railOptions": [
+        {
+          "type": "GD4006",
+          "orderCode": "GD4006",
+          "length": 400,
+          "height": 35
+        },
+        {
+          "type": "GD6006",
+          "orderCode": "GD6006",
+          "length": 600,
+          "height": 35
+        },
+        {
+          "type": "GD8006",
+          "orderCode": "GD8006",
+          "length": 800,
+          "height": 35
+        }
+      ],
+      "mountingLayout": {
+        "status": "placa interna ciega PF8060; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad en Argentina no verificada",
+      "structure": {
+        "kind": "monobloc",
+        "frameBand": 0,
+        "doorLeaves": [
+          603
+        ],
+        "source": "ABB 1STC804013D0201 'General Catalogue Enclosures for Automation' (02.2011): SR2 págs. 2/4-2/10 (códigos), 9/6-9/7 (medidas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plate": {
+            "nombre": "chapa galvanizada",
+            "hex": "#b9bec2"
+          },
+          "fuente": "RAL 7035 (pág. 2/10 del catálogo SR2, pintura de retoque); hex aproximado; la placa galvanizada es un gris representativo, no medido"
+        },
+        "note": "Medida externa = nominal + 3 mm (pág. 9/6, columnas A y B); profundidad externa = nominal (no hay otro dato). Placa = (ancho-40) x (alto-40), coincide con la tabla de placas internas de la pág. 9/7. Puerta ciega incluida en el código.",
+        "status": "datos de catálogo ABB; dibujo esquemático",
+        "bom": [
+          {
+            "parte": "Gabinete con puerta ciega y placa",
+            "codigo": "SRN8625K",
+            "orden": null,
+            "pagina": 35
+          },
+          {
+            "parte": "Placa interna ciega",
+            "codigo": "PF8060",
+            "orden": null,
+            "pagina": 36
+          },
+          {
+            "parte": "Riel DIN con soportes (400/600/800 mm)",
+            "codigo": "GD4006 / GD6006 / GD8006",
+            "orden": null,
+            "pagina": 38
+          }
+        ]
+      },
+      "line": "ABB SR2 · gabinete monobloc IP65"
+    },
+    {
+      "id": "sr2-srn8630k",
+      "family": "SR2",
+      "label": "ABB SR2 SRN8630K · 800 × 600 × 300 (placa 560 × 760)",
+      "functional": {
+        "width": 560,
+        "height": 760,
+        "depth": 300
+      },
+      "externalBody": {
+        "width": 603,
+        "height": 803,
+        "depth": 300
+      },
+      "plinthHeight": 0,
+      "overallHeightWithPlinth": 803,
+      "functionalOffset": {
+        "x": 21.5,
+        "y": 21.5
+      },
+      "parts": [
+        "SRN8630K",
+        "PF8060"
+      ],
+      "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
+      "railOptions": [
+        {
+          "type": "GD4006",
+          "orderCode": "GD4006",
+          "length": 400,
+          "height": 35
+        },
+        {
+          "type": "GD6006",
+          "orderCode": "GD6006",
+          "length": 600,
+          "height": 35
+        },
+        {
+          "type": "GD8006",
+          "orderCode": "GD8006",
+          "length": 800,
+          "height": 35
+        }
+      ],
+      "mountingLayout": {
+        "status": "placa interna ciega PF8060; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad en Argentina no verificada",
+      "structure": {
+        "kind": "monobloc",
+        "frameBand": 0,
+        "doorLeaves": [
+          603
+        ],
+        "source": "ABB 1STC804013D0201 'General Catalogue Enclosures for Automation' (02.2011): SR2 págs. 2/4-2/10 (códigos), 9/6-9/7 (medidas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plate": {
+            "nombre": "chapa galvanizada",
+            "hex": "#b9bec2"
+          },
+          "fuente": "RAL 7035 (pág. 2/10 del catálogo SR2, pintura de retoque); hex aproximado; la placa galvanizada es un gris representativo, no medido"
+        },
+        "note": "Medida externa = nominal + 3 mm (pág. 9/6, columnas A y B); profundidad externa = nominal (no hay otro dato). Placa = (ancho-40) x (alto-40), coincide con la tabla de placas internas de la pág. 9/7. Puerta ciega incluida en el código.",
+        "status": "datos de catálogo ABB; dibujo esquemático",
+        "bom": [
+          {
+            "parte": "Gabinete con puerta ciega y placa",
+            "codigo": "SRN8630K",
+            "orden": null,
+            "pagina": 35
+          },
+          {
+            "parte": "Placa interna ciega",
+            "codigo": "PF8060",
+            "orden": null,
+            "pagina": 36
+          },
+          {
+            "parte": "Riel DIN con soportes (400/600/800 mm)",
+            "codigo": "GD4006 / GD6006 / GD8006",
+            "orden": null,
+            "pagina": 38
+          }
+        ]
+      },
+      "line": "ABB SR2 · gabinete monobloc IP65"
+    },
+    {
+      "id": "sr2-srn8830k",
+      "family": "SR2",
+      "label": "ABB SR2 SRN8830K · 800 × 800 × 300 (placa 760 × 760)",
+      "functional": {
+        "width": 760,
+        "height": 760,
+        "depth": 300
+      },
+      "externalBody": {
+        "width": 803,
+        "height": 803,
+        "depth": 300
+      },
+      "plinthHeight": 0,
+      "overallHeightWithPlinth": 803,
+      "functionalOffset": {
+        "x": 21.5,
+        "y": 21.5
+      },
+      "parts": [
+        "SRN8830K",
+        "PF8080"
+      ],
+      "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
+      "railOptions": [
+        {
+          "type": "GD4006",
+          "orderCode": "GD4006",
+          "length": 400,
+          "height": 35
+        },
+        {
+          "type": "GD6006",
+          "orderCode": "GD6006",
+          "length": 600,
+          "height": 35
+        },
+        {
+          "type": "GD8006",
+          "orderCode": "GD8006",
+          "length": 800,
+          "height": 35
+        }
+      ],
+      "mountingLayout": {
+        "status": "placa interna ciega PF8080; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad en Argentina no verificada",
+      "structure": {
+        "kind": "monobloc",
+        "frameBand": 0,
+        "doorLeaves": [
+          803
+        ],
+        "source": "ABB 1STC804013D0201 'General Catalogue Enclosures for Automation' (02.2011): SR2 págs. 2/4-2/10 (códigos), 9/6-9/7 (medidas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plate": {
+            "nombre": "chapa galvanizada",
+            "hex": "#b9bec2"
+          },
+          "fuente": "RAL 7035 (pág. 2/10 del catálogo SR2, pintura de retoque); hex aproximado; la placa galvanizada es un gris representativo, no medido"
+        },
+        "note": "Medida externa = nominal + 3 mm (pág. 9/6, columnas A y B); profundidad externa = nominal (no hay otro dato). Placa = (ancho-40) x (alto-40), coincide con la tabla de placas internas de la pág. 9/7. Puerta ciega incluida en el código.",
+        "status": "datos de catálogo ABB; dibujo esquemático",
+        "bom": [
+          {
+            "parte": "Gabinete con puerta ciega y placa",
+            "codigo": "SRN8830K",
+            "orden": null,
+            "pagina": 35
+          },
+          {
+            "parte": "Placa interna ciega",
+            "codigo": "PF8080",
+            "orden": null,
+            "pagina": 36
+          },
+          {
+            "parte": "Riel DIN con soportes (400/600/800 mm)",
+            "codigo": "GD4006 / GD6006 / GD8006",
+            "orden": null,
+            "pagina": 38
+          }
+        ]
+      },
+      "line": "ABB SR2 · gabinete monobloc IP65"
+    },
+    {
+      "id": "sr2-srn10625k",
+      "family": "SR2",
+      "label": "ABB SR2 SRN10625K · 1000 × 600 × 250 (placa 560 × 960)",
+      "functional": {
+        "width": 560,
+        "height": 960,
+        "depth": 250
+      },
+      "externalBody": {
+        "width": 603,
+        "height": 1003,
+        "depth": 250
+      },
+      "plinthHeight": 0,
+      "overallHeightWithPlinth": 1003,
+      "functionalOffset": {
+        "x": 21.5,
+        "y": 21.5
+      },
+      "parts": [
+        "SRN10625K",
+        "PF1060"
+      ],
+      "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
+      "railOptions": [
+        {
+          "type": "GD4006",
+          "orderCode": "GD4006",
+          "length": 400,
+          "height": 35
+        },
+        {
+          "type": "GD6006",
+          "orderCode": "GD6006",
+          "length": 600,
+          "height": 35
+        },
+        {
+          "type": "GD8006",
+          "orderCode": "GD8006",
+          "length": 800,
+          "height": 35
+        }
+      ],
+      "mountingLayout": {
+        "status": "placa interna ciega PF1060; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad en Argentina no verificada",
+      "structure": {
+        "kind": "monobloc",
+        "frameBand": 0,
+        "doorLeaves": [
+          603
+        ],
+        "source": "ABB 1STC804013D0201 'General Catalogue Enclosures for Automation' (02.2011): SR2 págs. 2/4-2/10 (códigos), 9/6-9/7 (medidas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plate": {
+            "nombre": "chapa galvanizada",
+            "hex": "#b9bec2"
+          },
+          "fuente": "RAL 7035 (pág. 2/10 del catálogo SR2, pintura de retoque); hex aproximado; la placa galvanizada es un gris representativo, no medido"
+        },
+        "note": "Medida externa = nominal + 3 mm (pág. 9/6, columnas A y B); profundidad externa = nominal (no hay otro dato). Placa = (ancho-40) x (alto-40), coincide con la tabla de placas internas de la pág. 9/7. Puerta ciega incluida en el código.",
+        "status": "datos de catálogo ABB; dibujo esquemático",
+        "bom": [
+          {
+            "parte": "Gabinete con puerta ciega y placa",
+            "codigo": "SRN10625K",
+            "orden": null,
+            "pagina": 35
+          },
+          {
+            "parte": "Placa interna ciega",
+            "codigo": "PF1060",
+            "orden": null,
+            "pagina": 36
+          },
+          {
+            "parte": "Riel DIN con soportes (400/600/800 mm)",
+            "codigo": "GD4006 / GD6006 / GD8006",
+            "orden": null,
+            "pagina": 38
+          }
+        ]
+      },
+      "line": "ABB SR2 · gabinete monobloc IP65"
+    },
+    {
+      "id": "sr2-srn10630k",
+      "family": "SR2",
+      "label": "ABB SR2 SRN10630K · 1000 × 600 × 300 (placa 560 × 960)",
+      "functional": {
+        "width": 560,
+        "height": 960,
+        "depth": 300
+      },
+      "externalBody": {
+        "width": 603,
+        "height": 1003,
+        "depth": 300
+      },
+      "plinthHeight": 0,
+      "overallHeightWithPlinth": 1003,
+      "functionalOffset": {
+        "x": 21.5,
+        "y": 21.5
+      },
+      "parts": [
+        "SRN10630K",
+        "PF1060"
+      ],
+      "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
+      "railOptions": [
+        {
+          "type": "GD4006",
+          "orderCode": "GD4006",
+          "length": 400,
+          "height": 35
+        },
+        {
+          "type": "GD6006",
+          "orderCode": "GD6006",
+          "length": 600,
+          "height": 35
+        },
+        {
+          "type": "GD8006",
+          "orderCode": "GD8006",
+          "length": 800,
+          "height": 35
+        }
+      ],
+      "mountingLayout": {
+        "status": "placa interna ciega PF1060; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad en Argentina no verificada",
+      "structure": {
+        "kind": "monobloc",
+        "frameBand": 0,
+        "doorLeaves": [
+          603
+        ],
+        "source": "ABB 1STC804013D0201 'General Catalogue Enclosures for Automation' (02.2011): SR2 págs. 2/4-2/10 (códigos), 9/6-9/7 (medidas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plate": {
+            "nombre": "chapa galvanizada",
+            "hex": "#b9bec2"
+          },
+          "fuente": "RAL 7035 (pág. 2/10 del catálogo SR2, pintura de retoque); hex aproximado; la placa galvanizada es un gris representativo, no medido"
+        },
+        "note": "Medida externa = nominal + 3 mm (pág. 9/6, columnas A y B); profundidad externa = nominal (no hay otro dato). Placa = (ancho-40) x (alto-40), coincide con la tabla de placas internas de la pág. 9/7. Puerta ciega incluida en el código.",
+        "status": "datos de catálogo ABB; dibujo esquemático",
+        "bom": [
+          {
+            "parte": "Gabinete con puerta ciega y placa",
+            "codigo": "SRN10630K",
+            "orden": null,
+            "pagina": 35
+          },
+          {
+            "parte": "Placa interna ciega",
+            "codigo": "PF1060",
+            "orden": null,
+            "pagina": 36
+          },
+          {
+            "parte": "Riel DIN con soportes (400/600/800 mm)",
+            "codigo": "GD4006 / GD6006 / GD8006",
+            "orden": null,
+            "pagina": 38
+          }
+        ]
+      },
+      "line": "ABB SR2 · gabinete monobloc IP65"
+    },
+    {
+      "id": "sr2-srn10830k",
+      "family": "SR2",
+      "label": "ABB SR2 SRN10830K · 1000 × 800 × 300 (placa 760 × 960)",
+      "functional": {
+        "width": 760,
+        "height": 960,
+        "depth": 300
+      },
+      "externalBody": {
+        "width": 803,
+        "height": 1003,
+        "depth": 300
+      },
+      "plinthHeight": 0,
+      "overallHeightWithPlinth": 1003,
+      "functionalOffset": {
+        "x": 21.5,
+        "y": 21.5
+      },
+      "parts": [
+        "SRN10830K",
+        "PF1080"
+      ],
+      "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
+      "railOptions": [
+        {
+          "type": "GD4006",
+          "orderCode": "GD4006",
+          "length": 400,
+          "height": 35
+        },
+        {
+          "type": "GD6006",
+          "orderCode": "GD6006",
+          "length": 600,
+          "height": 35
+        },
+        {
+          "type": "GD8006",
+          "orderCode": "GD8006",
+          "length": 800,
+          "height": 35
+        }
+      ],
+      "mountingLayout": {
+        "status": "placa interna ciega PF1080; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad en Argentina no verificada",
+      "structure": {
+        "kind": "monobloc",
+        "frameBand": 0,
+        "doorLeaves": [
+          803
+        ],
+        "source": "ABB 1STC804013D0201 'General Catalogue Enclosures for Automation' (02.2011): SR2 págs. 2/4-2/10 (códigos), 9/6-9/7 (medidas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plate": {
+            "nombre": "chapa galvanizada",
+            "hex": "#b9bec2"
+          },
+          "fuente": "RAL 7035 (pág. 2/10 del catálogo SR2, pintura de retoque); hex aproximado; la placa galvanizada es un gris representativo, no medido"
+        },
+        "note": "Medida externa = nominal + 3 mm (pág. 9/6, columnas A y B); profundidad externa = nominal (no hay otro dato). Placa = (ancho-40) x (alto-40), coincide con la tabla de placas internas de la pág. 9/7. Puerta ciega incluida en el código.",
+        "status": "datos de catálogo ABB; dibujo esquemático",
+        "bom": [
+          {
+            "parte": "Gabinete con puerta ciega y placa",
+            "codigo": "SRN10830K",
+            "orden": null,
+            "pagina": 35
+          },
+          {
+            "parte": "Placa interna ciega",
+            "codigo": "PF1080",
+            "orden": null,
+            "pagina": 36
+          },
+          {
+            "parte": "Riel DIN con soportes (400/600/800 mm)",
+            "codigo": "GD4006 / GD6006 / GD8006",
+            "orden": null,
+            "pagina": 38
+          }
+        ]
+      },
+      "line": "ABB SR2 · gabinete monobloc IP65"
+    },
+    {
+      "id": "sr2-srn12630k",
+      "family": "SR2",
+      "label": "ABB SR2 SRN12630K · 1200 × 600 × 300 (placa 560 × 1160)",
+      "functional": {
+        "width": 560,
+        "height": 1160,
+        "depth": 300
+      },
+      "externalBody": {
+        "width": 603,
+        "height": 1203,
+        "depth": 300
+      },
+      "plinthHeight": 0,
+      "overallHeightWithPlinth": 1203,
+      "functionalOffset": {
+        "x": 21.5,
+        "y": 21.5
+      },
+      "parts": [
+        "SRN12630K",
+        "PF1260"
+      ],
+      "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
+      "railOptions": [
+        {
+          "type": "GD4006",
+          "orderCode": "GD4006",
+          "length": 400,
+          "height": 35
+        },
+        {
+          "type": "GD6006",
+          "orderCode": "GD6006",
+          "length": 600,
+          "height": 35
+        },
+        {
+          "type": "GD8006",
+          "orderCode": "GD8006",
+          "length": 800,
+          "height": 35
+        }
+      ],
+      "mountingLayout": {
+        "status": "placa interna ciega PF1260; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad en Argentina no verificada",
+      "structure": {
+        "kind": "monobloc",
+        "frameBand": 0,
+        "doorLeaves": [
+          603
+        ],
+        "source": "ABB 1STC804013D0201 'General Catalogue Enclosures for Automation' (02.2011): SR2 págs. 2/4-2/10 (códigos), 9/6-9/7 (medidas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plate": {
+            "nombre": "chapa galvanizada",
+            "hex": "#b9bec2"
+          },
+          "fuente": "RAL 7035 (pág. 2/10 del catálogo SR2, pintura de retoque); hex aproximado; la placa galvanizada es un gris representativo, no medido"
+        },
+        "note": "Medida externa = nominal + 3 mm (pág. 9/6, columnas A y B); profundidad externa = nominal (no hay otro dato). Placa = (ancho-40) x (alto-40), coincide con la tabla de placas internas de la pág. 9/7. Puerta ciega incluida en el código.",
+        "status": "datos de catálogo ABB; dibujo esquemático",
+        "bom": [
+          {
+            "parte": "Gabinete con puerta ciega y placa",
+            "codigo": "SRN12630K",
+            "orden": null,
+            "pagina": 35
+          },
+          {
+            "parte": "Placa interna ciega",
+            "codigo": "PF1260",
+            "orden": null,
+            "pagina": 36
+          },
+          {
+            "parte": "Riel DIN con soportes (400/600/800 mm)",
+            "codigo": "GD4006 / GD6006 / GD8006",
+            "orden": null,
+            "pagina": 38
+          }
+        ]
+      },
+      "line": "ABB SR2 · gabinete monobloc IP65"
+    },
+    {
+      "id": "sr2-srn12830k",
+      "family": "SR2",
+      "label": "ABB SR2 SRN12830K · 1200 × 800 × 300 (placa 760 × 1160)",
+      "functional": {
+        "width": 760,
+        "height": 1160,
+        "depth": 300
+      },
+      "externalBody": {
+        "width": 803,
+        "height": 1203,
+        "depth": 300
+      },
+      "plinthHeight": 0,
+      "overallHeightWithPlinth": 1203,
+      "functionalOffset": {
+        "x": 21.5,
+        "y": 21.5
+      },
+      "parts": [
+        "SRN12830K",
+        "PF1280"
+      ],
+      "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
+      "railOptions": [
+        {
+          "type": "GD4006",
+          "orderCode": "GD4006",
+          "length": 400,
+          "height": 35
+        },
+        {
+          "type": "GD6006",
+          "orderCode": "GD6006",
+          "length": 600,
+          "height": 35
+        },
+        {
+          "type": "GD8006",
+          "orderCode": "GD8006",
+          "length": 800,
+          "height": 35
+        }
+      ],
+      "mountingLayout": {
+        "status": "placa interna ciega PF1280; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad en Argentina no verificada",
+      "structure": {
+        "kind": "monobloc",
+        "frameBand": 0,
+        "doorLeaves": [
+          803
+        ],
+        "source": "ABB 1STC804013D0201 'General Catalogue Enclosures for Automation' (02.2011): SR2 págs. 2/4-2/10 (códigos), 9/6-9/7 (medidas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plate": {
+            "nombre": "chapa galvanizada",
+            "hex": "#b9bec2"
+          },
+          "fuente": "RAL 7035 (pág. 2/10 del catálogo SR2, pintura de retoque); hex aproximado; la placa galvanizada es un gris representativo, no medido"
+        },
+        "note": "Medida externa = nominal + 3 mm (pág. 9/6, columnas A y B); profundidad externa = nominal (no hay otro dato). Placa = (ancho-40) x (alto-40), coincide con la tabla de placas internas de la pág. 9/7. Puerta ciega incluida en el código.",
+        "status": "datos de catálogo ABB; dibujo esquemático",
+        "bom": [
+          {
+            "parte": "Gabinete con puerta ciega y placa",
+            "codigo": "SRN12830K",
+            "orden": null,
+            "pagina": 35
+          },
+          {
+            "parte": "Placa interna ciega",
+            "codigo": "PF1280",
+            "orden": null,
+            "pagina": 36
+          },
+          {
+            "parte": "Riel DIN con soportes (400/600/800 mm)",
+            "codigo": "GD4006 / GD6006 / GD8006",
+            "orden": null,
+            "pagina": 38
+          }
+        ]
+      },
+      "line": "ABB SR2 · gabinete monobloc IP65"
     }
   ],
   "deviceShells": [

@@ -7,5 +7,7 @@
   "railClearance": 25,
   "mainTagPrefix": "QS",
   "kitModuleHeightFromShell": true,
-  "fuente": "propuesta de Claude 2026-11-15; validar con un armador de tableros / ABB Argentina"
+  "fuente": "propuesta de Claude 2026-11-15; validar con un armador de tableros / ABB Argentina",
+  "minDepthForKitDevicesMm": 200,
+  "_ayuda_profundidad": "Propuesta de diseño (no dato de ABB): los gabinetes con menos profundidad no se usan si el tablero lleva equipos de kit (XT/OT)."
 }

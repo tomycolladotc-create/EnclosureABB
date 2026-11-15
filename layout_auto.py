@@ -59,6 +59,8 @@ def _try(project, catalog, enc, rules, pe_reserve):
     margin, row_gap, col_gap = rules["margin"], rules["rowGap"], rules["colGap"]
     usable_w, usable_h = fw - 2 * margin, fh - 2 * margin
     main, kit, rail_devs = _classify(project["devices"], catalog, rules)
+    if (main or kit) and enc["functional"]["depth"] < rules.get("minDepthForKitDevicesMm", 0):
+        return None
     placed, rails, cursor = {}, [], 0.0  # cursor: distancia desde arriba del área funcional (sin margen)
 
     def row_block(devs, heights, gap):
@@ -87,10 +89,12 @@ def _try(project, catalog, enc, rules, pe_reserve):
         if not row_block(devs, heights, col_gap):
             return None
     if rail_devs:
-        length = rules["railLength"]
-        if length > usable_w:
+        # Riel: el más largo de los que ofrece el gabinete (railOptions) que entra en el ancho útil.
+        options = [o for o in enc.get("railOptions", []) if o["length"] <= usable_w]
+        if not options:
             return None
-        template = copy.deepcopy(catalog["enclosures"][0]["mountingLayout"]["dinRails"][0])
+        template = copy.deepcopy(max(options, key=lambda o: o["length"]))
+        length = template["length"]
         rail_devs = sorted(rail_devs, key=lambda d: d.get("shell") or "")
         # filas de riel: misma carcasa pegada (para el peine), distinta carcasa con separación
         rows, cur, used = [], [], 0.0
@@ -142,9 +146,9 @@ def autolayout(project, catalog, rules=None):
         placed, rails = result
         new = copy.deepcopy(project)
         plinth = enc["plinthHeight"]
-        new["enclosure"] = {**new["enclosure"], "functional": copy.deepcopy(enc["functional"]), "externalBody": copy.deepcopy(enc["externalBody"]),
+        new["enclosure"] = {**new["enclosure"], "line": enc.get("line", new["enclosure"].get("line")), "functional": copy.deepcopy(enc["functional"]), "externalBody": copy.deepcopy(enc["externalBody"]),
                             "plinthHeight": plinth, "overallHeightWithPlinth": enc["externalBody"]["height"] + plinth,
-                            "functionalAreaOffset": {"x": 50, "y": plinth + 50},
+                            "id": enc["id"], "functionalAreaOffset": copy.deepcopy(enc.get("functionalOffset", {"x": 50, "y": plinth + 50})),
                             "mountingLayout": {**copy.deepcopy(enc["mountingLayout"]), "dinRails": rails},
                             "structuralComponentReferences": {"parts": enc["parts"]}, "sources": [enc["source"]]}
         for d in new["devices"]:
