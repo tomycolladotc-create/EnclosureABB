@@ -1,6 +1,6 @@
 # ESTADO — Topográficos de tableros ABB
 > Foto actual del proyecto. Se reescribe (no se acumula). El historial va en BITACORA.md.
-> Actualizado: 2026-11-15 19:40 · Claude
+> Actualizado: 2026-11-15 19:00 · Claude
 
 ## Objetivo
 PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tablero con dispositivos y envolvente ABB reales → editar en interfaz → exportar DXF (AutoCAD, 1:1 mm, bloques y capas), PNG, SVG, PDF.
@@ -39,3 +39,7 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 3. Manija y eje del OT400E04P. QF89 S251: CAD o reemplazo actual vendido en Argentina.
 4. Sacar textos fijos del TS4 en `generar_topografico.py` (notas de la lámina).
 5. Validar con ABB Argentina gabinete, rieles y kits; cerrar BOM.
+
+## Diseño de la interfaz (aprobado provisoriamente por el usuario; se ajustará con el uso)
+- Maqueta de 4 pantallas (Tableros, Importar, Editor, Exportar) en un lienzo de diseño de claude.ai: https://claude.ai/artifact/GJvAU9SANz5x9u69j9mra2 (la ve solo el usuario). No es código: el editor real (`web/index.html`) todavía no la sigue.
+- Orden previsto: 1) un proyecto por tablero + lista de proyectos, 2) separar la lámina GENERAL, 3) colocar equipos automáticamente en rieles, 4) llevar la maqueta al editor real.
