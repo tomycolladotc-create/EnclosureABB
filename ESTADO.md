@@ -10,6 +10,7 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 - Medidas de equipos fijas (no editables). Rieles DIN definidos por la envolvente elegida.
 - Solo ABB y solo lo que se vende en Argentina; si no está la variante exacta, la más común, y anotarlo.
 - Bloques desde CAD oficial ABB, con colores y marcado idénticos al equipo real (medido en fotos frontales ABB). No inventar datos: cada dato con fuente y estado.
+- **Normativa argentina (requisito del usuario)**: todo tablero debe cumplir lo vigente (AEA 90364, IEC 61439). Reglas en `datos/normativa_argentina.json` con fuente y estado (todas 'por-verificar' hasta confirmar con el texto oficial). Falta: `normativa.py` que las controle, catálogo de accesorios ABB (peines, bornes y barras PE/N, tapas) y aviso al exportar.
 - **Nada monopolar**: mínimo bipolar (1P+N cuenta como 2 polos). `catalogo_abb.json -> scope.minPoles`.
 - Diseño pensado de entrada para que los cambios futuros sean chicos. Usar modelos de IA livianos.
 

@@ -3,6 +3,11 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-15 19:20 · Claude
+- Hecho: requisito del usuario de normativa argentina. Creado `datos/normativa_argentina.json` (5 reglas con fuente, todas por-verificar). Sin código aún.
+- Siguiente (en orden): 1) `normativa.py` que controle las reglas; 2) catálogo de accesorios ABB (peines S200/S800, bornes/barras PE y N, tapas) con disponibilidad en Argentina; 3) avisos en editor y DXF; 4) pantalla Normativa en la maqueta.
+- Pedir al usuario el texto oficial (771.20, 771.19, IEC 61439) para pasar reglas a verificada.
+
 ## 2026-11-15 19:00 · Claude
 - Hecho: maqueta de la interfaz (4 pantallas) en el lienzo de diseño; aprobada provisoriamente por el usuario. Sin cambios de código.
 - Siguiente: un proyecto por tablero (app.py guarda siempre en datos/ts4_topografia.json) y lista de proyectos.
