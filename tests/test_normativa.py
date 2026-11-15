@@ -26,6 +26,17 @@ class Normativa(unittest.TestCase):
         messages = [f["message"] for f in check_project(project) if f["rule"] == "peines-entre-termomagneticas"]
         self.assertEqual(messages, ["QF1 y QF2 están juntos sin peine."])
 
+    def test_peine_que_no_alcanza(self):
+        d = dev("QF1", 100); d["marking"] = {"In": "80"}
+        project = {"devices": [d], "accessories": [{"type": "comb", "id": "abb-ps1-12", "corrienteA": 63, "devices": ["QF1"]}]}
+        messages = [f["message"] for f in check_project(project) if f["rule"] == "peine-corriente"]
+        self.assertEqual(len(messages), 1)
+        self.assertIn("barra de distribución", messages[0])
+
+    def test_peine_sin_corriente_pide_confirmar(self):
+        project = {"devices": [dev("QF1", 100)], "accessories": [{"type": "comb", "id": "x", "corrienteA": None, "devices": ["QF1"]}]}
+        self.assertTrue([f for f in check_project(project) if f["rule"] == "peine-corriente"])
+
     def test_todas_las_reglas_tienen_fuente_y_estado(self):
         for rule in load_rules():
             self.assertTrue(rule["source"] and rule["status"], rule["id"])

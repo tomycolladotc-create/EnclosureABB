@@ -2,20 +2,82 @@
   "_ayuda": "Reglas de normativa que el programa controla al armar un tablero. NADA se inventa: cada regla tiene fuente y estado. status: 'por-verificar' = tomada de un comentario técnico, falta confirmar con el texto oficial (AEA 90364 y IEC 61439 son pagas). Cuando el usuario confirme una regla con el texto oficial, pasar a 'verificada' y completar clause. check: nombre de la comprobación que implementa el código (ver normativa.py cuando exista).",
   "version": 1,
   "normas": [
-    {"id": "AEA-90364", "titulo": "Reglamentación para la Ejecución de Instalaciones Eléctricas en Inmuebles (AEA 90364), parte 7 punto 771.20 y parte 5 punto 552", "estado": "texto oficial no consultado"},
-    {"id": "IEC-61439", "titulo": "IRAM-IEC 61439 / IEC 61439: conjuntos de aparamenta de baja tensión", "estado": "texto oficial no consultado"},
-    {"id": "RES-169-2018", "titulo": "Resolución SC 169/2018: certificación de seguridad eléctrica de equipos de baja tensión (marca S)", "estado": "alcance: productos comercializados; no es una regla de dibujo"}
+    {
+      "id": "AEA-90364",
+      "titulo": "Reglamentación para la Ejecución de Instalaciones Eléctricas en Inmuebles (AEA 90364), parte 7 punto 771.20 y parte 5 punto 552",
+      "estado": "texto oficial no consultado"
+    },
+    {
+      "id": "IEC-61439",
+      "titulo": "IRAM-IEC 61439 / IEC 61439: conjuntos de aparamenta de baja tensión",
+      "estado": "texto oficial no consultado"
+    },
+    {
+      "id": "RES-169-2018",
+      "titulo": "Resolución SC 169/2018: certificación de seguridad eléctrica de equipos de baja tensión (marca S)",
+      "estado": "alcance: productos comercializados; no es una regla de dibujo"
+    }
   ],
   "rules": [
-    {"id": "pe-barra", "descripcion": "Todo tablero lleva una barra o bornera de puesta a tierra, identificada en verde-amarillo.", "check": "board_has_pe_bar", "severity": "error", "norma": "AEA-90364", "clause": null, "status": "por-verificar",
-     "source": "Farina, Tableros eléctricos parte 5 (editores-srl.com.ar/print/6396); APSE (editores-srl.com.ar, ac7_capo_recomendaciones)"},
-    {"id": "pe-un-conductor-por-borne", "descripcion": "Cada conductor de protección o de puesta a tierra va a su propio borne; no se juntan varios en uno solo.", "check": "pe_terminals_enough", "severity": "error", "norma": "AEA-90364", "clause": null, "status": "por-verificar",
-     "source": "APSE, recomendaciones de buenas prácticas (editores-srl.com.ar, ac7_capo_recomendaciones)"},
-    {"id": "bornes-con-barrera", "descripcion": "Los bornes con tensión están protegidos contra contacto directo por una barrera aislante transparente.", "check": "live_terminals_covered", "severity": "error", "norma": "AEA-90364", "clause": null, "status": "por-verificar",
-     "source": "Farina, Tableros eléctricos parte 5 (editores-srl.com.ar/print/6396)"},
-    {"id": "peines-entre-termomagneticas", "descripcion": "Las termomagnéticas contiguas de la misma serie se conectan con peine, no con puentes sueltos.", "check": "comb_between_adjacent", "severity": "aviso", "norma": null, "clause": null, "status": "por-verificar",
-     "source": "UNLP, Tableros eléctricos (unlp.edu.ar); práctica habitual, no se confirmó que sea obligación"},
-    {"id": "instrumentos-a-tierra", "descripcion": "Las masas de instrumentos, relés y medidores del tablero se conectan a la barra de tierra.", "check": "masses_to_pe", "severity": "aviso", "norma": "AEA-90364", "clause": null, "status": "por-verificar",
-     "source": "Farina, Tableros eléctricos parte 5 (editores-srl.com.ar/print/6396)"}
+    {
+      "id": "pe-barra",
+      "descripcion": "Todo tablero lleva una barra o bornera de puesta a tierra, identificada en verde-amarillo.",
+      "check": "board_has_pe_bar",
+      "severity": "error",
+      "norma": "AEA-90364",
+      "clause": null,
+      "status": "por-verificar",
+      "source": "Farina, Tableros eléctricos parte 5 (editores-srl.com.ar/print/6396); APSE (editores-srl.com.ar, ac7_capo_recomendaciones)"
+    },
+    {
+      "id": "pe-un-conductor-por-borne",
+      "descripcion": "Cada conductor de protección o de puesta a tierra va a su propio borne; no se juntan varios en uno solo.",
+      "check": "pe_terminals_enough",
+      "severity": "error",
+      "norma": "AEA-90364",
+      "clause": null,
+      "status": "por-verificar",
+      "source": "APSE, recomendaciones de buenas prácticas (editores-srl.com.ar, ac7_capo_recomendaciones)"
+    },
+    {
+      "id": "bornes-con-barrera",
+      "descripcion": "Los bornes con tensión están protegidos contra contacto directo por una barrera aislante transparente.",
+      "check": "live_terminals_covered",
+      "severity": "error",
+      "norma": "AEA-90364",
+      "clause": null,
+      "status": "por-verificar",
+      "source": "Farina, Tableros eléctricos parte 5 (editores-srl.com.ar/print/6396)"
+    },
+    {
+      "id": "peines-entre-termomagneticas",
+      "descripcion": "Las termomagnéticas contiguas de la misma serie se conectan con peine, no con puentes sueltos.",
+      "check": "comb_between_adjacent",
+      "severity": "aviso",
+      "norma": null,
+      "clause": null,
+      "status": "por-verificar",
+      "source": "UNLP, Tableros eléctricos (unlp.edu.ar); práctica habitual, no se confirmó que sea obligación"
+    },
+    {
+      "id": "instrumentos-a-tierra",
+      "descripcion": "Las masas de instrumentos, relés y medidores del tablero se conectan a la barra de tierra.",
+      "check": "masses_to_pe",
+      "severity": "aviso",
+      "norma": "AEA-90364",
+      "clause": null,
+      "status": "por-verificar",
+      "source": "Farina, Tableros eléctricos parte 5 (editores-srl.com.ar/print/6396)"
+    },
+    {
+      "id": "peine-corriente",
+      "descripcion": "El peine soporta la corriente de los equipos que conecta. Si no alcanza (corrientes elevadas, por ejemplo en tableros TS y auxiliares), se usa barra de distribución.",
+      "check": "comb_current_ok",
+      "severity": "error",
+      "norma": null,
+      "clause": null,
+      "status": "por-verificar",
+      "source": "Criterio de práctica indicado por el usuario (peines o barras de distribución según la corriente); corriente nominal del peine PS1/12 = 63 A según RS Online. Falta el criterio normativo exacto (factor de simultaneidad: tabla 55.2 de la AEA según Farina, ie349)."
+    }
   ]
 }

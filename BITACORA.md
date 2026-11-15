@@ -3,6 +3,10 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-15 20:25 · Claude
+- Pedido del usuario: en tableros de corriente elevada (TS, auxiliares) se usan barras de distribución o peines según la corriente. Agregada regla `peine-corriente` (error si In del equipo > corriente del peine) y categoría `distributionBars` vacía en el catálogo de accesorios.
+- Tarea sugerida para Codex: buscar barras/bloques de distribución usados en Argentina (ABB o equivalente) con corriente, paso y medidas.
+
 ## 2026-11-15 20:10 · Claude
 - Hecho: `normativa.py` ejecuta las reglas de `normativa_argentina.json` (PE, un borne por conductor, cubrebornes, peines entre equipos contiguos; masas a PE queda manual). Tests en `tests/test_normativa.py`. Política: accesorios genéricos de cualquier marca.
 - Ojo: 'un borne PE por circuito QF' es una simplificación declarada hasta confirmar con el texto oficial.

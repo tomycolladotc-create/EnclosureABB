@@ -60,11 +60,34 @@ def comb_between_adjacent(project, rule):
     return out
 
 
+def _in_amps(device):
+    try:
+        return float(str(device.get("marking", {}).get("In", "")).replace(",", "."))
+    except ValueError:
+        return None
+
+
+def comb_current_ok(project, rule):
+    """Compara la In de cada equipo del peine con la corriente del peine (sin factor de simultaneidad: criterio conservador)."""
+    by_tag = {d.get("tag"): d for d in project.get("devices", [])}
+    out = []
+    for comb in _acc(project, "comb"):
+        rating = comb.get("corrienteA")
+        if rating is None:
+            out.append(f"El peine {comb.get('id', '?')} no tiene corriente cargada: confirmar que alcanza.")
+            continue
+        for tag in comb.get("devices", []):
+            amps = _in_amps(by_tag.get(tag, {}))
+            if amps is not None and amps > rating:
+                out.append(f"{tag} ({amps:g} A) supera el peine {comb.get('id')} ({rating:g} A): usar barra de distribución.")
+    return out
+
+
 def masses_to_pe(project, rule):
     return ["Confirmar manualmente que las masas de instrumentos y relés van a la barra de tierra."]
 
 
-CHECKS = {f.__name__: f for f in (board_has_pe_bar, pe_terminals_enough, live_terminals_covered, comb_between_adjacent, masses_to_pe)}
+CHECKS = {f.__name__: f for f in (board_has_pe_bar, pe_terminals_enough, live_terminals_covered, comb_between_adjacent, comb_current_ok, masses_to_pe)}
 MANUAL = {"masses_to_pe"}  # no se pueden comprobar desde el dibujo
 
 

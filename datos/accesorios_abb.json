@@ -136,6 +136,8 @@
     "Bornes de neutro (azul) y barras de tierra y neutro para gabinete: solo se vio la serie DBTI de Entrelec en RS; falta ficha y estado en Argentina.",
     "Tapas ciegas y cubrebornes transparentes: no buscado todavía.",
     "CAD de peines y bornes: bajar de ABB/TE para dibujarlos en el frente.",
-    "Confirmar disponibilidad en Argentina de cada código (ABB o equivalente de otra marca)."
-  ]
+    "Confirmar disponibilidad en Argentina de cada código (ABB o equivalente de otra marca).",
+    "Barras o bloques de distribución para corrientes elevadas (tableros TS y auxiliares): buscar cuáles se usan en Argentina (ABB o equivalente) con su corriente nominal, paso y medidas. Hoy la lista está vacía y el control avisa cuando un peine no alcanza."
+  ],
+  "distributionBars": []
 }
