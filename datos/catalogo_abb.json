@@ -94,7 +94,11 @@
       ],
       "frontGeometry": "datos/frentes_cad.json",
       "appearance": "datos/apariencias_abb.json",
-      "appearanceStatus": "paleta vectorial contrastada con imagen de producto ABB; no es una textura CAD fotorealista"
+      "appearanceStatus": "paleta vectorial contrastada con imagen de producto ABB; no es una textura CAD fotorealista",
+      "match": {
+        "modelRegex": "^XT1[BCNSHL]\\b",
+        "poles": 4
+      }
     },
     {
       "id": "abb.tmax.xt2.4p.fixed.front",
@@ -112,7 +116,11 @@
       ],
       "frontGeometry": "datos/frentes_cad.json",
       "appearance": "datos/apariencias_abb.json",
-      "appearanceStatus": "paleta vectorial contrastada con imagen de producto ABB; no es una textura CAD fotorealista"
+      "appearanceStatus": "paleta vectorial contrastada con imagen de producto ABB; no es una textura CAD fotorealista",
+      "match": {
+        "modelRegex": "^XT2[NSHLV]\\b",
+        "poles": 4
+      }
     },
     {
       "id": "abb.s804n.4p.front",
@@ -128,7 +136,11 @@
       ],
       "frontGeometry": "datos/frentes_cad.json",
       "appearance": "datos/apariencias_abb.json",
-      "appearanceStatus": "paleta vectorial contrastada con imagen de producto ABB; no es una textura CAD fotorealista"
+      "appearanceStatus": "paleta vectorial contrastada con imagen de producto ABB; no es una textura CAD fotorealista",
+      "match": {
+        "modelRegex": "^S\\s?804N\\b",
+        "poles": 4
+      }
     },
     {
       "id": "abb.s200m.1p.front",
@@ -141,7 +153,11 @@
       "cadFiles": [
         "cad/abb/s201m/S201M_2D_9AKK106930A4856.dwg",
         "cad/abb/s201m/S200M_1P_3D_9AKK106930A4834.stp"
-      ]
+      ],
+      "match": {
+        "modelRegex": "^S\\s?201M\\b",
+        "poles": 1
+      }
     },
     {
       "id": "abb.ot400e04.4p.front",
@@ -158,7 +174,11 @@
       ],
       "frontGeometry": "datos/frentes_cad.json",
       "appearance": "datos/apariencias_abb.json",
-      "appearanceStatus": "paleta vectorial contrastada con imagen de producto ABB; no es una textura CAD fotorealista"
+      "appearanceStatus": "paleta vectorial contrastada con imagen de producto ABB; no es una textura CAD fotorealista",
+      "match": {
+        "modelRegex": "^OT400E04",
+        "poles": 4
+      }
     },
     {
       "id": "abb.s200m.1pn.front",
@@ -174,7 +194,35 @@
       ],
       "frontGeometry": "datos/frentes_cad.json",
       "appearance": "datos/apariencias_abb.json",
-      "appearanceStatus": "paleta vectorial contrastada con imagen de producto ABB; no es una textura CAD fotorealista"
+      "appearanceStatus": "paleta vectorial contrastada con imagen de producto ABB; no es una textura CAD fotorealista",
+      "match": {
+        "modelRegex": "^S\\s?201M\\b",
+        "poles": 2
+      }
+    }
+  ],
+  "importRules": {
+    "_ayuda": "Reglas del importador de PDF de ABB e-Design DOC. Son expresiones regulares; el código (importador.py) no conoce modelos ni textos fijos.",
+    "tagPattern": "-(QF\\d+|QS\\d+)\\b",
+    "upstreamContextChars": 40,
+    "upstreamPattern": "\\bDE\\s+[\\w .\\-]+?\\s-\\s*$",
+    "evidenceChars": 90,
+    "modelTerminators": [
+      "[234]x\\d+(?:,\\d+)?(?:\\+\\d+x\\d+(?:,\\d+)?)?\\+PE",
+      "\\s-WC\\d+",
+      "\\sSECCIONADOR"
+    ],
+    "polesPatterns": [
+      "\\b(\\d)x\\d+(?:,\\d+)?\\s*-\\s*\\d+(?:,\\d+)?\\s*kA",
+      "\\b\\d+\\s*A\\s*-\\s*(\\d)P\\b"
+    ]
+  },
+  "modelHints": [
+    {
+      "_ayuda": "Modelos sin carcasa CAD todavía: el editor sabe cómo montarlos aunque no tenga su bloque.",
+      "modelRegex": "^S\\s?251\\b",
+      "mounting": "din",
+      "note": "S251 Na: modelo ABB histórico, sin CAD localizado"
     }
   ]
 }

@@ -48,7 +48,8 @@ const clone=o=>JSON.parse(JSON.stringify(o));
 const shell=id=>catalog.deviceShells.find(x=>x.id===id);
 function fixedDimensions(){for(const d of project.devices){const s=shell(d.shell);if(s){d.w=s.width;d.h=s.height}}}
 const rails=()=>project.enclosure.mountingLayout?.dinRails||[];
-const isDin=d=>shell(d.shell)?.mounting==='din'||/^S\s*251/i.test(d.model||'');
+// Montaje en riel: lo dice la carcasa del catálogo, el importador (d.mounting) o catalog.modelHints para modelos sin CAD.
+const isDin=d=>shell(d.shell)?.mounting==='din'||d.mounting==='din'||(catalog.modelHints||[]).some(h=>h.mounting==='din'&&new RegExp(h.modelRegex,'i').test(d.model||''));
 function alignDin(d){const rail=rails()[0];if(!rail||!isDin(d))return;d.y=rail.y-d.h/2;d.x=Math.max(rail.x,Math.min(rail.x+rail.length-d.w,d.x))}
 function frontDefs(){
  return `<defs>${Object.entries(fronts.items).map(([id,front],i)=>{

@@ -1,0 +1,207 @@
+TS4-PORT 11-12-13-14
+DE TGBT - -QF7 T4S 320 PR221DS-LS/I 320A
+-WC6 - 3x185+1x95+PE95 mm� Cu PVC - L = 39 m
+P. Max.: 159,51 kW (289,3 A) Presencia de Tensi�n
+RST
+N
+(x3)
+(x3)
+Fusible
+tabaquera
+1 A
+Testigo
+de fase
+220 Vca
+-QS1
+OT400E04
+SECCIONADOR BAJO CARGA
+400 A - 4P
+RSTN
+BARRA DE DISTRIBUCI�N B15  -  U = 374,5 V  -  Ik m�x = 19,8 kA
+Uso
+Circuito
+Fase
+Potencia (kW)
+Corriente (A)
+Destino
+Int. Marca
+I Nom - Icc
+Modelo Cable
+Secci�n (Cu)
+RSTN
+-QF81
+S804N-C324x10+PE10 mm� Cu
+TUE
+TS-4.1
+RSTN
+17,64
+32,0
+Bajada 32A
+ABB
+4x32 - 36kA
+IRAM 2178 PVC
+Unip.
+4x10+PE10 mm�
+RSTN
+-QF82
+XT1C 160
+TMD 80-8003x25+1x16+PE16 mm� Cu
+OCE
+TS-4.2
+RSTN
+34,74
+63,0
+Bajada 63A
+ABB
+4x80 - 25kA
+IRAM 2178 PVC
+Unip.
+3x25+1x16+PE16 mm�
+RSTN
+-QF83
+XT1C 160
+TMD 80-8003x25+1x16+PE16 mm� Cu
+OCE
+TS-4.3
+RSTN
+34,74
+63,0
+Bajada 63A
+ABB
+4x80 - 25kA
+IRAM 2178 PVC
+Unip.
+3x25+1x16+PE16 mm�
+RSTN
+-QF84
+XT1C 160
+TMD 80-8003x25+1x16+PE16 mm� Cu
+OCE
+TS-4.4
+RSTN
+34,74
+63,0
+Bajada 63A
+ABB
+4x80 - 25kA
+IRAM 2178 PVC
+Unip.
+3x25+1x16+PE16 mm�
+RSTN
+-QF85
+S804N-C324x10+PE10 mm� Cu
+TUE
+TS-4.8
+RSTN
+17,64
+32,0
+Bajada 32A
+ABB
+4x32 - 36kA
+IRAM 2178 PVC
+Unip.
+4x10+PE10 mm�
+RSTN
+-QF86
+XT1C 160
+TMD 80-8003x25+1x16+PE16 mm� Cu
+OCE
+TS-4.9
+RSTN
+34,74
+63,0
+Bajada 63A
+ABB
+4x80 - 25kA
+IRAM 2178 PVC
+Unip.
+3x25+1x16+PE16 mm�
+RSTN
+-QF87
+XT1C 160
+TMD 80-8003x25+1x16+PE16 mm� Cu
+OCE
+TS-4.10
+RSTN
+34,74
+63,0
+Bajada 63A
+ABB
+4x80 - 25kA
+IRAM 2178 PVC
+Unip.
+3x25+1x16+PE16 mm�
+RSTN
+-QF88
+XT2N 160
+TMG 80-2403x25+1x16+PE16 mm� Cu
+OCE
+TS-4.11
+RSTN
+34,74
+63,0
+Bajada 63A
+ABB
+4x80 - 36kA
+IRAM 2178 PVC
+Unip.
+3x25+1x16+PE16 mm�
+RN
+-QF89
+S 251 Na C
+102x2,5+PE2,5 mm� Cu
+IUG
+TSI-6
+R
+0,97
+5,4
+Led high bay 200W
+ABB
+2x10 - 6kA
+IRAM 2178 PVC
+Unip.
+2x2,5+PE2,5 mm�
+TN
+-QF90
+S201M-C10
+NA2x4+PE4 mm� Cu
+IUG
+TSI-7
+T
+0,97
+5,4
+Led high bay 200W
+ABB
+2x10 - 10kA
+IRAM 2178 PVC
+Unip. 2x4+PE4 mm�
+RSTN
+-QF163
+XT1C 160
+TMD 80-8003x35+1x25+PE16 mm� Cu
+ALIM
+TSMAQ2
+RSTN
+43,24
+78,6
+Alimentaci�n tablero TSMAQ2
+ABB
+4x80 - 25kA
+IRAM 2178 PVC
+Unip.
+3x35+1x25+PE16 mm�
+Bornera
+colectora
+PAT
+NOTAS:
+1. Conductores de cobre unipolares con aislaci�n y vaina, IRAM 2178. I Nom - Icc: polos x corriente nominal - poder de corte del interruptor.
+2. Uso: IUG/TUG iluminaci�n/tomas de uso general - IUE/TUE de uso especial - OCE otros circuitos espec�ficos - ACU alimentaci�n de carga �nica - ALIM alimentaci�n a tablero.
+DOC N�: REV:SECTOR DE OBRA
+NOMBRE ASESOR:CONTENIDO:
+Rev Descripci�n Proy Revis Apr Fecha
+TS4-PORT 11-12-13-14
+UNIFILAR
+PLANO
+0BAF-E-EL-PL-104OT1 - PABELLON 6
+UNIFILAR
+PROYECTO E

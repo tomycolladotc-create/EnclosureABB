@@ -3,12 +3,12 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
 import json
-import re
 import logging
 import os
 
 from pypdf import PdfReader
 from cad_export import build_dxf
+from importador import detect_devices
 
 ROOT = Path(__file__).resolve().parent
 PROJECT = ROOT / "datos" / "ts4_topografia.json"
@@ -18,39 +18,6 @@ APPEARANCES = ROOT / "datos" / "apariencias_abb.json"
 WEB = ROOT / "web" / "index.html"
 MAX_PDF = 30 * 1024 * 1024
 logging.getLogger("pypdf").setLevel(logging.ERROR)
-
-
-def detect_devices(text, catalog):
-    """Extrae etiquetas y propone familias; conserva el fragmento original para revisar."""
-    shells = {item["id"]: item for item in catalog["deviceShells"]}
-    matches = list(re.finditer(r"-(QF\d+|QS\d+)\b", text))
-    found = []
-    for index, match in enumerate(matches):
-        context = text[max(0, match.start() - 35):match.start()].upper()
-        upstream = "DE TGBT" in context
-        raw = text[match.end(): min(match.end() + 90, matches[index + 1].start() if index + 1 < len(matches) else len(text))]
-        snippet = " ".join(raw.split())[:90]
-        upper = snippet.upper()
-        shell_id = None
-        if "XT1" in upper:
-            shell_id = "abb.tmax.xt1.4p.fixed.front"
-        elif "XT2" in upper:
-            shell_id = "abb.tmax.xt2.4p.fixed.front"
-        elif "S804N" in upper:
-            shell_id = "abb.s804n.4p.front"
-        elif "S201M" in upper:
-            shell_id = "abb.s200m.1pn.front" if "NA" in upper or "1P+N" in upper else "abb.s200m.1p.front"
-        elif "OT400" in upper:
-            shell_id = "abb.ot400e04.4p.front"
-        item = shells.get(shell_id, {})
-        found.append({
-            "tag": match.group(1), "evidence": snippet, "shell": shell_id,
-            "model": snippet.split("3x")[0].split("4x")[0][:40].strip(),
-            "w": item.get("width", 80), "h": item.get("height", 100),
-            "status": "alimentador externo; no pertenece al tablero" if upstream else ("detectado; revisar modelo y polos" if shell_id else "sin familia identificada"),
-            "upstream": upstream
-        })
-    return found
 
 
 class Handler(BaseHTTPRequestHandler):

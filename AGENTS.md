@@ -1,8 +1,19 @@
 # Instrucciones para agentes (Codex, Claude, etc.)
 
-1. Antes de empezar: `git pull` y leer **ESTADO.md** completo.
-2. Tomar una tarea de "Pendiente" en ESTADO.md, anotar `[Codex]` o `[Claude]` al lado y hacer commit+push de ese cambio ANTES de trabajar (así el otro agente no la toma).
-3. Respetar las "Reglas del usuario" de ESTADO.md (nada hardcodeado, catálogos en JSON, medidas de equipos fijas, solo equipos ABB vendidos en Argentina, no inventar datos).
-4. Al terminar: actualizar "Hecho" / "Pendiente" en ESTADO.md, commit con mensaje claro y push.
-5. No subir archivos generados ni pesados (ver .gitignore): salidas PNG/PDF/DXF de prueba, ZIPs. Los CAD de ABB van en `cad/` solo si pesan poco; si no, se registran en el inventario con su fuente.
-6. Comunicarse en español.
+**Al empezar** (para ponerse al día gastando poco):
+1. `git pull`
+2. Leer `ESTADO.md` (foto actual) y **solo las 3 primeras entradas** de `BITACORA.md`. No leer más archivos hasta saber qué tarea vas a tomar.
+3. Anotarte en un pendiente de ESTADO.md (`[Codex]` / `[Claude]`), commit + push **antes** de trabajar, así el otro no la toma.
+
+**Mientras trabajás**
+- Respetar las "Reglas del usuario" de ESTADO.md. Lo específico va en `datos/*.json`, no en el código.
+- No tocar archivos que el otro agente tenga anotados.
+- Antes de subir: `python -m unittest discover tests` tiene que pasar.
+
+**Al terminar**
+1. Agregar una entrada **arriba** en `BITACORA.md` (máx. 6 líneas: Hecho / Archivos / Ojo / Siguiente).
+2. Reescribir `ESTADO.md` si cambió la foto (no acumular historial ahí).
+3. Commit con mensaje claro + push.
+
+No subir: salidas generadas (`salida/`), ZIPs, capturas de prueba. Los CAD de ABB sí van, en `cad/abb/<familia>/`, registrados en `datos/cad_argentina.json`.
+Idioma: español.
