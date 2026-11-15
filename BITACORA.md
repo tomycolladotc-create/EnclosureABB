@@ -3,6 +3,11 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-15 20:50 · Claude
+- Hecho: catálogo con `distributionBlocks` (ABB BRT125A, Steck SDM9904/9907, Schneider Distribloc 125/160 A) y familias de peine PS2/PS4; todo por-confirmar. El aviso de `peine-corriente` ahora manda al bloque de distribución.
+- Layout: el peine no ocupa ancho extra; el bloque de distribución sí (módulos DIN a confirmar con ficha). Pendiente: fichas y medidas.
+- Tarea para Codex: fichas de BRT125A, SDM9904/9907 y Distribloc (corriente, módulos, medidas) y disponibilidad en Argentina.
+
 ## 2026-11-15 20:25 · Claude
 - Pedido del usuario: en tableros de corriente elevada (TS, auxiliares) se usan barras de distribución o peines según la corriente. Agregada regla `peine-corriente` (error si In del equipo > corriente del peine) y categoría `distributionBars` vacía en el catálogo de accesorios.
 - Tarea sugerida para Codex: buscar barras/bloques de distribución usados en Argentina (ABB o equivalente) con corriente, paso y medidas.

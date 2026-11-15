@@ -89,6 +89,32 @@
       "source": "RS Online (pt.rs-online.com/web/p/peines-de-conexion/5391648)",
       "status": "se corta a medida; faltan datos de corriente",
       "marca": "ABB"
+    },
+    {
+      "id": "abb-ps2",
+      "marca": "ABB",
+      "familia": "PS2",
+      "orderCode": null,
+      "fases": 2,
+      "compatibleCon": [
+        "S200"
+      ],
+      "availability": "por-confirmar",
+      "source": "adjditec.com (PS2/18/16BP, PS2/58/16SP)",
+      "status": "existe la familia; faltan códigos propios, paso y corriente"
+    },
+    {
+      "id": "abb-ps4",
+      "marca": "ABB",
+      "familia": "PS4",
+      "orderCode": null,
+      "fases": 4,
+      "compatibleCon": [
+        "S200"
+      ],
+      "availability": "por-confirmar",
+      "source": "adjditec.com (PS4/60/16SP); RS Online lista PS4 17,5 mm",
+      "status": "existe la familia; faltan códigos propios y corriente"
     }
   ],
   "earthTerminals": [
@@ -137,7 +163,90 @@
     "Tapas ciegas y cubrebornes transparentes: no buscado todavía.",
     "CAD de peines y bornes: bajar de ABB/TE para dibujarlos en el frente.",
     "Confirmar disponibilidad en Argentina de cada código (ABB o equivalente de otra marca).",
-    "Barras o bloques de distribución para corrientes elevadas (tableros TS y auxiliares): buscar cuáles se usan en Argentina (ABB o equivalente) con su corriente nominal, paso y medidas. Hoy la lista está vacía y el control avisa cuando un peine no alcanza."
+    "Fichas de los bloques de distribución (corriente, módulos DIN y medidas) y cuáles hay en Argentina: ABB BRT125A, Steck SDM9904/SDM9907, Schneider Distribloc."
   ],
-  "distributionBars": []
+  "distributionBars": [],
+  "distributionBlocks": [
+    {
+      "id": "abb-brt125a",
+      "marca": "ABB",
+      "orderCode": "1SNA179535R2300",
+      "tipo": "BRT125A",
+      "polos": 4,
+      "salidas": "4 x 12 conexiones",
+      "corrienteA": 125,
+      "pasoMm": 128,
+      "riel": [
+        "TH35-7.5",
+        "TH35-15"
+      ],
+      "availability": "por-confirmar",
+      "source": "automa.net (1SNA179535R2300): BRT125A, bloque de distribución, 4 polos, 125 A",
+      "status": "datos de distribuidor; faltan medidas de frente"
+    },
+    {
+      "id": "steck-sdm9904",
+      "marca": "Steck",
+      "orderCode": "SDM9904",
+      "polos": [
+        2,
+        4
+      ],
+      "corrienteA": null,
+      "modulosDin": [
+        4,
+        6,
+        8
+      ],
+      "riel": [
+        "NS35"
+      ],
+      "availability": "por-confirmar",
+      "source": "Ingeniería Eléctrica (editores-srl.com.ar, ie333_steck_bloques.pdf): referencias SDM9904 y SDM9907, 100 A y 125 A, 4/6/8 módulos DIN, 2 y 4 polos",
+      "status": "la fuente no empareja cada referencia con su corriente y módulos: falta la ficha"
+    },
+    {
+      "id": "steck-sdm9907",
+      "marca": "Steck",
+      "orderCode": "SDM9907",
+      "polos": [
+        2,
+        4
+      ],
+      "corrienteA": null,
+      "modulosDin": [
+        4,
+        6,
+        8
+      ],
+      "riel": [
+        "NS35"
+      ],
+      "availability": "por-confirmar",
+      "source": "idem steck-sdm9904",
+      "status": "idem"
+    },
+    {
+      "id": "schneider-distribloc-125",
+      "marca": "Schneider Electric",
+      "orderCode": "04045",
+      "tipo": "Distribloc 125 A",
+      "polos": 4,
+      "corrienteA": 125,
+      "availability": "por-confirmar",
+      "source": "Catálogo Schneider (storage.electrika.com, página 524): bloque de distribución 125 A ref. 04045; 160 A ref. 04046",
+      "status": "catálogo general, no se confirmó Argentina"
+    },
+    {
+      "id": "schneider-distribloc-160",
+      "marca": "Schneider Electric",
+      "orderCode": "04046",
+      "tipo": "Distribloc 160 A",
+      "polos": 4,
+      "corrienteA": 160,
+      "availability": "por-confirmar",
+      "source": "idem schneider-distribloc-125",
+      "status": "idem"
+    }
+  ]
 }

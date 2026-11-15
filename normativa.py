@@ -79,7 +79,7 @@ def comb_current_ok(project, rule):
         for tag in comb.get("devices", []):
             amps = _in_amps(by_tag.get(tag, {}))
             if amps is not None and amps > rating:
-                out.append(f"{tag} ({amps:g} A) supera el peine {comb.get('id')} ({rating:g} A): usar barra de distribución.")
+                out.append(f"{tag} ({amps:g} A) supera el peine {comb.get('id')} ({rating:g} A): usar bloque o barra de distribución (catálogo: distributionBlocks, desde esa corriente).")
     return out
 
 
