@@ -3,6 +3,11 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-15 20:10 · Claude
+- Hecho: `normativa.py` ejecuta las reglas de `normativa_argentina.json` (PE, un borne por conductor, cubrebornes, peines entre equipos contiguos; masas a PE queda manual). Tests en `tests/test_normativa.py`. Política: accesorios genéricos de cualquier marca.
+- Ojo: 'un borne PE por circuito QF' es una simplificación declarada hasta confirmar con el texto oficial.
+- Siguiente [Claude]: `accessories` en el proyecto y en el editor (agregar barra PE, peines, cubrebornes), avisos en pantalla y DXF.
+
 ## 2026-11-15 19:50 · Claude
 - Hecho: `datos/accesorios_abb.json` (peines PS1/PS3 de ABB paso 17,5; bornes de tierra Entrelec M4/6.P y M6/8.P) con fuente y estado; lista de pendientes dentro del archivo.
 - Hallazgos: ABB Argentina certifica 'Peines de conexión PSx' (confirma que existen allá, no qué códigos). La línea de borneras DIN de ABB (Entrelec) ahora es de TE Connectivity: avisar al usuario/verificar con ABB Argentina. Para S800 no apareció peine de fase.
