@@ -27,7 +27,7 @@ def build_dxf(project, catalog, fronts, appearances):
     layers = {
         "ABB_ENVOLVENTE": 7, "ABB_AREA_FUNCIONAL": 8,
         "ABB_RIEL_DIN_PROPUESTO": 4, "ABB_CAD_COLORES": 7, "ABB_CAD_FRENTE": 7,
-        "ABB_SIN_CAD": 2, "ABB_ETIQUETAS": 3, "ABB_NOTAS": 1, "ABB_MARCADO": 7, "ABB_ACCESORIOS": 3,
+        "ABB_SIN_CAD": 2, "ABB_ETIQUETAS": 3, "ABB_NOTAS": 1, "ABB_MARCADO": 7, "ABB_ACCESORIOS": 3, "ABB_ESTRUCTURA": 8, "ABB_PUERTAS": 9, "ABB_CAJETIN": 7,
     }
     for name, color in layers.items():
         doc.layers.new(name, dxfattribs={"color": color})
@@ -46,6 +46,19 @@ def build_dxf(project, catalog, fronts, appearances):
     fy = cabinet["functionalAreaOffset"]["y"]
     rect(0, plinth, body["width"], body["height"], "ABB_ENVOLVENTE")
     rect(0, 0, body["width"], plinth, "ABB_ENVOLVENTE")
+    # Estructura real (catalogo_abb.json -> enclosures[].structure): banda de montantes/travesaños y hojas de puerta.
+    spec = next((e for e in catalog["enclosures"] if e["functional"]["height"] == cabinet["functional"]["height"]
+                 and e["functional"]["width"] == cabinet["functional"]["width"]), None)
+    structure = (spec or {}).get("structure")
+    if structure:
+        band = structure["frameBand"]
+        space.add_lwpolyline([(band, plinth + band), (body["width"] - band, plinth + band), (body["width"] - band, plinth + body["height"] - band),
+                              (band, plinth + body["height"] - band)], close=True, dxfattribs={"layer": "ABB_ESTRUCTURA"})
+        left = 0
+        for leaf in structure["doorLeaves"]:
+            space.add_lwpolyline([(left + 3, plinth + 3), (left + leaf - 3, plinth + 3), (left + leaf - 3, plinth + body["height"] - 3),
+                                  (left + 3, plinth + body["height"] - 3)], close=True, dxfattribs={"layer": "ABB_PUERTAS", "linetype": "DASHED"})
+            left += leaf
     area = cabinet["functional"]
     rect(fx, fy, area["width"], area["height"], "ABB_AREA_FUNCIONAL")
     for rail in cabinet.get("mountingLayout", {}).get("dinRails", []):
@@ -156,6 +169,14 @@ def build_dxf(project, catalog, fronts, appearances):
         tag = "ERROR" if finding["severity"] == "error" else "AVISO"
         note = f"NORMATIVA {tag}: {finding['message']}" + ("" if finding["ruleStatus"] == "verificada" else " (regla por verificar)")
         space.add_text(note.encode("ascii", "replace").decode("ascii"), dxfattribs={"height": 8, "layer": "ABB_NOTAS", "insert": (35, 60 + 14 * n)})
+    # Cajetín debajo del tablero: lista de partes del gabinete con códigos ABB y página del catálogo.
+    if structure:
+        top = -60
+        space.add_text("LISTA DE PARTES DEL GABINETE (" + spec["label"] + ")", dxfattribs={"height": 14, "layer": "ABB_CAJETIN", "insert": (0, top)})
+        for n, part in enumerate(structure["bom"]):
+            line = f"{part['parte']}: {part['codigo']}" + (f" ({part['orden']})" if part.get("orden") else "") + f" - cat. pag. {part['pagina']}"
+            space.add_text(line.encode("ascii", "replace").decode("ascii"), dxfattribs={"height": 10, "layer": "ABB_CAJETIN", "insert": (0, top - 24 - 16 * n)})
+        space.add_text(("FUENTE: " + structure["source"]).encode("ascii", "replace").decode("ascii"), dxfattribs={"height": 7, "layer": "ABB_CAJETIN", "insert": (0, top - 40 - 16 * len(structure["bom"]))})
     space.add_text(f"{project.get('project', 'TABLERO')} - VISTA 2D FRONTAL - GEOMETRIA ABB DONDE HAY CAD".encode("ascii", "replace").decode("ascii"), dxfattribs={"height": 17, "layer": "ABB_NOTAS", "insert": (35, plinth + body["height"] - 35)})
     space.add_text("GABINETE Y RIEL: CONFIGURACION PRELIMINAR; VALIDAR CON ABB ARGENTINA", dxfattribs={"height": 10, "layer": "ABB_NOTAS", "insert": (35, 35)})
     stream = StringIO()

@@ -3,6 +3,12 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-15 00:30 · Claude
+- Hecho: estructura real del gabinete con datos del catálogo técnico ABB `1STC803009D0103` (descargado a la PC del usuario con el navegador y leído desde el repo): `enclosures[].structure` en `catalogo_abb.json` (banda de 50 mm = externo - funcional, hojas de puerta 550+550, lista de partes con código ABB y página). El editor y el DXF dibujan marco, hojas de puerta (retiradas, de trazos), zócalo y la lista de partes en un cajetín (capas ABB_ESTRUCTURA, ABB_PUERTAS, ABB_CAJETIN). Tests: 41 OK.
+- Conflicto sin resolver: montantes de 2200 = PUPM2100 (págs. 20 y 23) o PUPM2001 (pág. 24). Corregido typo PFCM0500 -> PCFM0500 en `parts`.
+- Sigue esquemático: no hay CAD de las piezas (montantes, manijas, bisagras); manija de palanca PHLS0013 sin posición. El catálogo trae páginas de medidas generales (págs. 129-136) en dibujo, aún sin interpretar.
+- Pendiente: kits de montaje de XT (no están en este catálogo; son del catálogo de tableros modulares), STEP de estructura (1STD...), peines y barras en el layout.
+
 ## 2026-11-15 23:55 · Claude
 - S251 resuelto como hipótesis: 'S 251 Na C 10' (QF79, QF80, QF89) se importa con la carcasa del S201 NA (35 x 88 x 69 mm, ficha ABB vía RS) en la serie `s251-na` con `verified: false`. El estado del equipo dice 'carcasa compartida sin confirmar'. Falta confirmar con ABB Argentina; el marcado impreso de esa designación no está validado.
 - Pendiente sin CAD: S293 (S290), SN201L, XT1 3P, XT3S 4P. Detalle en `datos/carcasas_pendientes.json`.
