@@ -25,8 +25,8 @@ for pdf in sorted((ROOT / "tests" / "unifilares").glob("*.pdf")):
     text = "\n".join(p.extract_text() or "" for p in PdfReader(pdf).pages)
     board = pdf.stem.split("Unifilares-")[-1]
     for d in detect_devices(text, catalog):
-        if d["upstream"]:
-            continue
+        if d["upstream"] or d["status"].startswith("monopolar"):
+            continue  # alimentador o fuera de alcance (el usuario no trabaja con monopolares)
         total += 1
         if d["shell"]:
             covered += 1

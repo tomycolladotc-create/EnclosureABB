@@ -20,7 +20,7 @@ input,select{width:100%;border:1px solid #ccd7e2;border-radius:6px;padding:7px;m
 <aside>
  <section><h2>Proyecto y envolvente</h2><label>Gabinete ABB<select id="enclosure"></select></label><div id="enclosureInfo" class="info" style="margin-top:9px"></div></section>
  <section class="section"><h2>Importar unifilar DOC</h2><input id="pdf" type="file" accept="application/pdf"><p class="hint">Se extraen etiquetas y familias del texto del PDF. Revisá cada resultado antes de agregarlo.</p><div id="detected" class="scroller"></div></section>
- <section class="section"><h2>Agregar dispositivo</h2><label>Carcasa ABB<select id="shell"></select></label><label>Polos (solo carcasas por polo)<input id="newPoles" type="number" min="1" max="4" value="1"></label><label>Etiqueta<input id="newTag" placeholder="QF91"></label><label>Modelo<input id="newModel" placeholder="Referencia del dispositivo"></label><button id="add">Agregar al plano</button></section>
+ <section class="section"><h2>Agregar dispositivo</h2><label>Carcasa ABB<select id="shell"></select></label><label>Polos (solo carcasas por polo)<input id="newPoles" type="number" min="2" max="4" value="2"></label><label>Etiqueta<input id="newTag" placeholder="QF91"></label><label>Modelo<input id="newModel" placeholder="Referencia del dispositivo"></label><button id="add">Agregar al plano</button></section>
  <section class="section"><h2>Proyecto</h2><div class="row"><button id="save">Guardar</button><button id="undo" class="secondary">Deshacer</button></div><div class="row" style="margin-top:7px"><button id="openJson" class="secondary">Abrir JSON</button><button id="exportJson" class="secondary">Descargar JSON</button></div><input id="jsonFile" type="file" accept=".json,application/json" hidden></section>
 </aside>
 <div class="drawing">
@@ -65,14 +65,22 @@ function frontSvg(d,x,y){
  if(i<0)return `<g><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#fff3dd" stroke="#b57918" stroke-width="2" stroke-dasharray="4 3"/><text x="${x+w/2}" y="${y+h/2}" text-anchor="middle" font-size="8" fill="#7c4c05">SIN CAD</text></g>`;
  const s=shell(d.shell),tiles=s?.poleModule&&d.poles?d.poles:1,pw=w/tiles;
  let out='';for(let t=0;t<tiles;t++)out+=`<svg x="${x+t*pw}" y="${y}" width="${pw}" height="${h}" viewBox="0 0 1 1" preserveAspectRatio="none" overflow="hidden"><use href="#abb-front-${i}"/></svg>`;
- return out+inscriptionSvg(d,x,y);
+ return out+tieBarSvg(d,x,y,tiles)+markingSvg(d,x,y);
 }
-// Inscripción grabada: el modelo leído del plano, en la altura/color de apariencias_abb.json (misma regla que cad_export.inscription_height).
-function inscriptionSvg(d,x,y){
- const spot=appearances.items[d.shell]?.inscription,text=(d.model||'').slice(0,24);
- if(!text||!spot?.enabled)return ''; // apagada hasta verificar la posición real (apariencias_abb.json)const size=Math.min(d.h*.07,d.w*.9/Math.max(text.length,1)/.8);
- return `<text x="${x+d.w/2}" y="${y+d.h*(1-spot.y)}" text-anchor="middle" dominant-baseline="middle" fill="${spot.color}" font-size="${size.toFixed(2)}" font-family="Arial" style="pointer-events:none">${esc(text)}</text>`;
+// Marcado impreso del equipo real (apariencias_abb.json -> marking, en mm). Misma lógica que marcado.resolve (Python):
+// si falta un dato del plano, ese texto no se dibuja. h = alto de mayúsculas → font-size = h/0.716 (Arial).
+function whenOk(rule,poles){if(!rule)return true;const m=/^poles\s*(>=|<=|==|>|<)\s*(\d+)$/.exec(rule.trim());if(!m||poles==null)return false;const v=+m[2];return {'>=':poles>=v,'<=':poles<=v,'==':poles==v,'>':poles>v,'<':poles<v}[m[1]]}
+function markingSvg(d,x,y){
+ const mk=appearances.items[d.shell]?.marking,f=d.marking||{};if(!mk)return '';
+ return mk.items.map(it=>{
+  if(!whenOk(it.when,d.poles))return '';const names=[...it.text.matchAll(/\{(\w+)\}/g)].map(m=>m[1]);if(names.some(n=>f[n]==null))return '';
+  const text=it.text.replace(/\{(\w+)\}/g,(_,n)=>f[n]),sy=y+d.h-it.y,fs=(it.h/.716).toFixed(3);
+  const box=it.box?`<rect x="${x+it.box[0]}" y="${y+d.h-it.box[3]}" width="${it.box[2]-it.box[0]}" height="${it.box[3]-it.box[1]}" style="fill:none;stroke:${it.color};stroke-width:0.12;pointer-events:none"/>`:''; // style en línea: si no, lo pisa el CSS de .device rect
+  const fit=it.w?` textLength="${it.w}" lengthAdjust="spacingAndGlyphs"`:'';
+  return box+`<text x="${x+it.x}" y="${sy}" dominant-baseline="central" text-anchor="${it.align==='center'?'middle':'start'}" fill="${it.color}" font-size="${fs}" font-family="Arial" font-weight="${it.bold?'bold':'normal'}"${fit} style="pointer-events:none">${esc(text)}</text>`;
+ }).join('');
 }
+function tieBarSvg(d,x,y,tiles){const b=appearances.items[d.shell]?.tieBar;if(!b||tiles<(b.minPoles||2))return '';return `<rect x="${x+b.x0}" y="${y+d.h-b.y1}" width="${d.w-b.x0-b.x1End}" height="${b.y1-b.y0}" style="fill:${b.color};stroke:${appearances.items[d.shell].lineColor};stroke-width:0.12;pointer-events:none"/>`}
 function notice(s){$('message').textContent=s}
 function snapshot(){history.push(clone(project));if(history.length>40)history.shift();$('undo').disabled=false}
 function dimensions(){const e=project.enclosure;return {w:e.externalBody.width,h:e.overallHeightWithPlinth,fx:e.functionalAreaOffset.x,fy:e.functionalAreaOffset.y}}
@@ -116,7 +124,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
  $('enclosure').value=project.enclosure.functional.height===1800?'spep185-1000-1800-500':'spep185-1000-2100-500';const e=catalog.enclosures.find(x=>x.id===$('enclosure').value);project.enclosure.mountingLayout=clone(e.mountingLayout);project.devices.forEach(alignDin);$('enclosureInfo').textContent=`Exterior ${e.externalBody.width} × ${e.externalBody.height} × ${e.externalBody.depth} mm; zócalo ${e.plinthHeight} mm. Riel: ${e.mountingLayout.dinRails.map(r=>r.type+' a Y='+r.y+' mm').join(', ')}. Posición a validar con ABB.`;
  $('enclosure').onchange=loadEnclosure;
  $('fit').onclick=fitView;$('focus').onclick=focusView;$('zoomIn').onclick=()=>zoomView(.75);$('zoomOut').onclick=()=>zoomView(1.33);
- $('add').onclick=()=>{const s=shell($('shell').value),tag=$('newTag').value.trim();if(!tag)return notice('Ingresá una etiqueta.');if(project.devices.some(d=>d.tag===tag))return notice('La etiqueta ya existe.');snapshot();const poles=s.poleModule?Math.max(1,Math.min(4,+$('newPoles').value||1)):undefined,z=shellSize(s,poles);const d={tag,model:$('newModel').value.trim()||s.label,x:200,y:200,w:z.w,h:z.h,poles,shell:s.id,status:s.provisional?'variante pendiente':'modelo agregado; revisar',...(s.kit?{mountingKit:{type:s.kit,orderCode:s.kitOrderCode,moduleHeight:s.kitHeight}}:{})};alignDin(d);project.devices.push(d);select(project.devices.length-1);notice('Dispositivo agregado.')};
+ $('add').onclick=()=>{const s=shell($('shell').value),tag=$('newTag').value.trim();if(!tag)return notice('Ingresá una etiqueta.');if(project.devices.some(d=>d.tag===tag))return notice('La etiqueta ya existe.');snapshot();const poles=s.poleModule?Math.max(2,Math.min(4,+$('newPoles').value||2)):undefined,z=shellSize(s,poles);const d={tag,model:$('newModel').value.trim()||s.label,x:200,y:200,w:z.w,h:z.h,poles,shell:s.id,status:s.provisional?'variante pendiente':'modelo agregado; revisar',...(s.kit?{mountingKit:{type:s.kit,orderCode:s.kitOrderCode,moduleHeight:s.kitHeight}}:{})};alignDin(d);project.devices.push(d);select(project.devices.length-1);notice('Dispositivo agregado.')};
  $('apply').onclick=()=>{if(selected===null)return;const vals={};for(const key of ['tag','model','status'])vals[key]=$(key).value.trim();for(const key of ['x','y'])vals[key]=Number($(key).value);if(!vals.tag)return notice('Ingresá una etiqueta.');snapshot();Object.assign(project.devices[selected],vals);alignDin(project.devices[selected]);render();notice('Cambios aplicados.')};
  $('remove').onclick=()=>{if(selected===null)return;snapshot();project.devices.splice(selected,1);selected=null;render();notice('Dispositivo borrado.')};
  $('undo').onclick=()=>{if(!history.length)return;project=history.pop();selected=null;$('undo').disabled=!history.length;render();notice('Último cambio deshecho.')};

@@ -37,6 +37,31 @@ def shell_size(shell, poles):
     return shell["width"], shell["height"]
 
 
+def marking_fields(model, block, rules):
+    """Datos que van impresos en el frente: serie, curva, In (del modelo) y kA (de I Nom - Icc)."""
+    fields = {}
+    parts = re.match(rules["modelParts"], model, re.IGNORECASE)
+    if parts:
+        serie = re.sub(r"\s+", "", parts.group("serie") or "").upper()
+        fields["serie"] = serie
+        fields["serieS"] = re.sub(r"^([A-Z]+)(\d)", r"\1 \2", serie)  # S201M -> "S 201M" (así figura en S200)
+        if parts.group("curva"):
+            fields["curva"] = parts.group("curva").upper()
+        if parts.group("In"):
+            fields["In"] = parts.group("In").replace(".", ",")
+        if parts.group("sufijo"):
+            fields["sufijo"] = parts.group("sufijo").upper()
+            fields["sufijoGuion"] = "-" + fields["sufijo"]
+    if "serie" in fields:
+        fields.setdefault("sufijoGuion", "")
+    rating = re.search(rules["ratingPattern"], block)
+    if rating:
+        ka = rating.group(3)
+        fields["kA"] = ka
+        fields["Icn"] = str(int(round(float(ka.replace(",", ".")) * 1000)))
+    return fields
+
+
 def find_series(model, poles, catalog):
     """Devuelve (serie, carcasa, motivo). Exige modelo y polos admitidos por la serie."""
     shells = {s["id"]: s for s in catalog["deviceShells"]}
@@ -69,8 +94,12 @@ def detect_devices(text, catalog):
         poles = _first_group(rules["polesPatterns"], block)
         serie, shell, reason = find_series(model, poles, catalog)
         hint = next((h for h in hints if re.search(h["modelRegex"], model, re.IGNORECASE)), None)
+        min_poles = catalog.get("scope", {}).get("minPoles")
         if upstream:
             status = "alimentador externo; no pertenece al tablero"
+        elif min_poles and poles is not None and poles < min_poles:
+            shell, serie = None, None
+            status = f"monopolar: fuera de alcance (mínimo {min_poles} polos)"
         elif shell:
             status = "detectado; revisar modelo y polos" if serie["verified"] else "detectado; carcasa compartida sin confirmar"
         elif hint:
@@ -83,8 +112,16 @@ def detect_devices(text, catalog):
         found.append({
             "tag": match.group(1), "evidence": snippet, "shell": shell and shell["id"],
             "series": serie and serie["id"], "model": model[:40], "poles": poles,
+            "marking": marking_fields(model, block, rules),
             "w": width, "h": height,
             "status": status, "upstream": upstream,
             **({"mounting": hint["mounting"]} if hint and not shell else {}),
         })
     return found
+
+
+def ensure_marking(device, catalog):
+    """Proyectos guardados antes del marcado: deduce los datos impresos del modelo (y de la evidencia, si está)."""
+    if "marking" not in device and device.get("model"):
+        device["marking"] = marking_fields(device["model"], device.get("evidence", ""), catalog["importRules"])
+    return device

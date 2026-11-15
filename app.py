@@ -8,7 +8,7 @@ import os
 
 from pypdf import PdfReader
 from cad_export import build_dxf
-from importador import detect_devices, shell_size
+from importador import detect_devices, ensure_marking, shell_size
 
 ROOT = Path(__file__).resolve().parent
 PROJECT = ROOT / "datos" / "ts4_topografia.json"
@@ -34,7 +34,11 @@ class Handler(BaseHTTPRequestHandler):
         if route == "/":
             return self.send_data(200, WEB.read_bytes(), "text/html")
         if route == "/api/project":
-            return self.send_data(200, json.loads(PROJECT.read_text(encoding="utf-8")))
+            project = json.loads(PROJECT.read_text(encoding="utf-8"))
+            catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
+            for device in project.get("devices", []):
+                ensure_marking(device, catalog)
+            return self.send_data(200, project)
         if route == "/api/catalog":
             return self.send_data(200, json.loads(CATALOG.read_text(encoding="utf-8")))
         if route == "/api/fronts":

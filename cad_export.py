@@ -10,6 +10,7 @@ import ezdxf
 from ezdxf.colors import rgb2int
 
 from importador import shell_size
+from marcado import resolve
 
 
 def _color(value):
@@ -17,18 +18,15 @@ def _color(value):
     return rgb2int(tuple(int(value[j:j + 2], 16) for j in (0, 2, 4)))
 
 
-def inscription_height(text, width, height):
-    """Altura de texto que entra en el frente: como mucho 7 % del alto y ~90 % del ancho."""
-    return round(min(height * 0.07, width * 0.9 / max(len(text), 1) / 0.8), 2)
-
-
 def build_dxf(project, catalog, fronts, appearances):
     doc = ezdxf.new("R2010", setup=True)
     doc.header["$INSUNITS"] = 4  # mm
+    doc.styles.add("ABB_ARIAL", font="arial.ttf")
+    doc.styles.add("ABB_ARIAL_BOLD", font="arialbd.ttf")
     layers = {
         "ABB_ENVOLVENTE": 7, "ABB_AREA_FUNCIONAL": 8,
         "ABB_RIEL_DIN_PROPUESTO": 4, "ABB_CAD_COLORES": 7, "ABB_CAD_FRENTE": 7,
-        "ABB_SIN_CAD": 2, "ABB_ETIQUETAS": 3, "ABB_NOTAS": 1, "ABB_INSCRIPCION": 7,
+        "ABB_SIN_CAD": 2, "ABB_ETIQUETAS": 3, "ABB_NOTAS": 1, "ABB_MARCADO": 7,
     }
     for name, color in layers.items():
         doc.layers.new(name, dxfattribs={"color": color})
@@ -58,7 +56,7 @@ def build_dxf(project, catalog, fronts, appearances):
     blocks = {}
 
     def front_block(shell_id, poles):
-        """Bloque por carcasa (y por cantidad de polos si la carcasa es por polo), con atributo MODELO."""
+        """Bloque por carcasa (y por cantidad de polos si la carcasa es por polo), con un atributo por texto impreso."""
         spec = shells[shell_id]
         tiles = poles if spec.get("poleModule") and poles else 1
         key = (shell_id, tiles if spec.get("poleModule") else None)
@@ -93,12 +91,25 @@ def build_dxf(project, catalog, fronts, appearances):
                         [(round(ox + x * pole_w, 4), round(y * height, 4)) for x, y in path],
                         dxfattribs={"layer": "ABB_CAD_FRENTE", "true_color": _color(palette.get("lineColor", "#273746"))},
                     )
-        spot = palette.get("inscription")
-        if spot and spot.get("enabled"):  # solo con posición verificada en el equipo real
-            block.add_attdef("MODELO", (width / 2, spot["y"] * height), dxfattribs={
-                "layer": "ABB_INSCRIPCION", "height": inscription_height("XXXXXXXXXX", width, height),
-                "true_color": _color(spot["color"]), "prompt": "Modelo grabado en el frente",
-            }).set_placement((width / 2, spot["y"] * height), align=ezdxf.enums.TextEntityAlignment.MIDDLE_CENTER)
+        bar = palette.get("tieBar")
+        if bar and tiles >= bar.get("minPoles", 2):
+            bx0, bx1 = bar["x0"], width - bar["x1End"]
+            block.add_solid([(bx0, bar["y0"]), (bx1, bar["y0"]), (bx0, bar["y1"]), (bx1, bar["y1"])],
+                            dxfattribs={"layer": "ABB_CAD_COLORES", "true_color": _color(bar["color"])})
+            block.add_lwpolyline([(bx0, bar["y0"]), (bx1, bar["y0"]), (bx1, bar["y1"]), (bx0, bar["y1"])], close=True,
+                                 dxfattribs={"layer": "ABB_CAD_FRENTE", "true_color": _color(palette.get("lineColor", "#273746"))})
+        # Marcado impreso (apariencias_abb.json -> marking): recuadros fijos en el bloque y un
+        # atributo por texto, así el texto viaja con el equipo y se edita con doble clic en AutoCAD.
+        marking = palette.get("marking")
+        for n, item in enumerate((marking or {}).get("items", [])):
+            if "box" in item:
+                x0, y0, x1, y1 = item["box"]
+                block.add_lwpolyline([(x0, y0), (x1, y0), (x1, y1), (x0, y1)], close=True,
+                                     dxfattribs={"layer": "ABB_MARCADO", "true_color": _color(item["color"])})
+            block.add_attdef(f"M{n + 1}", (item["x"], item["y"]), dxfattribs={
+                "layer": "ABB_MARCADO", "height": item["h"], "true_color": _color(item["color"]),
+                "style": "ABB_ARIAL_BOLD" if item.get("bold") else "ABB_ARIAL", "prompt": item["text"],
+            })
         blocks[key] = name
         return name
 
@@ -110,11 +121,23 @@ def build_dxf(project, catalog, fronts, appearances):
         width, height = shell_size(spec, poles) if spec else (device["w"], device["h"])
         if spec and device["shell"] in fronts["items"]:
             ref = space.add_blockref(front_block(device["shell"], poles), (x, y))
-            text = (device.get("model") or "").encode("ascii", "replace").decode("ascii")[:24]
-            if palettes.get(device["shell"], {}).get("inscription", {}).get("enabled"):
-                ref.add_auto_attribs({"MODELO": text})
-                for attrib in ref.attribs:
-                    attrib.dxf.height = inscription_height(text, width, height)
+            marking = palettes.get(device["shell"], {}).get("marking")
+            items = marking.get("items", []) if marking else []
+            shown = {it["index"]: it for it in resolve(marking, device.get("marking", {}), poles)} if marking else {}
+            for n, item in enumerate(items):
+                res = shown.get(n)
+                if not res:
+                    continue  # dato que el plano no trae o condición de polos: no se inventa
+                attrib = ref.add_attrib(f"M{n + 1}", res["text"].encode("ascii", "replace").decode("ascii"), (0, 0), dxfattribs={
+                    "layer": "ABB_MARCADO", "height": item["h"], "true_color": _color(item["color"]),
+                    "style": "ABB_ARIAL_BOLD" if item.get("bold") else "ABB_ARIAL"})
+                ax, ay = x + item["x"], y + item["y"]
+                if item.get("w"):
+                    attrib.set_placement((ax, ay - item["h"] / 2), (ax + item["w"], ay - item["h"] / 2),
+                                         align=ezdxf.enums.TextEntityAlignment.FIT)
+                else:
+                    attrib.set_placement((ax, ay), align=ezdxf.enums.TextEntityAlignment.MIDDLE_CENTER
+                                         if item.get("align") == "center" else ezdxf.enums.TextEntityAlignment.MIDDLE_LEFT)
         else:
             rect(x, y, width, height, "ABB_SIN_CAD")
         # Etiqueta centrada y achicada para que no se pise con la del equipo vecino.

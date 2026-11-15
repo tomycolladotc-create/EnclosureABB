@@ -11,11 +11,13 @@ import unittest
 from pathlib import Path
 
 from importador import detect_devices, shell_size
+from marcado import resolve
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = json.loads((ROOT / "datos" / "catalogo_abb.json").read_text(encoding="utf-8"))
 SERIES = {s["id"]: s for s in CATALOG["series"] if "id" in s}
 SHELLS = {s["id"]: s for s in CATALOG["deviceShells"]}
+APPEAR = json.loads((ROOT / "datos" / "apariencias_abb.json").read_text(encoding="utf-8"))["items"]
 FRONTS = json.loads((ROOT / "datos" / "frentes_cad.json").read_text(encoding="utf-8"))["items"]
 
 TS4_ESPERADO = {
@@ -65,6 +67,39 @@ class Catalogo(unittest.TestCase):
     def test_ancho_por_polos(self):
         s200 = SHELLS["abb.s200m.1p.front"]
         self.assertEqual(shell_size(s200, 3), (52.5, 88))
+
+
+class Marcado(unittest.TestCase):
+    """Lo impreso en el frente sale del plano y respeta lo medido en las fotos ABB."""
+
+    def textos(self, tag, devices):
+        d = devices[tag]
+        return [i["text"] for i in resolve(APPEAR[d["shell"]].get("marking"), d["marking"], d["poles"])]
+
+    def test_s800_ts4(self):
+        text = (ROOT / "tests" / "fixtures" / "ts4_texto_extraido.txt").read_text(encoding="utf-8")
+        devices = {d["tag"]: d for d in detect_devices(text, CATALOG)}
+        self.assertEqual(self.textos("QF81", devices), ["ABB", "S804N", "C32", "240/415V~36kA", "In=32A"])
+        self.assertEqual(self.textos("QF90", devices), ["ABB", "S 201M-NA", "C 10", "10000", "3"])
+
+    def test_s200_tripolar_lleva_tension(self):
+        pdf = ROOT / "tests" / "unifilares" / "BAF-E-EL-PL-104-0_Unifilares-12_TSB.pdf"
+        devices = {d["tag"]: d for d in detect_devices(pdf_text(pdf), CATALOG)}
+        self.assertEqual(self.textos("QF57", devices), ["ABB", "S 203", "C 10", "~400V", "6000", "3"])
+        self.assertNotIn("~400V", self.textos("QF164", devices))  # bipolar: no verificado
+
+    def test_no_inventa_si_falta_dato(self):
+        mk = APPEAR["abb.s804n.4p.front"]["marking"]
+        self.assertNotIn("240/415V~kA", [i["text"] for i in resolve(mk, {"serie": "S804N", "curva": "C", "In": "32"}, 4)])
+        self.assertEqual(len(resolve(mk, {"serie": "S804N", "curva": "C", "In": "32"}, 4)), 4)
+
+    def test_sin_monopolares(self):
+        pdf = ROOT / "tests" / "unifilares" / "BAF-E-EL-PL-104-0_Unifilares-12_TSB.pdf"
+        qf62 = {d["tag"]: d for d in detect_devices(pdf_text(pdf), CATALOG)}["QF62"]
+        self.assertIsNone(qf62["shell"])
+        self.assertIn("fuera de alcance", qf62["status"])
+        for serie in SERIES.values():
+            self.assertGreaterEqual(min(serie["poles"]), 2, serie["id"])
 
 
 class UnifilaresReales(unittest.TestCase):

@@ -132,7 +132,7 @@
     },
     {
       "id": "abb.s200m.1p.front",
-      "label": "S200 · polo (1P; 2P-4P = polos contiguos)",
+      "label": "S200 · 2P/3P/4P (módulo de polo; no se usa suelto)",
       "width": 17.5,
       "height": 88,
       "mounting": "din",
@@ -195,7 +195,10 @@
     "polesPatterns": [
       "\\b(\\d)x\\d+(?:,\\d+)?\\s*-\\s*\\d+(?:,\\d+)?\\s*kA",
       "\\b\\d+\\s*A\\s*-\\s*(\\d)P\\b"
-    ]
+    ],
+    "ratingPattern": "\\b(\\d)x(\\d+(?:,\\d+)?)\\s*-\\s*(\\d+(?:,\\d+)?)\\s*kA",
+    "modelParts": "^(?P<serie>(?:SN|S)\\s?\\d{3}[A-Z]?|XT\\d[A-Z]?|T\\d[A-Z]?|OT\\d+[A-Z]+\\d*)[\\s-]*(?:(?P<curva>[BCDKZ])\\s?(?P<In>\\d+(?:[.,]\\d+)?))?\\s*(?P<sufijo>NA)?\\b",
+    "_ayudaMarcado": "ratingPattern lee 'polos x In - kA' de la columna I Nom - Icc; modelParts separa serie, curva, In y sufijo del modelo para grabarlos en el frente."
   },
   "modelHints": [
     {
@@ -253,7 +256,6 @@
       "id": "s200-polos",
       "modelRegex": "^S\\s?20[1-4][LM]?\\b",
       "poles": [
-        1,
         2,
         3,
         4
@@ -272,5 +274,9 @@
       "verified": true,
       "basis": "CAD ABB familia OT315-OT400E04."
     }
-  ]
+  ],
+  "scope": {
+    "minPoles": 2,
+    "_ayuda": "El usuario no trabaja con equipos monopolares (mínimo bipolar; 1P+N cuenta como 2 polos). El importador marca los de menos polos como fuera de alcance."
+  }
 }

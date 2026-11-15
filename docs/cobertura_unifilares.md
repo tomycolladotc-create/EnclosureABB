@@ -1,6 +1,6 @@
 # Cobertura del catálogo sobre 6 unifilares
 
-Equipos con carcasa: **167 de 206**. Faltan estas familias (serie + polos), ordenadas por cantidad:
+Equipos con carcasa: **165 de 204**. Faltan estas familias (serie + polos), ordenadas por cantidad:
 
 | Serie | Polos | Equipos | Tableros | Ejemplos |
 |---|---|---|---|---|
