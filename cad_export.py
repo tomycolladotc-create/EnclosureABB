@@ -11,6 +11,7 @@ from ezdxf.colors import rgb2int
 
 from importador import shell_size
 from marcado import resolve
+from normativa import check_project
 
 
 def _color(value):
@@ -26,7 +27,7 @@ def build_dxf(project, catalog, fronts, appearances):
     layers = {
         "ABB_ENVOLVENTE": 7, "ABB_AREA_FUNCIONAL": 8,
         "ABB_RIEL_DIN_PROPUESTO": 4, "ABB_CAD_COLORES": 7, "ABB_CAD_FRENTE": 7,
-        "ABB_SIN_CAD": 2, "ABB_ETIQUETAS": 3, "ABB_NOTAS": 1, "ABB_MARCADO": 7,
+        "ABB_SIN_CAD": 2, "ABB_ETIQUETAS": 3, "ABB_NOTAS": 1, "ABB_MARCADO": 7, "ABB_ACCESORIOS": 3,
     }
     for name, color in layers.items():
         doc.layers.new(name, dxfattribs={"color": color})
@@ -144,6 +145,17 @@ def build_dxf(project, catalog, fronts, appearances):
         tag_h = round(min(12, width * 0.95 / max(len(device["tag"]), 1) / 0.75), 2)
         space.add_text(device["tag"], dxfattribs={"height": tag_h, "layer": "ABB_ETIQUETAS"}).set_placement(
             (x + width / 2, y + height + 4), align=ezdxf.enums.TextEntityAlignment.BOTTOM_CENTER)
+    # Accesorios de normativa (bornes de tierra, peines): geometría esquemática marcada como provisoria.
+    for acc in project.get("accessories", []):
+        if acc.get("placed", True) and "x" in acc and acc.get("w"):
+            rect(fx + acc["x"], fy + acc["y"], acc["w"], acc["h"], "ABB_ACCESORIOS")
+            space.add_text(str(acc.get("label", acc["type"])).encode("ascii", "replace").decode("ascii"), dxfattribs={"height": 5, "layer": "ABB_ACCESORIOS"}).set_placement(
+                (fx + acc["x"] + acc["w"] / 2, fy + acc["y"] + acc["h"] + 2), align=ezdxf.enums.TextEntityAlignment.BOTTOM_CENTER)
+    # Avisos de normativa dentro del dibujo, para que no se pierdan al exportar.
+    for n, finding in enumerate(check_project(project)):
+        tag = "ERROR" if finding["severity"] == "error" else "AVISO"
+        note = f"NORMATIVA {tag}: {finding['message']}" + ("" if finding["ruleStatus"] == "verificada" else " (regla por verificar)")
+        space.add_text(note.encode("ascii", "replace").decode("ascii"), dxfattribs={"height": 8, "layer": "ABB_NOTAS", "insert": (35, 60 + 14 * n)})
     space.add_text(f"{project.get('project', 'TABLERO')} - VISTA 2D FRONTAL - GEOMETRIA ABB DONDE HAY CAD".encode("ascii", "replace").decode("ascii"), dxfattribs={"height": 17, "layer": "ABB_NOTAS", "insert": (35, plinth + body["height"] - 35)})
     space.add_text("GABINETE Y RIEL: CONFIGURACION PRELIMINAR; VALIDAR CON ABB ARGENTINA", dxfattribs={"height": 10, "layer": "ABB_NOTAS", "insert": (35, 35)})
     stream = StringIO()

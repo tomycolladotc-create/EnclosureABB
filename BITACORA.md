@@ -3,6 +3,11 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-15 21:50 · Claude
+- Hecho: `accesorios.py` (propuesta), rutas `/api/normativa` y `/api/normativa/complete`, panel en el editor, accesorios y avisos en el DXF. Tests: 24 OK. El TS4 real queda sin errores comprobables tras 'Completar accesorios'.
+- Límites: geometría esquemática (rectángulos punteados = provisional); un borne PE por QF es simplificación; el cubrebornes no tiene dibujo; S800 sin peine.
+- Siguiente [Claude]: bloque de distribución cuando In supera el peine (usar BRT125A 128 mm, a confirmar); luego un proyecto por tablero.
+
 ## 2026-11-15 21:20 · Claude
 - Hecho: medidas y corrientes de peines PS1/12 y PS3/12 (63 A, 25 kA), BRT125A (128 mm de ancho), bloques Steck (5 referencias), Legrand y Schneider Domae (listado en se.com/ar). Todo por-confirmar salvo lo indicado.
 - Conflictos anotados en el JSON: PS3/12 tiene dos versiones con medidas distintas; BRT125A figura con 4x12 y con 11 vías.

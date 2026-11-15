@@ -9,6 +9,8 @@ import os
 from pypdf import PdfReader
 from cad_export import build_dxf
 from importador import detect_devices, ensure_marking, shell_size
+from accesorios import complete
+from normativa import check_project
 
 ROOT = Path(__file__).resolve().parent
 PROJECT = ROOT / "datos" / "ts4_topografia.json"
@@ -78,6 +80,14 @@ class Handler(BaseHTTPRequestHandler):
                 PROJECT.write_text(json.dumps(project, ensure_ascii=False, indent=2), encoding="utf-8")
                 return self.send_data(200, {"saved": True})
             except (ValueError, UnicodeDecodeError) as exc:
+                return self.send_data(422, {"error": str(exc)})
+        if route in ("/api/normativa", "/api/normativa/complete"):
+            try:
+                project = json.loads(blob)
+                if route.endswith("/complete"):
+                    complete(project)
+                return self.send_data(200, {"accessories": project.get("accessories", []), "findings": check_project(project)})
+            except (ValueError, UnicodeDecodeError, KeyError, StopIteration) as exc:
                 return self.send_data(422, {"error": str(exc)})
         if route == "/api/export-dxf":
             try:
