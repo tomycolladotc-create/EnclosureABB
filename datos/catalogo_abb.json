@@ -97,7 +97,22 @@
             "pagina": 23
           }
         ],
-        "status": "datos de catálogo ABB; dibujo esquemático de la estructura (sin CAD de las piezas)"
+        "status": "datos de catálogo ABB; dibujo esquemático de la estructura (sin CAD de las piezas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plinth": {
+            "ral": "RAL 7012",
+            "hex": "#575d5e"
+          },
+          "frame": {
+            "nombre": "chapa galvanizada",
+            "hex": "#aab1b6"
+          },
+          "fuente": "RAL 7035 gabinete y RAL 7012 zócalo: pág. 46 del catálogo; los hex son aproximación RGB estándar de cada RAL; la chapa galvanizada es un gris representativo, no medido"
+        }
       }
     },
     {
@@ -196,7 +211,678 @@
             "pagina": 23
           }
         ],
-        "status": "datos de catálogo ABB; dibujo esquemático de la estructura (sin CAD de las piezas)"
+        "status": "datos de catálogo ABB; dibujo esquemático de la estructura (sin CAD de las piezas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plinth": {
+            "ral": "RAL 7012",
+            "hex": "#575d5e"
+          },
+          "frame": {
+            "nombre": "chapa galvanizada",
+            "hex": "#aab1b6"
+          },
+          "fuente": "RAL 7035 gabinete y RAL 7012 zócalo: pág. 46 del catálogo; los hex son aproximación RGB estándar de cada RAL; la chapa galvanizada es un gris representativo, no medido"
+        }
+      }
+    },
+    {
+      "id": "spep185-500-1800-500",
+      "label": "ABB System pro E power 185 · 500 × 1800 × 500",
+      "functional": {
+        "width": 500,
+        "height": 1800,
+        "depth": 500
+      },
+      "externalBody": {
+        "width": 600,
+        "height": 1900,
+        "depth": 600
+      },
+      "plinthHeight": 100,
+      "parts": [
+        "PUPM1800",
+        "PCFM0500",
+        "PCFM0500",
+        "PPAM0100",
+        "PTBB5050"
+      ],
+      "source": "https://library.e.abb.com/public/ea19569e71bd4a55ac10d34ebc2c89d8/Katalog_185_1STC803009D0103%20SPEP%20185%20catalogue%202024%20Rev%203.pdf",
+      "mountingLayout": {
+        "status": "el catálogo 1STC803009D0103 no trae rieles ni kits; los rieles los propone layout_auto.py (criterio ajustable en datos/reglas_layout.json)",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad de la configuración exacta no verificada",
+      "structure": {
+        "frameBand": 50,
+        "doorLeaves": [
+          600
+        ],
+        "source": "ABB 1STC803009D0103 (SPEP 185 catalogue 2024 Rev 3)",
+        "uprights": "PUPM1800",
+        "note": "Códigos leídos de tablas de texto (págs. 20, 21, 24, 31): confirmar columna-código contra el dibujo. Funcional = externo - 100 (pág. 46).",
+        "status": "datos de catálogo ABB; dibujo esquemático de la estructura (sin CAD de las piezas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plinth": {
+            "ral": "RAL 7012",
+            "hex": "#575d5e"
+          },
+          "frame": {
+            "nombre": "chapa galvanizada",
+            "hex": "#aab1b6"
+          },
+          "fuente": "RAL 7035 gabinete y RAL 7012 zócalo: pág. 46 del catálogo; los hex son aproximación RGB estándar de cada RAL; la chapa galvanizada es un gris representativo, no medido"
+        },
+        "bom": [
+          {
+            "parte": "Montantes (x4)",
+            "codigo": "PUPM1800",
+            "orden": null,
+            "pagina": 20
+          },
+          {
+            "parte": "Travesaños de ancho (x4)",
+            "codigo": "PCFM0500",
+            "orden": null,
+            "pagina": 24
+          },
+          {
+            "parte": "Travesaños de profundidad (x4)",
+            "codigo": "PCFM0500",
+            "orden": "1STQ007039A0000",
+            "pagina": 24
+          },
+          {
+            "parte": "Ángulos de zócalo (x4)",
+            "codigo": "PPAM0100",
+            "orden": "1STQ007048A0000",
+            "pagina": 24
+          },
+          {
+            "parte": "Pestañas de zócalo frontal/trasera",
+            "codigo": "PPFM1050",
+            "orden": null,
+            "pagina": 20
+          },
+          {
+            "parte": "Fondo ciego con zócalo",
+            "codigo": "PTBB5050",
+            "orden": null,
+            "pagina": 20
+          },
+          {
+            "parte": "Puerta(s) ciega(s)",
+            "codigo": "PDNB1856",
+            "orden": null,
+            "pagina": 21
+          },
+          {
+            "parte": "Panel lateral ciego con junta (D600, uno por lado)",
+            "codigo": "PPEB1857",
+            "orden": null,
+            "pagina": 31
+          },
+          {
+            "parte": "Manija de palanca (una por puerta)",
+            "codigo": "PHLS0013",
+            "orden": "1STQ002334B0000",
+            "pagina": 23
+          }
+        ]
+      }
+    },
+    {
+      "id": "spep185-500-2100-500",
+      "label": "ABB System pro E power 185 · 500 × 2100 × 500",
+      "functional": {
+        "width": 500,
+        "height": 2100,
+        "depth": 500
+      },
+      "externalBody": {
+        "width": 600,
+        "height": 2200,
+        "depth": 600
+      },
+      "plinthHeight": 100,
+      "parts": [
+        "PUPM2100",
+        "PCFM0500",
+        "PCFM0500",
+        "PPAM0100",
+        "PTBB5050"
+      ],
+      "source": "https://library.e.abb.com/public/ea19569e71bd4a55ac10d34ebc2c89d8/Katalog_185_1STC803009D0103%20SPEP%20185%20catalogue%202024%20Rev%203.pdf",
+      "mountingLayout": {
+        "status": "el catálogo 1STC803009D0103 no trae rieles ni kits; los rieles los propone layout_auto.py (criterio ajustable en datos/reglas_layout.json)",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad de la configuración exacta no verificada",
+      "structure": {
+        "frameBand": 50,
+        "doorLeaves": [
+          600
+        ],
+        "source": "ABB 1STC803009D0103 (SPEP 185 catalogue 2024 Rev 3)",
+        "uprights": "PUPM2100 (la pág. 24 lista PUPM2001 para 2200: conflicto)",
+        "note": "Códigos leídos de tablas de texto (págs. 20, 21, 24, 31): confirmar columna-código contra el dibujo. Funcional = externo - 100 (pág. 46).",
+        "status": "datos de catálogo ABB; dibujo esquemático de la estructura (sin CAD de las piezas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plinth": {
+            "ral": "RAL 7012",
+            "hex": "#575d5e"
+          },
+          "frame": {
+            "nombre": "chapa galvanizada",
+            "hex": "#aab1b6"
+          },
+          "fuente": "RAL 7035 gabinete y RAL 7012 zócalo: pág. 46 del catálogo; los hex son aproximación RGB estándar de cada RAL; la chapa galvanizada es un gris representativo, no medido"
+        },
+        "bom": [
+          {
+            "parte": "Montantes (x4)",
+            "codigo": "PUPM2100",
+            "orden": null,
+            "pagina": 20
+          },
+          {
+            "parte": "Travesaños de ancho (x4)",
+            "codigo": "PCFM0500",
+            "orden": null,
+            "pagina": 24
+          },
+          {
+            "parte": "Travesaños de profundidad (x4)",
+            "codigo": "PCFM0500",
+            "orden": "1STQ007039A0000",
+            "pagina": 24
+          },
+          {
+            "parte": "Ángulos de zócalo (x4)",
+            "codigo": "PPAM0100",
+            "orden": "1STQ007048A0000",
+            "pagina": 24
+          },
+          {
+            "parte": "Pestañas de zócalo frontal/trasera",
+            "codigo": "PPFM1050",
+            "orden": null,
+            "pagina": 20
+          },
+          {
+            "parte": "Fondo ciego con zócalo",
+            "codigo": "PTBB5050",
+            "orden": null,
+            "pagina": 20
+          },
+          {
+            "parte": "Puerta(s) ciega(s)",
+            "codigo": "PDNB2156",
+            "orden": null,
+            "pagina": 21
+          },
+          {
+            "parte": "Panel lateral ciego con junta (D600, uno por lado)",
+            "codigo": "PPEB2157",
+            "orden": null,
+            "pagina": 31
+          },
+          {
+            "parte": "Manija de palanca (una por puerta)",
+            "codigo": "PHLS0013",
+            "orden": "1STQ002334B0000",
+            "pagina": 23
+          }
+        ]
+      }
+    },
+    {
+      "id": "spep185-750-1800-500",
+      "label": "ABB System pro E power 185 · 750 × 1800 × 500",
+      "functional": {
+        "width": 750,
+        "height": 1800,
+        "depth": 500
+      },
+      "externalBody": {
+        "width": 850,
+        "height": 1900,
+        "depth": 600
+      },
+      "plinthHeight": 100,
+      "parts": [
+        "PUPM1800",
+        "PCFM0750",
+        "PCFM0500",
+        "PPAM0100",
+        "PTBB7556"
+      ],
+      "source": "https://library.e.abb.com/public/ea19569e71bd4a55ac10d34ebc2c89d8/Katalog_185_1STC803009D0103%20SPEP%20185%20catalogue%202024%20Rev%203.pdf",
+      "mountingLayout": {
+        "status": "el catálogo 1STC803009D0103 no trae rieles ni kits; los rieles los propone layout_auto.py (criterio ajustable en datos/reglas_layout.json)",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad de la configuración exacta no verificada",
+      "structure": {
+        "frameBand": 50,
+        "doorLeaves": [
+          850
+        ],
+        "source": "ABB 1STC803009D0103 (SPEP 185 catalogue 2024 Rev 3)",
+        "uprights": "PUPM1800",
+        "note": "Códigos leídos de tablas de texto (págs. 20, 21, 24, 31): confirmar columna-código contra el dibujo. Funcional = externo - 100 (pág. 46).",
+        "status": "datos de catálogo ABB; dibujo esquemático de la estructura (sin CAD de las piezas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plinth": {
+            "ral": "RAL 7012",
+            "hex": "#575d5e"
+          },
+          "frame": {
+            "nombre": "chapa galvanizada",
+            "hex": "#aab1b6"
+          },
+          "fuente": "RAL 7035 gabinete y RAL 7012 zócalo: pág. 46 del catálogo; los hex son aproximación RGB estándar de cada RAL; la chapa galvanizada es un gris representativo, no medido"
+        },
+        "bom": [
+          {
+            "parte": "Montantes (x4)",
+            "codigo": "PUPM1800",
+            "orden": null,
+            "pagina": 20
+          },
+          {
+            "parte": "Travesaños de ancho (x4)",
+            "codigo": "PCFM0750",
+            "orden": null,
+            "pagina": 24
+          },
+          {
+            "parte": "Travesaños de profundidad (x4)",
+            "codigo": "PCFM0500",
+            "orden": "1STQ007039A0000",
+            "pagina": 24
+          },
+          {
+            "parte": "Ángulos de zócalo (x4)",
+            "codigo": "PPAM0100",
+            "orden": "1STQ007048A0000",
+            "pagina": 24
+          },
+          {
+            "parte": "Pestañas de zócalo frontal/trasera",
+            "codigo": "PPFM1075",
+            "orden": null,
+            "pagina": 20
+          },
+          {
+            "parte": "Fondo ciego con zócalo",
+            "codigo": "PTBB7556",
+            "orden": null,
+            "pagina": 20
+          },
+          {
+            "parte": "Puerta(s) ciega(s)",
+            "codigo": "PDNB1876",
+            "orden": null,
+            "pagina": 21
+          },
+          {
+            "parte": "Panel lateral ciego con junta (D600, uno por lado)",
+            "codigo": "PPEB1857",
+            "orden": null,
+            "pagina": 31
+          },
+          {
+            "parte": "Manija de palanca (una por puerta)",
+            "codigo": "PHLS0013",
+            "orden": "1STQ002334B0000",
+            "pagina": 23
+          }
+        ]
+      }
+    },
+    {
+      "id": "spep185-750-2100-500",
+      "label": "ABB System pro E power 185 · 750 × 2100 × 500",
+      "functional": {
+        "width": 750,
+        "height": 2100,
+        "depth": 500
+      },
+      "externalBody": {
+        "width": 850,
+        "height": 2200,
+        "depth": 600
+      },
+      "plinthHeight": 100,
+      "parts": [
+        "PUPM2100",
+        "PCFM0750",
+        "PCFM0500",
+        "PPAM0100",
+        "PTBB7556"
+      ],
+      "source": "https://library.e.abb.com/public/ea19569e71bd4a55ac10d34ebc2c89d8/Katalog_185_1STC803009D0103%20SPEP%20185%20catalogue%202024%20Rev%203.pdf",
+      "mountingLayout": {
+        "status": "el catálogo 1STC803009D0103 no trae rieles ni kits; los rieles los propone layout_auto.py (criterio ajustable en datos/reglas_layout.json)",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad de la configuración exacta no verificada",
+      "structure": {
+        "frameBand": 50,
+        "doorLeaves": [
+          850
+        ],
+        "source": "ABB 1STC803009D0103 (SPEP 185 catalogue 2024 Rev 3)",
+        "uprights": "PUPM2100 (la pág. 24 lista PUPM2001 para 2200: conflicto)",
+        "note": "Códigos leídos de tablas de texto (págs. 20, 21, 24, 31): confirmar columna-código contra el dibujo. Funcional = externo - 100 (pág. 46).",
+        "status": "datos de catálogo ABB; dibujo esquemático de la estructura (sin CAD de las piezas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plinth": {
+            "ral": "RAL 7012",
+            "hex": "#575d5e"
+          },
+          "frame": {
+            "nombre": "chapa galvanizada",
+            "hex": "#aab1b6"
+          },
+          "fuente": "RAL 7035 gabinete y RAL 7012 zócalo: pág. 46 del catálogo; los hex son aproximación RGB estándar de cada RAL; la chapa galvanizada es un gris representativo, no medido"
+        },
+        "bom": [
+          {
+            "parte": "Montantes (x4)",
+            "codigo": "PUPM2100",
+            "orden": null,
+            "pagina": 20
+          },
+          {
+            "parte": "Travesaños de ancho (x4)",
+            "codigo": "PCFM0750",
+            "orden": null,
+            "pagina": 24
+          },
+          {
+            "parte": "Travesaños de profundidad (x4)",
+            "codigo": "PCFM0500",
+            "orden": "1STQ007039A0000",
+            "pagina": 24
+          },
+          {
+            "parte": "Ángulos de zócalo (x4)",
+            "codigo": "PPAM0100",
+            "orden": "1STQ007048A0000",
+            "pagina": 24
+          },
+          {
+            "parte": "Pestañas de zócalo frontal/trasera",
+            "codigo": "PPFM1075",
+            "orden": null,
+            "pagina": 20
+          },
+          {
+            "parte": "Fondo ciego con zócalo",
+            "codigo": "PTBB7556",
+            "orden": null,
+            "pagina": 20
+          },
+          {
+            "parte": "Puerta(s) ciega(s)",
+            "codigo": "PDNB2176",
+            "orden": null,
+            "pagina": 21
+          },
+          {
+            "parte": "Panel lateral ciego con junta (D600, uno por lado)",
+            "codigo": "PPEB2157",
+            "orden": null,
+            "pagina": 31
+          },
+          {
+            "parte": "Manija de palanca (una por puerta)",
+            "codigo": "PHLS0013",
+            "orden": "1STQ002334B0000",
+            "pagina": 23
+          }
+        ]
+      }
+    },
+    {
+      "id": "spep185-1250-1800-500",
+      "label": "ABB System pro E power 185 · 1250 × 1800 × 500",
+      "functional": {
+        "width": 1250,
+        "height": 1800,
+        "depth": 500
+      },
+      "externalBody": {
+        "width": 1350,
+        "height": 1900,
+        "depth": 600
+      },
+      "plinthHeight": 100,
+      "parts": [
+        "PUPM1800",
+        "PCFM1250",
+        "PCFM0500",
+        "PPAM0100",
+        "PTBB1256"
+      ],
+      "source": "https://library.e.abb.com/public/ea19569e71bd4a55ac10d34ebc2c89d8/Katalog_185_1STC803009D0103%20SPEP%20185%20catalogue%202024%20Rev%203.pdf",
+      "mountingLayout": {
+        "status": "el catálogo 1STC803009D0103 no trae rieles ni kits; los rieles los propone layout_auto.py (criterio ajustable en datos/reglas_layout.json)",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad de la configuración exacta no verificada",
+      "structure": {
+        "frameBand": 50,
+        "doorLeaves": [
+          550,
+          800
+        ],
+        "source": "ABB 1STC803009D0103 (SPEP 185 catalogue 2024 Rev 3)",
+        "uprights": "PUPM1800",
+        "note": "Códigos leídos de tablas de texto (págs. 20, 21, 24, 31): confirmar columna-código contra el dibujo. Funcional = externo - 100 (pág. 46).",
+        "status": "datos de catálogo ABB; dibujo esquemático de la estructura (sin CAD de las piezas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plinth": {
+            "ral": "RAL 7012",
+            "hex": "#575d5e"
+          },
+          "frame": {
+            "nombre": "chapa galvanizada",
+            "hex": "#aab1b6"
+          },
+          "fuente": "RAL 7035 gabinete y RAL 7012 zócalo: pág. 46 del catálogo; los hex son aproximación RGB estándar de cada RAL; la chapa galvanizada es un gris representativo, no medido"
+        },
+        "bom": [
+          {
+            "parte": "Montantes (x4)",
+            "codigo": "PUPM1800",
+            "orden": null,
+            "pagina": 20
+          },
+          {
+            "parte": "Travesaños de ancho (x4)",
+            "codigo": "PCFM1250",
+            "orden": null,
+            "pagina": 24
+          },
+          {
+            "parte": "Travesaños de profundidad (x4)",
+            "codigo": "PCFM0500",
+            "orden": "1STQ007039A0000",
+            "pagina": 24
+          },
+          {
+            "parte": "Ángulos de zócalo (x4)",
+            "codigo": "PPAM0100",
+            "orden": "1STQ007048A0000",
+            "pagina": 24
+          },
+          {
+            "parte": "Pestañas de zócalo frontal/trasera",
+            "codigo": "PPFM1250",
+            "orden": null,
+            "pagina": 20
+          },
+          {
+            "parte": "Fondo ciego con zócalo",
+            "codigo": "PTBB1256",
+            "orden": null,
+            "pagina": 20
+          },
+          {
+            "parte": "Puerta(s) ciega(s)",
+            "codigo": "PDLB8127 + PDNB8407",
+            "orden": null,
+            "pagina": 21
+          },
+          {
+            "parte": "Panel lateral ciego con junta (D600, uno por lado)",
+            "codigo": "PPEB1857",
+            "orden": null,
+            "pagina": 31
+          },
+          {
+            "parte": "Manija de palanca (una por puerta)",
+            "codigo": "PHLS0013",
+            "orden": "1STQ002334B0000",
+            "pagina": 23
+          }
+        ]
+      }
+    },
+    {
+      "id": "spep185-1250-2100-500",
+      "label": "ABB System pro E power 185 · 1250 × 2100 × 500",
+      "functional": {
+        "width": 1250,
+        "height": 2100,
+        "depth": 500
+      },
+      "externalBody": {
+        "width": 1350,
+        "height": 2200,
+        "depth": 600
+      },
+      "plinthHeight": 100,
+      "parts": [
+        "PUPM2100",
+        "PCFM1250",
+        "PCFM0500",
+        "PPAM0100",
+        "PTBB1256"
+      ],
+      "source": "https://library.e.abb.com/public/ea19569e71bd4a55ac10d34ebc2c89d8/Katalog_185_1STC803009D0103%20SPEP%20185%20catalogue%202024%20Rev%203.pdf",
+      "mountingLayout": {
+        "status": "el catálogo 1STC803009D0103 no trae rieles ni kits; los rieles los propone layout_auto.py (criterio ajustable en datos/reglas_layout.json)",
+        "dinRails": []
+      },
+      "argentinaStatus": "disponibilidad de la configuración exacta no verificada",
+      "structure": {
+        "frameBand": 50,
+        "doorLeaves": [
+          550,
+          800
+        ],
+        "source": "ABB 1STC803009D0103 (SPEP 185 catalogue 2024 Rev 3)",
+        "uprights": "PUPM2100 (la pág. 24 lista PUPM2001 para 2200: conflicto)",
+        "note": "Códigos leídos de tablas de texto (págs. 20, 21, 24, 31): confirmar columna-código contra el dibujo. Funcional = externo - 100 (pág. 46).",
+        "status": "datos de catálogo ABB; dibujo esquemático de la estructura (sin CAD de las piezas)",
+        "colors": {
+          "enclosure": {
+            "ral": "RAL 7035",
+            "hex": "#cbd0cc"
+          },
+          "plinth": {
+            "ral": "RAL 7012",
+            "hex": "#575d5e"
+          },
+          "frame": {
+            "nombre": "chapa galvanizada",
+            "hex": "#aab1b6"
+          },
+          "fuente": "RAL 7035 gabinete y RAL 7012 zócalo: pág. 46 del catálogo; los hex son aproximación RGB estándar de cada RAL; la chapa galvanizada es un gris representativo, no medido"
+        },
+        "bom": [
+          {
+            "parte": "Montantes (x4)",
+            "codigo": "PUPM2100",
+            "orden": null,
+            "pagina": 20
+          },
+          {
+            "parte": "Travesaños de ancho (x4)",
+            "codigo": "PCFM1250",
+            "orden": null,
+            "pagina": 24
+          },
+          {
+            "parte": "Travesaños de profundidad (x4)",
+            "codigo": "PCFM0500",
+            "orden": "1STQ007039A0000",
+            "pagina": 24
+          },
+          {
+            "parte": "Ángulos de zócalo (x4)",
+            "codigo": "PPAM0100",
+            "orden": "1STQ007048A0000",
+            "pagina": 24
+          },
+          {
+            "parte": "Pestañas de zócalo frontal/trasera",
+            "codigo": "PPFM1250",
+            "orden": null,
+            "pagina": 20
+          },
+          {
+            "parte": "Fondo ciego con zócalo",
+            "codigo": "PTBB1256",
+            "orden": null,
+            "pagina": 20
+          },
+          {
+            "parte": "Puerta(s) ciega(s)",
+            "codigo": "PDLB1127 + PDNB1407",
+            "orden": null,
+            "pagina": 21
+          },
+          {
+            "parte": "Panel lateral ciego con junta (D600, uno por lado)",
+            "codigo": "PPEB2157",
+            "orden": null,
+            "pagina": 31
+          },
+          {
+            "parte": "Manija de palanca (una por puerta)",
+            "codigo": "PHLS0013",
+            "orden": "1STQ002334B0000",
+            "pagina": 23
+          }
+        ]
       }
     }
   ],

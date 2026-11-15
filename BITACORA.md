@@ -3,6 +3,12 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-15 01:10 · Claude
+- Pedido del usuario: criterio al elegir el gabinete (el 1100 x 2200 era desproporcionado para 12 equipos) y colores reales en el dibujo (no fondo blanco).
+- Hecho: `layout_auto.py` elige el gabinete más chico del catálogo que aloja el contenido y acomoda seccionadores, equipos de kit (filas por módulo de kit de 200 mm) y equipos de riel (riel PDRS0600 centrado, misma carcasa pegada, lugar para bornes PE). Criterios en `datos/reglas_layout.json` (propuestas ajustables, no datos de ABB). Ruta `/api/autolayout` y botón 'Armar tablero automático'. Catálogo ampliado con los tamaños del catálogo ABB 1STC803009D0103 (anchos 500/750/1000/1250 funcionales, alturas 1800/2100). Colores: RAL 7035 gabinete y RAL 7012 zócalo (pág. 46 del catálogo; hex aproximados), chapa galvanizada como gris representativo. TS4 -> 850 x 1900 x 600. Tests: 47 OK.
+- Límites: el riel PDRS0600 (600 mm) no entra en gabinetes de 500 mm funcionales; no hay otro riel en los datos. La altura mínima de esta familia es 1900 y el TS4 ocupa poco más de la mitad: para tableros chicos conviene sumar la familia de gabinetes de pared/piso SR2 o IS2 (otro catálogo ABB).
+- Siguiente [Claude]: cargar la familia SR2/IS2 como candidatos más chicos; kits de montaje XT del catálogo de tableros modulares; STEP de la estructura.
+
 ## 2026-11-15 00:30 · Claude
 - Hecho: estructura real del gabinete con datos del catálogo técnico ABB `1STC803009D0103` (descargado a la PC del usuario con el navegador y leído desde el repo): `enclosures[].structure` en `catalogo_abb.json` (banda de 50 mm = externo - funcional, hojas de puerta 550+550, lista de partes con código ABB y página). El editor y el DXF dibujan marco, hojas de puerta (retiradas, de trazos), zócalo y la lista de partes en un cajetín (capas ABB_ESTRUCTURA, ABB_PUERTAS, ABB_CAJETIN). Tests: 41 OK.
 - Conflicto sin resolver: montantes de 2200 = PUPM2100 (págs. 20 y 23) o PUPM2001 (pág. 24). Corregido typo PFCM0500 -> PCFM0500 en `parts`.

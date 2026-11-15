@@ -18,7 +18,7 @@ input,select{width:100%;border:1px solid #ccd7e2;border-radius:6px;padding:7px;m
 <header><h1>Topográfico de tableros ABB</h1><span id="projectName"></span></header>
 <main class="layout">
 <aside>
- <section><h2>Proyecto y envolvente</h2><label>Gabinete ABB<select id="enclosure"></select></label><div id="enclosureInfo" class="info" style="margin-top:9px"></div></section>
+ <section><h2>Proyecto y envolvente</h2><label>Gabinete ABB<select id="enclosure"></select></label><button id="autoLayout" style="margin-top:7px;width:100%">Armar tablero automático (elige el gabinete)</button><div id="enclosureInfo" class="info" style="margin-top:9px"></div></section>
  <section class="section"><h2>Importar unifilar DOC</h2><input id="pdf" type="file" accept="application/pdf"><p class="hint">Se extraen etiquetas y familias del texto del PDF. Revisá cada resultado antes de agregarlo.</p><div id="detected" class="scroller"></div></section>
  <section class="section"><h2>Agregar dispositivo</h2><label>Carcasa ABB<select id="shell"></select></label><label>Polos (solo carcasas por polo)<input id="newPoles" type="number" min="2" max="4" value="2"></label><label>Etiqueta<input id="newTag" placeholder="QF91"></label><label>Modelo<input id="newModel" placeholder="Referencia del dispositivo"></label><button id="add">Agregar al plano</button></section>
  <section class="section"><h2>Normativa argentina</h2><div class="row"><button id="normaComplete">Completar accesorios</button><button id="normaCheck" class="secondary">Revisar</button></div><div id="norma" class="scroller" style="margin-top:8px"></div><p class="hint">Reglas con su fuente en datos/normativa_argentina.json. Las marcadas "por verificar" falta confirmarlas con el texto oficial. El dibujo de peines y bornes es esquemático hasta tener su CAD.</p></section>
@@ -93,13 +93,13 @@ function zoomView(factor){setView();const cx=view.x+view.w/2,cy=view.y+view.h/2;
 let findings=[],normaTimer=null;
 // Estructura real del gabinete (montantes/travesaños, hojas de puerta) a partir de catalogo_abb.json -> enclosures[].structure
 const encSpec=()=>catalog.enclosures.find(v=>v.functional.height===project.enclosure.functional.height&&v.functional.width===project.enclosure.functional.width);
-function structureSvg(w,h,plinth){const st=encSpec()?.structure;if(!st)return '';const bh=h-plinth,b=st.frameBand,fill='#cfd6de',ln='#6c7b8c';let o='';
+function structureSvg(w,h,plinth){const st=encSpec()?.structure;if(!st)return '';const bh=h-plinth,b=st.frameBand,fill=st.colors?.frame?.hex||'#cfd6de',ln='#6c7b8c',plinthFill=st.colors?.plinth?.hex||'#dfe4ea';let o='';
  // marco: montantes (izq/der) y travesaños (arriba/abajo), banda de 50 mm = externo - funcional
  o+=`<g style="pointer-events:none"><path d="M0 0H${w}V${bh}H0Z M${b} ${b}V${bh-b}H${w-b}V${b}Z" fill-rule="evenodd" style="fill:${fill};stroke:${ln};stroke-width:1.5"/>`;
  // hojas de puerta (vista con puertas retiradas): contorno de trazos
  let x=0;st.doorLeaves.forEach((lw,i)=>{o+=`<rect x="${x+3}" y="3" width="${lw-6}" height="${bh-6}" style="fill:none;stroke:#8b97a6;stroke-width:1.5;stroke-dasharray:14 8"/>`;if(i===0)o+=`<text x="${x+lw/2}" y="${bh-14}" text-anchor="middle" font-size="16" fill="#7a8796">hojas de puerta retiradas</text>`;x+=lw});
  // zócalo con sus pestañas frontal y laterales
- o+=`<rect x="0" y="${bh}" width="${w}" height="${plinth}" style="fill:#dfe4ea;stroke:#66778a;stroke-width:2"/><line x1="40" y1="${bh+plinth*.5}" x2="${w-40}" y2="${bh+plinth*.5}" style="stroke:#a4afbc;stroke-width:1"/></g>`;
+ o+=`<rect x="0" y="${bh}" width="${w}" height="${plinth}" style="fill:${plinthFill};stroke:#3b4344;stroke-width:2"/><line x1="40" y1="${bh+plinth*.5}" x2="${w-40}" y2="${bh+plinth*.5}" style="stroke:#7d8586;stroke-width:1"/></g>`;
  return o}
 const projectId=new URLSearchParams(location.search).get('id')||'ts4';
 // Accesorios de normativa: rectángulos esquemáticos con las medidas del catálogo (hasta tener el CAD de cada pieza).
@@ -115,7 +115,7 @@ async function runNormativa(complete){const r=await fetch(complete?'/api/normati
 function render(){
  const {w,h,fx,fy}=dimensions(),f=project.enclosure.functional;
  setView();
- $('board').innerHTML=frontDefs()+`<rect width="${w}" height="${h}" fill="white" stroke="#172c43" stroke-width="6"/>
+ $('board').innerHTML=frontDefs()+`<rect width="${w}" height="${h}" fill="${encSpec()?.structure?.colors?.enclosure?.hex||'white'}" stroke="#172c43" stroke-width="6"/>
 ${structureSvg(w,h,project.enclosure.plinthHeight)||`<rect y="${h-project.enclosure.plinthHeight}" width="${w}" height="${project.enclosure.plinthHeight}" fill="#e4eaf0" stroke="#66778a" stroke-width="2"/>`}
  <rect x="${fx}" y="${h-fy-f.height}" width="${f.width}" height="${f.height}" fill="none" stroke="#8394a6" stroke-width="2"/>
  <text x="0" y="-22" fill="#344962" font-size="25">ABB System pro E power 185 · ${esc(project.project)}</text>`+
@@ -151,6 +151,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
  fetch('/api/projects').then(x=>x.json()).then(list=>{$('projectSel').innerHTML=list.map(p=>`<option value="${esc(p.id)}">${esc(p.name)} · ${p.devices} equipos</option>`).join('');$('projectSel').value=projectId});
  $('projectSel').onchange=()=>{location.search='?id='+encodeURIComponent($('projectSel').value)};
  $('newProject').onclick=async()=>{const name=$('newProjectName').value.trim();if(!name)return notice('Ingresá un nombre para el tablero.');const r=await fetch('/api/project-new',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name})});const data=await r.json();if(!r.ok)return notice(data.error);location.search='?id='+encodeURIComponent(data.id)};
+ $('autoLayout').onclick=async()=>{const r=await fetch('/api/autolayout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(project)});const data=await r.json();if(!r.ok)return notice(data.error);snapshot();project=data.project;selected=null;const e=catalog.enclosures.find(v=>v.id===data.summary.gabinete);$('enclosure').value=data.summary.gabinete;$('enclosureInfo').textContent=`Elegido: exterior ${e.externalBody.width} × ${e.externalBody.height} × ${e.externalBody.depth} mm. Se probaron ${data.summary.intentos.length} gabinete(s), del más chico al más grande. Rieles y posiciones son una propuesta (criterios en datos/reglas_layout.json).`;view=null;render();notice('Tablero armado en '+e.label)};
  $('normaComplete').onclick=()=>runNormativa(true);$('normaCheck').onclick=()=>runNormativa(false);
  $('fit').onclick=fitView;$('focus').onclick=focusView;$('zoomIn').onclick=()=>zoomView(.75);$('zoomOut').onclick=()=>zoomView(1.33);
  $('add').onclick=()=>{const s=shell($('shell').value),tag=$('newTag').value.trim();if(!tag)return notice('Ingresá una etiqueta.');if(project.devices.some(d=>d.tag===tag))return notice('La etiqueta ya existe.');snapshot();const poles=s.poleModule?Math.max(2,Math.min(4,+$('newPoles').value||2)):undefined,z=shellSize(s,poles);const d={tag,model:$('newModel').value.trim()||s.label,x:200,y:200,w:z.w,h:z.h,poles,shell:s.id,status:s.provisional?'variante pendiente':'modelo agregado; revisar',...(s.kit?{mountingKit:{type:s.kit,orderCode:s.kitOrderCode,moduleHeight:s.kitHeight}}:{})};alignDin(d);project.devices.push(d);select(project.devices.length-1);notice('Dispositivo agregado.')};
