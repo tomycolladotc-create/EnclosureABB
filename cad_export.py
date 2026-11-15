@@ -56,8 +56,10 @@ def build_dxf(project, catalog, fronts, appearances):
             value = value.lstrip("#")
             return rgb2int(tuple(int(value[j:j + 2], 16) for j in (0, 2, 4)))
         def fill_rect(x, y, w, h, tint):
+            # SOLID de DXF usa orden en "Z" (0-1-3-2): si se pasa el rectángulo en orden
+            # perimetral, AutoCAD lo dibuja como dos triángulos cruzados ("moño").
             points = [(x * width, y * height), ((x + w) * width, y * height),
-                      ((x + w) * width, (y + h) * height), (x * width, (y + h) * height)]
+                      (x * width, (y + h) * height), ((x + w) * width, (y + h) * height)]
             block.add_solid(points, dxfattribs={"layer": "ABB_CAD_COLORES", "true_color": color(tint)})
         if palette:
             fill_rect(0, 0, 1, 1, palette["base"])
