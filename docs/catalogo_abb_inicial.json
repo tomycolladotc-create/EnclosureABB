@@ -1,0 +1,112 @@
+{
+  "catalogVersion": 1,
+  "manufacturer": "ABB",
+  "sourceProject": "BAF-E-EL-PL-104-0 Unifilares-15 TS4-PORT 11-12-13-14.pdf",
+  "sourcePage": 1,
+  "units": "mm",
+  "families": [
+    {
+      "id": "abb.s804n",
+      "name": "S804N high-performance MCB",
+      "shellKey": "abb.s804n.4p.front",
+      "geometry": {
+        "asset": null,
+        "status": "pending_exact_cad",
+        "view": "front",
+        "dimensionMm": {"width": 106, "height": 95, "depth": 82.5},
+        "dinModules": 6,
+        "dimensionStatus": "manufacturer_datasheet",
+        "sources": [
+          "https://new.abb.com/products/tr/2CCS894001R0324/s804n-c32",
+          "https://library.e.abb.com/public/7421b241b52449599575543b0c703322/2CCC413003C0207.pdf"
+        ]
+      },
+      "inscriptionFields": ["model", "curve", "ratedCurrent", "breakingCapacity"],
+      "variants": [
+        {"id": "abb.s804n.c32.4p", "model": "S804N-C32", "orderCode": "2CCS894001R0324", "poles": 4, "ratedCurrentA": 32, "breakingCapacityKa": 36, "instances": ["QF81", "QF85"]}
+      ]
+    },
+    {
+      "id": "abb.tmax.xt1",
+      "name": "SACE Tmax XT1 160 fixed, front terminals",
+      "shellKey": "abb.tmax.xt1.4p.fixed.front",
+      "geometry": {
+        "asset": null,
+        "status": "cad_available_configurable_download_pending",
+        "view": "front",
+        "dimensionMm": {"width": 101.6, "height": 130, "depth": 70},
+        "dimensionOrder": "width-depth-height",
+        "dimensionStatus": "manufacturer_family_dimensions",
+        "cadSource": "https://abb-control-products.partcommunity.com/3d-cad-models/?info=abb_ww%2Flow_voltage%2Fbreakers%2Fmodular20case20circuit20breakers20tmax20xt%2Fxt1_new.prj&varset=%7BPN%3D1SDA067405R1%7D",
+        "sources": [
+          "https://abb-control-products.partcommunity.com/",
+          "https://library.e.abb.com/public/1d10103166bc450482fb21e36609d968/ABB%20Protecta%20Power%20brochure_GBL%202025.pdf",
+          "https://library.e.abb.com/public/c9c80efae9d545f19a5c64653076699d/ABB%20Bruttopreisliste%202026_PDF.pdf"
+        ]
+      },
+      "inscriptionFields": ["model", "breakingClass", "ratedFrame", "tripUnit", "thermalSetting", "magneticSetting", "poles"],
+      "variants": [
+        {"id": "abb.xt1c160.tmd80-800.4p", "model": "XT1C 160 TMD 80-800 4p F F", "orderCode": "1SDA067405R1", "poles": 4, "tripUnit": "TMD", "thermalSettingA": "80", "magneticSettingA": "800", "instances": ["QF82", "QF83", "QF84", "QF86", "QF87", "QF163"]}
+      ]
+    },
+    {
+      "id": "abb.tmax.xt2",
+      "name": "SACE Tmax XT2 160 fixed, front terminals",
+      "shellKey": "abb.tmax.xt2.4p.fixed.front",
+      "geometry": {
+        "asset": null,
+        "status": "cad_available_configurable_download_pending",
+        "view": "front",
+        "dimensionMm": {"width": 120, "height": 130, "depth": 82.5},
+        "dimensionOrder": "width-depth-height",
+        "dimensionStatus": "manufacturer_family_dimensions",
+        "cadSource": "https://abb-control-products.partcommunity.com/",
+        "sources": [
+          "https://abb-control-products.partcommunity.com/",
+          "https://library.e.abb.com/public/1d10103166bc450482fb21e36609d968/ABB%20Protecta%20Power%20brochure_GBL%202025.pdf",
+          "https://library.e.abb.com/public/c9c80efae9d545f19a5c64653076699d/ABB%20Bruttopreisliste%202026_PDF.pdf"
+        ]
+      },
+      "inscriptionFields": ["model", "breakingClass", "ratedFrame", "tripUnit", "thermalSetting", "magneticSetting", "poles"],
+      "variants": [
+        {"id": "abb.xt2n160.tmg80-240.4p", "model": "XT2N 160 TMG 80-240 4p F F", "orderCode": "1SDA067734R1", "poles": 4, "tripUnit": "TMG", "thermalSettingA": "80", "magneticSettingA": "240", "instances": ["QF88"]}
+      ]
+    },
+    {
+      "id": "abb.s251na",
+      "name": "S251 Na miniature circuit breaker",
+      "shellKey": null,
+      "geometry": {"asset": null, "status": "pending_exact_model_and_cad", "view": "front", "dimensionMm": null, "dimensionStatus": "unverified", "sources": []},
+      "inscriptionFields": ["model", "curve", "ratedCurrent", "poles"],
+      "variants": [
+        {"id": "abb.s251na.c10", "model": "S251 Na C 10", "orderCode": null, "poles": null, "ratedCurrentA": 10, "instances": ["QF89"], "sourceText": "S 251 Na C 10", "sourceElectricalText": "2x10 - 6kA", "reviewRequired": true}
+      ]
+    },
+    {
+      "id": "abb.s200m",
+      "name": "S200M miniature circuit breaker",
+      "shellKey": "abb.s200m.1p.front",
+      "geometry": {"asset": null, "status": "pending_exact_cad", "view": "front", "dimensionMm": {"width": 17.5, "height": 88, "depth": 69}, "dimensionStatus": "ABB_product_data", "sources": ["https://new.abb.com/low-voltage/products/circuit-breakers/miniature-circuit-breakers"]},
+      "inscriptionFields": ["model", "curve", "ratedCurrent", "breakingCapacity", "poles"],
+      "variants": [
+        {"id": "abb.s201m.c10.1p", "model": "S201M-C10", "orderCode": "2CDS271001R0104", "poles": 1, "ratedCurrentA": 10, "instances": ["QF90"], "sourceElectricalText": "2x10 - 10kA", "reviewRequired": true}
+      ]
+    },
+    {
+      "id": "abb.ot400e04",
+      "name": "OT400E04 switch disconnector",
+      "shellKey": "abb.ot400e04.4p.front",
+      "geometry": {"asset": null, "status": "mechanical_cad_available_download_pending", "view": "front", "dimensionMm": {"width": 235, "height": 185, "depth": 107}, "dimensionStatus": "manufacturer_product_data", "cadSource": "https://library.abb.com/d/1SCC301280F0001", "cadAlternatives": ["https://library.abb.com/d/1SCC301279F0001", "https://library.abb.com/d/OT400M04M1.stp"], "sources": ["https://plc-direct.com/products/1sca022719r1810"]},
+      "inscriptionFields": ["model", "ratedCurrent", "poles", "accessoryHandle"],
+      "variants": [
+        {"id": "abb.ot400e04.4p.400a", "model": "OT400E04", "orderCode": null, "poles": 4, "ratedCurrentA": 400, "instances": ["QS1"], "reviewRequired": true, "sourceNote": "El CAD hallado y el código citado en la ficha corresponden a OT400E04P; confirmar si el tablero usa la variante P o el cuerpo OT400E04 sin esa variante."}
+      ]
+    }
+  ],
+  "notes": [
+    "Families share a reusable shell only when the mechanical body and view match; inscriptions and electrical ratings are per variant.",
+    "A null asset means a source model has not yet been downloaded and checked into the local asset library.",
+    "S251 Na source text and exact ordering code need confirmation from a clearer source drawing before treating it as an exact catalog match.",
+    "Manufacturer family dimensions are not substitutes for checking the downloaded CAD variant, terminal orientation, mounting version, and accessories."
+  ]
+}

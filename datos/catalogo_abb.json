@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "enclosures": [
+    {
+      "id": "spep185-1000-2100-500",
+      "label": "ABB System pro E power 185 · 1000 × 2100 × 500",
+      "functional": {
+        "width": 1000,
+        "height": 2100,
+        "depth": 500
+      },
+      "externalBody": {
+        "width": 1100,
+        "height": 2200,
+        "depth": 600
+      },
+      "plinthHeight": 100,
+      "mountingLayout": {
+        "status": "propuesta de montaje; validar posición y bastidor con ABB",
+        "dinRails": [
+          {
+            "id": "DIN-1",
+            "type": "PDRS0600",
+            "orderCode": "1STQ008042A0000",
+            "x": 200,
+            "y": 805,
+            "length": 600,
+            "height": 35
+          }
+        ]
+      },
+      "parts": [
+        "PUPM2100",
+        "PCFM1000",
+        "PFCM0500",
+        "PPAM0100",
+        "PTBB1056"
+      ],
+      "source": "https://library.e.abb.com/public/ea19569e71bd4a55ac10d34ebc2c89d8/Katalog_185_1STC803009D0103%20SPEP%20185%20catalogue%202024%20Rev%203.pdf",
+      "argentinaStatus": "disponibilidad de la configuración exacta no verificada"
+    },
+    {
+      "id": "spep185-1000-1800-500",
+      "label": "ABB System pro E power 185 · 1000 × 1800 × 500",
+      "functional": {
+        "width": 1000,
+        "height": 1800,
+        "depth": 500
+      },
+      "externalBody": {
+        "width": 1100,
+        "height": 1900,
+        "depth": 600
+      },
+      "plinthHeight": 100,
+      "mountingLayout": {
+        "status": "propuesta de montaje; validar posición y bastidor con ABB",
+        "dinRails": [
+          {
+            "id": "DIN-1",
+            "type": "PDRS0600",
+            "orderCode": "1STQ008042A0000",
+            "x": 200,
+            "y": 605,
+            "length": 600,
+            "height": 35
+          }
+        ]
+      },
+      "parts": [
+        "PUPM1800",
+        "PCFM1000",
+        "PFCM0500",
+        "PPAM0100",
+        "PTBB1056"
+      ],
+      "source": "https://library.e.abb.com/public/ea19569e71bd4a55ac10d34ebc2c89d8/Katalog_185_1STC803009D0103%20SPEP%20185%20catalogue%202024%20Rev%203.pdf",
+      "argentinaStatus": "disponibilidad de la configuración exacta no verificada"
+    }
+  ],
+  "deviceShells": [
+    {
+      "id": "abb.tmax.xt1.4p.fixed.front",
+      "label": "Tmax XT1 · 4P fijo",
+      "width": 101.6,
+      "height": 130,
+      "kit": "PHDX1401",
+      "kitOrderCode": "1STQ002097B0000",
+      "kitHeight": 200,
+      "cadSource": "https://search.abb.com/library/Download.aspx?Action=Launch&DocumentID=1SDH001295R0080&DocumentPartId=&DocumentRevisionId=B&LanguageCode=en",
+      "cadStatus": "Vista 2D frontal derivada del CAD ABB e integrada en pantalla y DXF; inscripciones nominales pendientes de validar",
+      "cadFiles": [
+        "cad/abb/xt1/1SDH001295R0080_XT1_4P_FIXED_F.stp"
+      ],
+      "frontGeometry": "datos/frentes_cad.json",
+      "appearance": "datos/apariencias_abb.json",
+      "appearanceStatus": "paleta vectorial contrastada con imagen de producto ABB; no es una textura CAD fotorealista"
+    },
+    {
+      "id": "abb.tmax.xt2.4p.fixed.front",
+      "label": "Tmax XT2 · 4P fijo",
+      "width": 120,
+      "height": 130,
+      "kit": "PHDX2401",
+      "kitOrderCode": "1STQ001444B0000",
+      "kitHeight": 200,
+      "cadSource": "https://search.abb.com/library/Download.aspx?Action=Launch&DocumentID=1SDH002230A1002&DocumentPartId=&DocumentRevisionId=A&LanguageCode=en",
+      "cadStatus": "Vista 2D frontal derivada del CAD ABB e integrada en pantalla y DXF; inscripciones nominales pendientes de validar",
+      "cadFiles": [
+        "cad/abb/xt2/1SDH002230A1002_XT2_4P_FIXED_F.stp",
+        "cad/abb/xt2/1SDH000721R0101_XT2_F_FRONT_TERMINALS.dxf"
+      ],
+      "frontGeometry": "datos/frentes_cad.json",
+      "appearance": "datos/apariencias_abb.json",
+      "appearanceStatus": "paleta vectorial contrastada con imagen de producto ABB; no es una textura CAD fotorealista"
+    },
+    {
+      "id": "abb.s804n.4p.front",
+      "label": "S804N · 4P",
+      "width": 106,
+      "height": 95,
+      "mounting": "din",
+      "cadSource": "https://search.abb.com/library/Download.aspx?Action=Launch&DocumentID=9AKK106930A3272&DocumentPartId=&DocumentRevisionId=-&LanguageCode=en",
+      "cadStatus": "Vista 2D frontal derivada del CAD ABB e integrada en pantalla y DXF; inscripciones nominales pendientes de validar",
+      "cadFiles": [
+        "cad/abb/s800/2D_S800_4pole_drawing.DXF",
+        "cad/abb/s800/3D_S800_(-C,_-N,_-S,_-U)_4pole_drawing.STEP"
+      ],
+      "frontGeometry": "datos/frentes_cad.json",
+      "appearance": "datos/apariencias_abb.json",
+      "appearanceStatus": "paleta vectorial contrastada con imagen de producto ABB; no es una textura CAD fotorealista"
+    },
+    {
+      "id": "abb.s200m.1p.front",
+      "label": "S201M · 1P",
+      "width": 17.5,
+      "height": 88,
+      "mounting": "din",
+      "cadSource": "https://search.abb.com/library/Download.aspx?Action=Launch&DocumentID=9AKK106930A4856&DocumentPartId=&DocumentRevisionId=-&LanguageCode=en",
+      "cadStatus": "DWG 2D S201M y STEP 3D S200M 1P descargados; frente pendiente de integrar",
+      "cadFiles": [
+        "cad/abb/s201m/S201M_2D_9AKK106930A4856.dwg",
+        "cad/abb/s201m/S200M_1P_3D_9AKK106930A4834.stp"
+      ]
+    },
+    {
+      "id": "abb.ot400e04.4p.front",
+      "label": "OT400E04P · 4P con manija y eje",
+      "width": 235,
+      "height": 185,
+      "provisional": true,
+      "cadSource": "https://search.abb.com/library/Download.aspx?Action=Launch&DocumentID=1SCC301280F0001&DocumentPartId=&DocumentRevisionId=A&LanguageCode=en",
+      "cadStatus": "Vista 2D frontal proyectada del IGS ABB de la familia OT315-OT400E04; manija/eje de la variante P pendientes",
+      "cadFiles": [
+        "cad/abb/ot400/OT315_400E04_1SCC301280F0001.dwg",
+        "cad/abb/ot400/OT400M04M1_1SCC301279F0001.dxf",
+        "cad/abb/ot400/OT315_400E04.igs"
+      ],
+      "frontGeometry": "datos/frentes_cad.json",
+      "appearance": "datos/apariencias_abb.json",
+      "appearanceStatus": "paleta vectorial contrastada con imagen de producto ABB; no es una textura CAD fotorealista"
+    },
+    {
+      "id": "abb.s200m.1pn.front",
+      "label": "S201M Na · 1P+N",
+      "width": 35,
+      "height": 88,
+      "mounting": "din",
+      "cadSource": "https://search.abb.com/library/Download.aspx?Action=Launch&DocumentID=9AKK106930A4857&DocumentPartId=&DocumentRevisionId=-&LanguageCode=en",
+      "cadStatus": "Vista 2D frontal derivada del CAD ABB e integrada en pantalla y DXF; inscripciones nominales pendientes de validar",
+      "cadFiles": [
+        "cad/abb/s201m_na/S201M_Na_S202M_2D_9AKK106930A4857.dwg",
+        "cad/abb/s201m_na/S200M_1PN_2P_3D_9AKK106930A4835.stp"
+      ],
+      "frontGeometry": "datos/frentes_cad.json",
+      "appearance": "datos/apariencias_abb.json",
+      "appearanceStatus": "paleta vectorial contrastada con imagen de producto ABB; no es una textura CAD fotorealista"
+    }
+  ]
+}

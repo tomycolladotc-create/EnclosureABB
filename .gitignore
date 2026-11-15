@@ -8,3 +8,11 @@ outputs/
 *.log
 .DS_Store
 Thumbs.db
+# CAD originales de ABB (STEP/IGES/DWG de hasta 40 MB): quedan en la compu local, en cad/abb/.
+# Su fuente, código ABB y SHA-256 están en datos/cad_argentina.json. La app usa datos/frentes_cad.json.
+cad/
+referencias/
+work/cad_descargas/
+work/imagenes_ref/
+work/*.png
+work/*.html

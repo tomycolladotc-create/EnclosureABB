@@ -1,0 +1,214 @@
+{
+  "schemaVersion": 1,
+  "criteria": "Registrar aparte la referencia exacta del unifilar, la carcasa CAD de familia y la evidencia argentina. La certificación local no equivale a oferta comercial.",
+  "cadFilesDownloaded": 12,
+  "items": [
+    {
+      "model": "XT1C 160 TMD 80-800 4p F F",
+      "abbOrderCode": "1SDA067405R1",
+      "tags": [
+        "QF82",
+        "QF83",
+        "QF84",
+        "QF86",
+        "QF87",
+        "QF163"
+      ],
+      "argentinaStatus": "oferta local identificada; stock de esta publicación 0",
+      "argentinaSource": "https://www.eba.com.ar/compactas/8546--abb-1sda067405r1-interruptor-compacto-4-x-80-25ka-tmd-56min-80max-xt1c-160-tmd-80-800-4p-f-f.html",
+      "cadSource": "https://www.abb.com/global/en/areas/electrification/low-voltage/circuit-breakers/molded-case-circuit-breakers/tmax-xt",
+      "cadStatus": "STEP 3D oficial de carcasa XT1 4P fijo F descargado; inscripción TMD 80-800 pendiente de integrar",
+      "cadFiles": [
+        {
+          "path": "cad/abb/xt1/1SDH001295R0080_XT1_4P_FIXED_F.stp",
+          "bytes": 12219203,
+          "sha256": "399a9ebfb7936e361c02929669aae1cf6bc928be7edea179fd87fe4f716e647f",
+          "abbDocumentId": "1SDH001295R0080",
+          "revision": "B",
+          "description": "carcasa XT1 4P fijo F; STEP 3D",
+          "source": "https://search.abb.com/library/Download.aspx?Action=Launch&DocumentID=1SDH001295R0080&DocumentPartId=&DocumentRevisionId=B&LanguageCode=en"
+        }
+      ]
+    },
+    {
+      "model": "S804N-C32 4P",
+      "abbOrderCode": "2CCS894001R0324",
+      "tags": [
+        "QF81",
+        "QF85"
+      ],
+      "argentinaStatus": "listado en distribuidor argentino",
+      "argentinaSource": "https://techniasrl.com.ar/modelos-abb.html",
+      "cadSource": "https://new.abb.com/low-voltage/de/niederspannungsprodukte/branchen/schienenfahrzeuge/hochleistungs-sicherungsautomaten-bahn/s800suc",
+      "cadStatus": "DXF 2D y STEP 3D oficiales de carcasa S800N 4P descargados; inscripción C32 pendiente de integrar",
+      "referenceDrawing": {
+        "path": "referencias/abb/S800_catalogo_dimensionado_2CCC413003C0207.pdf",
+        "type": "PDF técnico con dibujo acotado; no es CAD",
+        "source": "https://library.e.abb.com/public/7421b241b52449599575543b0c703322/2CCC413003C0207.pdf"
+      },
+      "cadFiles": [
+        {
+          "path": "cad/abb/s800/2D_S800_4pole_drawing.DXF",
+          "bytes": 868310,
+          "sha256": "c17f0f1c45dd1014febd6f76758e8da3da764069aebf1b86a0d430139c7d8c91",
+          "abbDocumentId": "9AKK106930A3272",
+          "revision": "-",
+          "description": "carcasa S800 4P; DXF 2D",
+          "source": "https://search.abb.com/library/Download.aspx?Action=Launch&DocumentID=9AKK106930A3272&DocumentPartId=&DocumentRevisionId=-&LanguageCode=en"
+        },
+        {
+          "path": "cad/abb/s800/3D_S800_(-C,_-N,_-S,_-U)_4pole_drawing.STEP",
+          "bytes": 1006821,
+          "sha256": "d68711983d372838faf32c18cc68f350ebbf6ac7b4047f0a31b3ab58a127370c",
+          "abbDocumentId": "9AKK106930A3273",
+          "revision": "-",
+          "description": "carcasa S800N 4P; STEP 3D",
+          "source": "https://search.abb.com/library/Download.aspx?Action=Launch&DocumentID=9AKK106930A3273&DocumentPartId=&DocumentRevisionId=-&LanguageCode=en"
+        }
+      ]
+    },
+    {
+      "model": "S201M-C10 1P",
+      "abbOrderCode": "2CDS271001R0104",
+      "tags": [],
+      "argentinaStatus": "listado en distribuidor argentino",
+      "argentinaSource": "https://techniasrl.com.ar/modelos-abb.html",
+      "cadSource": "https://new.abb.com/low-voltage/fr/produits-et-systemes-basse-tension/industrie/energie-embarquee/interrupteurs-magn%C3%A9tothermiques/s200mtuc",
+      "cadStatus": "DWG 2D S201M y STEP 3D de carcasa S200M 1P descargados; inscripción C10 pendiente de integrar",
+      "cadFiles": [
+        {
+          "path": "cad/abb/s201m/S201M_2D_9AKK106930A4856.dwg",
+          "bytes": 257280,
+          "sha256": "9ed31720d064fbcb78b3c195786722e4adc9b24b9b212389bee03e91bf7125f8",
+          "abbDocumentId": "9AKK106930A4856",
+          "revision": "-",
+          "description": "carcasa S201M; DWG 2D",
+          "source": "https://search.abb.com/library/Download.aspx?Action=Launch&DocumentID=9AKK106930A4856&DocumentPartId=&DocumentRevisionId=-&LanguageCode=en"
+        },
+        {
+          "path": "cad/abb/s201m/S200M_1P_3D_9AKK106930A4834.stp",
+          "bytes": 19584266,
+          "sha256": "b3057428fdf5407339e709af79468fdd158b0ec4dc0ac14aeb9cde85e7f0bb47",
+          "abbDocumentId": "9AKK106930A4834",
+          "revision": "-",
+          "description": "carcasa S200M 1P; STEP 3D",
+          "source": "https://search.abb.com/library/Download.aspx?Action=Launch&DocumentID=9AKK106930A4834&DocumentPartId=&DocumentRevisionId=-&LanguageCode=en"
+        }
+      ],
+      "selectionNote": "Biblioteca complementaria de 1P; no corresponde a QF90 del unifilar, que es 1P+N."
+    },
+    {
+      "model": "S201M-C10NA 1P+N",
+      "abbOrderCode": "2CDS271103R0104",
+      "tags": [
+        "QF90"
+      ],
+      "argentinaStatus": "modelo incluido en certificado ABB Argentina; oferta comercial exacta no verificada",
+      "argentinaSource": "https://new.abb.com/docs/librariesprovider78/argentina/electrification/%28pos-10%29--31-01-2025---s200m---dc-e-t26-022-4-%28m3%29.pdf?sfvrsn=e88fd30c_1",
+      "cadSource": "https://search.abb.com/library/Download.aspx?Action=Launch&DocumentID=9AKK106930A4857&DocumentPartId=&DocumentRevisionId=-&LanguageCode=en",
+      "cadStatus": "DWG 2D y STEP 3D oficiales de carcasa 1P+N descargados; frente e inscripción exacta pendientes de integrar",
+      "cadFiles": [
+        {
+          "path": "cad/abb/s201m_na/S201M_Na_S202M_2D_9AKK106930A4857.dwg",
+          "bytes": 389184,
+          "sha256": "719d9f27fbfb9d4022044444950150ec1c02813d344d8fb6af0e791544f65492",
+          "abbDocumentId": "9AKK106930A4857",
+          "revision": "-",
+          "description": "carcasa S201M Na / S202M; DWG 2D; verificar inscripción C10",
+          "source": "https://search.abb.com/library/Download.aspx?Action=Launch&DocumentID=9AKK106930A4857&DocumentPartId=&DocumentRevisionId=-&LanguageCode=en"
+        },
+        {
+          "path": "cad/abb/s201m_na/S200M_1PN_2P_3D_9AKK106930A4835.stp",
+          "bytes": 39126935,
+          "sha256": "cceb1ae8f3d2ea23d948d1dabb1b2c999aca9ded5c1e7e6b602f3ec0ba129ce5",
+          "abbDocumentId": "9AKK106930A4835",
+          "revision": "-",
+          "description": "carcasa S200M 1P+N / 2P; STEP 3D; verificar inscripción C10",
+          "source": "https://search.abb.com/library/Download.aspx?Action=Launch&DocumentID=9AKK106930A4835&DocumentPartId=&DocumentRevisionId=-&LanguageCode=en"
+        }
+      ]
+    },
+    {
+      "model": "XT2N 160 TMG 80-240 4p F F",
+      "abbOrderCode": "1SDA067734R1",
+      "tags": [
+        "QF88"
+      ],
+      "argentinaStatus": "código ABB confirmado; oferta argentina de esta variante exacta no verificada",
+      "cadSource": "https://www.abb.com/global/en/areas/electrification/low-voltage/circuit-breakers/molded-case-circuit-breakers/tmax-xt",
+      "cadStatus": "STEP 3D oficial XT2 4P fijo F y DXF de bornes descargados; oferta local exacta pendiente de verificar",
+      "cadFiles": [
+        {
+          "path": "cad/abb/xt2/1SDH002230A1002_XT2_4P_FIXED_F.stp",
+          "bytes": 22913388,
+          "sha256": "0ed073d4a4c1db9dbc846a35842393e7d9087a4056c170175cf18689e0dc409b",
+          "abbDocumentId": "1SDH002230A1002",
+          "revision": "A",
+          "description": "carcasa XT2 4P fijo F; STEP 3D",
+          "source": "https://search.abb.com/library/Download.aspx?Action=Launch&DocumentID=1SDH002230A1002&DocumentPartId=&DocumentRevisionId=A&LanguageCode=en"
+        },
+        {
+          "path": "cad/abb/xt2/1SDH000721R0101_XT2_F_FRONT_TERMINALS.dxf",
+          "bytes": 8076531,
+          "sha256": "a0d28cca7070d0a4c86efcdf9085672898399f9cb037076e58063726d4b0bf84",
+          "abbDocumentId": "1SDH000721R0101",
+          "revision": "E",
+          "description": "dibujo de bornes delanteros XT2; DXF 2D; no es el cuerpo completo",
+          "source": "https://search.abb.com/library/Download.aspx?Action=Launch&DocumentID=1SDH000721R0101&DocumentPartId=&DocumentRevisionId=E&LanguageCode=en"
+        }
+      ]
+    },
+    {
+      "model": "OT400E04P 4P",
+      "abbOrderCode": "1SCA022719R1810",
+      "tags": [
+        "QS1"
+      ],
+      "argentinaStatus": "modelo ofrecido en Argentina; disponibilidad al momento de compra por confirmar",
+      "argentinaSource": "https://techniasrl.com.ar/modelos-abb.html",
+      "cadSource": "https://search.abb.com/library/Download.aspx?Action=Launch&DocumentID=1SCC301280F0001&DocumentPartId=&DocumentRevisionId=A&LanguageCode=en",
+      "cadStatus": "DWG, DXF e IGS oficiales de la familia OT315-OT400E04 descargados; manija y eje del kit P requieren validación de montaje",
+      "selectionNote": "Se reemplaza para QS1 el OT400E04 base sin manija ni eje por OT400E04P con manija y eje. No se verificó que sea estadísticamente el más vendido; se eligió porque hay oferta local identificada y conserva 4P/400A.",
+      "cadFiles": [
+        {
+          "path": "cad/abb/ot400/OT315_400E04_1SCC301280F0001.dwg",
+          "bytes": 703023,
+          "sha256": "ed2aaa70b6f101aa98b597af7188eb8e8ad401f6fa76078c6378cd1ced7dbca8",
+          "abbDocumentId": "1SCC301280F0001",
+          "revision": "A",
+          "description": "dibujo mecánico familia OT315-OT400E04; DWG 2D",
+          "source": "https://search.abb.com/library/Download.aspx?Action=Launch&DocumentID=1SCC301280F0001&DocumentPartId=&DocumentRevisionId=A&LanguageCode=en"
+        },
+        {
+          "path": "cad/abb/ot400/OT400M04M1_1SCC301279F0001.dxf",
+          "bytes": 2805065,
+          "sha256": "b2a203b0651c48eff835075039d4064b7d1ff6e0876fff51a01b3deffe8b875c",
+          "abbDocumentId": "1SCC301279F0001",
+          "revision": "A",
+          "description": "dibujo mecánico OT400M04M1; DXF 2D; ABB lo entrega con extensión DWG",
+          "source": "https://search.abb.com/library/Download.aspx?Action=Launch&DocumentID=1SCC301279F0001&DocumentPartId=&DocumentRevisionId=A&LanguageCode=en"
+        },
+        {
+          "path": "cad/abb/ot400/OT315_400E04.igs",
+          "bytes": 2341838,
+          "sha256": "192f95fb69f60e4d75e6f5c91f47926e6f8635557b2a0c16008d6bb4780587ed",
+          "abbDocumentId": "OT315-400E04.IGS",
+          "revision": "-",
+          "description": "modelo 3D familia OT315-OT400E04; IGS",
+          "source": "https://search.abb.com/library/Download.aspx?Action=Launch&DocumentID=OT315-400E04.IGS&DocumentPartId=&DocumentRevisionId=-&LanguageCode=en"
+        }
+      ]
+    },
+    {
+      "model": "S251 Na C10",
+      "abbOrderCode": "16060722 / EF0722 (catálogo histórico)",
+      "tags": [
+        "QF89"
+      ],
+      "argentinaStatus": "modelo ABB histórico identificado; oferta argentina actual no verificada",
+      "cadStatus": "no se localizó CAD oficial; conserva geometría provisional de 1P+N",
+      "cadFiles": [],
+      "catalogSource": "https://library.e.abb.com/public/904c32994f43cc7fc1256cb00053600f/ITSCE-603221011.pdf"
+    }
+  ]
+}

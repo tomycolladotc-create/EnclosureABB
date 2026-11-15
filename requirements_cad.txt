@@ -1,0 +1,3 @@
+# Solo para regenerar los frentes 2D al incorporar nuevos STEP/IGES ABB.
+ezdxf>=1.4,<2
+cadquery-ocp>=7.9.3,<8

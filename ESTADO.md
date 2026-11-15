@@ -1,7 +1,7 @@
 # ESTADO DEL PROYECTO — Topográficos de tableros ABB
 
 > Archivo compartido entre Codex/ChatGPT y Claude. Leerlo al empezar cada sesión y actualizarlo al terminar.
-> Última actualización: 2026-11-15 (Claude, a partir del chat de Codex del mismo día).
+> Última actualización: 2026-11-15 17:20 (Claude).
 
 ## Objetivo
 Programa que toma un **unifilar en PDF exportado desde ABB e-Design DOC** y genera el **topográfico del tablero** (vista frontal 2D) con los dispositivos reales. Debe tener:
@@ -23,6 +23,14 @@ Programa que toma un **unifilar en PDF exportado desde ABB e-Design DOC** y gene
 ## Arquitectura
 Módulos separados: importación de PDF → modelo del proyecto → catálogos (equipos, envolventes, paletas de color) → reglas de distribución → editor → exportadores.
 Unidades internas en mm. Cada equipo y gabinete guarda la procedencia de su geometría.
+
+## Estructura del repo
+- `app.py` servidor local del editor (`iniciar_editor.bat` → http://127.0.0.1:8765) · `cad_export.py` exportación DXF · `generar_topografico.py` generador por línea de comandos
+- `datos/` catálogos y proyecto en JSON (catálogo ABB, apariencias/colores, frentes 2D ya proyectados, inventario CAD Argentina, proyecto TS4)
+- `web/index.html` interfaz del editor
+- `work/` scripts auxiliares (proyectar STEP a frente 2D, empaquetar, manifest)
+- `docs/` arquitectura, catálogo inicial y estado de la búsqueda de CAD
+- **No están en el repo** (por peso): `cad/abb/` con los STEP/DWG/DXF originales de ABB, `referencias/`, `salida/`. Quedan en la compu de Thomas; su fuente y SHA-256 están en `datos/cad_argentina.json`. Solo hacen falta para regenerar `datos/frentes_cad.json`.
 
 ## Dónde está todo (compu de Thomas)
 - **App principal:** `C:\Users\Thomas\Documents\ChatGPT\Topograficos Tableros\`
@@ -56,17 +64,16 @@ Unidades internas en mm. Cada equipo y gabinete guarda la procedencia de su geom
 - Frentes 2D proyectados desde STEP (XT1, XT2, QF90) y DXF (S800); OT400 desde dibujo de familia.
 - DXF exportado con bloques por familia (5 bloques, 11 inserciones), auditado sin errores.
 
-## En curso cuando se cortó Codex
-- **Colores reales en la vista 2D**: se agregaron capas de color por familia (paleta en archivo aparte, basada en fotos ABB) debajo de las líneas del CAD. Se estaba **verificando que los colores también se guarden en el DXF**. Confirmar si terminó.
+- Colores por familia en la vista 2D (paleta en `datos/apariencias_abb.json`, basada en fotos ABB) y en el DXF (capa `ABB_CAD_COLORES`, true color).
+- [Claude] Corregido bug del DXF: los rellenos de color salían como triángulos cruzados por el orden de vértices de SOLID. Verificado renderizando el DXF del TS4.
 
 ## Pendiente (en orden)
-1. Verificar/terminar colores en el DXF.
-2. Inscripciones exactas en los frentes.
-3. Manija y eje del OT400E04P.
-4. CAD para QF89 (S251), o reemplazo por equivalente actual vendido en AR.
-5. Validar con ABB Argentina la configuración del gabinete y la posición de rieles/kits; confirmar venta local de la envolvente y del XT2 exacto.
-6. Coordinar kits con la celda de barras y cerrar la lista de materiales (BOM).
-7. Probar con otros unifilares de DOC (que funcione en general y no solo con el TS4).
+1. Inscripciones exactas en los frentes.
+2. Manija y eje del OT400E04P.
+3. CAD para QF89 (S251), o reemplazo por equivalente actual vendido en AR.
+4. Validar con ABB Argentina la configuración del gabinete y la posición de rieles/kits; confirmar venta local de la envolvente y del XT2 exacto.
+5. Coordinar kits con la celda de barras y cerrar la lista de materiales (BOM).
+6. Probar con otros unifilares de DOC (que funcione en general y no solo con el TS4).
 
 ## Cómo trabajamos en paralelo
 - **Codex/ChatGPT** y **Claude** trabajan sobre este repo. Antes de empezar: `git pull` y leer este archivo.

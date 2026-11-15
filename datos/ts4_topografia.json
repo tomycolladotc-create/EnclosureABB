@@ -1,0 +1,263 @@
+{
+  "schemaVersion": 1,
+  "project": "TS4-PORT 11-12-13-14",
+  "source": "BAF-E-EL-PL-104-0 Unifilares-15 TS4-PORT 11-12-13-14.pdf",
+  "units": "mm",
+  "view": "interior-frontal",
+  "scaleOnSheet": "1:10",
+  "enclosure": {
+    "manufacturer": "ABB",
+    "line": "System pro E power 185 mm Busbar System",
+    "configuration": "single functional column",
+    "functional": {
+      "width": 1000,
+      "height": 2100,
+      "depth": 500
+    },
+    "externalBody": {
+      "width": 1100,
+      "height": 2200,
+      "depth": 600
+    },
+    "plinthHeight": 100,
+    "overallHeightWithPlinth": 2300,
+    "functionalAreaOffset": {
+      "x": 50,
+      "y": 150
+    },
+    "structuralComponentReferences": {
+      "uprights": "PUPM2100",
+      "frontRearWidth1000": "PCFM1000",
+      "sideDepth500": "PFCM0500",
+      "anglePiecesDepth500": [
+        "PPAM0100",
+        "PPIM0100"
+      ],
+      "bottomWithGasketWidth1000Depth500": "PTBB1056",
+      "frontProfileVertical": "PPFV2100"
+    },
+    "busbarSystemRatedCurrentA": 2000,
+    "busbarSystemShortTimeWithstandKa": 75,
+    "status": "ABB catalog dimensions selected; functional dimensions are not a net mounting-plate clear-size drawing",
+    "sources": [
+      "https://library.e.abb.com/public/ea19569e71bd4a55ac10d34ebc2c89d8/Katalog_185_1STC803009D0103%20SPEP%20185%20catalogue%202024%20Rev%203.pdf",
+      "https://cataloghi.it.abb.com/view/280967066/1/"
+    ],
+    "mountingLayout": {
+      "status": "propuesta de montaje; validar posición y bastidor con ABB",
+      "dinRails": [
+        {
+          "id": "DIN-1",
+          "type": "PDRS0600",
+          "orderCode": "1STQ008042A0000",
+          "x": 200,
+          "y": 805,
+          "length": 600,
+          "height": 35
+        }
+      ]
+    },
+    "argentinaStatus": "disponibilidad de la configuración exacta no verificada"
+  },
+  "devices": [
+    {
+      "tag": "QF82",
+      "model": "XT1C 160 TMD 80-800 4P",
+      "x": 150,
+      "y": 1280,
+      "w": 101.6,
+      "h": 130,
+      "status": "family envelope verified; exact CAD front pending",
+      "shell": "abb.tmax.xt1.4p.fixed.front",
+      "mountingKit": {
+        "type": "PHDX1401",
+        "orderCode": "1STQ002097B0000",
+        "mounting": "fixed horizontal, 3/4P",
+        "moduleHeight": 200,
+        "quantity": 1
+      }
+    },
+    {
+      "tag": "QF83",
+      "model": "XT1C 160 TMD 80-800 4P",
+      "x": 330,
+      "y": 1280,
+      "w": 101.6,
+      "h": 130,
+      "status": "family envelope verified; exact CAD front pending",
+      "shell": "abb.tmax.xt1.4p.fixed.front",
+      "mountingKit": {
+        "type": "PHDX1401",
+        "orderCode": "1STQ002097B0000",
+        "mounting": "fixed horizontal, 3/4P",
+        "moduleHeight": 200,
+        "quantity": 1
+      }
+    },
+    {
+      "tag": "QF84",
+      "model": "XT1C 160 TMD 80-800 4P",
+      "x": 510,
+      "y": 1280,
+      "w": 101.6,
+      "h": 130,
+      "status": "family envelope verified; exact CAD front pending",
+      "shell": "abb.tmax.xt1.4p.fixed.front",
+      "mountingKit": {
+        "type": "PHDX1401",
+        "orderCode": "1STQ002097B0000",
+        "mounting": "fixed horizontal, 3/4P",
+        "moduleHeight": 200,
+        "quantity": 1
+      }
+    },
+    {
+      "tag": "QF88",
+      "model": "XT2N 160 TMG 80-240 4P",
+      "x": 690,
+      "y": 1280,
+      "w": 120,
+      "h": 130,
+      "status": "family envelope verified; exact CAD front pending",
+      "shell": "abb.tmax.xt2.4p.fixed.front",
+      "mountingKit": {
+        "type": "PHDX2401",
+        "orderCode": "1STQ001444B0000",
+        "mounting": "fixed horizontal, 3/4P",
+        "moduleHeight": 200,
+        "quantity": 1
+      }
+    },
+    {
+      "tag": "QF86",
+      "model": "XT1C 160 TMD 80-800 4P",
+      "x": 260,
+      "y": 1040,
+      "w": 101.6,
+      "h": 130,
+      "status": "family envelope verified; exact CAD front pending",
+      "shell": "abb.tmax.xt1.4p.fixed.front",
+      "mountingKit": {
+        "type": "PHDX1401",
+        "orderCode": "1STQ002097B0000",
+        "mounting": "fixed horizontal, 3/4P",
+        "moduleHeight": 200,
+        "quantity": 1
+      }
+    },
+    {
+      "tag": "QF87",
+      "model": "XT1C 160 TMD 80-800 4P",
+      "x": 440,
+      "y": 1040,
+      "w": 101.6,
+      "h": 130,
+      "status": "family envelope verified; exact CAD front pending",
+      "shell": "abb.tmax.xt1.4p.fixed.front",
+      "mountingKit": {
+        "type": "PHDX1401",
+        "orderCode": "1STQ002097B0000",
+        "mounting": "fixed horizontal, 3/4P",
+        "moduleHeight": 200,
+        "quantity": 1
+      }
+    },
+    {
+      "tag": "QF163",
+      "model": "XT1C 160 TMD 80-800 4P",
+      "x": 620,
+      "y": 1040,
+      "w": 101.6,
+      "h": 130,
+      "status": "family envelope verified; exact CAD front pending",
+      "shell": "abb.tmax.xt1.4p.fixed.front",
+      "mountingKit": {
+        "type": "PHDX1401",
+        "orderCode": "1STQ002097B0000",
+        "mounting": "fixed horizontal, 3/4P",
+        "moduleHeight": 200,
+        "quantity": 1
+      }
+    },
+    {
+      "tag": "QF81",
+      "model": "S804N-C32 4P",
+      "x": 260,
+      "y": 757.5,
+      "w": 106,
+      "h": 95,
+      "status": "manufacturer dimensions; exact CAD front pending",
+      "shell": "abb.s804n.4p.front"
+    },
+    {
+      "tag": "QF85",
+      "model": "S804N-C32 4P",
+      "x": 430,
+      "y": 757.5,
+      "w": 106,
+      "h": 95,
+      "status": "manufacturer dimensions; exact CAD front pending",
+      "shell": "abb.s804n.4p.front"
+    },
+    {
+      "tag": "QF89",
+      "model": "S251 Na C10 1P+N 6kA",
+      "x": 630,
+      "y": 761.0,
+      "w": 35,
+      "h": 88,
+      "status": "modelo histórico ABB identificado; CAD exacto y disponibilidad argentina pendientes",
+      "shell": null,
+      "abbHistoricCode": "16060722 / EF0722"
+    },
+    {
+      "tag": "QF90",
+      "model": "S201M-C10NA 1P+N 10kA",
+      "x": 750,
+      "y": 761.0,
+      "w": 35,
+      "h": 88,
+      "status": "carcasa ABB 1P+N; inscripción C10 pendiente de integrar",
+      "shell": "abb.s200m.1pn.front",
+      "abbOrderCode": "2CDS271103R0104"
+    },
+    {
+      "tag": "QS1",
+      "model": "OT400E04P 4P 400A",
+      "x": 145,
+      "y": 1570,
+      "w": 235,
+      "h": 185,
+      "status": "variante P ofrecida en Argentina; validar montaje de manija y eje antes de fabricación",
+      "shell": "abb.ot400e04.4p.front"
+    }
+  ],
+  "conceptualAssembly": {
+    "busbarSystem": "ABB System pro E power 185 mm Busbar System",
+    "mountingKits": [
+      {
+        "type": "PHDX1401",
+        "orderCode": "1STQ002097B0000",
+        "deviceFamily": "XT1 3/4P fixed",
+        "moduleHeight": 200,
+        "quantity": 6
+      },
+      {
+        "type": "PHDX2401",
+        "orderCode": "1STQ001444B0000",
+        "deviceFamily": "XT2 3/4P fixed",
+        "moduleHeight": 200,
+        "quantity": 1
+      }
+    ],
+    "status": "ABB XT kits identified; their mounting supports must be coordinated with the actual busbar cell and approved assembly BOM. Main switch, DIN group and copper sizing remain pending",
+    "sources": [
+      "https://library.e.abb.com/public/9b1c9d6ec6f54b73bfedd6f160b5203d/SPEP%20185%20catalogue%202022.pdf"
+    ]
+  },
+  "notes": [
+    "Dimensions and locations are in mm. Device coordinates are relative to the functional mounting area.",
+    "Outer dimensions are ABB System pro E power 185 mm catalogue 2024 dimensions for functional H=2100, W=1000, D=500. The 100 mm plinth is shown as a separate optional base and is included in overall height.",
+    "ABB internal kits PHDX1401 (6x XT1, 3/4P fixed, H=200) and PHDX2401 (1x XT2, 3/4P fixed, H=200) are identified from ABB catalog. This is not yet a complete manufacturer-approved assembly BOM."
+  ]
+}
