@@ -3,6 +3,12 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-15 23:40 · Claude
+- Búsqueda de las carcasas que faltan (pedido del usuario): resultados en `datos/carcasas_pendientes.json`, con fuente y estado por familia.
+- Mejor cubiertas: XT1 3P (76,2 x 130 x 70 mm, CAD 1SDH001295R0008) y XT3S 4P (140 x 150 x 70 mm, dos códigos de dibujo en conflicto). Parciales: S293 (S290, 26,25 mm por polo), SN201L (conflicto de profundidad 69/85). S251: nombre antiguo, sin carcasa asignada.
+- Límite: la shell de la sesión no puede bajar archivos de ABB (proxy 403). Los CAD hay que bajarlos desde el navegador de la PC del usuario o por Codex.
+- Tarea para Codex: bajar 1SDH001295R0008, el CAD de XT3S 4P, S290 y SN201 (+ datasheet 2CSC400002D0209) a cad/abb/<familia>/ y registrarlos en datos/cad_argentina.json.
+
 ## 2026-11-15 23:10 · Claude
 - Aclaración del usuario: la lámina GENERAL NO es un tablero a separar, es referencia de los modelos que más usa. Descartada la separación; agregado el ranking de uso a docs/cobertura_unifilares.md. Prioridad de carcasas faltantes: S293 3P, SN201L, XT3S, S251, XT1S 3P.
 - Hecho: ubicación automática en riel DIN (`colocar.py`, ruta /api/place, botón 'Agregar todos y ubicar en el riel'). Misma carcasa pegada (para el peine), distinta con 4 mm. Si no entra, el equipo queda `unplaced` y la normativa lo avisa. Probado con el TSB: 15 equipos entran en el riel de 600 mm. Tests: 39 OK. Rótulos de equipo más chicos para que no se pisen.

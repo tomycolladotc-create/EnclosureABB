@@ -1,0 +1,52 @@
+{
+  "_ayuda": "Familias que el usuario usa y todavía no tienen carcasa en catalogo_abb.json. Cada dato lleva fuente y estado; nada se dedujo sin decirlo. Cuando se baje el CAD a cad/abb/<familia>/ y se registre en datos/cad_argentina.json, pasar la entrada al catálogo.",
+  "fecha": "2026-11-15",
+  "familias": [
+    {
+      "serie": "XT1S / XT1B / XT1C / XT1N 3P",
+      "usos": "XT1S 3P: 2 equipos en la GENERAL (los XT1B/C/N ya están en 4P)",
+      "estado": "datos confirmados, CAD por bajar",
+      "medidasMm": {"ancho": 76.2, "alto": 130, "profundo": 70},
+      "fuenteMedidas": "Fichas ABB reproducidas por tecogrp.com (XT1S 160 TMD 125-1250 3p F F, 1SDA067435R1) y esvika.ee (XT1B 3p F F)",
+      "cad": {"documentoABB": "1SDH001295R0008", "descripcion": "CAD Dimensional Drawing de XT1B 160 TMD 125-1250 3p F F (esvika.ee); el 4P ya cargado es 1SDH001295R0080", "url": "https://search.abb.com/library/Download.aspx?Action=Launch&DocumentID=1SDH001295R0008&DocumentPartId=&DocumentRevisionId=B&LanguageCode=en", "revisionSinConfirmar": true},
+      "nota": "Misma carcasa para B/C/N/S: solo cambia la inscripción. Ancho 76,2 = 3 x 25,4 (el 4P es 101,6)."
+    },
+    {
+      "serie": "XT3S 4P",
+      "usos": "3 equipos en la GENERAL (XT3S 250 TMD 200-2000 y 250-2500, N=50%)",
+      "estado": "datos confirmados, CAD por bajar; dos códigos de dibujo en conflicto",
+      "medidasMm": {"ancho": 140, "alto": 150, "profundo": 70},
+      "fuenteMedidas": "Fichas ABB reproducidas por plc-direct.com y sonepar (1SDA068228R1 y 1SDA068227R1)",
+      "cad": {"candidatos": ["1SDH001295R0483 (CAD Dimensional, ficha de 1SDA068231R1 en bluestonepim)", "1SDH000720R0100 (esquema dimensional, ficha de 1SDA068232R1 en sonepar)"], "resolver": "abrir ambos en ABB y quedarse con el que sea XT3 4P fijo frontal"},
+      "nota": "Carcasa XT3 distinta de XT1/XT2. Terminales M8 (par 8 N·m). Necesita kit de montaje propio: pendiente de buscar (no se asumió el del XT2)."
+    },
+    {
+      "serie": "S293 3P (S290 de ABB)",
+      "usos": "7 equipos en 3 tableros (S 293-C 80)",
+      "estado": "dato parcial, falta CAD",
+      "medidasMm": {"ancho_por_polo": 26.25, "alto": 90, "profundo": 70},
+      "fuenteMedidas": "Ficha ABB del S291-C80 reproducida por manualmachine.com. La ficha muestra 26,25 / 90 / 70 pero NO rotula cuál es cada una; se leyó ancho por polo, alto y profundidad. Ancho de 3P = 3 x 26,25 = 78,75 (cálculo propio, confirmar).",
+      "cad": {"documentoABB": null, "tarea": "buscar CAD 2D/3D de S290 en ABB (como el 9AKK106930A4857 del S200M); el S290 es 1,5 módulos por polo, no comparte carcasa con S200"},
+      "nota": "Alto 90 mm vs 88 mm del S200: verificar. La serie S290 llega a 125 A y es la que usa la GENERAL para 80 A."
+    },
+    {
+      "serie": "SN201L 1P+N",
+      "usos": "3 equipos (SN201L B16)",
+      "estado": "dato parcial, falta CAD",
+      "medidasMm": {"ancho": 17.5, "alto": 85, "profundo": 69},
+      "fuenteMedidas": "RS Online (SN201 C16): ancho 18 mm, alto 85 mm, profundo 85 en una ficha y 69 en otra (voltimum: 69). Ancho de 1 módulo = 17,5 mm tomado del S200; conflicto de profundidad sin resolver.",
+      "cad": {"documentoABB": null, "datasheet": "2CSC400002D0209 (SN201, trae las dimensiones oficiales)", "tarea": "bajar 2CSC400002D0209 y el CAD de SN201 en ABB"},
+      "nota": "Es 1P+N en 1 módulo, neutro a la derecha. Cuenta como bipolar (2 polos) para el alcance del programa."
+    },
+    {
+      "serie": "S251 Na (1P+N)",
+      "usos": "3 equipos (S 251 Na C 10)",
+      "estado": "SIN CONFIRMAR: la serie S250S/S 251 es antigua (ficha de 2008)",
+      "medidasMm": null,
+      "equivalenteProbable": "S201-NA C10, 2CDS251103R0104 (plc2day.com lo describe como el 1P+N de la serie S200)",
+      "cad": {"documentoABB": null, "tarea": "confirmar con el usuario o ABB Argentina si el plano usa nombre viejo de S201 NA; si es así reutilizar la carcasa de S201 Na (la del S201M Na tiene 35 mm de ancho) y solo cambiar el marcado"},
+      "nota": "No se asignó carcasa por suposición."
+    }
+  ],
+  "resumen": "Con datos suficientes para empezar: XT1 3P y XT3S 4P. S293, SN201L y S251 necesitan CAD o una confirmación."
+}
