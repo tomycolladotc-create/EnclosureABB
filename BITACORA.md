@@ -3,6 +3,11 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-15 22:15 · Claude
+- Hecho: bloque de distribución propuesto cuando In supera el peine (elige el de menor corriente que alcance; BRT125A 128x85 mm provisional); regla `accesorio-sin-lugar` avisa si un accesorio no entra en el riel. Tests: 28 OK.
+- Límite: solo el BRT125A tiene medidas de frente; los demás bloques quedan 'sin medidas' hasta tener hoja de datos.
+- Siguiente [Claude]: un proyecto por tablero + lista de proyectos.
+
 ## 2026-11-15 21:50 · Claude
 - Hecho: `accesorios.py` (propuesta), rutas `/api/normativa` y `/api/normativa/complete`, panel en el editor, accesorios y avisos en el DXF. Tests: 24 OK. El TS4 real queda sin errores comprobables tras 'Completar accesorios'.
 - Límites: geometría esquemática (rectángulos punteados = provisional); un borne PE por QF es simplificación; el cubrebornes no tiene dibujo; S800 sin peine.

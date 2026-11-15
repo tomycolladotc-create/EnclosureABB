@@ -218,7 +218,7 @@
       ],
       "availability": "por-confirmar",
       "source": "automa.net (1SNA179535R2300): BRT125A, bloque de distribución, 4 polos, 125 A; Farnell (farnell.com/datasheets/2917447.pdf): ancho 128 mm; RS Online 413-2331: 11 vías, 128 x 85 x 60 mm",
-      "status": "la línea de borneras de ABB ahora es de TE Connectivity; la descripción ABB dice 4x12 conexiones y RS lista 11 vías: confirmar con la hoja 1SNC160001C0207; falta confirmar Argentina",
+      "status": "la línea de borneras de ABB ahora es de TE Connectivity; la descripción ABB dice 4x12 conexiones y RS lista 11 vías: confirmar con la hoja 1SNC160001C0207; falta confirmar Argentina | alto de frente 85 mm tomado de RS Online (ancho 85 de su ficha); confirmar con la hoja ABB",
       "anchoMm": 128,
       "profundidadMm": null,
       "vias": 11,
@@ -226,7 +226,8 @@
         "largoMm": 128,
         "anchoMm": 85,
         "alturaMm": 60
-      }
+      },
+      "alturaFrenteMm": 85
     },
     {
       "id": "steck-sdm9904",

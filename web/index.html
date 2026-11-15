@@ -92,7 +92,7 @@ function zoomView(factor){setView();const cx=view.x+view.w/2,cy=view.y+view.h/2;
 let findings=[],normaTimer=null;
 // Accesorios de normativa: rectángulos esquemáticos con las medidas del catálogo (hasta tener el CAD de cada pieza).
 function accessoriesSvg(fx,fy,h){return (project.accessories||[]).filter(a=>a.placed!==false&&a.w&&a.x!==undefined).map(a=>{
- const color=a.type==='pe_terminal'?'#c9d400':'#9aa7b4',x=fx+a.x,y=h-fy-a.y-a.h;
+ const color=a.type==='pe_terminal'?'#c9d400':a.type==='distribution_block'?'#b8865b':'#9aa7b4',x=fx+a.x,y=h-fy-a.y-a.h;
  return `<g style="pointer-events:none"><rect x="${x}" y="${y}" width="${a.w}" height="${a.h}" style="fill:${color};stroke:#3d4a57;stroke-width:1;stroke-dasharray:${a.provisional?'4 2':'0'}"/><text x="${x+a.w/2}" y="${y-3}" text-anchor="middle" font-size="9" fill="#344962">${esc(a.label||a.type)}</text></g>`}).join('')}
 function renderNorma(){const box=$('norma');if(!box)return;const bad=findings.filter(f=>f.severity==='error'&&!f.manual).length;
  box.innerHTML=(findings.length?`<div class="${bad?'info warn':'info'}">${bad?bad+' error(es) de normativa':'Sin errores comprobables'}</div>`:'<div class="info">Sin avisos.</div>')+findings.map(f=>`<div class="detected" style="border-left:4px solid ${f.severity==='error'?'#c0392b':'#b87715'}"><b>${f.severity==='error'?'Error':'Aviso'}</b>${f.manual?' · manual':''}: ${esc(f.message)}${f.ruleStatus==='verificada'?'':'<br><span class="hint">regla por verificar</span>'}</div>`).join('')}

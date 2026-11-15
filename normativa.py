@@ -83,11 +83,20 @@ def comb_current_ok(project, rule):
     return out
 
 
+def accessories_placed(project, rule):
+    out = []
+    for acc in project.get("accessories", []):
+        if acc.get("placed") is False:
+            detail = acc.get("note") or "no entra en el riel"
+            out.append(f"{acc.get('label', acc.get('type'))}: no se pudo ubicar ({detail}).")
+    return out
+
+
 def masses_to_pe(project, rule):
     return ["Confirmar manualmente que las masas de instrumentos y relés van a la barra de tierra."]
 
 
-CHECKS = {f.__name__: f for f in (board_has_pe_bar, pe_terminals_enough, live_terminals_covered, comb_between_adjacent, comb_current_ok, masses_to_pe)}
+CHECKS = {f.__name__: f for f in (board_has_pe_bar, pe_terminals_enough, live_terminals_covered, comb_between_adjacent, comb_current_ok, accessories_placed, masses_to_pe)}
 MANUAL = {"masses_to_pe"}  # no se pueden comprobar desde el dibujo
 
 

@@ -78,6 +78,16 @@
       "clause": null,
       "status": "por-verificar",
       "source": "Criterio de práctica indicado por el usuario (peines o barras de distribución según la corriente); corriente nominal del peine PS1/12 = 63 A según RS Online. Falta el criterio normativo exacto (factor de simultaneidad: tabla 55.2 de la AEA según Farina, ie349)."
+    },
+    {
+      "id": "accesorio-sin-lugar",
+      "descripcion": "Todo accesorio necesario (bornes de tierra, bloque de distribución) tiene lugar en el riel o en el tablero.",
+      "check": "accessories_placed",
+      "severity": "error",
+      "norma": null,
+      "clause": null,
+      "status": "verificada",
+      "source": "Control de layout del propio programa (no es una cláusula de norma): si un accesorio exigido no entra, el tablero no cumple lo que las reglas piden."
     }
   ]
 }

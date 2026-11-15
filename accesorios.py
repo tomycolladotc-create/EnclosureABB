@@ -25,9 +25,10 @@ def _in_amps(device):
         return None
 
 
-def _free_x(devices, rail, width):
+def _free_x(devices, rail, width, height=None):
     """Primer hueco libre de `width` mm sobre el riel, buscando desde el extremo derecho. None si no entra."""
-    lo, hi = rail["y"] - RAIL_BAND_MM, rail["y"] + RAIL_BAND_MM
+    band = max(RAIL_BAND_MM, (height or 0) / 2)
+    lo, hi = rail["y"] - band, rail["y"] + band
     busy = sorted((d["x"], d["x"] + d["w"]) for d in devices if d["y"] < hi and d["y"] + d["h"] > lo)
     cursor = rail["x"] + rail["length"]
     for start, end in reversed(busy):
@@ -85,6 +86,28 @@ def propose(project, catalog=None):
                     "devices": [d["tag"] for d in g], "x": g[0]["x"], "y": g[0]["y"] + g[0]["h"] - 12, "w": g[-1]["x"] + g[-1]["w"] - g[0]["x"], "h": 4,
                     "label": "Peine", "provisional": True,
                     "note": None if comb else "mezcla de polos: sin peine definido"})
+    # 4) Bloque de distribución cuando algún equipo supera la corriente de los peines (corrientes elevadas).
+    comb_limit = max((c["corrienteA"] for c in catalog["combs"] if c.get("corrienteA")), default=None)
+    amps = [(a, d["tag"]) for d in devices if (a := _in_amps(d)) is not None]
+    heavy = [(a, tag) for a, tag in amps if comb_limit is not None and a > comb_limit]
+    if heavy:
+        need = max(a for a, _ in heavy)
+        usable = sorted((b for b in catalog.get("distributionBlocks", []) if b.get("corrienteA") and b["corrienteA"] >= need),
+                        key=lambda b: (b["corrienteA"], b.get("anchoMm") is None))
+        item = {"type": "distribution_block", "auto": True, "provisional": True, "devices": [tag for _, tag in heavy], "needA": need}
+        if not usable:
+            item.update(catalogId=None, label="Barra de distribución", placed=False,
+                        note=f"el catálogo no tiene bloque de {need:g} A o más")
+        else:
+            block = usable[0]
+            width, height = block.get("anchoMm"), block.get("alturaFrenteMm")
+            item.update(catalogId=block["id"], corrienteA=block["corrienteA"], label=f"{block.get('tipo', block['id'])} {block['corrienteA']:g} A")
+            x = _free_x(devices, rails[0], width, height) if rails and width and height else None
+            if x is None:
+                item.update(placed=False, note="sin lugar en el riel o sin medidas de frente en el catálogo")
+            else:
+                item.update(placed=True, x=x, y=rails[0]["y"] - height / 2, w=width, h=height)
+        out.append(item)
     return out
 
 
