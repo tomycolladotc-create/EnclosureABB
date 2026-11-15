@@ -31,14 +31,18 @@
       "fases": 1,
       "modulos": 4,
       "pasoMm": 17.5,
-      "corrienteA": null,
+      "corrienteA": 63,
       "compatibleCon": [
         "S200"
       ],
       "availability": "por-confirmar",
-      "source": "automa.net (código PS1/4)",
-      "status": "solo código; faltan corriente y medidas",
-      "marca": "ABB"
+      "source": "automa.net (código PS1/4); plc-direct.com/products/2cdl210001r1004; proax.ca/en/product/1672332/abb2cdl210001r1004 (distribuidor oficial ABB); ficha ABB reproducida por Sonepar (res.cloudinary.com/sonepar-fr .../15776815_FT.pdf)",
+      "status": "corriente 63 A, 25 kA, 690 V y 4 polos leídos de la ficha ABB reproducida por distribuidores; faltan largo y ancho (sin dibujo); falta confirmar Argentina",
+      "marca": "ABB",
+      "icwKA": 25,
+      "tensionV": 690,
+      "pesoKg": 0.018,
+      "seccionMm2": 10
     },
     {
       "id": "abb-ps1-60",
@@ -47,16 +51,18 @@
       "fases": 1,
       "modulos": 60,
       "pasoMm": 17.5,
-      "corrienteA": null,
+      "corrienteA": 63,
       "compatibleCon": [
         "S200",
         "F200",
         "DDA200"
       ],
       "availability": "por-confirmar",
-      "source": "RS Online (ph.rs-online.com/web/p/busbars/4896568)",
-      "status": "se corta a medida; faltan datos de corriente",
-      "marca": "ABB"
+      "source": "RS Online (ph.rs-online.com/web/p/busbars/4896568); ficha ABB PS1/60 (pood.esvika.ee/ProductSpecifications/Download?id=12224; cdn.erply.com/files/396198/2CDL210001R1060.pdf)",
+      "status": "corriente 63 A, 25 kA, 690 V de la ficha ABB (esvika/erply); se corta a medida; faltan largo y ancho; falta confirmar Argentina",
+      "marca": "ABB",
+      "icwKA": 25,
+      "tensionV": 690
     },
     {
       "id": "abb-ps3-12",
@@ -101,42 +107,63 @@
       "fases": 3,
       "modulos": 60,
       "pasoMm": 17.5,
-      "corrienteA": null,
+      "corrienteA": 63,
       "compatibleCon": [
         "S200",
         "F200",
         "DDA200"
       ],
       "availability": "por-confirmar",
-      "source": "RS Online (pt.rs-online.com/web/p/peines-de-conexion/5391648)",
-      "status": "se corta a medida; faltan datos de corriente",
-      "marca": "ABB"
+      "source": "RS Online (pt.rs-online.com/web/p/peines-de-conexion/5391648); ficha ABB PS3/60 (cdn.erply.com/files/396198/2CDL230001R1060.pdf); largo 1056 mm: ahlsell.se (artículo 2102712)",
+      "status": "63 A, 25 kA, 690 V, 20 equipos de 3 polos, largo 1056 mm; se corta a medida; falta ancho/alto y confirmar Argentina",
+      "marca": "ABB",
+      "icwKA": 25,
+      "tensionV": 690,
+      "largoMm": 1056
     },
     {
       "id": "abb-ps2",
       "marca": "ABB",
       "familia": "PS2",
-      "orderCode": null,
+      "orderCode": "2CDL220001R1012",
       "fases": 2,
       "compatibleCon": [
-        "S200"
+        "S200",
+        "F200",
+        "DDA200"
       ],
       "availability": "por-confirmar",
-      "source": "adjditec.com (PS2/18/16BP, PS2/58/16SP)",
-      "status": "existe la familia; faltan códigos propios, paso y corriente"
+      "source": "plc-direct.com/products/2cdl220001r1012; ipd.com.au/busbar-2ph-ins-ps2-12; santaclarasystems.com/abb/ps2-12 (medidas netas 18 x 30,3 x 214); ficha ABB: static.chipdip.ru/lib/375/DOC045375944.pdf",
+      "status": "PS2/12: 2 fases, 12 pines, 6 equipos, 63 A, 690 V; Icw no figura en las fuentes leídas (otros PS son 25 kA, no se copió); falta confirmar Argentina",
+      "modulos": 12,
+      "pasoMm": 17.5,
+      "corrienteA": 63,
+      "tensionV": 690,
+      "anchoMm": 18,
+      "alturaMm": 30.3,
+      "largoMm": 214,
+      "pesoKg": 0.075,
+      "seccionMm2": 10,
+      "claseProducto": "equipos de 2 polos (L1+N): S201 1P+N y similares"
     },
     {
       "id": "abb-ps4",
       "marca": "ABB",
       "familia": "PS4",
-      "orderCode": null,
+      "orderCode": "2CDL240101R1012",
       "fases": 4,
       "compatibleCon": [
         "S200"
       ],
       "availability": "por-confirmar",
-      "source": "adjditec.com (PS4/60/16SP); RS Online lista PS4 17,5 mm",
-      "status": "existe la familia; faltan códigos propios y corriente"
+      "source": "voltimum.co.uk/product-details/w6bhVWP9/abb/ps-412-busbar (código 2CDL240101R1012, EAN 4016779656054); ficha ABB reproducida por Tameson: storage.tameson.com/asset/Products/Manuals/EN/e2zy2_chr_en_1.pdf",
+      "status": "PS4/12 para equipos de 4 polos, 63 A, 25 kA, 690 V; falta medidas (largo/ancho) y confirmar Argentina",
+      "modulos": 12,
+      "pasoMm": 17.5,
+      "corrienteA": 63,
+      "icwKA": 25,
+      "tensionV": 690,
+      "claseProducto": "equipos de 4 polos (S204, F204)"
     },
     {
       "id": "schneider-domae-14804",
@@ -150,6 +177,36 @@
       "availability": "argentina-listado",
       "source": "se.com/ar: 'Comb busbar Domae 4 poles 80 A L 54 x 18 mm' (www.se.com/ar/es/product/14804)",
       "status": "figura en el sitio de Schneider Argentina; compatibilidad con S200 no aplica (línea Domae)"
+    },
+    {
+      "id": "abb-s803-bb250",
+      "familia": "S800",
+      "orderCode": "2CCS800900R0071",
+      "tipo": "S803-BB250",
+      "fases": 3,
+      "modulos": 24,
+      "pasoMm": 27,
+      "corrienteA": 250,
+      "compatibleCon": [
+        "S800"
+      ],
+      "claseProducto": "S803 (3 polos); no cubre el neutro de un S804",
+      "anchoMm": 60,
+      "alturaMm": 27,
+      "largoMm": 654,
+      "seccionMm2": 60,
+      "tensionV": 690,
+      "pesoKg": 1.604,
+      "ip": "IP20",
+      "alimentacion": {
+        "tipo": "S803-BBPC120",
+        "orderCode": "2CCS800900R0101",
+        "seccionMm2": 120
+      },
+      "availability": "por-confirmar",
+      "marca": "ABB",
+      "source": "ipd.com.au (S803-BB250); media.bluestonepim.com ficha ABB S803-BB250; electrika.com 2CCS800900R0071 y 2CCS800900R0101; novapart.co (farnell 3411429)",
+      "status": "peine de 3 fases para S800, 250 A, 24 pines, 654 x 60 x 27 mm; para S804 (4 polos) no hay peine con neutro en las fuentes; falta confirmar Argentina"
     }
   ],
   "earthTerminals": [
@@ -192,16 +249,52 @@
     }
   ],
   "pendientes": [
-    "Peines para S800 (paso 27 mm): no se encontró un peine de fase; solo S802-LINK50 y similares. Confirmar si existe y si se usa.",
-    "Peines para 1P+N (S201 y similares): no confirmado cuál corresponde.",
     "Bornes de neutro (azul) y barras de tierra y neutro para gabinete: solo se vio la serie DBTI de Entrelec en RS; falta ficha y estado en Argentina.",
     "Tapas ciegas y cubrebornes transparentes: no buscado todavía.",
     "CAD de peines y bornes: bajar de ABB/TE para dibujarlos en el frente.",
     "Disponibilidad en Argentina de cada código: ABB tiene un buscador de distribuidores autorizados (new.abb.com/low-voltage/efinder-country/ar) que muestra stock por código; falta consultarlo para PS1/PS3 y el resto (el buscador exige entrar al sitio).",
-    "Elegir 1 versión de PS3/12 (dos con medidas distintas) y completar paso y largo de PS2 y PS4.",
-    "Medidas de frente del Schneider Distribloc, Legrand y Steck (módulos DIN y alto) si se eligen."
+    "Medidas de frente del Schneider Distribloc, Legrand y Steck (módulos DIN y alto) si se eligen.",
+    "S800: el peine S803-BB250 es de 3 fases (S803); un S804 (4 polos) no tiene peine con neutro en las fuentes leídas.",
+    "1P+N (S201 y similares): corresponde el peine PS2/12 (equipos de 2 polos L1+N); falta largo/ancho de PS1/4, PS1/60, PS3/60 y PS4, e Icw de PS2.",
+    "PS3/12 sigue con dos versiones de medidas distintas en las fuentes; elegir cuál vende ABB Argentina.",
+    "Barra de fase de cobre con dimensionado propio (IEC 61439 / tabla del fabricante): no cargada; AA8010 es de neutro/tierra según el catálogo."
   ],
-  "distributionBars": [],
+  "distributionBars": [
+    {
+      "id": "abb-aa8010",
+      "marca": "ABB",
+      "orderCode": "AA8010",
+      "tipo": "4 barras de cobre 20x5 mm, L=1000 mm (neutro o tierra)",
+      "familia": "SR2",
+      "corrienteA": 320,
+      "seccion": "20x5 mm",
+      "largoMm": 1000,
+      "cantidad": 4,
+      "paso": "agujeros M6 cada 25 mm",
+      "soportes": {
+        "orderCode": "AA8011",
+        "cantidad": 5,
+        "descripcion": "5 soportes para barra"
+      },
+      "acabado": "sin tratar",
+      "availability": "por-confirmar",
+      "source": "ficha ABB AA8010 reproducida por Sonepar (res.cloudinary.com/sonepar-fr .../472440_FT.pdf: 320 A, 20x5 mm); catálogo ABB 1STC804013D0201 pág. 2/9 (barras 20x5 con agujeros M6 a 25 mm, soportes AA8011; se montan sobre las placas de fondo)",
+      "status": "la ficha ABB da 320 A, pero el catálogo la describe como barra de neutro o tierra, no de fase; el catálogo no dice que se corte a medida; falta confirmar Argentina"
+    },
+    {
+      "id": "abb-pbfc2005",
+      "marca": "ABB",
+      "orderCode": "1STQ007401A0000",
+      "tipo": "barra plana de cobre 20x5 mm, L=1750 mm",
+      "familia": "System pro E power",
+      "corrienteA": null,
+      "seccion": "20x5 mm",
+      "largoMm": 1750,
+      "availability": "por-confirmar",
+      "source": "ficha ABB PBFC2005 (sacchi.it/static/pim/hlr-system/ABB/MD22_BMECAT_20240410/ELPBFC2005.pdf)",
+      "status": "código y medidas de la ficha; falta la corriente admisible y confirmar Argentina"
+    }
+  ],
   "distributionBlocks": [
     {
       "id": "abb-brt125a",

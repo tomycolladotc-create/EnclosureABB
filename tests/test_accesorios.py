@@ -15,7 +15,7 @@ def s200(tag, x, poles, in_amps="16"):
 
 def project(devices):
     rail = {"id": "DIN-1", "x": 200, "y": 805, "length": 600, "height": 35}
-    return {"devices": devices, "enclosure": {"mountingLayout": {"dinRails": [rail]}}}
+    return {"devices": devices, "enclosure": {"functional": {"width": 560, "height": 1160, "depth": 300}, "mountingLayout": {"dinRails": [rail]}}}
 
 
 class Accesorios(unittest.TestCase):
@@ -71,6 +71,31 @@ class Accesorios(unittest.TestCase):
         p["accessories"] = [{"type": "pe_terminal", "count": 1, "label": "manual"}]
         complete(p)
         self.assertIn("manual", [a.get("label") for a in p["accessories"]])
+
+
+    def test_corriente_alta_propone_barra_de_cobre_y_espera_decision(self):
+        p = complete(project([s200("QF1", 200, 3, "250")]))
+        bar = next(a for a in p["accessories"] if a["type"] == "copper_busbar")
+        self.assertTrue(bar["needsConfirmation"])
+        self.assertIsNone(bar["decision"])
+        self.assertEqual(bar["catalogId"], "abb-aa8010")
+        self.assertLessEqual(bar["x"] + bar["w"], 560)  # entra en la placa
+
+    def test_la_decision_del_usuario_se_conserva_al_recalcular(self):
+        p = complete(project([s200("QF1", 200, 3, "250")]))
+        next(a for a in p["accessories"] if a["type"] == "copper_busbar")["decision"] = "confirmed"
+        complete(p)
+        self.assertEqual(next(a for a in p["accessories"] if a["type"] == "copper_busbar")["decision"], "confirmed")
+
+    def test_corriente_mayor_que_toda_barra_del_catalogo_no_inventa_barra(self):
+        p = complete(project([s200("QF1", 200, 3, "630")]))
+        item = next(a for a in p["accessories"] if a["type"] == "distribution_block")
+        self.assertFalse(item["placed"])
+        self.assertIn("dimensionar", item["note"])
+
+    def test_el_peine_de_s800_no_sube_el_limite_de_los_s200(self):
+        p = complete(project([s200("QF1", 200, 3, "80")]))  # 80 A > 63 A (peines S200); el S803-BB250 de 250 A no cuenta
+        self.assertTrue([a for a in p["accessories"] if a["type"] == "distribution_block"])
 
 
 if __name__ == "__main__":

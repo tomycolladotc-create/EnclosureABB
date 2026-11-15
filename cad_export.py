@@ -161,9 +161,10 @@ def build_dxf(project, catalog, fronts, appearances):
             (x + width / 2, y + height + 4), align=ezdxf.enums.TextEntityAlignment.BOTTOM_CENTER)
     # Accesorios de normativa (bornes de tierra, peines): geometría esquemática marcada como provisoria.
     for acc in project.get("accessories", []):
-        if acc.get("placed", True) and "x" in acc and acc.get("w"):
+        if acc.get("placed", True) and acc.get("decision") != "discarded" and "x" in acc and acc.get("w"):
             rect(fx + acc["x"], fy + acc["y"], acc["w"], acc["h"], "ABB_ACCESORIOS")
-            space.add_text(str(acc.get("label", acc["type"])).encode("ascii", "replace").decode("ascii"), dxfattribs={"height": 5, "layer": "ABB_ACCESORIOS"}).set_placement(
+            label = str(acc.get("label", acc["type"])) + (" (PROPUESTA SIN CONFIRMAR)" if acc.get("needsConfirmation") and not acc.get("decision") else "")
+            space.add_text(label.encode("ascii", "replace").decode("ascii"), dxfattribs={"height": 5, "layer": "ABB_ACCESORIOS"}).set_placement(
                 (fx + acc["x"] + acc["w"] / 2, fy + acc["y"] + acc["h"] + 2), align=ezdxf.enums.TextEntityAlignment.BOTTOM_CENTER)
     # Avisos de normativa dentro del dibujo, para que no se pierdan al exportar.
     for n, finding in enumerate(check_project(project)):

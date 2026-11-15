@@ -14,6 +14,10 @@ GAP_MM = 1.0           # separación máxima para considerar dos equipos contigu
 RAIL_BAND_MM = 22.25   # franja vertical (mitad de 44,5 mm) que ocupa un borne de riel alrededor del eje del riel
 
 
+BAR_MARGIN_MM = 40.0  # criterio de diseño propuesto (no dato ABB): separación de la barra al borde de la placa
+BAR_FACE_MM = 20.0  # cara de la barra AA8010 (20x5 mm)
+
+
 def load_accessory_catalog(path=CATALOG_FILE):
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
@@ -87,17 +91,30 @@ def propose(project, catalog=None):
                     "label": "Peine", "provisional": True,
                     "note": None if comb else "mezcla de polos: sin peine definido"})
     # 4) Bloque de distribución cuando algún equipo supera la corriente de los peines (corrientes elevadas).
-    comb_limit = max((c["corrienteA"] for c in catalog["combs"] if c.get("corrienteA")), default=None)
+    comb_limit = max((c["corrienteA"] for c in catalog["combs"] if c.get("corrienteA") and "S200" in c.get("compatibleCon", [])), default=None)  # sólo peines de la línea S200: un peine de S800 (250 A) no sirve para S200
     amps = [(a, d["tag"]) for d in devices if (a := _in_amps(d)) is not None]
     heavy = [(a, tag) for a, tag in amps if comb_limit is not None and a > comb_limit]
     if heavy:
         need = max(a for a, _ in heavy)
         usable = sorted((b for b in catalog.get("distributionBlocks", []) if b.get("corrienteA") and b["corrienteA"] >= need),
                         key=lambda b: (b["corrienteA"], b.get("anchoMm") is None))
-        item = {"type": "distribution_block", "auto": True, "provisional": True, "devices": [tag for _, tag in heavy], "needA": need}
+        item = {"type": "distribution_block", "auto": True, "provisional": True, "needsConfirmation": True, "decision": None, "devices": [tag for _, tag in heavy], "needA": need}
         if not usable:
-            item.update(catalogId=None, label="Barra de distribución", placed=False,
-                        note=f"el catálogo no tiene bloque de {need:g} A o más")
+            # Sin bloque que alcance: barra de cobre del catálogo (distributionBars) si su corriente alcanza; el usuario confirma o descarta.
+            bars = sorted((b for b in catalog.get("distributionBars", []) if b.get("corrienteA") and b["corrienteA"] >= need), key=lambda b: b["corrienteA"])
+            if not bars:
+                item.update(catalogId=None, label="Barra de distribución", placed=False,
+                            note=f"el catálogo no tiene bloque ni barra de {need:g} A o más: dimensionar la barra según IEC 61439 o tabla del fabricante")
+            else:
+                bar = bars[0]
+                fw, fh = project["enclosure"]["functional"]["width"], project["enclosure"]["functional"]["height"]
+                width, height = min(bar["largoMm"], fw - 2 * BAR_MARGIN_MM), BAR_FACE_MM
+                y = BAR_MARGIN_MM
+                if any(d["y"] < y + height + 10 and d["x"] < BAR_MARGIN_MM + width and BAR_MARGIN_MM < d["x"] + d["w"] for d in devices):
+                    y = fh - BAR_MARGIN_MM - height  # el borde inferior está ocupado: va arriba
+                item.update(type="copper_busbar", catalogId=bar["id"], corrienteA=bar["corrienteA"], label=f"{bar['orderCode']} {bar['corrienteA']:g} A", x=BAR_MARGIN_MM, y=y, w=width, h=height, placed=True,
+                            note=("barra de cobre propuesta: confirmar o descartar. " + ("Se acortó a la placa; el catálogo no dice que se corte a medida. " if width < bar["largoMm"] else "")
+                                  + bar.get("status", "")))
         else:
             block = usable[0]
             width, height = block.get("anchoMm"), block.get("alturaFrenteMm")
@@ -114,5 +131,12 @@ def propose(project, catalog=None):
 def complete(project, catalog=None):
     """Reemplaza las propuestas anteriores (auto) y conserva los accesorios cargados a mano."""
     manual = [a for a in project.get("accessories", []) if not a.get("auto")]
-    project["accessories"] = manual + propose(project, catalog)
+    # Las decisiones del usuario (confirmar/descartar una propuesta) se conservan al recalcular.
+    key = lambda a: (a.get("type"), tuple(a.get("devices", [])))
+    decided = {key(a): a["decision"] for a in project.get("accessories", []) if a.get("auto") and a.get("decision")}
+    new = propose(project, catalog)
+    for a in new:
+        if a.get("needsConfirmation") and key(a) in decided:
+            a["decision"] = decided[key(a)]
+    project["accessories"] = manual + new
     return project

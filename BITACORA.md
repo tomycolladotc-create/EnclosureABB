@@ -3,6 +3,13 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-15 21:50 · Claude
+- Pedido del usuario: el programa propone y el usuario elige (barra de cobre / bloque); completar los datos faltantes de peines y barras.
+- Datos cargados con fuente (web, fichas ABB reproducidas por distribuidores; nada se bajó como archivo): PS1/4, PS1/60, PS3/60, PS2/12 (código 2CDL220001R1012), PS4/12 (código 2CDL240101R1012 según Voltimum), S803-BB250 (2CCS800900R0071) con alimentación S803-BBPC120, barras AA8010 (320 A, 20x5, 1000 mm, soportes AA8011) y PBFC2005. Lo que no figuraba en ninguna fuente quedó en null y anotado (Icw del PS2, medidas de varios, corriente de PBFC2005).
+- Código: `accesorios.propose` propone `copper_busbar` cuando ningún bloque alcanza y una barra del catálogo sí; `decision` confirmed/discarded; UI con botones en el panel de normativa; límite de peines S200 corregido. Tests: 52 OK.
+- Aviso importante: el catálogo ABB describe AA8010 como barra de **neutro o tierra**; su uso como barra de fase es decisión del usuario y está marcado en la nota de la propuesta.
+- Siguiente [Claude]: canaletas (ver entrada anterior) y reservar espacio para ellas en layout_auto; CAD de peines/bornes.
+
 ## 2026-11-15 21:20 · Claude
 - Pedido del usuario: más detalle en la vista. Agregado: cotas (exterior, placa, altura de cada riel desde la placa) en el editor y en el DXF (capa ABB_COTAS, cotas lineales reales de ezdxf) y porta-etiquetas con el tag bajo cada equipo (tamaño propuesto, no dato ABB).
 - Evaluado y NO hecho por falta de dato claro: canaletas (el catálogo 1STC804013D0201 las trae en págs. 9/40-9/43 y 6/2-6/3, pero las medidas de sección no se leen bien del texto; hay que mirar la imagen) y barra PE AA8010 (1000 mm, no entra en la placa de 560 mm). Siguiente [Claude]: canaletas con medidas de la imagen de la pág. 9/40 y propuesta de ubicación (sobre y bajo cada riel); barra de tierra que entre en la placa.
