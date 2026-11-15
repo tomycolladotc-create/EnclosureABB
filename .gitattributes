@@ -1,0 +1,10 @@
+# Archivos CAD y de referencia: nunca convertir saltos de línea (romperían los SHA-256 y, en DXF/STEP, la geometría).
+*.dxf binary
+*.DXF binary
+*.dwg binary
+*.stp binary
+*.step binary
+*.STEP binary
+*.igs binary
+*.iges binary
+*.pdf binary

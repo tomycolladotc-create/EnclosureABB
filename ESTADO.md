@@ -30,7 +30,10 @@ Unidades internas en mm. Cada equipo y gabinete guarda la procedencia de su geom
 - `web/index.html` interfaz del editor
 - `work/` scripts auxiliares (proyectar STEP a frente 2D, empaquetar, manifest)
 - `docs/` arquitectura, catálogo inicial y estado de la búsqueda de CAD
-- **No están en el repo** (por peso): `cad/abb/` con los STEP/DWG/DXF originales de ABB, `referencias/`, `salida/`. Quedan en la compu de Thomas; su fuente y SHA-256 están en `datos/cad_argentina.json`. Solo hacen falta para regenerar `datos/frentes_cad.json`.
+- `cad/abb/<familia>/` **CAD originales de ABB** (STEP/DWG/DXF/IGS, 12 archivos), con fuente y SHA-256 en `datos/cad_argentina.json`. De acá salen los bloques: `work/proyectar_cad.py` los convierte en `datos/frentes_cad.json`, que es lo que usan el editor y el DXF. Un equipo nuevo = agregar su CAD acá + registrarlo en `cad_argentina.json` + regenerar frentes.
+- `referencias/abb/` catálogos PDF de apoyo.
+- `.gitattributes` marca los CAD como binarios: Git no les cambia los saltos de línea en Windows.
+- No se versiona `salida/` (se regenera desde el editor).
 
 ## Dónde está todo (compu de Thomas)
 - **App principal:** `C:\Users\Thomas\Documents\ChatGPT\Topograficos Tableros\`
