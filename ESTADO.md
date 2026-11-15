@@ -1,6 +1,6 @@
 # ESTADO — Topográficos de tableros ABB
 > Foto actual del proyecto. Se reescribe (no se acumula). El historial va en BITACORA.md.
-> Actualizado: 2026-11-15 18:30 · Claude
+> Actualizado: 2026-11-15 18:45 · Claude
 
 ## Objetivo
 PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tablero con dispositivos y envolvente ABB reales → editar en interfaz → exportar DXF (AutoCAD, 1:1 mm, bloques y capas), PNG, SVG, PDF.
@@ -32,6 +32,7 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 - Series sin confirmar con fuente (`verified: false`): XT1 y XT2 para todas las versiones de poder de corte.
 
 ## Pendiente (anotarse con [Claude] / [Codex] antes de empezar)
+0. [Claude] Inscripción en la posición REAL de cada equipo (hoy apagada): necesita foto de frente o ficha ABB por carcasa.
 1. Robustez/funcionalidad (prioridad del usuario): separar la lámina GENERAL por tablero; un proyecto por tablero (hoy `app.py` guarda siempre en `datos/ts4_topografia.json`); ubicación automática de los equipos importados en rieles/kits.
 2. Familias faltantes (no prioritario; OT quedan así por ahora): primero ver si comparten carcasa con una existente.
 3. Manija y eje del OT400E04P. QF89 S251: CAD o reemplazo actual vendido en Argentina.

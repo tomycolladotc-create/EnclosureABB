@@ -93,11 +93,12 @@ def build_dxf(project, catalog, fronts, appearances):
                         [(round(ox + x * pole_w, 4), round(y * height, 4)) for x, y in path],
                         dxfattribs={"layer": "ABB_CAD_FRENTE", "true_color": _color(palette.get("lineColor", "#273746"))},
                     )
-        spot = palette.get("inscription", {"y": 0.2, "color": "#1d2327"})
-        block.add_attdef("MODELO", (width / 2, spot["y"] * height), dxfattribs={
-            "layer": "ABB_INSCRIPCION", "height": inscription_height("XXXXXXXXXX", width, height),
-            "true_color": _color(spot["color"]), "prompt": "Modelo grabado en el frente",
-        }).set_placement((width / 2, spot["y"] * height), align=ezdxf.enums.TextEntityAlignment.MIDDLE_CENTER)
+        spot = palette.get("inscription")
+        if spot and spot.get("enabled"):  # solo con posición verificada en el equipo real
+            block.add_attdef("MODELO", (width / 2, spot["y"] * height), dxfattribs={
+                "layer": "ABB_INSCRIPCION", "height": inscription_height("XXXXXXXXXX", width, height),
+                "true_color": _color(spot["color"]), "prompt": "Modelo grabado en el frente",
+            }).set_placement((width / 2, spot["y"] * height), align=ezdxf.enums.TextEntityAlignment.MIDDLE_CENTER)
         blocks[key] = name
         return name
 
@@ -110,13 +111,17 @@ def build_dxf(project, catalog, fronts, appearances):
         if spec and device["shell"] in fronts["items"]:
             ref = space.add_blockref(front_block(device["shell"], poles), (x, y))
             text = (device.get("model") or "").encode("ascii", "replace").decode("ascii")[:24]
-            ref.add_auto_attribs({"MODELO": text})
-            for attrib in ref.attribs:
-                attrib.dxf.height = inscription_height(text, width, height)
+            if palettes.get(device["shell"], {}).get("inscription", {}).get("enabled"):
+                ref.add_auto_attribs({"MODELO": text})
+                for attrib in ref.attribs:
+                    attrib.dxf.height = inscription_height(text, width, height)
         else:
             rect(x, y, width, height, "ABB_SIN_CAD")
-        space.add_text(device["tag"], dxfattribs={"height": 12, "layer": "ABB_ETIQUETAS", "insert": (x, y + height + 7)})
-    space.add_text("TS4 - VISTA 2D FRONTAL - GEOMETRIA ABB DONDE HAY CAD", dxfattribs={"height": 17, "layer": "ABB_NOTAS", "insert": (35, plinth + body["height"] - 35)})
+        # Etiqueta centrada y achicada para que no se pise con la del equipo vecino.
+        tag_h = round(min(12, width * 0.95 / max(len(device["tag"]), 1) / 0.75), 2)
+        space.add_text(device["tag"], dxfattribs={"height": tag_h, "layer": "ABB_ETIQUETAS"}).set_placement(
+            (x + width / 2, y + height + 4), align=ezdxf.enums.TextEntityAlignment.BOTTOM_CENTER)
+    space.add_text(f"{project.get('project', 'TABLERO')} - VISTA 2D FRONTAL - GEOMETRIA ABB DONDE HAY CAD".encode("ascii", "replace").decode("ascii"), dxfattribs={"height": 17, "layer": "ABB_NOTAS", "insert": (35, plinth + body["height"] - 35)})
     space.add_text("GABINETE Y RIEL: CONFIGURACION PRELIMINAR; VALIDAR CON ABB ARGENTINA", dxfattribs={"height": 10, "layer": "ABB_NOTAS", "insert": (35, 35)})
     stream = StringIO()
     doc.write(stream)

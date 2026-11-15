@@ -65,7 +65,9 @@
       ],
       "inscription": {
         "y": 0.19,
-        "color": "#ffffff"
+        "color": "#ffffff",
+        "enabled": false,
+        "verifiedWith": null
       }
     },
     "abb.tmax.xt2.4p.fixed.front": {
@@ -130,7 +132,9 @@
       ],
       "inscription": {
         "y": 0.19,
-        "color": "#ffffff"
+        "color": "#ffffff",
+        "enabled": false,
+        "verifiedWith": null
       }
     },
     "abb.s804n.4p.front": {
@@ -188,7 +192,9 @@
       ],
       "inscription": {
         "y": 0.19,
-        "color": "#1d2327"
+        "color": "#1d2327",
+        "enabled": false,
+        "verifiedWith": null
       }
     },
     "abb.s200m.1pn.front": {
@@ -239,7 +245,9 @@
       ],
       "inscription": {
         "y": 0.28,
-        "color": "#1d2327"
+        "color": "#1d2327",
+        "enabled": false,
+        "verifiedWith": null
       }
     },
     "abb.ot400e04.4p.front": {
@@ -311,7 +319,9 @@
       ],
       "inscription": {
         "y": 0.1,
-        "color": "#ffffff"
+        "color": "#ffffff",
+        "enabled": false,
+        "verifiedWith": null
       }
     },
     "abb.s200m.1p.front": {
@@ -357,9 +367,11 @@
       ],
       "inscription": {
         "y": 0.28,
-        "color": "#1d2327"
+        "color": "#1d2327",
+        "enabled": false,
+        "verifiedWith": null
       }
     }
   },
-  "inscriptionHelp": "inscription.y = altura relativa (0 abajo, 1 arriba) donde se graba el modelo leído del plano; color del texto. En carcasas por polo se graba una vez, centrada en el ancho total."
+  "inscriptionHelp": "inscription: dónde va grabado el modelo en el equipo REAL. enabled=false hasta verificar la posición con una foto o ficha ABB (anotar la fuente en verifiedWith). y = altura relativa del centro del texto (0 abajo, 1 arriba); color del texto. En carcasas por polo se graba una vez, centrada en el ancho total."
 }

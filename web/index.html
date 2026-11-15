@@ -69,8 +69,8 @@ function frontSvg(d,x,y){
 }
 // Inscripción grabada: el modelo leído del plano, en la altura/color de apariencias_abb.json (misma regla que cad_export.inscription_height).
 function inscriptionSvg(d,x,y){
- const spot=appearances.items[d.shell]?.inscription||{y:.2,color:'#1d2327'},text=(d.model||'').slice(0,24);
- if(!text)return '';const size=Math.min(d.h*.07,d.w*.9/Math.max(text.length,1)/.8);
+ const spot=appearances.items[d.shell]?.inscription,text=(d.model||'').slice(0,24);
+ if(!text||!spot?.enabled)return ''; // apagada hasta verificar la posición real (apariencias_abb.json)const size=Math.min(d.h*.07,d.w*.9/Math.max(text.length,1)/.8);
  return `<text x="${x+d.w/2}" y="${y+d.h*(1-spot.y)}" text-anchor="middle" dominant-baseline="middle" fill="${spot.color}" font-size="${size.toFixed(2)}" font-family="Arial" style="pointer-events:none">${esc(text)}</text>`;
 }
 function notice(s){$('message').textContent=s}
@@ -92,7 +92,7 @@ function render(){
  ${frontSvg(d,fx+d.x,yy)}
  <rect class="hitbox" x="${fx+d.x}" y="${yy}" width="${d.w}" height="${d.h}" style="fill:transparent;stroke:none;pointer-events:all"/>
  ${i===selected?`<rect x="${fx+d.x-2}" y="${yy-2}" width="${d.w+4}" height="${d.h+4}" style="fill:none;stroke:#156bca;stroke-width:3;stroke-dasharray:6 3;pointer-events:none"/>`:''}
- <text x="${fx+d.x+d.w/2}" y="${yy-12}" text-anchor="middle" fill="#142b41" font-size="20" font-weight="700">${esc(d.tag)}</text>
+ <text x="${fx+d.x+d.w/2}" y="${yy-6}" text-anchor="middle" fill="#142b41" font-size="${Math.min(20,d.w*.95/Math.max(d.tag.length,1)/.62).toFixed(1)}" font-weight="700">${esc(d.tag)}</text>
  </g>`}).join('');
  $('projectName').textContent=project.project;
  $('deviceList').innerHTML=project.devices.map((d,i)=>`<div class="detected"><a href="#" data-index="${i}">${esc(d.tag)}</a> · ${esc(d.model)}</div>`).join('');
