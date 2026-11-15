@@ -35,7 +35,7 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 
 ## Pendiente (anotarse con [Claude] / [Codex] antes de empezar)
 0. Marcado hecho para S200 (2P-4P, 1P+N) y S800. Falta medir foto frontal de XT1, XT2 y OT400 (sin `marking` no se imprime nada).
-1. Robustez/funcionalidad (prioridad del usuario): separar la lámina GENERAL por tablero; un proyecto por tablero (hoy `app.py` guarda siempre en `datos/ts4_topografia.json`); ubicación automática de los equipos importados en rieles/kits.
+1. Robustez/funcionalidad (prioridad del usuario): separar la lámina GENERAL por tablero; (HECHO: un proyecto por tablero en `datos/proyectos/<id>.json` con `proyectos.py`; el TS4 sigue en `datos/ts4_topografia.json`; selector y 'Crear' en el editor; falta duplicar y borrar); ubicación automática de los equipos importados en rieles/kits.
 2. Familias faltantes (no prioritario; OT quedan así por ahora): primero ver si comparten carcasa con una existente.
 3. Manija y eje del OT400E04P. QF89 S251: CAD o reemplazo actual vendido en Argentina.
 4. Sacar textos fijos del TS4 en `generar_topografico.py` (notas de la lámina).
@@ -43,4 +43,4 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 
 ## Diseño de la interfaz (aprobado provisoriamente por el usuario; se ajustará con el uso)
 - Maqueta de 4 pantallas (Tableros, Importar, Editor, Exportar) en un lienzo de diseño de claude.ai: https://claude.ai/artifact/GJvAU9SANz5x9u69j9mra2 (la ve solo el usuario). No es código: el editor real (`web/index.html`) todavía no la sigue.
-- Orden previsto: 1) un proyecto por tablero + lista de proyectos, 2) separar la lámina GENERAL, 3) colocar equipos automáticamente en rieles, 4) llevar la maqueta al editor real.
+- Orden previsto: 1) [hecho] un proyecto por tablero + lista de proyectos, 2) separar la lámina GENERAL, 3) colocar equipos automáticamente en rieles, 4) llevar la maqueta al editor real.

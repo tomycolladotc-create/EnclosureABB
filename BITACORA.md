@@ -3,8 +3,13 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-15 22:45 · Claude
+- Hecho: un proyecto por tablero. `proyectos.py` (listar, cargar, guardar, crear), rutas `/api/projects`, `/api/project?id=`, `/api/save?id=`, `/api/project-new`; selector y 'Crear' en el editor (la URL lleva `?id=`). Tests: 33 OK. Probado en el navegador: crear 'Prueba TSB' lo guardó aparte y el TS4 quedó idéntico (mismo md5).
+- Pendiente: duplicar y borrar proyectos; el proyecto nuevo copia el gabinete del TS4 (elegir gabinete al crear).
+- Siguiente [Claude]: importar un PDF directo a un tablero nuevo y separar la lámina GENERAL por tablero.
+
 ## 2026-11-15 22:15 · Claude
-- Hecho: bloque de distribución propuesto cuando In supera el peine (elige el de menor corriente que alcance; BRT125A 128x85 mm provisional); regla `accesorio-sin-lugar` avisa si un accesorio no entra en el riel. Tests: 28 OK.
+- Hecho: bloque de distribución propuesto cuando In supera el peine (elige el de menor corriente que alcance; BRT125A 128x85 mm provisional); regla `accesorio-sin-lugar` avisa si un accesorio no entra en el riel. Tests: 27 OK.
 - Límite: solo el BRT125A tiene medidas de frente; los demás bloques quedan 'sin medidas' hasta tener hoja de datos.
 - Siguiente [Claude]: un proyecto por tablero + lista de proyectos.
 

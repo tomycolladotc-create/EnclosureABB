@@ -1,7 +1,7 @@
 """Servidor local del editor. Los datos ABB y el proyecto viven fuera del código."""
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 import json
 import logging
 import os
@@ -11,9 +11,9 @@ from cad_export import build_dxf
 from importador import detect_devices, ensure_marking, shell_size
 from accesorios import complete
 from normativa import check_project
+import proyectos
 
 ROOT = Path(__file__).resolve().parent
-PROJECT = ROOT / "datos" / "ts4_topografia.json"
 CATALOG = ROOT / "datos" / "catalogo_abb.json"
 FRONTS = ROOT / "datos" / "frentes_cad.json"
 APPEARANCES = ROOT / "datos" / "apariencias_abb.json"
@@ -31,12 +31,20 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(blob)
 
+    def project_id(self):
+        return (parse_qs(urlparse(self.path).query).get("id") or ["ts4"])[0]
+
     def do_GET(self):
         route = urlparse(self.path).path
         if route == "/":
             return self.send_data(200, WEB.read_bytes(), "text/html")
+        if route == "/api/projects":
+            return self.send_data(200, proyectos.list_projects())
         if route == "/api/project":
-            project = json.loads(PROJECT.read_text(encoding="utf-8"))
+            try:
+                project = proyectos.load(self.project_id())
+            except (ValueError, FileNotFoundError) as exc:
+                return self.send_data(404, {"error": str(exc)})
             catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
             for device in project.get("devices", []):
                 ensure_marking(device, catalog)
@@ -77,9 +85,18 @@ class Handler(BaseHTTPRequestHandler):
                     spec = shells.get(device.get("shell"))
                     if spec:
                         device["w"], device["h"] = shell_size(spec, device.get("poles"))
-                PROJECT.write_text(json.dumps(project, ensure_ascii=False, indent=2), encoding="utf-8")
-                return self.send_data(200, {"saved": True})
+                proyectos.save(self.project_id(), project)
+                return self.send_data(200, {"saved": True, "id": self.project_id()})
             except (ValueError, UnicodeDecodeError) as exc:
+                return self.send_data(422, {"error": str(exc)})
+        if route == "/api/project-new":
+            try:
+                name = str(json.loads(blob).get("name", "")).strip()
+                if not name:
+                    raise ValueError("Ingresá un nombre para el tablero")
+                pid, project = proyectos.create(name, proyectos.load("ts4"))
+                return self.send_data(200, {"id": pid, "project": project})
+            except (ValueError, UnicodeDecodeError, FileNotFoundError) as exc:
                 return self.send_data(422, {"error": str(exc)})
         if route in ("/api/normativa", "/api/normativa/complete"):
             try:
