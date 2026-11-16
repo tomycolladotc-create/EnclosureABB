@@ -102,7 +102,7 @@ class Handler(BaseHTTPRequestHandler):
             try:
                 project = json.loads(blob)
                 catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
-                new, summary = autolayout(project, catalog)
+                new, summary = autolayout(project, catalog, free_rails=parse_qs(urlparse(self.path).query).get("free") == ["1"])
                 complete(new)
                 return self.send_data(200, {"project": new, "summary": summary})
             except (ValueError, UnicodeDecodeError, KeyError) as exc:

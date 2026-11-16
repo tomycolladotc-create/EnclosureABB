@@ -1830,26 +1830,7 @@
         "PF5040"
       ],
       "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
-      "railOptions": [
-        {
-          "type": "GD4006",
-          "orderCode": "GD4006",
-          "length": 400,
-          "height": 35
-        },
-        {
-          "type": "GD6006",
-          "orderCode": "GD6006",
-          "length": 600,
-          "height": 35
-        },
-        {
-          "type": "GD8006",
-          "orderCode": "GD8006",
-          "length": 800,
-          "height": 35
-        }
-      ],
+      "railOptions": [],
       "mountingLayout": {
         "status": "placa interna ciega PF5040; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
         "dinRails": []
@@ -1905,7 +1886,42 @@
           }
         }
       },
-      "line": "ABB SR2 · gabinete monobloc IP65"
+      "line": "ABB SR2 · gabinete monobloc IP65",
+      "kdKit": {
+        "kit": "KD5040K",
+        "rows": 2,
+        "modulesPerRow": 14,
+        "totalModules": 28,
+        "rowPitchMm": 185,
+        "moduleMm": 17.5,
+        "source": "ABB 1STC804013D0201 (02.2011) pág. 2/4 'Selection table', columnas 'Kit for distribution - Supports for mounting modular panels' (leído de la imagen de la página)",
+        "assumptions": [
+          "Los montantes del kit tienen agujeros a lo largo (dibujo pág. 2/4): el conjunto de filas se puede subir o bajar; el paso de esos agujeros NO figura en el catálogo, por eso el armado apila las filas contiguas (185 mm) abajo de la placa.",
+          "Largo útil del riel = módulos por fila x 17,5 mm (módulo DIN); centrado en la placa (el catálogo no da el ancho de los soportes laterales).",
+          "Riel a media altura de la fila de 185 mm (el catálogo no cota la altura del riel dentro de la fila)."
+        ],
+        "status": "filas y módulos del catálogo; posición dentro de la placa y ancho de soportes sin dato (supuestos marcados)",
+        "freeRailOptions": [
+          {
+            "type": "GD4006",
+            "orderCode": "GD4006",
+            "length": 400,
+            "height": 35
+          },
+          {
+            "type": "GD6006",
+            "orderCode": "GD6006",
+            "length": 600,
+            "height": 35
+          },
+          {
+            "type": "GD8006",
+            "orderCode": "GD8006",
+            "length": 800,
+            "height": 35
+          }
+        ]
+      }
     },
     {
       "id": "sr2-srn5425k",
@@ -1932,26 +1948,7 @@
         "PF5040"
       ],
       "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
-      "railOptions": [
-        {
-          "type": "GD4006",
-          "orderCode": "GD4006",
-          "length": 400,
-          "height": 35
-        },
-        {
-          "type": "GD6006",
-          "orderCode": "GD6006",
-          "length": 600,
-          "height": 35
-        },
-        {
-          "type": "GD8006",
-          "orderCode": "GD8006",
-          "length": 800,
-          "height": 35
-        }
-      ],
+      "railOptions": [],
       "mountingLayout": {
         "status": "placa interna ciega PF5040; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
         "dinRails": []
@@ -2007,7 +2004,42 @@
           }
         }
       },
-      "line": "ABB SR2 · gabinete monobloc IP65"
+      "line": "ABB SR2 · gabinete monobloc IP65",
+      "kdKit": {
+        "kit": "KD5040K",
+        "rows": 2,
+        "modulesPerRow": 14,
+        "totalModules": 28,
+        "rowPitchMm": 185,
+        "moduleMm": 17.5,
+        "source": "ABB 1STC804013D0201 (02.2011) pág. 2/4 'Selection table', columnas 'Kit for distribution - Supports for mounting modular panels' (leído de la imagen de la página)",
+        "assumptions": [
+          "Los montantes del kit tienen agujeros a lo largo (dibujo pág. 2/4): el conjunto de filas se puede subir o bajar; el paso de esos agujeros NO figura en el catálogo, por eso el armado apila las filas contiguas (185 mm) abajo de la placa.",
+          "Largo útil del riel = módulos por fila x 17,5 mm (módulo DIN); centrado en la placa (el catálogo no da el ancho de los soportes laterales).",
+          "Riel a media altura de la fila de 185 mm (el catálogo no cota la altura del riel dentro de la fila)."
+        ],
+        "status": "filas y módulos del catálogo; posición dentro de la placa y ancho de soportes sin dato (supuestos marcados)",
+        "freeRailOptions": [
+          {
+            "type": "GD4006",
+            "orderCode": "GD4006",
+            "length": 400,
+            "height": 35
+          },
+          {
+            "type": "GD6006",
+            "orderCode": "GD6006",
+            "length": 600,
+            "height": 35
+          },
+          {
+            "type": "GD8006",
+            "orderCode": "GD8006",
+            "length": 800,
+            "height": 35
+          }
+        ]
+      }
     },
     {
       "id": "sr2-srn6420k",
@@ -2034,26 +2066,7 @@
         "PF6040"
       ],
       "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
-      "railOptions": [
-        {
-          "type": "GD4006",
-          "orderCode": "GD4006",
-          "length": 400,
-          "height": 35
-        },
-        {
-          "type": "GD6006",
-          "orderCode": "GD6006",
-          "length": 600,
-          "height": 35
-        },
-        {
-          "type": "GD8006",
-          "orderCode": "GD8006",
-          "length": 800,
-          "height": 35
-        }
-      ],
+      "railOptions": [],
       "mountingLayout": {
         "status": "placa interna ciega PF6040; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
         "dinRails": []
@@ -2109,7 +2122,42 @@
           }
         }
       },
-      "line": "ABB SR2 · gabinete monobloc IP65"
+      "line": "ABB SR2 · gabinete monobloc IP65",
+      "kdKit": {
+        "kit": "KD6040K",
+        "rows": 3,
+        "modulesPerRow": 14,
+        "totalModules": 42,
+        "rowPitchMm": 185,
+        "moduleMm": 17.5,
+        "source": "ABB 1STC804013D0201 (02.2011) pág. 2/4 'Selection table', columnas 'Kit for distribution - Supports for mounting modular panels' (leído de la imagen de la página)",
+        "assumptions": [
+          "Los montantes del kit tienen agujeros a lo largo (dibujo pág. 2/4): el conjunto de filas se puede subir o bajar; el paso de esos agujeros NO figura en el catálogo, por eso el armado apila las filas contiguas (185 mm) abajo de la placa.",
+          "Largo útil del riel = módulos por fila x 17,5 mm (módulo DIN); centrado en la placa (el catálogo no da el ancho de los soportes laterales).",
+          "Riel a media altura de la fila de 185 mm (el catálogo no cota la altura del riel dentro de la fila)."
+        ],
+        "status": "filas y módulos del catálogo; posición dentro de la placa y ancho de soportes sin dato (supuestos marcados)",
+        "freeRailOptions": [
+          {
+            "type": "GD4006",
+            "orderCode": "GD4006",
+            "length": 400,
+            "height": 35
+          },
+          {
+            "type": "GD6006",
+            "orderCode": "GD6006",
+            "length": 600,
+            "height": 35
+          },
+          {
+            "type": "GD8006",
+            "orderCode": "GD8006",
+            "length": 800,
+            "height": 35
+          }
+        ]
+      }
     },
     {
       "id": "sr2-srn6425k",
@@ -2136,26 +2184,7 @@
         "PF6040"
       ],
       "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
-      "railOptions": [
-        {
-          "type": "GD4006",
-          "orderCode": "GD4006",
-          "length": 400,
-          "height": 35
-        },
-        {
-          "type": "GD6006",
-          "orderCode": "GD6006",
-          "length": 600,
-          "height": 35
-        },
-        {
-          "type": "GD8006",
-          "orderCode": "GD8006",
-          "length": 800,
-          "height": 35
-        }
-      ],
+      "railOptions": [],
       "mountingLayout": {
         "status": "placa interna ciega PF6040; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
         "dinRails": []
@@ -2211,7 +2240,42 @@
           }
         }
       },
-      "line": "ABB SR2 · gabinete monobloc IP65"
+      "line": "ABB SR2 · gabinete monobloc IP65",
+      "kdKit": {
+        "kit": "KD6040K",
+        "rows": 3,
+        "modulesPerRow": 14,
+        "totalModules": 42,
+        "rowPitchMm": 185,
+        "moduleMm": 17.5,
+        "source": "ABB 1STC804013D0201 (02.2011) pág. 2/4 'Selection table', columnas 'Kit for distribution - Supports for mounting modular panels' (leído de la imagen de la página)",
+        "assumptions": [
+          "Los montantes del kit tienen agujeros a lo largo (dibujo pág. 2/4): el conjunto de filas se puede subir o bajar; el paso de esos agujeros NO figura en el catálogo, por eso el armado apila las filas contiguas (185 mm) abajo de la placa.",
+          "Largo útil del riel = módulos por fila x 17,5 mm (módulo DIN); centrado en la placa (el catálogo no da el ancho de los soportes laterales).",
+          "Riel a media altura de la fila de 185 mm (el catálogo no cota la altura del riel dentro de la fila)."
+        ],
+        "status": "filas y módulos del catálogo; posición dentro de la placa y ancho de soportes sin dato (supuestos marcados)",
+        "freeRailOptions": [
+          {
+            "type": "GD4006",
+            "orderCode": "GD4006",
+            "length": 400,
+            "height": 35
+          },
+          {
+            "type": "GD6006",
+            "orderCode": "GD6006",
+            "length": 600,
+            "height": 35
+          },
+          {
+            "type": "GD8006",
+            "orderCode": "GD8006",
+            "length": 800,
+            "height": 35
+          }
+        ]
+      }
     },
     {
       "id": "sr2-srn6625k",
@@ -2544,26 +2608,7 @@
         "PF8060"
       ],
       "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
-      "railOptions": [
-        {
-          "type": "GD4006",
-          "orderCode": "GD4006",
-          "length": 400,
-          "height": 35
-        },
-        {
-          "type": "GD6006",
-          "orderCode": "GD6006",
-          "length": 600,
-          "height": 35
-        },
-        {
-          "type": "GD8006",
-          "orderCode": "GD8006",
-          "length": 800,
-          "height": 35
-        }
-      ],
+      "railOptions": [],
       "mountingLayout": {
         "status": "placa interna ciega PF8060; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
         "dinRails": []
@@ -2619,7 +2664,42 @@
           }
         }
       },
-      "line": "ABB SR2 · gabinete monobloc IP65"
+      "line": "ABB SR2 · gabinete monobloc IP65",
+      "kdKit": {
+        "kit": "KD8060K",
+        "rows": 4,
+        "modulesPerRow": 25,
+        "totalModules": 100,
+        "rowPitchMm": 185,
+        "moduleMm": 17.5,
+        "source": "ABB 1STC804013D0201 (02.2011) pág. 2/4 'Selection table', columnas 'Kit for distribution - Supports for mounting modular panels' (leído de la imagen de la página)",
+        "assumptions": [
+          "Los montantes del kit tienen agujeros a lo largo (dibujo pág. 2/4): el conjunto de filas se puede subir o bajar; el paso de esos agujeros NO figura en el catálogo, por eso el armado apila las filas contiguas (185 mm) abajo de la placa.",
+          "Largo útil del riel = módulos por fila x 17,5 mm (módulo DIN); centrado en la placa (el catálogo no da el ancho de los soportes laterales).",
+          "Riel a media altura de la fila de 185 mm (el catálogo no cota la altura del riel dentro de la fila)."
+        ],
+        "status": "filas y módulos del catálogo; posición dentro de la placa y ancho de soportes sin dato (supuestos marcados)",
+        "freeRailOptions": [
+          {
+            "type": "GD4006",
+            "orderCode": "GD4006",
+            "length": 400,
+            "height": 35
+          },
+          {
+            "type": "GD6006",
+            "orderCode": "GD6006",
+            "length": 600,
+            "height": 35
+          },
+          {
+            "type": "GD8006",
+            "orderCode": "GD8006",
+            "length": 800,
+            "height": 35
+          }
+        ]
+      }
     },
     {
       "id": "sr2-srn8630k",
@@ -2646,26 +2726,7 @@
         "PF8060"
       ],
       "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
-      "railOptions": [
-        {
-          "type": "GD4006",
-          "orderCode": "GD4006",
-          "length": 400,
-          "height": 35
-        },
-        {
-          "type": "GD6006",
-          "orderCode": "GD6006",
-          "length": 600,
-          "height": 35
-        },
-        {
-          "type": "GD8006",
-          "orderCode": "GD8006",
-          "length": 800,
-          "height": 35
-        }
-      ],
+      "railOptions": [],
       "mountingLayout": {
         "status": "placa interna ciega PF8060; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
         "dinRails": []
@@ -2721,7 +2782,42 @@
           }
         }
       },
-      "line": "ABB SR2 · gabinete monobloc IP65"
+      "line": "ABB SR2 · gabinete monobloc IP65",
+      "kdKit": {
+        "kit": "KD8060K",
+        "rows": 4,
+        "modulesPerRow": 25,
+        "totalModules": 100,
+        "rowPitchMm": 185,
+        "moduleMm": 17.5,
+        "source": "ABB 1STC804013D0201 (02.2011) pág. 2/4 'Selection table', columnas 'Kit for distribution - Supports for mounting modular panels' (leído de la imagen de la página)",
+        "assumptions": [
+          "Los montantes del kit tienen agujeros a lo largo (dibujo pág. 2/4): el conjunto de filas se puede subir o bajar; el paso de esos agujeros NO figura en el catálogo, por eso el armado apila las filas contiguas (185 mm) abajo de la placa.",
+          "Largo útil del riel = módulos por fila x 17,5 mm (módulo DIN); centrado en la placa (el catálogo no da el ancho de los soportes laterales).",
+          "Riel a media altura de la fila de 185 mm (el catálogo no cota la altura del riel dentro de la fila)."
+        ],
+        "status": "filas y módulos del catálogo; posición dentro de la placa y ancho de soportes sin dato (supuestos marcados)",
+        "freeRailOptions": [
+          {
+            "type": "GD4006",
+            "orderCode": "GD4006",
+            "length": 400,
+            "height": 35
+          },
+          {
+            "type": "GD6006",
+            "orderCode": "GD6006",
+            "length": 600,
+            "height": 35
+          },
+          {
+            "type": "GD8006",
+            "orderCode": "GD8006",
+            "length": 800,
+            "height": 35
+          }
+        ]
+      }
     },
     {
       "id": "sr2-srn8830k",
@@ -2850,26 +2946,7 @@
         "PF1060"
       ],
       "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
-      "railOptions": [
-        {
-          "type": "GD4006",
-          "orderCode": "GD4006",
-          "length": 400,
-          "height": 35
-        },
-        {
-          "type": "GD6006",
-          "orderCode": "GD6006",
-          "length": 600,
-          "height": 35
-        },
-        {
-          "type": "GD8006",
-          "orderCode": "GD8006",
-          "length": 800,
-          "height": 35
-        }
-      ],
+      "railOptions": [],
       "mountingLayout": {
         "status": "placa interna ciega PF1060; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
         "dinRails": []
@@ -2925,7 +3002,42 @@
           }
         }
       },
-      "line": "ABB SR2 · gabinete monobloc IP65"
+      "line": "ABB SR2 · gabinete monobloc IP65",
+      "kdKit": {
+        "kit": "KD1060K",
+        "rows": 5,
+        "modulesPerRow": 25,
+        "totalModules": 125,
+        "rowPitchMm": 185,
+        "moduleMm": 17.5,
+        "source": "ABB 1STC804013D0201 (02.2011) pág. 2/4 'Selection table', columnas 'Kit for distribution - Supports for mounting modular panels' (leído de la imagen de la página)",
+        "assumptions": [
+          "Los montantes del kit tienen agujeros a lo largo (dibujo pág. 2/4): el conjunto de filas se puede subir o bajar; el paso de esos agujeros NO figura en el catálogo, por eso el armado apila las filas contiguas (185 mm) abajo de la placa.",
+          "Largo útil del riel = módulos por fila x 17,5 mm (módulo DIN); centrado en la placa (el catálogo no da el ancho de los soportes laterales).",
+          "Riel a media altura de la fila de 185 mm (el catálogo no cota la altura del riel dentro de la fila)."
+        ],
+        "status": "filas y módulos del catálogo; posición dentro de la placa y ancho de soportes sin dato (supuestos marcados)",
+        "freeRailOptions": [
+          {
+            "type": "GD4006",
+            "orderCode": "GD4006",
+            "length": 400,
+            "height": 35
+          },
+          {
+            "type": "GD6006",
+            "orderCode": "GD6006",
+            "length": 600,
+            "height": 35
+          },
+          {
+            "type": "GD8006",
+            "orderCode": "GD8006",
+            "length": 800,
+            "height": 35
+          }
+        ]
+      }
     },
     {
       "id": "sr2-srn10630k",
@@ -2952,26 +3064,7 @@
         "PF1060"
       ],
       "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
-      "railOptions": [
-        {
-          "type": "GD4006",
-          "orderCode": "GD4006",
-          "length": 400,
-          "height": 35
-        },
-        {
-          "type": "GD6006",
-          "orderCode": "GD6006",
-          "length": 600,
-          "height": 35
-        },
-        {
-          "type": "GD8006",
-          "orderCode": "GD8006",
-          "length": 800,
-          "height": 35
-        }
-      ],
+      "railOptions": [],
       "mountingLayout": {
         "status": "placa interna ciega PF1060; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
         "dinRails": []
@@ -3027,7 +3120,42 @@
           }
         }
       },
-      "line": "ABB SR2 · gabinete monobloc IP65"
+      "line": "ABB SR2 · gabinete monobloc IP65",
+      "kdKit": {
+        "kit": "KD1060K",
+        "rows": 5,
+        "modulesPerRow": 25,
+        "totalModules": 125,
+        "rowPitchMm": 185,
+        "moduleMm": 17.5,
+        "source": "ABB 1STC804013D0201 (02.2011) pág. 2/4 'Selection table', columnas 'Kit for distribution - Supports for mounting modular panels' (leído de la imagen de la página)",
+        "assumptions": [
+          "Los montantes del kit tienen agujeros a lo largo (dibujo pág. 2/4): el conjunto de filas se puede subir o bajar; el paso de esos agujeros NO figura en el catálogo, por eso el armado apila las filas contiguas (185 mm) abajo de la placa.",
+          "Largo útil del riel = módulos por fila x 17,5 mm (módulo DIN); centrado en la placa (el catálogo no da el ancho de los soportes laterales).",
+          "Riel a media altura de la fila de 185 mm (el catálogo no cota la altura del riel dentro de la fila)."
+        ],
+        "status": "filas y módulos del catálogo; posición dentro de la placa y ancho de soportes sin dato (supuestos marcados)",
+        "freeRailOptions": [
+          {
+            "type": "GD4006",
+            "orderCode": "GD4006",
+            "length": 400,
+            "height": 35
+          },
+          {
+            "type": "GD6006",
+            "orderCode": "GD6006",
+            "length": 600,
+            "height": 35
+          },
+          {
+            "type": "GD8006",
+            "orderCode": "GD8006",
+            "length": 800,
+            "height": 35
+          }
+        ]
+      }
     },
     {
       "id": "sr2-srn10830k",
@@ -3054,26 +3182,7 @@
         "PF1080"
       ],
       "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
-      "railOptions": [
-        {
-          "type": "GD4006",
-          "orderCode": "GD4006",
-          "length": 400,
-          "height": 35
-        },
-        {
-          "type": "GD6006",
-          "orderCode": "GD6006",
-          "length": 600,
-          "height": 35
-        },
-        {
-          "type": "GD8006",
-          "orderCode": "GD8006",
-          "length": 800,
-          "height": 35
-        }
-      ],
+      "railOptions": [],
       "mountingLayout": {
         "status": "placa interna ciega PF1080; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
         "dinRails": []
@@ -3129,7 +3238,42 @@
           }
         }
       },
-      "line": "ABB SR2 · gabinete monobloc IP65"
+      "line": "ABB SR2 · gabinete monobloc IP65",
+      "kdKit": {
+        "kit": "KD1080K",
+        "rows": 5,
+        "modulesPerRow": 36,
+        "totalModules": 180,
+        "rowPitchMm": 185,
+        "moduleMm": 17.5,
+        "source": "ABB 1STC804013D0201 (02.2011) pág. 2/4 'Selection table', columnas 'Kit for distribution - Supports for mounting modular panels' (leído de la imagen de la página)",
+        "assumptions": [
+          "Los montantes del kit tienen agujeros a lo largo (dibujo pág. 2/4): el conjunto de filas se puede subir o bajar; el paso de esos agujeros NO figura en el catálogo, por eso el armado apila las filas contiguas (185 mm) abajo de la placa.",
+          "Largo útil del riel = módulos por fila x 17,5 mm (módulo DIN); centrado en la placa (el catálogo no da el ancho de los soportes laterales).",
+          "Riel a media altura de la fila de 185 mm (el catálogo no cota la altura del riel dentro de la fila)."
+        ],
+        "status": "filas y módulos del catálogo; posición dentro de la placa y ancho de soportes sin dato (supuestos marcados)",
+        "freeRailOptions": [
+          {
+            "type": "GD4006",
+            "orderCode": "GD4006",
+            "length": 400,
+            "height": 35
+          },
+          {
+            "type": "GD6006",
+            "orderCode": "GD6006",
+            "length": 600,
+            "height": 35
+          },
+          {
+            "type": "GD8006",
+            "orderCode": "GD8006",
+            "length": 800,
+            "height": 35
+          }
+        ]
+      }
     },
     {
       "id": "sr2-srn12630k",
@@ -3156,26 +3300,7 @@
         "PF1260"
       ],
       "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
-      "railOptions": [
-        {
-          "type": "GD4006",
-          "orderCode": "GD4006",
-          "length": 400,
-          "height": 35
-        },
-        {
-          "type": "GD6006",
-          "orderCode": "GD6006",
-          "length": 600,
-          "height": 35
-        },
-        {
-          "type": "GD8006",
-          "orderCode": "GD8006",
-          "length": 800,
-          "height": 35
-        }
-      ],
+      "railOptions": [],
       "mountingLayout": {
         "status": "placa interna ciega PF1260; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
         "dinRails": []
@@ -3231,7 +3356,42 @@
           }
         }
       },
-      "line": "ABB SR2 · gabinete monobloc IP65"
+      "line": "ABB SR2 · gabinete monobloc IP65",
+      "kdKit": {
+        "kit": "KD1260K",
+        "rows": 6,
+        "modulesPerRow": 25,
+        "totalModules": 150,
+        "rowPitchMm": 185,
+        "moduleMm": 17.5,
+        "source": "ABB 1STC804013D0201 (02.2011) pág. 2/4 'Selection table', columnas 'Kit for distribution - Supports for mounting modular panels' (leído de la imagen de la página)",
+        "assumptions": [
+          "Los montantes del kit tienen agujeros a lo largo (dibujo pág. 2/4): el conjunto de filas se puede subir o bajar; el paso de esos agujeros NO figura en el catálogo, por eso el armado apila las filas contiguas (185 mm) abajo de la placa.",
+          "Largo útil del riel = módulos por fila x 17,5 mm (módulo DIN); centrado en la placa (el catálogo no da el ancho de los soportes laterales).",
+          "Riel a media altura de la fila de 185 mm (el catálogo no cota la altura del riel dentro de la fila)."
+        ],
+        "status": "filas y módulos del catálogo; posición dentro de la placa y ancho de soportes sin dato (supuestos marcados)",
+        "freeRailOptions": [
+          {
+            "type": "GD4006",
+            "orderCode": "GD4006",
+            "length": 400,
+            "height": 35
+          },
+          {
+            "type": "GD6006",
+            "orderCode": "GD6006",
+            "length": 600,
+            "height": 35
+          },
+          {
+            "type": "GD8006",
+            "orderCode": "GD8006",
+            "length": 800,
+            "height": 35
+          }
+        ]
+      }
     },
     {
       "id": "sr2-srn12830k",
@@ -3258,26 +3418,7 @@
         "PF1280"
       ],
       "source": "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)",
-      "railOptions": [
-        {
-          "type": "GD4006",
-          "orderCode": "GD4006",
-          "length": 400,
-          "height": 35
-        },
-        {
-          "type": "GD6006",
-          "orderCode": "GD6006",
-          "length": 600,
-          "height": 35
-        },
-        {
-          "type": "GD8006",
-          "orderCode": "GD8006",
-          "length": 800,
-          "height": 35
-        }
-      ],
+      "railOptions": [],
       "mountingLayout": {
         "status": "placa interna ciega PF1280; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
         "dinRails": []
@@ -3333,7 +3474,42 @@
           }
         }
       },
-      "line": "ABB SR2 · gabinete monobloc IP65"
+      "line": "ABB SR2 · gabinete monobloc IP65",
+      "kdKit": {
+        "kit": "KD1280K",
+        "rows": 6,
+        "modulesPerRow": 36,
+        "totalModules": 216,
+        "rowPitchMm": 185,
+        "moduleMm": 17.5,
+        "source": "ABB 1STC804013D0201 (02.2011) pág. 2/4 'Selection table', columnas 'Kit for distribution - Supports for mounting modular panels' (leído de la imagen de la página)",
+        "assumptions": [
+          "Los montantes del kit tienen agujeros a lo largo (dibujo pág. 2/4): el conjunto de filas se puede subir o bajar; el paso de esos agujeros NO figura en el catálogo, por eso el armado apila las filas contiguas (185 mm) abajo de la placa.",
+          "Largo útil del riel = módulos por fila x 17,5 mm (módulo DIN); centrado en la placa (el catálogo no da el ancho de los soportes laterales).",
+          "Riel a media altura de la fila de 185 mm (el catálogo no cota la altura del riel dentro de la fila)."
+        ],
+        "status": "filas y módulos del catálogo; posición dentro de la placa y ancho de soportes sin dato (supuestos marcados)",
+        "freeRailOptions": [
+          {
+            "type": "GD4006",
+            "orderCode": "GD4006",
+            "length": 400,
+            "height": 35
+          },
+          {
+            "type": "GD6006",
+            "orderCode": "GD6006",
+            "length": 600,
+            "height": 35
+          },
+          {
+            "type": "GD8006",
+            "orderCode": "GD8006",
+            "length": 800,
+            "height": 35
+          }
+        ]
+      }
     }
   ],
   "deviceShells": [

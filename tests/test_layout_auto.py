@@ -25,10 +25,40 @@ class LayoutAuto(unittest.TestCase):
         ext = self.new["enclosure"]["externalBody"]
         self.assertLess(ext["width"] * ext["height"], 1100 * 2200)
 
-    def test_ts4_entra_en_un_sr2_con_riel_gd(self):
-        self.assertTrue(self.new["enclosure"]["id"].startswith("sr2-"))
-        self.assertTrue(all(r["type"].startswith("GD") for r in self.new["enclosure"]["mountingLayout"]["dinRails"]))
-        self.assertGreaterEqual(self.new["enclosure"]["functional"]["depth"], 200)  # reglas_layout.json: minDepthForKitDevicesMm
+    def test_ts4_entra_en_un_sr2_con_filas_fijas_del_kit_kd(self):
+        e = self.new["enclosure"]
+        self.assertTrue(e["id"].startswith("sr2-"))
+        self.assertGreaterEqual(e["functional"]["depth"], 200)  # reglas_layout.json: minDepthForKitDevicesMm
+        kd = next(x for x in self.catalog["enclosures"] if x["id"] == e["id"])["kdKit"]
+        rails = e["mountingLayout"]["dinRails"]
+        self.assertLessEqual(len(rails), kd["rows"])
+        self.assertIn(kd["kit"], e["structuralComponentReferences"]["parts"])
+        ys = sorted(r["y"] for r in rails)
+        self.assertTrue(all(abs((b - a) - kd["rowPitchMm"]) < 0.01 for a, b in zip(ys, ys[1:])))  # filas contiguas a 185 mm
+        for r in rails:
+            self.assertTrue(r["fixed"])
+            self.assertEqual(r["length"], kd["modulesPerRow"] * kd["moduleMm"])
+
+    def test_los_equipos_de_kit_no_invaden_la_pila_de_filas(self):
+        rails = self.new["enclosure"]["mountingLayout"]["dinRails"]
+        stack_top = max(r["y"] for r in rails) + 185 / 2
+        din = {s["id"] for s in self.catalog["deviceShells"] if s.get("mounting") == "din"}
+        for d in self.new["devices"]:
+            if d["shell"] not in din:
+                self.assertGreaterEqual(d["y"], stack_top, d["tag"])
+
+    def test_informa_alternativa_con_riel_libre_solo_si_es_mas_chica(self):
+        alt = self.summary["alternativaRielLibre"]
+        if alt:
+            area = lambda i: (lambda b: b["width"] * b["height"])(next(e for e in self.catalog["enclosures"] if e["id"] == i)["externalBody"])
+            self.assertLess(area(alt["id"]), area(self.new["enclosure"]["id"]))
+
+    def test_riel_libre_usa_gd_y_un_gabinete_no_mayor(self):
+        free, summary = autolayout(load("ts4_topografia.json"), self.catalog, free_rails=True)
+        rails = free["enclosure"]["mountingLayout"]["dinRails"]
+        self.assertTrue(all(r["type"].startswith("GD") and not r.get("fixed") for r in rails))
+        area = lambda e: e["externalBody"]["width"] * e["externalBody"]["height"]
+        self.assertLessEqual(area(free["enclosure"]), area(self.new["enclosure"]))
 
     def test_es_el_primero_que_entra_del_mas_chico_al_mas_grande(self):
         tried = self.summary["intentos"]

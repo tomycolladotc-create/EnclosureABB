@@ -54,6 +54,33 @@ def _wrap(items, width, gap):
     return rows
 
 
+def _pack_rail_rows(devs, length, col_gap, pe_reserve):
+    """Reparte equipos de riel en filas de `length` mm: misma carcasa pegada (peine), distinta carcasa con separación. Deja lugar a los bornes PE en la última fila."""
+    rows, cur, used = [], [], 0.0
+    for d in devs:
+        if d["w"] > length:
+            return None
+        add = d["w"] + (0 if not cur or cur[-1].get("shell") == d.get("shell") else col_gap)
+        if cur and used + add > length:
+            rows.append(cur)
+            cur, used, add = [], 0.0, d["w"]
+        cur.append(d)
+        used += add
+    rows.append(cur)
+    if used + pe_reserve > length:
+        rows.append([])
+    return rows
+
+
+def _place_row(row, rail, y_center, col_gap, placed):
+    x, prev = rail["x"], None
+    for d in row:
+        x += 0 if prev is None or prev.get("shell") == d.get("shell") else col_gap
+        placed[d["tag"]] = (round(x, 2), round(y_center - d["h"] / 2, 2))
+        x += d["w"]
+        prev = d
+
+
 def _try(project, catalog, enc, rules, pe_reserve):
     fw, fh = enc["functional"]["width"], enc["functional"]["height"]
     margin, row_gap, col_gap = rules["margin"], rules["rowGap"], rules["colGap"]
@@ -88,47 +115,58 @@ def _try(project, catalog, enc, rules, pe_reserve):
         heights = [max(s.get("kitHeight") or 0, d["h"]) if rules.get("kitModuleHeightFromShell") else d["h"] for d, s in kit]
         if not row_block(devs, heights, col_gap):
             return None
+    bottom_limit = margin  # borde inferior permitido para lo que se arma de arriba hacia abajo
     if rail_devs:
-        # Riel: el más largo de los que ofrece el gabinete (railOptions) que entra en el ancho útil.
-        options = [o for o in enc.get("railOptions", []) if o["length"] <= usable_w]
-        if not options:
-            return None
-        template = copy.deepcopy(max(options, key=lambda o: o["length"]))
-        length = template["length"]
+        kd = enc.get("kdKit")
         rail_devs = sorted(rail_devs, key=lambda d: d.get("shell") or "")
-        # filas de riel: misma carcasa pegada (para el peine), distinta carcasa con separación
-        rows, cur, used = [], [], 0.0
-        for d in rail_devs:
-            add = d["w"] + (0 if not cur else (0 if cur[-1].get("shell") == d.get("shell") else col_gap))
-            if cur and used + add > length:
-                rows.append(cur)
-                cur, used, add = [], 0.0, d["w"]
-            if d["w"] > length:
+        if kd:
+            # Kit KD del gabinete: filas de riel fijas (185 mm de paso, largo = módulos x 17,5 mm); no se inventa otra posición.
+            length, pitch = kd["modulesPerRow"] * kd["moduleMm"], kd["rowPitchMm"]
+            rows = _pack_rail_rows(rail_devs, length, col_gap, pe_reserve)
+            if rows is None or len(rows) > kd["rows"] or any(d["h"] > pitch for d in rail_devs) or length > usable_w:
                 return None
-            cur.append(d)
-            used += add
-        rows.append(cur)
-        if used + pe_reserve > length:  # lugar para los bornes de tierra en la última fila
-            rows.append([])
-        for n, row in enumerate(rows, 1):
-            row_h = max([d["h"] for d in row], default=44.5)
-            top = margin + cursor
-            y_center = fh - top - row_h / 2
-            rail = {**template, "id": f"DIN-{n}", "x": round((fw - length) / 2, 2), "y": round(y_center, 2), "length": length}
-            rails.append(rail)
-            x, prev = rail["x"], None
-            for d in row:
-                x += 0 if prev is None or prev.get("shell") == d.get("shell") else col_gap
-                placed[d["tag"]] = (round(x, 2), round(y_center - d["h"] / 2, 2))
-                x += d["w"]
-                prev = d
-            cursor += row_h + row_gap
-    if margin + cursor - row_gap > fh - margin + 1e-6:
+            bottom_limit = margin + len(rows) * pitch + row_gap  # pila de filas contiguas apoyada abajo de la placa
+            for n, row in enumerate(rows, 1):
+                y_center = margin + (len(rows) - n) * pitch + pitch / 2
+                rail = {"id": f"DIN-{n}", "type": f"Fila {n} del kit {kd['kit']}", "orderCode": None, "kdKit": kd["kit"], "fixed": True, "height": 35,
+                        "x": round((fw - length) / 2, 2), "y": round(y_center, 2), "length": length}
+                rails.append(rail)
+                _place_row(row, rail, y_center, col_gap, placed)
+        else:
+            # Gabinete sin kit KD: riel más largo de railOptions que entra en el ancho útil, posición propuesta por el armado (no fijada por el gabinete).
+            options = [o for o in enc.get("railOptions", []) if o["length"] <= usable_w]
+            if not options:
+                return None
+            template = copy.deepcopy(max(options, key=lambda o: o["length"]))
+            length = template["length"]
+            rows = _pack_rail_rows(rail_devs, length, col_gap, pe_reserve)
+            if rows is None:
+                return None
+            for n, row in enumerate(rows, 1):
+                row_h = max([d["h"] for d in row], default=44.5)
+                y_center = fh - (margin + cursor) - row_h / 2
+                rail = {**template, "id": f"DIN-{n}", "x": round((fw - length) / 2, 2), "y": round(y_center, 2), "length": length}
+                rails.append(rail)
+                _place_row(row, rail, y_center, col_gap, placed)
+                cursor += row_h + row_gap
+    if fh - (margin + cursor - row_gap) < bottom_limit - 1e-6:  # lo de arriba no debe invadir el borde ni la pila de filas del kit
         return None
     return placed, rails
 
 
-def autolayout(project, catalog, rules=None):
+def _free_rail_alternative(project, candidates, catalog, rules, pe_reserve, chosen):
+    """Gabinete más chico que entra usando riel GD de posición libre (sin kit KD), si es más chico que el elegido. Es opción del usuario: la posición del riel la propone el armado, no el gabinete."""
+    area = lambda e: e["externalBody"]["width"] * e["externalBody"]["height"]
+    for enc in candidates:
+        if area(enc) >= area(chosen):
+            break
+        free = {**enc, "kdKit": None, "railOptions": (enc.get("kdKit") or {}).get("freeRailOptions", enc.get("railOptions", []))}
+        if _try(project, catalog, free, rules, pe_reserve) is not None:
+            return {"id": enc["id"], "label": enc["label"], "nota": "riel GD de posición libre (no fijada por el gabinete)"}
+    return None
+
+
+def autolayout(project, catalog, rules=None, free_rails=False):
     """Devuelve (proyecto_nuevo, resumen). El proyecto original no se modifica."""
     rules = rules or load_rules()
     try:
@@ -139,6 +177,8 @@ def autolayout(project, catalog, rules=None):
     candidates = sorted(catalog["enclosures"], key=lambda e: (e["externalBody"]["width"] * e["externalBody"]["height"], e["externalBody"]["depth"]))
     tried = []
     for enc in candidates:
+        if free_rails and enc.get("kdKit"):  # opción del usuario: riel GD de posición libre en vez de las filas fijas del kit KD
+            enc = {**enc, "kdKit": None, "railOptions": enc["kdKit"].get("freeRailOptions", [])}
         result = _try(project, catalog, enc, rules, pe_reserve)
         tried.append({"id": enc["id"], "entra": result is not None})
         if result is None:
@@ -150,11 +190,11 @@ def autolayout(project, catalog, rules=None):
                             "plinthHeight": plinth, "overallHeightWithPlinth": enc["externalBody"]["height"] + plinth,
                             "id": enc["id"], "functionalAreaOffset": copy.deepcopy(enc.get("functionalOffset", {"x": 50, "y": plinth + 50})),
                             "mountingLayout": {**copy.deepcopy(enc["mountingLayout"]), "dinRails": rails},
-                            "structuralComponentReferences": {"parts": enc["parts"]}, "sources": [enc["source"]]}
+                            "structuralComponentReferences": {"parts": enc["parts"] + ([enc["kdKit"]["kit"]] if enc.get("kdKit") else [])}, "sources": [enc["source"]]}
         for d in new["devices"]:
             d["x"], d["y"] = placed[d["tag"]]
             d.pop("unplaced", None)
             d.pop("placementNote", None)
         new["accessories"] = [a for a in new.get("accessories", []) if not a.get("auto")]
-        return new, {"gabinete": enc["id"], "intentos": tried}
+        return new, {"gabinete": enc["id"], "kit": (enc.get("kdKit") or {}).get("kit"), "intentos": tried, "rielLibre": free_rails, "alternativaRielLibre": None if free_rails else _free_rail_alternative(project, candidates, catalog, rules, pe_reserve, enc)}
     raise ValueError("Ningún gabinete del catálogo aloja este contenido con los criterios de datos/reglas_layout.json")

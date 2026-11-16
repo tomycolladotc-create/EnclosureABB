@@ -44,6 +44,12 @@
 - Ojo: después de cambios grandes o antes de cerrar una sesión, actualizar coordinación y subir incluso el trabajo parcial.
 - Siguiente: respetar la asignación activa de Claude sobre rieles DIN y tomar un pendiente libre antes de modificar código.
 
+## 2026-11-15 23:40 · Claude
+- Kit KD cargado en 11 SR2 (`kdKit`); `layout_auto` arma con filas fijas de 185 mm; opción riel libre GD (`?free=1`, botón en el editor). TS4 queda en SRN12830K (1200x800) con filas fijas; con riel libre entra en SRN12630K (1200x600).
+- Arreglos: peine sin corriente porque faltaba `poles` en QF90 (ahora se deduce de la carcasa: 1pn=2 polos); el bloque de distribución se dibujaba sobre los bornes PE (ahora los respeta). Pendiente conocido: peine con neutro para S804 (QF81/QF85 siguen 'sin peine').
+- Ojo [Codex]: el servidor de prueba autoguarda el proyecto abierto en `datos/ts4_topografia.json`; si corrés el editor con el TS4, verificá `git status` antes de commitear.
+- 72 pruebas OK.
+
 ## 2026-11-15 22:10 · Claude
 - Medidas (ancho x alto x largo, mm) de las fichas ABB leídas por WebFetch: PS1/4 21x18x67, PS1/60 20x17x1050, PS3/60 14,8x29x1056, PS4/12 19,3x30,5x212. La ficha trae 'Pitch 44698' (error de planilla): no se copió. El CAD de ABB está en un visor dinámico de la página del producto (new.abb.com/products/<código>, sección 'CAD outline drawing') que no se pudo bajar con el navegador integrado; pendiente [Claude/Codex]: probar con Chrome o pedirlo al usuario.
 

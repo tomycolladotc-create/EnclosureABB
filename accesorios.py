@@ -29,6 +29,14 @@ def _in_amps(device):
         return None
 
 
+def _poles(d):
+    """Polos del equipo: el dato cargado, o el que dice la carcasa (1pn = 1P+N = 2 polos; 2p/3p/4p). None si no se puede saber."""
+    if d.get("poles"):
+        return d["poles"]
+    m = re.search(r"\.(1pn|[234]p)\.", d.get("shell", ""))
+    return None if not m else 2 if m.group(1) == "1pn" else int(m.group(1)[0])
+
+
 def _free_x(devices, rail, width, height=None):
     """Primer hueco libre de `width` mm sobre el riel, buscando desde el extremo derecho. None si no entra."""
     band = max(RAIL_BAND_MM, (height or 0) / 2)
@@ -84,7 +92,7 @@ def propose(project, catalog=None):
     if len(group) > 1:
         groups.append(group)
     for g in groups:
-        poles = {d.get("poles") for d in g}
+        poles = {_poles(d) for d in g}
         comb = combs["abb-ps3-12"] if poles == {3} else combs["abb-ps2"] if poles == {2} else combs["abb-ps4"] if poles == {4} else None
         out.append({"type": "comb", "auto": True, "catalogId": comb["id"] if comb else None, "corrienteA": comb.get("corrienteA") if comb else None,
                     "devices": [d["tag"] for d in g], "x": g[0]["x"], "y": g[0]["y"] + g[0]["h"] - 12, "w": g[-1]["x"] + g[-1]["w"] - g[0]["x"], "h": 4,
@@ -119,7 +127,8 @@ def propose(project, catalog=None):
             block = usable[0]
             width, height = block.get("anchoMm"), block.get("alturaFrenteMm")
             item.update(catalogId=block["id"], corrienteA=block["corrienteA"], label=f"{block.get('tipo', block['id'])} {block['corrienteA']:g} A")
-            x = _free_x(devices, rails[0], width, height) if rails and width and height else None
+            taken = devices + [a for a in out if a.get("placed") and a.get("x") is not None and a.get("w")]  # los bornes PE ya puestos también ocupan el riel
+            x = _free_x(taken, rails[0], width, height) if rails and width and height else None
             if x is None:
                 item.update(placed=False, note="sin lugar en el riel o sin medidas de frente en el catálogo")
             else:

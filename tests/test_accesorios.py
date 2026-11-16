@@ -100,3 +100,28 @@ class Accesorios(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class PolosYSolape(unittest.TestCase):
+    def test_polos_de_la_carcasa_si_falta_el_dato(self):
+        from accesorios import _poles
+        self.assertEqual(_poles({"shell": "abb.s200m.1pn.front"}), 2)
+        self.assertEqual(_poles({"shell": "abb.s200.3p.front"}), 3)
+        self.assertEqual(_poles({"shell": "abb.s200.3p.front", "poles": 4}), 4)
+        self.assertIsNone(_poles({"shell": "abb.s804n.front"}))
+
+    def test_bloque_no_pisa_los_bornes_pe(self):
+        import json
+        from layout_auto import autolayout
+        L = lambda n: json.load(open(ROOT / "datos" / n, encoding="utf-8"))
+        base = L("ts4_topografia.json")
+        for d in base["devices"]:
+            if d["tag"].startswith("QF8") and "xt" in d["shell"]:
+                d["marking"] = {**d.get("marking", {}), "In": "80"}  # corriente alta: obliga a proponer bloque de distribución
+        new, _ = autolayout(base, L("catalogo_abb.json"))
+        complete(new)
+        pe = next(a for a in new["accessories"] if a["type"] == "pe_terminal")
+        blk = next(a for a in new["accessories"] if a["type"] == "distribution_block")
+        self.assertTrue(pe.get("placed") and blk.get("placed"))
+        if True:
+            self.assertTrue(pe["x"] + pe["w"] <= blk["x"] + 1e-6 or blk["x"] + blk["w"] <= pe["x"] + 1e-6)
