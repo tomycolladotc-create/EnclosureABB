@@ -38,6 +38,41 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 - Series sin confirmar con fuente (`verified: false`): XT1 y XT2 para todas las versiones de poder de corte.
 - Pruebas: 67, `python -m unittest discover tests`. Correrlas antes de cada push.
 
+## PRÓXIMA SESIÓN — empezar por acá (escrito por Claude, 2026-11-16 01:50)
+
+**Lo que se hizo en esta tanda (Claude, commits fca97d6 → b5bfb32; 79 pruebas OK):**
+1. Medidas de peines PS1/4, PS1/60, PS3/60, PS4/12 desde fichas ABB (`accesorios_abb.json`).
+2. Rieles según el kit KD del SR2 (`kdKit` en 11 gabinetes; `layout_auto` usa filas fijas de 185 mm) + botón 'Armar con riel libre (GD)' (`/api/autolayout?free=1`).
+3. Arreglos: peine sin corriente (polos deducidos de la carcasa en `accesorios._poles`), bloque de distribución pisaba los bornes PE.
+4. Peines visibles (cuerpo + clavija por polo, sobre los equipos) y canaletas propuestas (`wiringDucts`, 22 secciones, págs. 6/5 del catálogo SR2; `accesorios._propose_ducts`; capas DXF ABB_CANALETAS / ABB_PEINES).
+5. Nombre de circuito (`circuit`, ej. TS-4.2) en lugar del QF en editor, DXF, BOM y avisos; el QF sigue como `tag` interno. `importador.circuit_name` lo lee del plano; TS4 cargado desde Unifilares-25_GENERAL.pdf.
+6. Accesorios SIN texto en dibujo y DXF: la descripción/código/cantidad sale solo en el cómputo de materiales (`accesorios._describe` + `bom.py`: Canaleta, Peine, Borne PE, Riel DIN, Kit de soportes DIN, Bloque, Barra).
+7. `iniciar_editor.bat` busca Python en `py`, `python` (ignora el atajo de la Tienda) y `%LOCALAPPDATA%\Programs\Python\Python312`. El usuario ya lo corre en `Descargas\EnclosureABB` (copia mínima de 31 archivos, sin CAD ni PDF).
+
+**Decisiones abiertas con el usuario (preguntar o decidir con criterio):**
+- Más separación entre filas cuando hay canaleta: la canaleta de arriba de la fila de riel sale chica o no sale (hueco de 40 mm menos peine y etiqueta). Propuesta hecha, sin respuesta: que `layout_auto` use `rowGap = max(rowGap, ancho_canaleta + 2*ductClearanceMm + TAG_ZONE)` en filas con riel libre.
+- El DXF trae la tabla 'LISTA DE MATERIALES' (la armó Codex) y ahora lleva descripciones de accesorios: el usuario pidió accesorios sin texto en el dibujo; decidir si esa tabla queda en el plano o solo en el CSV.
+- Archivo `datos/ts4_topografia.json`: el editor lo autoguarda; no commitear cambios accidentales (usar `git status`).
+
+**Tareas, en este orden (anotarse antes con [Claude]/[Codex]):**
+1. Probar el editor corriendo en la PC del usuario (`Descargas\EnclosureABB`) y corregir lo que reporte; exportar DXF y abrirlo en AutoCAD (capas, escalas, textos, cotas).
+2. Separación de filas con canaletas (ver arriba) y canaletas verticales a los costados (hoy solo horizontales).
+3. Editar canaletas a mano en el editor (mover, borrar, cambiar sección y ranura 4x6/8x12).
+4. Peine con neutro para S804 (QF81/QF85 siguen 'sin peine'); Icw del PS2/12; corriente de PBFC2005.
+5. Profundidades reales de XT/OT/S800 para validar la regla de 200 mm (`minDepthForKitDevicesMm`).
+6. System pro E: posición de rieles y estructura (PUPM2100 vs PUPM2001); XT/OT sobre placa (kit de montaje).
+7. Normativa AEA 90364 / IEC 61439: cargar texto oficial (hoy todo 'por-verificar').
+8. Línea termoplástica RAL 7030 de canaletas (pág. 6/6) y disponibilidad en Argentina de cada código (consultar distribuidor / ABB Argentina).
+
+**Sugerencias de mejora para pensar mañana (no pedidas, a validar con el usuario):**
+- Un único botón 'Armar y proponer todo' (gabinete, rieles, peines, canaletas, bornes PE) con una vista previa y un resumen de qué se propuso y por qué.
+- Resumen por tablero antes de exportar: gabinete elegido, alternativa más chica, % de ocupación de la placa, reserva (norma suele pedir ~20 % libre) y lista de avisos.
+- Comparar gabinetes lado a lado (kit KD vs riel libre) con el tamaño y el costo relativo, para que el usuario elija.
+- Exportar un cómputo de materiales en Excel (.xlsx) además del CSV, con categorías y totales.
+- Duplicar un tablero y reutilizar plantillas (tableros típicos TS, TSB, TSEP) para armar más rápido.
+- Distribuir como programa de Windows (.exe) o instalador, para que el usuario no dependa de Python en el PATH.
+- Probar con los otros unifilares de `tests/unifilares` (TSB, TSEP, TS_AUX_1, GENERAL) y registrar qué falla; la importación de circuitos cubre la mayoría pero no los alimentadores de cabecera.
+
 ## Pendiente (anotarse con [Claude] / [Codex] antes de empezar)
 12. **BOM y revisiones completadas:** `bom.py` agrupa envolvente, estructura, rieles, equipos, kits y accesorios; exporta CSV UTF-8/Excel y dibuja la tabla en la capa DXF `ABB_BOM`. `revisiones.py` emite revisiones numéricas con fecha, descripción y responsable, persistidas en el JSON del proyecto y mostradas en Exportar/DXF. TS4 genera 18 renglones agrupados. No se tocaron datos ni geometría KD de Claude.
 11. **Seguridad y validación completadas:** autoguardado con borrador local recuperable, indicador Guardado/Cambios pendientes/Error, advertencia al salir, deshacer/rehacer y validación visual/manual. `validacion.py` controla superposición, límites de placa, posición/capacidad de riel y profundidad; si falta el dato ABB emite advertencia sin inventarlo. Reglas en `datos/reglas_validacion.json`, ruta `/api/validate` y pruebas dedicadas. No modifica la geometría KD asignada a Claude.

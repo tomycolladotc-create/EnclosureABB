@@ -44,6 +44,9 @@
 - Ojo: después de cambios grandes o antes de cerrar una sesión, actualizar coordinación y subir incluso el trabajo parcial.
 - Siguiente: respetar la asignación activa de Claude sobre rieles DIN y tomar un pendiente libre antes de modificar código.
 
+## 2026-11-16 02:00 · Claude
+- Cierre de sesión: el usuario instaló/corre el editor en su PC (`Descargas\EnclosureABB`, Python 3.12 ya instalado pero fuera del PATH; el .bat ahora lo encuentra). Plan, decisiones abiertas y sugerencias para la próxima sesión escritos en ESTADO.md ('PRÓXIMA SESIÓN'). Nada sin subir.
+
 ## 2026-11-16 03:00 · Claude
 - Pedido del usuario: (1) en lugar del QF mostrar el nombre del circuito del plano (ej. TS-4.2); (2) sin descripciones de accesorios en el dibujo, solo en el cómputo de materiales.
 - (1) `circuit` por equipo (importador + TS4 cargado desde Unifilares-25_GENERAL.pdf: QF82→TS-4.2 … QF163→TSMAQ2, QF89/90→TSI-6/7). Se muestra en editor, DXF, BOM y avisos; el QF queda como `tag` interno (peines, normativa y revisiones siguen usándolo).
