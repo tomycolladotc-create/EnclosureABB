@@ -229,3 +229,8 @@
 - Navegación: `location.search` con `#editor` metía el hash en el id del proyecto (duplicar/abrir/crear). Corregido con `location.href`.
 - PDF de toda la planta (25_GENERAL, 132 equipos de ~20 tableros): ya no crea un tablero roto; avisa qué tableros contiene. Idea a futuro: separar automáticamente un tablero por prefijo de circuito (TS-1, TSB-1…).
 - Menú ⋯ se cierra al elegir una opción; aviso (toast) visible en todas las pantallas.
+
+
+## 2026-11-16 12:20 · Claude · Un solo rótulo por equipo
+- Pedido de Thomas: el nombre del circuito aparecía dos veces (arriba del equipo y en el porta-etiqueta). Se quitó el de arriba en el editor (render) y en el DXF el texto pasó a un porta-etiqueta bajo el equipo (rectángulo 12 mm + texto, capa ABB_ETIQUETAS), igual que en pantalla.
+- Tests 82 OK; e2e 61/61 OK.

@@ -245,12 +245,11 @@ ${structureSvg(w,h,project.enclosure.plinthHeight)||`<rect y="${h-project.enclos
  <text x="0" y="-52" fill="#344962" font-size="25">${esc(project.project)}</text><text x="0" y="-28" fill="#6b7d90" font-size="15">${esc(encSpec()?.label||project.enclosure.line||'ABB')} · vista frontal con la puerta retirada</text>`+
  rails().map(r=>railSvg(r,fx,h,fy)).join('')+
  accessoriesSvg(fx,fy,h)+
- project.devices.map((d,i)=>{const yy=h-fy-d.y-d.h,up=(project.accessories||[]).filter(a=>a.type==='comb'&&a.decision!=='discarded'&&a.placed!==false&&(a.devices||[]).includes(d.tag)).reduce((m,a)=>Math.max(m,a.h+12),0),pending=/confirm|placeholder|conflict|variant|revisar|pendiente/i.test(d.status||'');return `<g class="device ${i===selected?'active':''} ${pending?'pending':''}" data-index="${i}">
+ project.devices.map((d,i)=>{const yy=h-fy-d.y-d.h,pending=/confirm|placeholder|conflict|variant|revisar|pendiente/i.test(d.status||'');return `<g class="device ${i===selected?'active':''} ${pending?'pending':''}" data-index="${i}">
  <g filter="url(#shDev)">${frontSvg(d,fx+d.x,yy)}</g>
  ${labelHolder(d,fx+d.x,yy)}
  <rect class="hitbox" x="${fx+d.x}" y="${yy}" width="${d.w}" height="${d.h}" style="fill:transparent;stroke:none;pointer-events:all"/>
  ${i===selected?`<rect x="${fx+d.x-2}" y="${yy-2}" width="${d.w+4}" height="${d.h+4}" style="fill:none;stroke:#156bca;stroke-width:3;stroke-dasharray:6 3;pointer-events:none"/>`:''}
- <text x="${fx+d.x+d.w/2}" y="${yy-6-up}" text-anchor="middle" fill="#142b41" font-size="${Math.min(20,d.w*.8/Math.max(nameOf(d).length,1)/.62).toFixed(1)}" font-weight="700">${esc(nameOf(d))}</text>
  </g>`}).join('');
  $('projectName').textContent=project.project;$('saveStatus').textContent=dirty?'Cambios pendientes':'Guardado';updateExportSummary();scheduleValidation();clearTimeout(normaTimer);normaTimer=setTimeout(()=>runNormativa(),500);
   $('deviceCount').textContent=project.devices.length;$('deviceList').innerHTML=project.devices.map((d,i)=>`<button class="item ${i===selected?'active':''}" data-index="${i}">${esc(nameOf(d))}<small>${esc(d.model||'')}</small></button>`).join('');

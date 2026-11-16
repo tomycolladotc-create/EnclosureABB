@@ -156,11 +156,14 @@ def build_dxf(project, catalog, fronts, appearances):
                                          if item.get("align") == "center" else ezdxf.enums.TextEntityAlignment.MIDDLE_LEFT)
         else:
             rect(x, y, width, height, "ABB_SIN_CAD")
-        # Etiqueta centrada y achicada para que no se pise con la del equipo vecino.
+        # Porta-etiqueta bajo el equipo con el nombre del circuito (igual que en el editor; un solo rótulo por equipo).
         name = device.get("circuit") or device["tag"]  # en el dibujo va el nombre del circuito; el QF queda como dato
-        tag_h = round(min(12, width * 0.95 / max(len(name), 1) / 0.75), 2)
+        lw, lh = min(max(width - 4, 14), 64), 12
+        lx, ly = x + (width - lw) / 2, y - 4 - lh
+        rect(lx, ly, lw, lh, "ABB_ETIQUETAS")
+        tag_h = round(min(8.5, lw / max(len(name), 1) / 0.75), 2)
         space.add_text(name, dxfattribs={"height": tag_h, "layer": "ABB_ETIQUETAS"}).set_placement(
-            (x + width / 2, y + height + 4), align=ezdxf.enums.TextEntityAlignment.BOTTOM_CENTER)
+            (lx + lw / 2, ly + lh / 2), align=ezdxf.enums.TextEntityAlignment.MIDDLE_CENTER)
     # Accesorios de normativa (bornes de tierra, peines): geometría esquemática marcada como provisoria.
     for acc in project.get("accessories", []):
         if acc.get("placed", True) and acc.get("decision") != "discarded" and "x" in acc and acc.get("w"):
