@@ -3,6 +3,13 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-15 23:06 · Codex
+- Hecho: BOM agrupada en interfaz/DXF, descarga CSV para Excel y control de revisiones numeradas por proyecto.
+- Archivos: `bom.py`, `revisiones.py`, `app.py`, `cad_export.py`, `web/index.html`, pruebas y documentación.
+- TS4: 18 renglones (envolvente, 8 estructura, 6 equipos, 2 kits, 1 riel); revisión de prueba 0 no persistida.
+- Pruebas: 67 OK; JavaScript válido; DXF verifica capa `ABB_BOM` y texto de revisión.
+- Ojo: códigos dudosos siguen marcados por confirmar; no se modificaron datos ni geometría KD asignados a Claude.
+
 ## 2026-11-15 22:25 · Codex
 - Hecho: autoguardado, borrador recuperable, aviso al salir, estado visible, deshacer/rehacer y validación geométrica/técnica en el editor.
 - Archivos: `validacion.py`, `datos/reglas_validacion.json`, `app.py`, `web/index.html`, pruebas y documentación.

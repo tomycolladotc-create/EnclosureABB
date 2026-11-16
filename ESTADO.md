@@ -1,6 +1,6 @@
 # ESTADO — Topográficos de tableros ABB
 > Foto actual del proyecto. Se reescribe (no se acumula). El historial va en BITACORA.md.
-> Actualizado: 2026-11-15 22:25 · Codex
+> Actualizado: 2026-11-15 23:06 · Codex
 
 ## Objetivo
 PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tablero con dispositivos y envolvente ABB reales → editar en interfaz → exportar DXF (AutoCAD, 1:1 mm, bloques y capas), PNG, SVG, PDF.
@@ -36,10 +36,10 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 - Modelo de datos: **carcasa** (geometría CAD, `deviceShells`) ≠ **serie** (qué modelos la usan, `series`) ≠ **marcado** (lo impreso en el frente: `apariencias_abb.json -> marking`). Marcado frontal cargado para S200, S800, XT1, XT2 y logo visible de OT400; carcasas por polo (`poleModule`, S200): 2P-4P = polos repetidos.
 - **Cubre 167 de 206 equipos** de los 6 unifilares. Faltan: S293, SN201L, XT3S, S251 (asignada por hipótesis a S201 NA), OT varios, T2S/T4S, E2.2N, S803S (ver `docs/cobertura_unifilares.md`).
 - Series sin confirmar con fuente (`verified: false`): XT1 y XT2 para todas las versiones de poder de corte.
-- Pruebas: 62, `python -m unittest discover tests`. Correrlas antes de cada push.
+- Pruebas: 67, `python -m unittest discover tests`. Correrlas antes de cada push.
 
 ## Pendiente (anotarse con [Claude] / [Codex] antes de empezar)
-12. **[Codex, en curso] BOM y revisiones:** lista de materiales agrupada con exportación CSV, historial de revisiones persistente por proyecto e identificación de la revisión en la pantalla de exportación y el DXF. No tocar datos ni geometría KD de Claude.
+12. **BOM y revisiones completadas:** `bom.py` agrupa envolvente, estructura, rieles, equipos, kits y accesorios; exporta CSV UTF-8/Excel y dibuja la tabla en la capa DXF `ABB_BOM`. `revisiones.py` emite revisiones numéricas con fecha, descripción y responsable, persistidas en el JSON del proyecto y mostradas en Exportar/DXF. TS4 genera 18 renglones agrupados. No se tocaron datos ni geometría KD de Claude.
 11. **Seguridad y validación completadas:** autoguardado con borrador local recuperable, indicador Guardado/Cambios pendientes/Error, advertencia al salir, deshacer/rehacer y validación visual/manual. `validacion.py` controla superposición, límites de placa, posición/capacidad de riel y profundidad; si falta el dato ABB emite advertencia sin inventarlo. Reglas en `datos/reglas_validacion.json`, ruta `/api/validate` y pruebas dedicadas. No modifica la geometría KD asignada a Claude.
 10. **Interfaz de cuatro pasos completada:** la maqueta Claude Artifact ya está implementada en el editor real como Tableros → Importar → Editor → Exportar. Usa las API existentes de proyectos, importación, edición y exportación; estilos separados en `web/styles.css` y contrato básico en `tests/test_web_ui.py`.
 0. **[Claude, en curso] Posición de los rieles DIN según el gabinete** (regla del usuario: la fija el gabinete). Hoy el riel se centra y se pega debajo de los equipos (propuesta mía). Datos reales leídos del catálogo SR2 (págs. 2/4 y 2/8, imagen verificada): con el kit KD las filas de riel son de 185 mm de alto, y hay 2 filas (KD5040K, 500×400), 3 (KD6040K, 600×400), 4 (KD8060K, 800×600, 25 módulos por fila), 5 (KD1060K, 1000×600, 25 mód.; KD1080K, 1000×800, 36 mód.), 6 (KD1260K, 1200×600, 25 mód.; KD1280K, 1200×800, 36 mód.); filas de 14 módulos para 400 mm de ancho. Paneles PM1414K/PM1625K/PM1836K (185×400/600/800). Plan: cargar `kdKit` por gabinete (kit, filas, módulos por fila, alto de fila 185, página) y que `layout_auto.py` ponga los modulares en esas filas y los XT/OT en la placa. **Sin dato del catálogo** (marcar como supuesto): ancho de los soportes laterales KD, desde qué altura arrancan las filas y a qué altura va el riel dentro de la fila de 185 mm. Hay un dibujo en la pág. 2/4 (filas 1, 2, 3 desde arriba), pero no cota la distancia al borde.

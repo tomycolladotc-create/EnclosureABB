@@ -8,6 +8,8 @@ La aplicación sigue cuatro pasos: **Tableros → Importar → Editor → Export
 
 El editor autoguarda los cambios, mantiene deshacer/rehacer, recupera un borrador local si el navegador se cierra antes de guardar y advierte al salir con cambios pendientes. La validación técnica detecta equipos superpuestos o fuera de la placa, equipos DIN fuera del riel, exceso de longitud de riel y problemas de profundidad cuando existe el dato. Si la profundidad ABB todavía no está documentada, lo informa como advertencia en vez de inventarla. Las reglas ajustables están en `datos/reglas_validacion.json`.
 
+La pantalla Exportar genera una lista de materiales agrupada por envolvente, estructura, rieles, equipos, kits y accesorios. Se puede descargar como CSV UTF-8 compatible con Excel; los códigos o estados dudosos permanecen marcados para confirmar. Cada proyecto puede emitir revisiones numeradas con fecha, descripción y responsable. La revisión actual y la BOM también viajan al DXF en la capa `ABB_BOM`.
+
 El catálogo se encuentra en `datos/catalogo_abb.json`. Cada envolvente tiene un perfil de montaje con rieles ABB PDRS0600 y coordenadas definidas para este proyecto. ABB suministra el kit, pero la posición exacta del riel depende de la configuración interna y requiere validar el bastidor y la distribución. Las carcasas comparten dimensiones por familia y cada dispositivo conserva su etiqueta y modelo. El editor dibuja envolventes a escala; todavía faltan el frente CAD de S251, las inscripciones exactas, la selección completa de accesorios y el cálculo de montaje y barras.
 
 ## Archivos CAD oficiales

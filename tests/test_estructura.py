@@ -29,10 +29,13 @@ class Estructura(unittest.TestCase):
 
     def test_dxf_trae_marco_puertas_y_lista_de_partes(self):
         data = cad_export.build_dxf(load("ts4_topografia.json"), load("catalogo_abb.json"), load("frentes_cad.json"), load("apariencias_abb.json"))
-        layers = [e.dxf.layer for e in ezdxf.read(StringIO(data.decode("utf-8"))).modelspace()]
+        entities = list(ezdxf.read(StringIO(data.decode("utf-8"))).modelspace())
+        layers = [e.dxf.layer for e in entities]
         self.assertEqual(layers.count("ABB_PUERTAS"), 2)
         self.assertEqual(layers.count("ABB_ESTRUCTURA"), 1)
         self.assertGreater(layers.count("ABB_CAJETIN"), 5)
+        self.assertGreater(layers.count("ABB_BOM"), 5)
+        self.assertTrue(any("REV. SIN REVISION" in entity.dxf.text for entity in entities if entity.dxftype() == "TEXT"))
 
 
 if __name__ == "__main__":

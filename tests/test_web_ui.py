@@ -25,6 +25,14 @@ class WebUi(unittest.TestCase):
         self.assertIn("/api/validate", html)
         self.assertIn('route == "/api/validate"', (ROOT / "app.py").read_text(encoding="utf-8"))
 
+    def test_bom_y_revisiones_estan_conectadas(self):
+        html = INDEX.read_text(encoding="utf-8")
+        server = (ROOT / "app.py").read_text(encoding="utf-8")
+        for token in ("bomTable", "exportBom", "revisionList", "addRevision"):
+            self.assertIn(token, html)
+        for route in ("/api/bom", "/api/export-bom", "/api/revision"):
+            self.assertIn(route, server)
+
     def test_estilos_separados_y_servidos(self):
         self.assertTrue(STYLES.is_file())
         self.assertIn('href="/styles.css"', INDEX.read_text(encoding="utf-8"))

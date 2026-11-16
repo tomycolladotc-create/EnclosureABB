@@ -14,6 +14,8 @@ from colocar import place_din
 from layout_auto import autolayout
 from normativa import check_project
 from validacion import validate
+from bom import build_bom, to_csv
+from revisiones import add_revision
 import proyectos
 
 ROOT = Path(__file__).resolve().parent
@@ -111,6 +113,23 @@ class Handler(BaseHTTPRequestHandler):
                 catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
                 rules = json.loads(VALIDATION_RULES.read_text(encoding="utf-8"))
                 return self.send_data(200, validate(project, catalog, rules))
+            except (ValueError, KeyError, TypeError) as exc:
+                return self.send_data(422, {"error": str(exc)})
+        if route in ("/api/bom", "/api/export-bom"):
+            try:
+                project = json.loads(blob)
+                catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
+                rows = build_bom(project, catalog)
+                if route == "/api/export-bom":
+                    return self.send_data(200, to_csv(rows), "text/csv")
+                return self.send_data(200, {"rows": rows})
+            except (ValueError, KeyError, TypeError) as exc:
+                return self.send_data(422, {"error": str(exc)})
+        if route == "/api/revision":
+            try:
+                data = json.loads(blob)
+                updated, revision = add_revision(data["project"], data.get("description", ""), data.get("author", ""))
+                return self.send_data(200, {"project": updated, "revision": revision})
             except (ValueError, KeyError, TypeError) as exc:
                 return self.send_data(422, {"error": str(exc)})
         if route == "/api/place":

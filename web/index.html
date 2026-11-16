@@ -18,6 +18,7 @@
 <script>
 let project,catalog,fronts,appearances,projectList=[],selected=null,history=[],future=[],drag=null,pan=null,view=null;
 let dirty=false,autosaveTimer=null,saveInFlight=false,validationTimer=null,validationResult={findings:[]},invalidTags=new Set();
+let bomRows=[];
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const clone=o=>JSON.parse(JSON.stringify(o));
@@ -62,7 +63,7 @@ function showScreen(name){
  document.querySelectorAll('.screen').forEach(el=>el.classList.toggle('active',el.id===`screen-${name}`));
  document.querySelectorAll('.step').forEach(el=>el.classList.toggle('active',el.dataset.screen===name));
  if(name==='editor')setTimeout(()=>{setView();render()},0);
- if(name==='export')updateExportSummary();
+ if(name==='export'){updateExportSummary();loadBom()}
  location.hash=name;
 }
 function updateExportSummary(){
@@ -72,6 +73,7 @@ function updateExportSummary(){
  $('summaryEnclosure').textContent=`${e.width} × ${e.height} × ${e.depth} mm`;
  $('summaryDevices').textContent=`${project.devices.length}`;
  $('summaryRails').textContent=`${rails().length}`;
+ renderRevisions();
  const notes=[];if(validationResult.errors)notes.push(`${validationResult.errors} error(es) geométricos pendientes`);if(validationResult.warnings)notes.push(`${validationResult.warnings} advertencia(s) técnicas`);if(missing.length)notes.push(`${missing.map(d=>d.tag).join(', ')}: sin CAD; se exportan como marcadores`);$('exportWarning').textContent=notes.length?notes.join('. ')+'.':'Tablero sin errores geométricos y con representación CAD cargada.';
 }
 function renderProjectCards(){
@@ -97,6 +99,17 @@ async function runValidation(){
  const box=$('validationResults');if(box){box.innerHTML=validationResult.findings.length?validationResult.findings.map(f=>`<div class="info ${f.level==='warning'?'warn':''}" style="margin-top:7px;${f.level==='error'?'background:#fde8e7;color:#8f1d18':''}"><strong>${f.level==='error'?'Error':'Advertencia'}</strong><br>${esc(f.message)}</div>`).join(''):'<div class="info" style="background:#e8f5ed;color:#17643a">Sin errores geométricos.</div>';$('validationSummary').textContent=`${validationResult.errors} errores · ${validationResult.warnings} advertencias`}
  document.querySelectorAll('.device').forEach(g=>{const d=project.devices[+g.dataset.index],hit=g.querySelector('.hitbox');if(hit&&invalidTags.has(d.tag)){hit.style.stroke='#d92d20';hit.style.strokeWidth='5';hit.style.strokeDasharray='7 4'}else if(hit){hit.style.stroke='none'}});
  updateExportSummary();
+}
+async function loadBom(){
+ if(!project||!$('bomTable'))return;const r=await fetch('/api/bom',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(project)});if(!r.ok)return;
+ bomRows=(await r.json()).rows;$('bomTable').innerHTML=bomRows.map(row=>`<tr><td>${esc(row.category)}</td><td>${esc(row.code)}</td><td>${esc(row.description)}</td><td>${row.quantity}</td><td>${esc(row.status)}</td></tr>`).join('');$('bomCount').textContent=`${bomRows.length} renglones agrupados`;
+}
+function renderRevisions(){
+ if(!$('revisionList'))return;const revisions=project.revisions||[];$('currentRevision').textContent=project.currentRevision??'Sin emitir';$('revisionList').innerHTML=revisions.length?revisions.slice().reverse().map(item=>`<div class="detected"><strong>Rev. ${esc(item.code)}</strong> · ${esc(item.date)}<br>${esc(item.description)}<br><span class="hint">${esc(item.author)}</span></div>`).join(''):'<p class="hint">Todavía no hay revisiones emitidas.</p>';
+}
+async function createRevision(){
+ const description=$('revisionDescription').value.trim(),author=$('revisionAuthor').value.trim();if(!description)return notice('Ingresá la descripción de la revisión.');
+ const r=await fetch('/api/revision',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({project,description,author})});const data=await r.json();if(!r.ok)return notice(data.error);snapshot();project=data.project;$('revisionDescription').value='';renderRevisions();render();await saveProject(false);notice(`Revisión ${data.revision.code} emitida.`)
 }
 function dimensions(){const e=project.enclosure;return {w:e.externalBody.width,h:e.overallHeightWithPlinth,fx:e.functionalAreaOffset.x,fy:e.functionalAreaOffset.y}}
 function setView(){const {w,h}=dimensions();if(!view)view={x:-140,y:-90,w:w+270,h:h+260};$('board').setAttribute('viewBox',`${view.x} ${view.y} ${view.w} ${view.h}`)}
@@ -201,6 +214,9 @@ document.addEventListener('DOMContentLoaded',async()=>{
  const draftRaw=localStorage.getItem(`abb-draft-${projectId}`);if(draftRaw){try{const draft=JSON.parse(draftRaw);if(draft.projectId===projectId&&confirm(`Hay cambios no guardados recuperables del ${new Date(draft.savedAt).toLocaleString()}. ¿Recuperarlos?`)){project=draft.project;dirty=true}else localStorage.removeItem(`abb-draft-${projectId}`)}catch{localStorage.removeItem(`abb-draft-${projectId}`)}}
  const redo=document.createElement('button');redo.id='redo';redo.className='secondary';redo.textContent='Rehacer';redo.disabled=true;$('undo').after(redo);
  const validationSection=document.createElement('section');validationSection.innerHTML='<h2>VALIDACIÓN DEL TABLERO</h2><div id="validationSummary" class="info">Revisando…</div><button id="validateNow" class="secondary" style="width:100%;margin-top:8px">Validar ahora</button><div id="validationResults" class="scroller"></div>';document.querySelector('#screen-editor .sidebar:last-child').append(validationSection);$('validateNow').onclick=runValidation;
+ const exportPanel=document.querySelector('#screen-export .export-grid > .panel');exportPanel.insertAdjacentHTML('beforeend','<section style="margin-top:26px"><div class="row" style="align-items:center"><div><h2 style="margin:0">Lista de materiales</h2><span id="bomCount" class="hint"></span></div><button id="exportBom" class="secondary">Descargar CSV</button></div><div style="overflow:auto;max-height:330px;margin-top:10px"><table style="border-collapse:collapse;width:100%;font-size:11px"><thead><tr><th>Categoría</th><th>Código</th><th>Descripción</th><th>Cant.</th><th>Estado</th></tr></thead><tbody id="bomTable"></tbody></table></div></section>');
+ const exportAside=document.querySelector('#screen-export .export-grid > aside');exportAside.insertAdjacentHTML('beforeend','<section style="margin-top:22px"><h2>Control de revisiones</h2><div class="info">Revisión actual: <strong id="currentRevision">Sin emitir</strong></div><label style="margin-top:10px">Descripción<input id="revisionDescription" placeholder="Ej. Emisión inicial"></label><label>Responsable<input id="revisionAuthor" placeholder="Nombre"></label><button id="addRevision" class="primary" style="width:100%">Emitir nueva revisión</button><div id="revisionList" class="scroller" style="margin-top:10px"></div></section>');
+ $('exportBom').onclick=async()=>{const r=await fetch('/api/export-bom',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(project)});if(!r.ok)return notice((await r.json()).error);download(filename('csv'),await r.blob(),'text/csv')};$('addRevision').onclick=createRevision;renderRevisions();
  $('enclosure').innerHTML=catalog.enclosures.map(e=>`<option value="${e.id}">${esc(e.label)}</option>`).join('');
  $('newProjectEnclosure').innerHTML=catalog.enclosures.map(e=>`<option value="${e.id}">${esc(e.label)}</option>`).join('');
  $('shell').innerHTML=catalog.deviceShells.map(s=>`<option value="${s.id}">${esc(s.label)}</option>`).join('');

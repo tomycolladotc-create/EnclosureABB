@@ -12,6 +12,7 @@ from ezdxf.colors import rgb2int
 from importador import shell_size
 from marcado import resolve
 from normativa import check_project
+from bom import build_bom
 
 
 def _color(value):
@@ -27,7 +28,7 @@ def build_dxf(project, catalog, fronts, appearances):
     layers = {
         "ABB_ENVOLVENTE": 7, "ABB_AREA_FUNCIONAL": 8,
         "ABB_RIEL_DIN_PROPUESTO": 4, "ABB_CAD_COLORES": 7, "ABB_CAD_FRENTE": 7,
-        "ABB_SIN_CAD": 2, "ABB_ETIQUETAS": 3, "ABB_NOTAS": 1, "ABB_MARCADO": 7, "ABB_ACCESORIOS": 3, "ABB_ESTRUCTURA": 8, "ABB_PUERTAS": 9, "ABB_CAJETIN": 7, "ABB_COTAS": 6,
+        "ABB_SIN_CAD": 2, "ABB_ETIQUETAS": 3, "ABB_NOTAS": 1, "ABB_MARCADO": 7, "ABB_ACCESORIOS": 3, "ABB_ESTRUCTURA": 8, "ABB_PUERTAS": 9, "ABB_CAJETIN": 7, "ABB_COTAS": 6, "ABB_BOM": 5,
     }
     for name, color in layers.items():
         doc.layers.new(name, dxfattribs={"color": color})
@@ -183,7 +184,15 @@ def build_dxf(project, catalog, fronts, appearances):
             line = f"{part['parte']}: {part['codigo']}" + (f" ({part['orden']})" if part.get("orden") else "") + f" - cat. pag. {part['pagina']}"
             space.add_text(line.encode("ascii", "replace").decode("ascii"), dxfattribs={"height": 10, "layer": "ABB_CAJETIN", "insert": (0, top - 24 - 16 * n)})
         space.add_text(("FUENTE: " + structure["source"]).encode("ascii", "replace").decode("ascii"), dxfattribs={"height": 7, "layer": "ABB_CAJETIN", "insert": (0, top - 40 - 16 * len(structure["bom"]))})
-    space.add_text(f"{project.get('project', 'TABLERO')} - VISTA 2D FRONTAL - GEOMETRIA ABB DONDE HAY CAD".encode("ascii", "replace").decode("ascii"), dxfattribs={"height": 17, "layer": "ABB_NOTAS", "insert": (35, plinth + body["height"] - 35)})
+    # BOM agrupada a la derecha del tablero. La versión CSV conserva además fuentes y estados completos.
+    bom_x, bom_y = body["width"] + 100, plinth + body["height"]
+    revision = str(project.get("currentRevision", "SIN REVISION"))
+    space.add_text(f"LISTA DE MATERIALES - REV. {revision}".encode("ascii", "replace").decode("ascii"), dxfattribs={"height": 14, "layer": "ABB_BOM", "insert": (bom_x, bom_y)})
+    for n, row in enumerate(build_bom(project, catalog)):
+        line = f"{row['quantity']} x [{row['category']}] {row['code']} - {row['description']}"
+        space.add_text(line.encode("ascii", "replace").decode("ascii"), dxfattribs={"height": 8, "layer": "ABB_BOM", "insert": (bom_x, bom_y - 22 - 13 * n)})
+    title = f"{project.get('project', 'TABLERO')} - REV. {revision} - VISTA 2D FRONTAL - GEOMETRIA ABB DONDE HAY CAD"
+    space.add_text(title.encode("ascii", "replace").decode("ascii"), dxfattribs={"height": 17, "layer": "ABB_NOTAS", "insert": (35, plinth + body["height"] - 35)})
     space.add_text("GABINETE Y RIEL: CONFIGURACION PRELIMINAR; VALIDAR CON ABB ARGENTINA", dxfattribs={"height": 10, "layer": "ABB_NOTAS", "insert": (35, 35)})
     stream = StringIO()
     doc.write(stream)
