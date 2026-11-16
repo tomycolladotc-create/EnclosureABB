@@ -3,6 +3,13 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-15 21:47 · Codex
+- Hecho: gestión completa de proyectos: crear con envolvente ABB elegida, duplicar contenido/posiciones y borrar; TS4 queda protegido.
+- Archivos: `proyectos.py`, `app.py`, `web/index.html`, `tests/test_proyectos.py`, `README.md`.
+- Pruebas: 55 OK y flujo HTTP real completo; interfaz verificada con 31 envolventes y controles visibles.
+- Ojo: no se tocó el trabajo de rieles DIN asignado a Claude; los nombres con tildes ahora generan ids ASCII estables.
+- Siguiente: tomar profundidad real de equipos o una familia faltante mientras Claude termina los kits KD.
+
 ## 2026-11-15 21:32 · Codex
 - Hecho: marcado frontal XT1/XT2 y logo OT400 medidos sobre imágenes oficiales ABB; el parser separa bastidor, disparador e In de Tmax.
 - Archivos: `importador.py`, `generar_topografico.py`, `datos/apariencias_abb.json`, `datos/fuentes_descargadas.json`, `docs/imagenes_abb/`, prueba de importador.

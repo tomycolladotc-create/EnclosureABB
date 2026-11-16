@@ -6,6 +6,7 @@ Ningún dato del tablero va en el código: acá solo se leen y escriben los arch
 import copy
 import json
 import re
+import unicodedata
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -17,7 +18,8 @@ ID_PATTERN = re.compile(r"[a-z0-9][a-z0-9_-]{0,40}")
 
 def slug(name):
     """Convierte un nombre ('TS AUX 1') en un id seguro para nombre de archivo ('ts-aux-1')."""
-    text = re.sub(r"[^a-z0-9]+", "-", str(name).lower()).strip("-")
+    ascii_name = unicodedata.normalize("NFKD", str(name)).encode("ascii", "ignore").decode("ascii")
+    text = re.sub(r"[^a-z0-9]+", "-", ascii_name.lower()).strip("-")
     return text[:41] or "tablero"
 
 
@@ -55,12 +57,55 @@ def save(project_id, project, projects_dir=PROJECTS_DIR):
     file.write_text(json.dumps(project, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
-def create(name, template, projects_dir=PROJECTS_DIR):
-    """Proyecto vacío con el mismo gabinete que `template`. Devuelve (id, proyecto). No pisa uno existente."""
+def enclosure_from_catalog(spec):
+    """Convierte una envolvente declarativa del catálogo al formato guardado en un proyecto."""
+    return {
+        "id": spec["id"],
+        "line": spec.get("line", spec.get("label", "ABB")),
+        "functional": copy.deepcopy(spec["functional"]),
+        "externalBody": copy.deepcopy(spec["externalBody"]),
+        "plinthHeight": spec.get("plinthHeight", 0),
+        "overallHeightWithPlinth": spec.get(
+            "overallHeightWithPlinth",
+            spec["externalBody"]["height"] + spec.get("plinthHeight", 0),
+        ),
+        "functionalAreaOffset": copy.deepcopy(spec.get("functionalOffset", {"x": 0, "y": 0})),
+        "mountingLayout": copy.deepcopy(spec.get("mountingLayout", {})),
+        "structuralComponentReferences": {"parts": copy.deepcopy(spec.get("parts", []))},
+        "sources": [spec["source"]] if spec.get("source") else [],
+    }
+
+
+def create(name, template, projects_dir=PROJECTS_DIR, enclosure=None):
+    """Crea un proyecto vacío. La envolvente elegida siempre sale del catálogo."""
     pid = slug(name)
     if path_for(pid, projects_dir).exists():
         raise ValueError(f"Ya existe un proyecto con id '{pid}'")
     project = copy.deepcopy(template)
     project.update(project=name, devices=[], accessories=[])
+    if enclosure is not None:
+        project["enclosure"] = enclosure_from_catalog(enclosure)
     save(pid, project, projects_dir)
     return pid, project
+
+
+def duplicate(source_id, name, projects_dir=PROJECTS_DIR):
+    """Copia completa de un tablero con otro nombre/id, sin compartir estructuras mutables."""
+    source = load(source_id, projects_dir)
+    pid = slug(name)
+    if path_for(pid, projects_dir).exists():
+        raise ValueError(f"Ya existe un proyecto con id '{pid}'")
+    project = copy.deepcopy(source)
+    project["project"] = name
+    save(pid, project, projects_dir)
+    return pid, project
+
+
+def delete(project_id, projects_dir=PROJECTS_DIR):
+    """Borra un proyecto normal. El TS4 histórico queda protegido como plantilla y caso de prueba."""
+    if project_id in LEGACY:
+        raise ValueError(f"El proyecto base '{project_id}' no se puede borrar")
+    file = path_for(project_id, projects_dir)
+    if not file.exists():
+        raise FileNotFoundError(f"No existe el proyecto '{project_id}'")
+    file.unlink()

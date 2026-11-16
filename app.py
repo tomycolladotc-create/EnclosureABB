@@ -110,10 +110,26 @@ class Handler(BaseHTTPRequestHandler):
                 return self.send_data(422, {"error": str(exc)})
         if route == "/api/project-new":
             try:
-                name = str(json.loads(blob).get("name", "")).strip()
+                data = json.loads(blob)
+                name = str(data.get("name", "")).strip()
                 if not name:
                     raise ValueError("Ingresá un nombre para el tablero")
-                pid, project = proyectos.create(name, proyectos.load("ts4"))
+                catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
+                enclosure_id = str(data.get("enclosureId", "")).strip()
+                enclosure = next((item for item in catalog["enclosures"] if item["id"] == enclosure_id), None)
+                if enclosure is None:
+                    raise ValueError("Elegí una envolvente ABB válida")
+                pid, project = proyectos.create(name, proyectos.load("ts4"), enclosure=enclosure)
+                return self.send_data(200, {"id": pid, "project": project})
+            except (ValueError, UnicodeDecodeError, FileNotFoundError) as exc:
+                return self.send_data(422, {"error": str(exc)})
+        if route == "/api/project-duplicate":
+            try:
+                data = json.loads(blob)
+                name = str(data.get("name", "")).strip()
+                if not name:
+                    raise ValueError("Ingresá un nombre para la copia")
+                pid, project = proyectos.duplicate(str(data.get("sourceId", "")), name)
                 return self.send_data(200, {"id": pid, "project": project})
             except (ValueError, UnicodeDecodeError, FileNotFoundError) as exc:
                 return self.send_data(422, {"error": str(exc)})
@@ -135,6 +151,19 @@ class Handler(BaseHTTPRequestHandler):
             except (ValueError, UnicodeDecodeError, KeyError) as exc:
                 return self.send_data(422, {"error": str(exc)})
         self.send_data(404, {"error": "Ruta inexistente"})
+
+    def do_DELETE(self):
+        route = urlparse(self.path).path
+        if route != "/api/project":
+            return self.send_data(404, {"error": "Ruta inexistente"})
+        try:
+            project_id = self.project_id()
+            proyectos.delete(project_id)
+            return self.send_data(200, {"deleted": True, "id": project_id})
+        except ValueError as exc:
+            return self.send_data(409, {"error": str(exc)})
+        except FileNotFoundError as exc:
+            return self.send_data(404, {"error": str(exc)})
 
 
 if __name__ == "__main__":
