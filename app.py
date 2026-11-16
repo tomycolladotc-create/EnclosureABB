@@ -35,6 +35,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_response(status)
         self.send_header("Content-Type", mime + ("; charset=utf-8" if mime.startswith(("text/", "application/json")) else ""))
         self.send_header("Content-Length", str(len(blob)))
+        self.send_header("Cache-Control", "no-store")  # programa local: el navegador nunca debe mostrar una versión vieja del editor
         self.end_headers()
         self.wfile.write(blob)
 
