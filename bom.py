@@ -32,7 +32,16 @@ def build_bom(project, catalog):
         add("Estructura", part.get("orden") or part.get("codigo"), part.get("parte", "Pieza de envolvente"),
             int(match.group(1)) if match else 1, status=structure.get("status", "por confirmar"), source=structure.get("source", ""))
 
-    for rail in enclosure.get("mountingLayout", {}).get("dinRails", []):
+    rails = enclosure.get("mountingLayout", {}).get("dinRails", [])
+    for kit in sorted({r["kdKit"] for r in rails if r.get("kdKit")}):
+        kd = spec.get("kdKit") or {}
+        add("Kit de soportes DIN", kit, f"Kit KD de soportes para paneles modulares: {kd.get('rows', '?')} filas de {kd.get('modulesPerRow', '?')} módulos (paso {kd.get('rowPitchMm', 185)} mm)",
+            status="catálogo SR2 pág. 2/4; confirmar con ABB si incluye los rieles", source=kd.get("source", ""))
+    for rail in rails:
+        if rail.get("kdKit"):
+            add("Riel DIN", rail.get("orderCode") or "POR CONFIRMAR", f"Riel DIN de la {rail.get('type', 'fila')} · largo {rail.get('length', '?')} mm (confirmar si lo incluye el kit)",
+                status="por confirmar")
+            continue
         add("Riel DIN", rail.get("orderCode") or rail.get("type"), f"{rail.get('type', 'Riel DIN')} · {rail.get('length', '?')} mm",
             status=enclosure.get("mountingLayout", {}).get("status", "por confirmar"))
 
@@ -44,7 +53,7 @@ def build_bom(project, catalog):
         shell = shells.get(shell_id, {})
         statuses = [device.get("status", "") for device in devices]
         add("Equipo", model or shell.get("label", shell_id), f"{model or shell.get('label', shell_id)}" + (f" · {poles} polos" if poles else ""),
-            len(devices), [device.get("tag", "?") for device in devices], "por confirmar" if any(_pending(value) for value in statuses) or shell.get("provisional") else "catálogo/proyecto",
+            len(devices), [(f"{device['circuit']} ({device.get('tag', '?')})" if device.get("circuit") else device.get("tag", "?")) for device in devices], "por confirmar" if any(_pending(value) for value in statuses) or shell.get("provisional") else "catálogo/proyecto",
             shell.get("cadSource", ""))
 
     kits = {}
@@ -60,10 +69,12 @@ def build_bom(project, catalog):
     for item in project.get("accessories", []):
         if item.get("decision") == "discarded":
             continue
-        key = (item.get("orderCode") or item.get("id") or item.get("type"), item.get("label") or item.get("type"))
+        category = item.get("bomCategory") or "Accesorio"
+        description = item.get("description") or item.get("label") or item.get("type")
+        key = (category, item.get("orderCode") or item.get("id") or item.get("type"), description)
         grouped_accessories[key] = grouped_accessories.get(key, 0) + int(item.get("quantity", 1))
-    for (code, description), quantity in grouped_accessories.items():
-        add("Accesorio", code, description, quantity, status="propuesta por confirmar")
+    for (category, code, description), quantity in grouped_accessories.items():
+        add(category, code, description, quantity, status="propuesta por confirmar")
     return rows
 
 

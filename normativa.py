@@ -56,7 +56,7 @@ def comb_between_adjacent(project, rule):
             if 0 <= right["x"] - (left["x"] + left["w"]) <= GAP_MM:
                 covered = any(left["tag"] in c.get("devices", []) and right["tag"] in c.get("devices", []) for c in combs)
                 if not covered:
-                    out.append(f"{left['tag']} y {right['tag']} están juntos sin peine.")
+                    out.append(f"{_nm(left)} y {_nm(right)} están juntos sin peine.")
     return out
 
 
@@ -79,15 +79,20 @@ def comb_current_ok(project, rule):
         for tag in comb.get("devices", []):
             amps = _in_amps(by_tag.get(tag, {}))
             if amps is not None and amps > rating:
-                out.append(f"{tag} ({amps:g} A) supera el peine {comb.get('id')} ({rating:g} A): usar bloque o barra de distribución (catálogo: distributionBlocks, desde esa corriente).")
+                out.append(f"{_nm(by_tag.get(tag, {'tag': tag}))} ({amps:g} A) supera el peine {comb.get('id')} ({rating:g} A): usar bloque o barra de distribución (catálogo: distributionBlocks, desde esa corriente).")
     return out
+
+
+def _nm(device):
+    """Nombre para mostrar: el circuito del plano si lo trae; si no, la etiqueta QF."""
+    return device.get("circuit") or device.get("tag")
 
 
 def accessories_placed(project, rule):
     out = []
     for dev in project.get("devices", []):
         if dev.get("unplaced"):
-            out.append(f"{dev.get('tag')}: sin ubicar ({dev.get('placementNote') or 'pendiente de ubicar'}).")
+            out.append(f"{_nm(dev)}: sin ubicar ({dev.get('placementNote') or 'pendiente de ubicar'}).")
     for acc in project.get("accessories", []):
         if acc.get("placed") is False:
             detail = acc.get("note") or "no entra en el riel"

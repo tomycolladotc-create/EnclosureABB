@@ -15,7 +15,7 @@ RAIL_BAND_MM = 22.25   # franja vertical (mitad de 44,5 mm) que ocupa un borne d
 
 
 BAR_MARGIN_MM = 40.0  # criterio de diseño propuesto (no dato ABB): separación de la barra al borde de la placa
-TAG_ZONE_MM = 18.0  # franja libre sobre los equipos para el texto de la etiqueta (criterio de dibujo)
+TAG_ZONE_MM = 30.0  # franja libre sobre los equipos para el texto de la etiqueta (criterio de dibujo)
 COMB_FACE_FALLBACK_MM = 18.0  # sin altura en el catálogo: valor esquemático, marcado en el dibujo como provisorio
 BAR_FACE_MM = 20.0  # cara de la barra AA8010 (20x5 mm)
 
@@ -52,6 +52,31 @@ def _free_x(devices, rail, width, height=None):
             return cursor - width
         cursor = min(cursor, start)
     return cursor - width if cursor - rail["x"] >= width else None
+
+
+def _describe(item, catalog):
+    """Datos para el cómputo de materiales (bom.py): categoría, descripción, código y cantidad. El dibujo NO lleva estos textos."""
+    t = item["type"]
+    by = lambda key: next((x for x in catalog.get(key, []) if x["id"] == item.get("catalogId")), {})
+    if t == "pe_terminal":
+        pe = by("earthTerminals")
+        item.update(bomCategory="Borne PE", orderCode=pe.get("orderCode"), quantity=item.get("count", 1),
+                    description=f"Borne de tierra {pe.get('tipo', '')} {pe.get('seccionMm2', '')} mm² para riel DIN ({pe.get('marca', '')})".replace("  ", " "))
+    elif t == "terminal_cover":
+        item.update(bomCategory="Cubrebornes", orderCode=None, quantity=1, description="Cubrebornes transparente (barrera aislante); código por definir")
+    elif t == "comb":
+        comb = by("combs")
+        item.update(bomCategory="Peine", quantity=1, orderCode=item.get("orderCode") or comb.get("orderCode"),
+                    description=f"Peine de conexión {comb.get('familia', '')} para {item.get('poleCount', '?')} polos (paso {item.get('pitchMm', 17.5)} mm), equipos: {', '.join(item.get('devices', []))}".replace("  ", " "))
+    elif t == "distribution_block":
+        blk = by("distributionBlocks")
+        item.update(bomCategory="Bloque de distribución", quantity=1, orderCode=blk.get("orderCode"), description=f"Bloque de distribución {blk.get('tipo', '')} {blk.get('corrienteA', '')} A ({blk.get('marca', '')})".replace("  ", " "))
+    elif t == "copper_busbar":
+        bar = by("distributionBars")
+        item.update(bomCategory="Barra de cobre", quantity=1, orderCode=bar.get("orderCode"), description=f"Barra de distribución {bar.get('tipo', '')} {bar.get('corrienteA', '')} A; soportes {bar.get('soportes', {}).get('orderCode', 'por definir')} x{bar.get('soportes', {}).get('cantidad', '?')}")
+    elif t == "wiring_duct":
+        item.update(bomCategory="Canaleta", quantity=1,
+                    description=f"Canaleta ranurada {item['h']:g}x{item['depthMm']:g} mm, gris RAL 7035, ranura {item['slot']}; largo a cortar {item['lengthMm']:g} mm (tira de 2000 mm)")
 
 
 def _load_rules():
@@ -194,6 +219,8 @@ def propose(project, catalog=None):
                 item.update(placed=True, x=x, y=rails[0]["y"] - height / 2, w=width, h=height)
         out.append(item)
     out.extend(_propose_ducts(project, catalog, rails, devices, out))
+    for item in out:
+        _describe(item, catalog)
     return out
 
 

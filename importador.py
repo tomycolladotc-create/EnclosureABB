@@ -96,6 +96,28 @@ def find_series(model, poles, catalog):
     return None, None, "serie sin carcasa en el catálogo"
 
 
+CIRCUIT_RE = re.compile(r"^[A-Z][A-Z0-9]*-\d+(?:\.\d+)*$")
+
+
+USE_CODES = {"IUG", "TUG", "IUE", "TUE", "OCE", "ACU", "ALIM"}
+
+
+def circuit_name(tag, block, lines=14):
+    """Nombre del circuito (columna 'Circuito' de la tabla del unifilar, ej. TS-4.2) de un interruptor QF.
+    1) La celda que sigue al código de uso (IUG/TUG/IUE/TUE/OCE/ACU/ALIM). 2) Si el plano no trae el código de uso, la primera
+    celda con forma LETRAS-número[.número]. None si el plano no trae el circuito."""
+    if not str(tag).startswith("QF"):
+        return None
+    cells = [c.strip() for c in block.splitlines()[:lines]]
+    for n, cell in enumerate(cells[:-1]):
+        if cell in USE_CODES and cells[n + 1]:
+            return cells[n + 1]
+    for cell in cells:
+        if CIRCUIT_RE.match(cell):
+            return cell
+    return None
+
+
 def detect_devices(text, catalog):
     """Extrae etiquetas, modelo, polos y carcasa propuesta; conserva el texto original para revisar."""
     rules = catalog["importRules"]
@@ -128,7 +150,7 @@ def detect_devices(text, catalog):
             status += "; polos no indicados en el plano"
         width, height = shell_size(shell, poles) if shell else (80, 100)
         found.append({
-            "tag": match.group(1), "evidence": snippet, "shell": shell and shell["id"],
+            "tag": match.group(1), "circuit": circuit_name(match.group(1), block), "evidence": snippet, "shell": shell and shell["id"],
             "series": serie and serie["id"], "model": model[:40], "poles": poles,
             "marking": marking_fields(model, block, rules),
             "w": width, "h": height,

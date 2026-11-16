@@ -157,8 +157,9 @@ def build_dxf(project, catalog, fronts, appearances):
         else:
             rect(x, y, width, height, "ABB_SIN_CAD")
         # Etiqueta centrada y achicada para que no se pise con la del equipo vecino.
-        tag_h = round(min(12, width * 0.95 / max(len(device["tag"]), 1) / 0.75), 2)
-        space.add_text(device["tag"], dxfattribs={"height": tag_h, "layer": "ABB_ETIQUETAS"}).set_placement(
+        name = device.get("circuit") or device["tag"]  # en el dibujo va el nombre del circuito; el QF queda como dato
+        tag_h = round(min(12, width * 0.95 / max(len(name), 1) / 0.75), 2)
+        space.add_text(name, dxfattribs={"height": tag_h, "layer": "ABB_ETIQUETAS"}).set_placement(
             (x + width / 2, y + height + 4), align=ezdxf.enums.TextEntityAlignment.BOTTOM_CENTER)
     # Accesorios de normativa (bornes de tierra, peines): geometría esquemática marcada como provisoria.
     for acc in project.get("accessories", []):
@@ -174,11 +175,7 @@ def build_dxf(project, catalog, fronts, appearances):
                 for i in range(n):
                     cx = fx + acc["x"] + (i + 0.5) * acc["w"] / n
                     rect(cx - 2.2, fy + acc["y"] + acc["h"] * 0.2, 4.4, acc["h"] * 0.6, layer)
-            label = str(acc.get("label", acc["type"])) + (" (PROPUESTA SIN CONFIRMAR)" if acc.get("needsConfirmation") and not acc.get("decision") else "")
-            if acc["type"] == "wiring_duct":
-                label += f" L={round(acc.get('lengthMm', acc['w']))}mm prof.{acc.get('depthMm', '?')}"
-            space.add_text(label.encode("ascii", "replace").decode("ascii"), dxfattribs={"height": 5, "layer": layer}).set_placement(
-                (fx + acc["x"] + acc["w"] / 2, fy + acc["y"] + acc["h"] + 2), align=ezdxf.enums.TextEntityAlignment.BOTTOM_CENTER)
+            # Sin texto en el dibujo: la descripción de accesorios va solo en el cómputo de materiales (bom.py).
     # Avisos de normativa dentro del dibujo, para que no se pierdan al exportar.
     for n, finding in enumerate(check_project(project)):
         tag = "ERROR" if finding["severity"] == "error" else "AVISO"

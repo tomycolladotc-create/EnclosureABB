@@ -172,5 +172,45 @@ class CanaletasYPeines(unittest.TestCase):
         from io import StringIO
         data = cad_export.build_dxf(self.layouts[True], self.L("catalogo_abb.json"), self.L("frentes_cad.json"), self.L("apariencias_abb.json"))
         layers = [e.dxf.layer for e in ezdxf.read(StringIO(data.decode("utf-8"))).modelspace()]
-        self.assertGreater(layers.count("ABB_CANALETAS"), 4)
+        self.assertGreaterEqual(layers.count("ABB_CANALETAS"), 3)  # rectángulo + 2 líneas de la tapa por canaleta
         self.assertGreater(layers.count("ABB_PEINES"), 4)
+
+
+class CircuitosYComputo(unittest.TestCase):
+    def setUp(self):
+        from layout_auto import autolayout
+        self.L = lambda n: json.load(open(ROOT / "datos" / n, encoding="utf-8"))
+        self.new, _ = autolayout(self.L("ts4_topografia.json"), self.L("catalogo_abb.json"), free_rails=True)
+        complete(self.new)
+
+    def test_importador_extrae_el_circuito(self):
+        from importador import circuit_name
+        self.assertEqual(circuit_name("QF82", "XT1C 160\nTMD 80-8003x25 mm² Cu\nOCE\nTS-4.2\nRSTN\n34,74"), "TS-4.2")
+        self.assertEqual(circuit_name("QF163", "XT1C 160\nALIM\nTSMAQ2\nRSTN"), "TSMAQ2")
+        self.assertEqual(circuit_name("QF125", "S201L-C10\nNA\nCu —\nTSEP-2\nT\n0,10"), "TSEP-2")  # sin código de uso
+        self.assertIsNone(circuit_name("QS1", "OT160\nACU\nX-1"))
+        self.assertIsNone(circuit_name("QF10", "T2S 160\nRST"))
+
+    def test_dxf_rotula_con_el_circuito_y_sin_texto_de_accesorios(self):
+        import cad_export, ezdxf
+        from io import StringIO
+        data = cad_export.build_dxf(self.new, self.L("catalogo_abb.json"), self.L("frentes_cad.json"), self.L("apariencias_abb.json"))
+        ents = list(ezdxf.read(StringIO(data.decode("utf-8"))).modelspace())
+        labels = [e.dxf.text for e in ents if e.dxftype() == "TEXT" and e.dxf.layer == "ABB_ETIQUETAS"]
+        self.assertIn("TS-4.2", labels)
+        self.assertNotIn("QF82", labels)
+        for layer in ("ABB_ACCESORIOS", "ABB_CANALETAS", "ABB_PEINES"):
+            self.assertEqual([e for e in ents if e.dxftype() == "TEXT" and e.dxf.layer == layer], [], layer)
+
+    def test_computo_lista_accesorios_con_descripcion_y_cantidad(self):
+        from bom import build_bom
+        rows = build_bom(self.new, self.L("catalogo_abb.json"))
+        cats = {r["category"] for r in rows}
+        for want in ("Canaleta", "Peine", "Borne PE", "Riel DIN"):
+            self.assertIn(want, cats)
+        ducts = [r for r in rows if r["category"] == "Canaleta"]
+        self.assertTrue(all("largo a cortar" in r["description"] and r["code"].startswith("1SL9") for r in ducts))
+        pe = next(r for r in rows if r["category"] == "Borne PE")
+        self.assertEqual(pe["quantity"], sum(1 for d in self.new["devices"] if d["tag"].startswith("QF")))
+        equipos = [r for r in rows if r["category"] == "Equipo"]
+        self.assertTrue(any("TS-4.2 (QF82)" in r["tags"] for r in equipos))

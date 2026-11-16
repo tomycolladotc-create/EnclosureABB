@@ -44,6 +44,12 @@
 - Ojo: después de cambios grandes o antes de cerrar una sesión, actualizar coordinación y subir incluso el trabajo parcial.
 - Siguiente: respetar la asignación activa de Claude sobre rieles DIN y tomar un pendiente libre antes de modificar código.
 
+## 2026-11-16 03:00 · Claude
+- Pedido del usuario: (1) en lugar del QF mostrar el nombre del circuito del plano (ej. TS-4.2); (2) sin descripciones de accesorios en el dibujo, solo en el cómputo de materiales.
+- (1) `circuit` por equipo (importador + TS4 cargado desde Unifilares-25_GENERAL.pdf: QF82→TS-4.2 … QF163→TSMAQ2, QF89/90→TSI-6/7). Se muestra en editor, DXF, BOM y avisos; el QF queda como `tag` interno (peines, normativa y revisiones siguen usándolo).
+- (2) Se quitaron textos de accesorios y del riel (DIN-n) en editor y DXF; BOM con categorías Canaleta/Peine/Borne PE/Riel DIN/Kit de soportes DIN. Zona de etiqueta reservada sobre los equipos (30 mm) al proponer canaletas. 79 pruebas OK.
+- Ojo [Codex]: el DXF todavía trae la tabla 'LISTA DE MATERIALES' que armaste, ahora con las descripciones de accesorios; si el usuario no la quiere en el plano, sacala del DXF y dejala solo en el export CSV.
+
 ## 2026-11-16 02:10 · Claude
 - Peines visibles (cuerpo + clavijas por polo, sobre los equipos) y canaletas horizontales propuestas (`wiringDucts`, 22 secciones del catálogo SR2 pág. 6/5; lógica en `accesorios._propose_ducts`). Capas DXF nuevas ABB_CANALETAS / ABB_PEINES. En el editor las etiquetas de los equipos con peine suben para no taparse. 76 pruebas OK.
 - Supuestos marcados: B = cara visible y H = profundidad de la canaleta (convención, no cotado); ranura = ancho / paso; ancho de uñas laterales esquemático. TS4 con riel libre: canaletas 40x40 abajo y 15x17 arriba.

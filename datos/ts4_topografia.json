@@ -75,7 +75,8 @@
         "mounting": "fixed horizontal, 3/4P",
         "moduleHeight": 200,
         "quantity": 1
-      }
+      },
+      "circuit": "TS-4.2"
     },
     {
       "tag": "QF83",
@@ -92,7 +93,8 @@
         "mounting": "fixed horizontal, 3/4P",
         "moduleHeight": 200,
         "quantity": 1
-      }
+      },
+      "circuit": "TS-4.3"
     },
     {
       "tag": "QF84",
@@ -109,7 +111,8 @@
         "mounting": "fixed horizontal, 3/4P",
         "moduleHeight": 200,
         "quantity": 1
-      }
+      },
+      "circuit": "TS-4.4"
     },
     {
       "tag": "QF88",
@@ -126,7 +129,8 @@
         "mounting": "fixed horizontal, 3/4P",
         "moduleHeight": 200,
         "quantity": 1
-      }
+      },
+      "circuit": "TS-4.11"
     },
     {
       "tag": "QF86",
@@ -143,7 +147,8 @@
         "mounting": "fixed horizontal, 3/4P",
         "moduleHeight": 200,
         "quantity": 1
-      }
+      },
+      "circuit": "TS-4.9"
     },
     {
       "tag": "QF87",
@@ -160,7 +165,8 @@
         "mounting": "fixed horizontal, 3/4P",
         "moduleHeight": 200,
         "quantity": 1
-      }
+      },
+      "circuit": "TS-4.10"
     },
     {
       "tag": "QF163",
@@ -177,7 +183,8 @@
         "mounting": "fixed horizontal, 3/4P",
         "moduleHeight": 200,
         "quantity": 1
-      }
+      },
+      "circuit": "TSMAQ2"
     },
     {
       "tag": "QF81",
@@ -187,7 +194,8 @@
       "w": 106,
       "h": 95,
       "status": "manufacturer dimensions; exact CAD front pending",
-      "shell": "abb.s804n.4p.front"
+      "shell": "abb.s804n.4p.front",
+      "circuit": "TS-4.1"
     },
     {
       "tag": "QF85",
@@ -197,7 +205,8 @@
       "w": 106,
       "h": 95,
       "status": "manufacturer dimensions; exact CAD front pending",
-      "shell": "abb.s804n.4p.front"
+      "shell": "abb.s804n.4p.front",
+      "circuit": "TS-4.8"
     },
     {
       "tag": "QF89",
@@ -209,7 +218,8 @@
       "status": "detectado; carcasa compartida sin confirmar (S251 Na tratado como S201 NA)",
       "shell": "abb.s200m.1pn.front",
       "abbHistoricCode": "16060722 / EF0722",
-      "poles": 2
+      "poles": 2,
+      "circuit": "TSI-6"
     },
     {
       "tag": "QF90",
@@ -220,7 +230,8 @@
       "h": 88,
       "status": "carcasa ABB 1P+N; inscripción C10 pendiente de integrar",
       "shell": "abb.s200m.1pn.front",
-      "abbOrderCode": "2CDS271103R0104"
+      "abbOrderCode": "2CDS271103R0104",
+      "circuit": "TSI-7"
     },
     {
       "tag": "QS1",
@@ -259,6 +270,7 @@
   "notes": [
     "Dimensions and locations are in mm. Device coordinates are relative to the functional mounting area.",
     "Outer dimensions are ABB System pro E power 185 mm catalogue 2024 dimensions for functional H=2100, W=1000, D=500. The 100 mm plinth is shown as a separate optional base and is included in overall height.",
-    "ABB internal kits PHDX1401 (6x XT1, 3/4P fixed, H=200) and PHDX2401 (1x XT2, 3/4P fixed, H=200) are identified from ABB catalog. This is not yet a complete manufacturer-approved assembly BOM."
+    "ABB internal kits PHDX1401 (6x XT1, 3/4P fixed, H=200) and PHDX2401 (1x XT2, 3/4P fixed, H=200) are identified from ABB catalog. This is not yet a complete manufacturer-approved assembly BOM.",
+    "Nombres de circuito (campo circuit) tomados de la columna 'Circuito' del unifilar BAF-E-EL-PL-104-0 Unifilares-25_GENERAL.pdf, 2026-11-16."
   ]
 }
