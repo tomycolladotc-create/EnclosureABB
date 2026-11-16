@@ -13,12 +13,14 @@ from accesorios import complete
 from colocar import place_din
 from layout_auto import autolayout
 from normativa import check_project
+from validacion import validate
 import proyectos
 
 ROOT = Path(__file__).resolve().parent
 CATALOG = ROOT / "datos" / "catalogo_abb.json"
 FRONTS = ROOT / "datos" / "frentes_cad.json"
 APPEARANCES = ROOT / "datos" / "apariencias_abb.json"
+VALIDATION_RULES = ROOT / "datos" / "reglas_validacion.json"
 WEB = ROOT / "web" / "index.html"
 WEB_STYLES = ROOT / "web" / "styles.css"
 MAX_PDF = 30 * 1024 * 1024
@@ -102,6 +104,14 @@ class Handler(BaseHTTPRequestHandler):
                 complete(new)
                 return self.send_data(200, {"project": new, "summary": summary})
             except (ValueError, UnicodeDecodeError, KeyError) as exc:
+                return self.send_data(422, {"error": str(exc)})
+        if route == "/api/validate":
+            try:
+                project = json.loads(blob)
+                catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
+                rules = json.loads(VALIDATION_RULES.read_text(encoding="utf-8"))
+                return self.send_data(200, validate(project, catalog, rules))
+            except (ValueError, KeyError, TypeError) as exc:
                 return self.send_data(422, {"error": str(exc)})
         if route == "/api/place":
             try:

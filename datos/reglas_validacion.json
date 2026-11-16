@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "railPositionToleranceMm": 2,
+  "railEndClearanceMm": 0,
+  "depthSafetyClearanceMm": 0,
+  "fallbackMinDepthForKitDevicesMm": 200,
+  "autosaveDebounceMs": 1500,
+  "note": "Las tolerancias cero evitan inventar separaciones normativas. La profundidad mínima de 200 mm es el mismo criterio provisional documentado en reglas_layout.json; se informa como advertencia, no como validación ABB."
+}

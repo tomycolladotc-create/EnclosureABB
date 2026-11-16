@@ -17,6 +17,14 @@ class WebUi(unittest.TestCase):
         for control in ("projectCards", "pdf", "board", "exportDxf"):
             self.assertIn(f'id="{control}"', html)
 
+    def test_seguridad_y_validacion_estan_conectadas(self):
+        html = INDEX.read_text(encoding="utf-8")
+        self.assertIn("beforeunload", html)
+        self.assertIn("scheduleAutosave", html)
+        self.assertIn("id='redo'", html)
+        self.assertIn("/api/validate", html)
+        self.assertIn('route == "/api/validate"', (ROOT / "app.py").read_text(encoding="utf-8"))
+
     def test_estilos_separados_y_servidos(self):
         self.assertTrue(STYLES.is_file())
         self.assertIn('href="/styles.css"', INDEX.read_text(encoding="utf-8"))

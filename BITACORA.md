@@ -3,6 +3,13 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-15 22:25 · Codex
+- Hecho: autoguardado, borrador recuperable, aviso al salir, estado visible, deshacer/rehacer y validación geométrica/técnica en el editor.
+- Archivos: `validacion.py`, `datos/reglas_validacion.json`, `app.py`, `web/index.html`, pruebas y documentación.
+- Valida: solapamientos, límites de placa, riel DIN, capacidad lineal y profundidad; datos de profundidad faltantes se advierten sin inventar.
+- Pruebas: 62 OK, JavaScript válido, API real sobre TS4: 0 errores y 1 advertencia de profundidades ABB pendientes.
+- Ojo: no se tocaron datos ni geometría de kits KD asignados a Claude; servidor local activo para revisión.
+
 ## 2026-11-15 22:08 · Codex
 - Hecho: maqueta Claude Artifact convertida en interfaz real de cuatro pasos: Tableros, Importar, Editor y Exportar.
 - Archivos: `web/index.html`, nuevo `web/styles.css`, ruta estática en `app.py`, contrato en `tests/test_web_ui.py`.
