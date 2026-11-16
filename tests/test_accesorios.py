@@ -125,3 +125,52 @@ class PolosYSolape(unittest.TestCase):
         self.assertTrue(pe.get("placed") and blk.get("placed"))
         if True:
             self.assertTrue(pe["x"] + pe["w"] <= blk["x"] + 1e-6 or blk["x"] + blk["w"] <= pe["x"] + 1e-6)
+
+
+class CanaletasYPeines(unittest.TestCase):
+    def setUp(self):
+        from layout_auto import autolayout
+        self.L = lambda n: json.load(open(ROOT / "datos" / n, encoding="utf-8"))
+        self.acc_cat = self.L("accesorios_abb.json")
+        self.layouts = {}
+        for free in (False, True):
+            new, _ = autolayout(self.L("ts4_topografia.json"), self.L("catalogo_abb.json"), free_rails=free)
+            complete(new)
+            self.layouts[free] = new
+
+    def test_canaletas_usan_secciones_y_codigos_del_catalogo(self):
+        sections = {(s["widthMm"], s["heightMm"]): {s["code8x12"], s["code4x6"]} for s in self.acc_cat["wiringDucts"]["sections"]}
+        for new in self.layouts.values():
+            ducts = [a for a in new["accessories"] if a["type"] == "wiring_duct"]
+            self.assertTrue(ducts)
+            for d in ducts:
+                self.assertIn(d["orderCode"], sections[(d["h"], d["depthMm"])])
+
+    def test_canaletas_no_pisan_equipos_ni_salen_de_la_placa(self):
+        for new in self.layouts.values():
+            fun = new["enclosure"]["functional"]
+            boxes = [(d["x"], d["y"], d["w"], d["h"], d["tag"]) for d in new["devices"]]
+            boxes += [(a["x"], a["y"], a["w"], a["h"], a["type"]) for a in new["accessories"] if a.get("placed") and a["type"] != "wiring_duct" and a.get("w")]
+            for a in (a for a in new["accessories"] if a["type"] == "wiring_duct"):
+                self.assertGreaterEqual(a["y"], 0)
+                self.assertLessEqual(a["y"] + a["h"], fun["height"])
+                self.assertLessEqual(a["x"] + a["w"], fun["width"] + 1e-6)
+                for x, y, w, h, name in boxes:
+                    clash = a["x"] < x + w and x < a["x"] + a["w"] and a["y"] < y + h and y < a["y"] + a["h"]
+                    self.assertFalse(clash, f"canaleta pisa {name}")
+
+    def test_peine_apoyado_sobre_equipos_y_con_clavija_por_polo(self):
+        new = self.layouts[True]
+        comb = next(a for a in new["accessories"] if a["type"] == "comb")
+        devs = [d for d in new["devices"] if d["tag"] in comb["devices"]]
+        self.assertAlmostEqual(comb["y"], max(d["y"] + d["h"] for d in devs))
+        self.assertGreater(comb["h"], 10)
+        self.assertEqual(comb["poleCount"], round(comb["w"] / comb["pitchMm"]))
+
+    def test_dxf_trae_capas_de_canaletas_y_peines(self):
+        import cad_export, ezdxf
+        from io import StringIO
+        data = cad_export.build_dxf(self.layouts[True], self.L("catalogo_abb.json"), self.L("frentes_cad.json"), self.L("apariencias_abb.json"))
+        layers = [e.dxf.layer for e in ezdxf.read(StringIO(data.decode("utf-8"))).modelspace()]
+        self.assertGreater(layers.count("ABB_CANALETAS"), 4)
+        self.assertGreater(layers.count("ABB_PEINES"), 4)

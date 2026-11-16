@@ -9,5 +9,11 @@
   "kitModuleHeightFromShell": true,
   "fuente": "propuesta de Claude 2026-11-15; validar con un armador de tableros / ABB Argentina",
   "minDepthForKitDevicesMm": 200,
-  "_ayuda_profundidad": "Propuesta de diseño (no dato de ABB): los gabinetes con menos profundidad no se usan si el tablero lleva equipos de kit (XT/OT)."
+  "_ayuda_profundidad": "Propuesta de diseño (no dato de ABB): los gabinetes con menos profundidad no se usan si el tablero lleva equipos de kit (XT/OT).",
+  "ductClearanceMm": 5,
+  "ductMaxWidthMm": 60,
+  "ductPreferredDepthMm": 40,
+  "ductEdgeMm": 15,
+  "ductSlot": "8x12",
+  "_ayuda_canaletas": "Propuesta de diseño (no dato de ABB): canaletas horizontales arriba y abajo de cada fila de riel, en el hueco libre; ancho = el mayor del catálogo que entra (máx. ductMaxWidthMm), alto lo más cercano a ductPreferredDepthMm. No se dimensiona por llenado de cables (faltan secciones de conductores)."
 }

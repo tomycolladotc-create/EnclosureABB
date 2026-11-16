@@ -28,7 +28,7 @@ def build_dxf(project, catalog, fronts, appearances):
     layers = {
         "ABB_ENVOLVENTE": 7, "ABB_AREA_FUNCIONAL": 8,
         "ABB_RIEL_DIN_PROPUESTO": 4, "ABB_CAD_COLORES": 7, "ABB_CAD_FRENTE": 7,
-        "ABB_SIN_CAD": 2, "ABB_ETIQUETAS": 3, "ABB_NOTAS": 1, "ABB_MARCADO": 7, "ABB_ACCESORIOS": 3, "ABB_ESTRUCTURA": 8, "ABB_PUERTAS": 9, "ABB_CAJETIN": 7, "ABB_COTAS": 6, "ABB_BOM": 5,
+        "ABB_SIN_CAD": 2, "ABB_ETIQUETAS": 3, "ABB_NOTAS": 1, "ABB_MARCADO": 7, "ABB_ACCESORIOS": 3, "ABB_CANALETAS": 8, "ABB_PEINES": 30, "ABB_ESTRUCTURA": 8, "ABB_PUERTAS": 9, "ABB_CAJETIN": 7, "ABB_COTAS": 6, "ABB_BOM": 5,
     }
     for name, color in layers.items():
         doc.layers.new(name, dxfattribs={"color": color})
@@ -163,9 +163,21 @@ def build_dxf(project, catalog, fronts, appearances):
     # Accesorios de normativa (bornes de tierra, peines): geometría esquemática marcada como provisoria.
     for acc in project.get("accessories", []):
         if acc.get("placed", True) and acc.get("decision") != "discarded" and "x" in acc and acc.get("w"):
-            rect(fx + acc["x"], fy + acc["y"], acc["w"], acc["h"], "ABB_ACCESORIOS")
+            layer = {"wiring_duct": "ABB_CANALETAS", "comb": "ABB_PEINES"}.get(acc["type"], "ABB_ACCESORIOS")
+            rect(fx + acc["x"], fy + acc["y"], acc["w"], acc["h"], layer)
+            if acc["type"] == "wiring_duct":  # tapa central: las uñas laterales quedan a cada lado (esquemático)
+                finger = max(3, acc["h"] * 0.3)
+                for yy in (acc["y"] + finger, acc["y"] + acc["h"] - finger):
+                    space.add_line((fx + acc["x"], fy + yy), (fx + acc["x"] + acc["w"], fy + yy), dxfattribs={"layer": layer})
+            if acc["type"] == "comb":  # una clavija por polo
+                n = acc.get("poleCount") or max(1, round(acc["w"] / (acc.get("pitchMm") or 17.5)))
+                for i in range(n):
+                    cx = fx + acc["x"] + (i + 0.5) * acc["w"] / n
+                    rect(cx - 2.2, fy + acc["y"] + acc["h"] * 0.2, 4.4, acc["h"] * 0.6, layer)
             label = str(acc.get("label", acc["type"])) + (" (PROPUESTA SIN CONFIRMAR)" if acc.get("needsConfirmation") and not acc.get("decision") else "")
-            space.add_text(label.encode("ascii", "replace").decode("ascii"), dxfattribs={"height": 5, "layer": "ABB_ACCESORIOS"}).set_placement(
+            if acc["type"] == "wiring_duct":
+                label += f" L={round(acc.get('lengthMm', acc['w']))}mm prof.{acc.get('depthMm', '?')}"
+            space.add_text(label.encode("ascii", "replace").decode("ascii"), dxfattribs={"height": 5, "layer": layer}).set_placement(
                 (fx + acc["x"] + acc["w"] / 2, fy + acc["y"] + acc["h"] + 2), align=ezdxf.enums.TextEntityAlignment.BOTTOM_CENTER)
     # Avisos de normativa dentro del dibujo, para que no se pierdan al exportar.
     for n, finding in enumerate(check_project(project)):

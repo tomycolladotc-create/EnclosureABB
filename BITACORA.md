@@ -44,6 +44,11 @@
 - Ojo: después de cambios grandes o antes de cerrar una sesión, actualizar coordinación y subir incluso el trabajo parcial.
 - Siguiente: respetar la asignación activa de Claude sobre rieles DIN y tomar un pendiente libre antes de modificar código.
 
+## 2026-11-16 02:10 · Claude
+- Peines visibles (cuerpo + clavijas por polo, sobre los equipos) y canaletas horizontales propuestas (`wiringDucts`, 22 secciones del catálogo SR2 pág. 6/5; lógica en `accesorios._propose_ducts`). Capas DXF nuevas ABB_CANALETAS / ABB_PEINES. En el editor las etiquetas de los equipos con peine suben para no taparse. 76 pruebas OK.
+- Supuestos marcados: B = cara visible y H = profundidad de la canaleta (convención, no cotado); ranura = ancho / paso; ancho de uñas laterales esquemático. TS4 con riel libre: canaletas 40x40 abajo y 15x17 arriba.
+- Pendiente [Claude/Codex]: canaletas verticales, edición manual de canaletas, línea RAL 7030.
+
 ## 2026-11-15 23:40 · Claude
 - Kit KD cargado en 11 SR2 (`kdKit`); `layout_auto` arma con filas fijas de 185 mm; opción riel libre GD (`?free=1`, botón en el editor). TS4 queda en SRN12830K (1200x800) con filas fijas; con riel libre entra en SRN12630K (1200x600).
 - Arreglos: peine sin corriente porque faltaba `poles` en QF90 (ahora se deduce de la carcasa: 1pn=2 polos); el bloque de distribución se dibujaba sobre los bornes PE (ahora los respeta). Pendiente conocido: peine con neutro para S804 (QF81/QF85 siguen 'sin peine').

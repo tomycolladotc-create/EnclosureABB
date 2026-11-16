@@ -490,5 +490,176 @@
       "source": "legrand.es (listado repartidores modulares 40-250)",
       "status": "catálogo España; falta Argentina"
     }
-  ]
+  ],
+  "wiringDucts": {
+    "familia": "Canaleta ranurada libre de halógenos, gris RAL 7035 (con tapa)",
+    "lengthMm": 2000,
+    "slots": {
+      "8x12": "ranura 8 mm / paso 12 mm (códigos 1SL90..)",
+      "4x6": "ranura 4 mm / paso 6 mm (códigos 1SL91..)"
+    },
+    "sections": [
+      {
+        "widthMm": 15,
+        "heightMm": 17,
+        "code8x12": "1SL9019A00",
+        "code4x6": "1SL9119A00",
+        "packMeters": 46
+      },
+      {
+        "widthMm": 25,
+        "heightMm": 30,
+        "code8x12": "1SL9033A00",
+        "code4x6": "1SL9133A00",
+        "packMeters": 58
+      },
+      {
+        "widthMm": 40,
+        "heightMm": 30,
+        "code8x12": "1SL9035A00",
+        "code4x6": "1SL9135A00",
+        "packMeters": 38
+      },
+      {
+        "widthMm": 60,
+        "heightMm": 30,
+        "code8x12": "1SL9037A00",
+        "code4x6": "1SL9137A00",
+        "packMeters": 52
+      },
+      {
+        "widthMm": 25,
+        "heightMm": 40,
+        "code8x12": "1SL9043A00",
+        "code4x6": "1SL9143A00",
+        "packMeters": 48
+      },
+      {
+        "widthMm": 40,
+        "heightMm": 40,
+        "code8x12": "1SL9045A00",
+        "code4x6": "1SL9145A00",
+        "packMeters": 30
+      },
+      {
+        "widthMm": 60,
+        "heightMm": 40,
+        "code8x12": "1SL9047A00",
+        "code4x6": "1SL9147A00",
+        "packMeters": 40
+      },
+      {
+        "widthMm": 80,
+        "heightMm": 40,
+        "code8x12": "1SL9049A00",
+        "code4x6": "1SL9149A00",
+        "packMeters": 32
+      },
+      {
+        "widthMm": 100,
+        "heightMm": 40,
+        "code8x12": "1SL9051A00",
+        "code4x6": "1SL9151A00",
+        "packMeters": 24
+      },
+      {
+        "widthMm": 120,
+        "heightMm": 40,
+        "code8x12": "1SL9053A00",
+        "code4x6": "1SL9153A00",
+        "packMeters": 20
+      },
+      {
+        "widthMm": 25,
+        "heightMm": 60,
+        "code8x12": "1SL9063A00",
+        "code4x6": "1SL9163A00",
+        "packMeters": 34
+      },
+      {
+        "widthMm": 40,
+        "heightMm": 60,
+        "code8x12": "1SL9065A00",
+        "code4x6": "1SL9165A00",
+        "packMeters": 22
+      },
+      {
+        "widthMm": 60,
+        "heightMm": 60,
+        "code8x12": "1SL9067A00",
+        "code4x6": "1SL9167A00",
+        "packMeters": 32
+      },
+      {
+        "widthMm": 80,
+        "heightMm": 60,
+        "code8x12": "1SL9069A00",
+        "code4x6": "1SL9169A00",
+        "packMeters": 24
+      },
+      {
+        "widthMm": 100,
+        "heightMm": 60,
+        "code8x12": "1SL9071A00",
+        "code4x6": "1SL9171A00",
+        "packMeters": 20
+      },
+      {
+        "widthMm": 120,
+        "heightMm": 60,
+        "code8x12": "1SL9073A00",
+        "code4x6": "1SL9173A00",
+        "packMeters": 14
+      },
+      {
+        "widthMm": 25,
+        "heightMm": 80,
+        "code8x12": "1SL9083A00",
+        "code4x6": "1SL9183A00",
+        "packMeters": 28
+      },
+      {
+        "widthMm": 40,
+        "heightMm": 80,
+        "code8x12": "1SL9085A00",
+        "code4x6": "1SL9185A00",
+        "packMeters": 36
+      },
+      {
+        "widthMm": 60,
+        "heightMm": 80,
+        "code8x12": "1SL9087A00",
+        "code4x6": "1SL9187A00",
+        "packMeters": 24
+      },
+      {
+        "widthMm": 80,
+        "heightMm": 80,
+        "code8x12": "1SL9089A00",
+        "code4x6": "1SL9189A00",
+        "packMeters": 16
+      },
+      {
+        "widthMm": 100,
+        "heightMm": 80,
+        "code8x12": "1SL9091A00",
+        "code4x6": "1SL9191A00",
+        "packMeters": 16
+      },
+      {
+        "widthMm": 120,
+        "heightMm": 80,
+        "code8x12": "1SL9093A00",
+        "code4x6": "1SL9193A00",
+        "packMeters": 12
+      }
+    ],
+    "source": "ABB 1STC804013D0201 (02.2011) pág. 6/5 'Ordering codes - Halogen free wiring ducts with vertical slots' y págs. 9/40-9/41 (cotas, largo 2000); tabla leída de la imagen de la página 2026-11-16",
+    "status": "códigos y secciones del catálogo (BxH: B = cara visible de frente, H = alto desde la placa, supuesto por convención). El largo se corta a medida; el catálogo da 2000 mm. Disponibilidad en Argentina sin verificar. Existe también la línea termoplástica RAL 7030 (pág. 6/6), sin cargar.",
+    "pendientes": [
+      "interpretación de las dos cifras de ranura (primera = ancho de ranura, segunda = paso) tomada del dibujo, sin cota explícita",
+      "espesor de pared y ancho de las 'uñas' laterales: no cotados; el dibujo de frente es esquemático",
+      "verificar que la tapa de repuesto 1SL5316..22 corresponde a cada ancho (15…120)"
+    ]
+  }
 }

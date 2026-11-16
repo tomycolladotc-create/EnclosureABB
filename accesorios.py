@@ -15,6 +15,8 @@ RAIL_BAND_MM = 22.25   # franja vertical (mitad de 44,5 mm) que ocupa un borne d
 
 
 BAR_MARGIN_MM = 40.0  # criterio de diseño propuesto (no dato ABB): separación de la barra al borde de la placa
+TAG_ZONE_MM = 18.0  # franja libre sobre los equipos para el texto de la etiqueta (criterio de dibujo)
+COMB_FACE_FALLBACK_MM = 18.0  # sin altura en el catálogo: valor esquemático, marcado en el dibujo como provisorio
 BAR_FACE_MM = 20.0  # cara de la barra AA8010 (20x5 mm)
 
 
@@ -50,6 +52,58 @@ def _free_x(devices, rail, width, height=None):
             return cursor - width
         cursor = min(cursor, start)
     return cursor - width if cursor - rail["x"] >= width else None
+
+
+def _load_rules():
+    return json.loads((ROOT / "datos" / "reglas_layout.json").read_text(encoding="utf-8"))
+
+
+def _overlap_x(a, b):
+    return a["x"] < b["x"] + b["w"] and b["x"] < a["x"] + a["w"]
+
+
+def _propose_ducts(project, catalog, rails, devices, placed_acc):
+    """Canaletas horizontales en el hueco libre arriba y abajo de cada fila de riel (compartida si dos filas la rodean).
+    Criterios en datos/reglas_layout.json (propuesta de diseño); secciones y códigos de datos/accesorios_abb.json (catálogo ABB)."""
+    spec = catalog.get("wiringDucts")
+    if not spec or not rails:
+        return []
+    rules = _load_rules()
+    clear, max_w, pref_h, edge = rules.get("ductClearanceMm", 5), rules.get("ductMaxWidthMm", 60), rules.get("ductPreferredDepthMm", 40), rules.get("ductEdgeMm", 15)
+    slot = rules.get("ductSlot", "8x12")
+    fh = project["enclosure"]["functional"]["height"]
+    boxes = [{"x": d["x"], "y": d["y"], "w": d["w"], "h": d["h"], "tag": d.get("tag")} for d in devices]
+    boxes += [{"x": a["x"], "y": a["y"], "w": a["w"], "h": a["h"], "tag": None, "devs": a.get("devices")} for a in placed_acc
+              if a.get("placed", True) and a.get("x") is not None and a.get("w") and a.get("h")]
+    lanes = {}
+    for rail in rails:
+        span = {"x": rail["x"], "w": rail["length"]}
+        row = [b for b in boxes if _overlap_x(b, span) and b["y"] <= rail["y"] <= b["y"] + b["h"]]
+        tags = {b["tag"] for b in row if b["tag"]}
+        row += [b for b in boxes if b.get("devs") and set(b["devs"]) & tags and b not in row]  # el peine apoyado arriba es parte de la fila
+        if not row:
+            continue
+        lo, hi = min(b["y"] for b in row), max(b["y"] + b["h"] for b in row) + TAG_ZONE_MM  # sobre los equipos va el texto de la etiqueta
+        others = [b for b in boxes if b not in row and _overlap_x(b, span)]
+        up = min([b["y"] for b in others if b["y"] >= hi - 1e-6], default=fh - edge)
+        down = max([b["y"] + b["h"] for b in others if b["y"] + b["h"] <= lo + 1e-6], default=edge)
+        for a, b in ((hi, min(up, fh - edge)), (max(down, edge), lo)):
+            key = (round(a), round(b))
+            cur = lanes.setdefault(key, [a, b, rail["x"], rail["x"] + rail["length"]])
+            cur[2], cur[3] = min(cur[2], rail["x"]), max(cur[3], rail["x"] + rail["length"])
+    out = []
+    for (a, b, x0, x1) in sorted(lanes.values()):
+        gap = b - a - 2 * clear
+        fits = [s for s in spec["sections"] if s["widthMm"] <= gap and s["widthMm"] <= max_w]
+        if not fits:
+            continue
+        sec = max(fits, key=lambda s: (s["widthMm"], -abs(s["heightMm"] - pref_h)))
+        code = sec["code8x12"] if slot == "8x12" else sec["code4x6"]
+        out.append({"type": "wiring_duct", "auto": True, "provisional": True, "catalogId": "wiringDucts", "orderCode": code,
+                    "label": f"Canaleta {sec['widthMm']}x{sec['heightMm']} {code}", "x": round(x0, 2), "y": round(a + clear + (gap - sec["widthMm"]) / 2, 2),
+                    "w": round(x1 - x0, 2), "h": sec["widthMm"], "depthMm": sec["heightMm"], "slot": slot, "lengthMm": round(x1 - x0, 2),
+                    "note": "canaleta propuesta; sección no dimensionada por llenado de cables"})
+    return out
 
 
 def propose(project, catalog=None):
@@ -94,10 +148,15 @@ def propose(project, catalog=None):
     for g in groups:
         poles = {_poles(d) for d in g}
         comb = combs["abb-ps3-12"] if poles == {3} else combs["abb-ps2"] if poles == {2} else combs["abb-ps4"] if poles == {4} else None
+        # El peine se apoya sobre la cara superior de los equipos; la altura visible sale del catálogo (alturaMm, o ancho si falta): la cara de frente no está cotada.
+        face = (comb.get("alturaMm") or comb.get("anchoMm") or COMB_FACE_FALLBACK_MM) if comb else COMB_FACE_FALLBACK_MM
+        span = g[-1]["x"] + g[-1]["w"] - g[0]["x"]
         out.append({"type": "comb", "auto": True, "catalogId": comb["id"] if comb else None, "corrienteA": comb.get("corrienteA") if comb else None,
-                    "devices": [d["tag"] for d in g], "x": g[0]["x"], "y": g[0]["y"] + g[0]["h"] - 12, "w": g[-1]["x"] + g[-1]["w"] - g[0]["x"], "h": 4,
-                    "label": "Peine", "provisional": True,
-                    "note": None if comb else "mezcla de polos: sin peine definido"})
+                    "orderCode": comb.get("orderCode") if comb else None,
+                    "devices": [d["tag"] for d in g], "x": g[0]["x"], "y": g[0]["y"] + g[0]["h"], "w": span, "h": face,
+                    "pitchMm": (comb or {}).get("pasoMm") or 17.5, "poleCount": round(span / ((comb or {}).get("pasoMm") or 17.5)),
+                    "label": "Peine " + (comb.get("orderCode") or "") if comb else "Peine", "provisional": True,
+                    "note": (None if comb else "mezcla de polos: sin peine definido") if comb else "mezcla de polos: sin peine definido"})
     # 4) Bloque de distribución cuando algún equipo supera la corriente de los peines (corrientes elevadas).
     comb_limit = max((c["corrienteA"] for c in catalog["combs"] if c.get("corrienteA") and "S200" in c.get("compatibleCon", [])), default=None)  # sólo peines de la línea S200: un peine de S800 (250 A) no sirve para S200
     amps = [(a, d["tag"]) for d in devices if (a := _in_amps(d)) is not None]
@@ -134,6 +193,7 @@ def propose(project, catalog=None):
             else:
                 item.update(placed=True, x=x, y=rails[0]["y"] - height / 2, w=width, h=height)
         out.append(item)
+    out.extend(_propose_ducts(project, catalog, rails, devices, out))
     return out
 
 

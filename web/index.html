@@ -131,7 +131,15 @@ const projectId=new URLSearchParams(location.search).get('id')||'ts4';
 // Porta-etiqueta de identificación bajo el equipo (rótulo con el tag del plano). Tamaño propuesto, no dato ABB.
 function labelHolder(d,x,y){const lw=Math.min(Math.max(d.w-4,14),64),lh=12,lx=x+(d.w-lw)/2,ly=y+d.h+4;
  return `<g style="pointer-events:none"><g filter="url(#shDev)"><rect x="${lx}" y="${ly}" width="${lw}" height="${lh}" rx="1.5" fill="#f4f1e6" stroke="#6d6a5c" stroke-width=".8"/></g><text x="${lx+lw/2}" y="${ly+8.6}" text-anchor="middle" font-size="${Math.min(8.5,lw/Math.max(d.tag.length,1)/.62).toFixed(1)}" fill="#1c1c1c" font-weight="700">${esc(d.tag)}</text></g>`}
+// Canaleta ranurada (esquemática): uñas laterales con ranuras verticales y tapa central; paso de ranura 12 o 6 mm según el catálogo (8x12 / 4x6).
+function ductSvg(a,fx,h,fy){const x=fx+a.x,y=h-fy-a.y-a.h,pitch=a.slot==='4x6'?6:12,slotW=a.slot==='4x6'?4:8,fing=Math.max(3,a.h*.3),n=Math.floor(a.w/pitch);
+ const slots=Array.from({length:n},(_,i)=>{const sx=x+i*pitch+(pitch-slotW)/2;return `<rect x="${sx}" y="${y+1}" width="${slotW*.5}" height="${fing-1}" fill="#8e9599"/><rect x="${sx}" y="${y+a.h-fing}" width="${slotW*.5}" height="${fing-1}" fill="#8e9599"/>`}).join('');
+ return `<g style="pointer-events:none"><g filter="url(#shDev)"><rect x="${x}" y="${y}" width="${a.w}" height="${a.h}" rx="1" fill="#d3d6d8" stroke="#7d868c" stroke-width=".8" style="stroke-dasharray:${a.provisional?'6 2':'0'}"/></g>${slots}<rect x="${x}" y="${y+fing}" width="${a.w}" height="${a.h-2*fing}" fill="#e6e8e9" stroke="#aeb4b8" stroke-width=".5"/><rect x="${x}" y="${y+fing}" width="${a.w}" height="${(a.h-2*fing)*.3}" fill="#fff" opacity=".5"/><text x="${x+a.w-3}" y="${y+a.h/2+3}" text-anchor="end" font-size="8" fill="#5b646a">${esc(a.label||'')} · L=${Math.round(a.lengthMm||a.w)} mm · prof. ${a.depthMm||'?'}</text></g>`}
+// Peine: cuerpo aislante apoyado sobre los equipos y una clavija de cobre por polo (paso del catálogo, 17,5 mm).
+function combSvg(a,fx,h,fy){const x=fx+a.x,y=h-fy-a.y-a.h,pitch=a.pitchMm||17.5,n=a.poleCount||Math.round(a.w/pitch),pins=Array.from({length:n},(_,i)=>{const cx=x+(i+.5)*a.w/n;return `<rect x="${cx-2.2}" y="${y+a.h*.2}" width="4.4" height="${a.h*.6}" rx="1" fill="#c8773a" stroke="#7a4420" stroke-width=".4"/><circle cx="${cx}" cy="${y+a.h*.5}" r="1" fill="#7a4420"/>`}).join('');
+ return `<g style="pointer-events:none"><g filter="url(#shDev)"><rect x="${x}" y="${y}" width="${a.w}" height="${a.h}" rx="2" fill="#5d6772" stroke="#2f3a45" stroke-width="1" style="stroke-dasharray:${a.provisional?'4 2':'0'}"/></g><rect x="${x}" y="${y}" width="${a.w}" height="${a.h*.25}" rx="2" fill="#fff" opacity=".22"/>${pins}<text x="${x+a.w/2}" y="${y-3}" text-anchor="middle" font-size="8" fill="#344962">${esc(a.label||'Peine')}</text></g>`}
 function accessoriesSvg(fx,fy,h){return (project.accessories||[]).filter(a=>a.placed!==false&&a.decision!=='discarded'&&a.w&&a.x!==undefined).map(a=>{
+ if(a.type==='wiring_duct')return ductSvg(a,fx,h,fy);if(a.type==='comb')return combSvg(a,fx,h,fy);
  const color=a.type==='pe_terminal'?'#c9d400':a.type==='copper_busbar'?'#c8773a':a.type==='distribution_block'?'#b8865b':'#9aa7b4',x=fx+a.x,y=h-fy-a.y-a.h;
  const n=a.type==='pe_terminal'?+((/x\s*(\d+)/i.exec(a.label||'')||[])[1]||0):0,seps=n>1?Array.from({length:n-1},(_,i)=>`<line x1="${x+a.w*(i+1)/n}" y1="${y}" x2="${x+a.w*(i+1)/n}" y2="${y+a.h}" stroke="#5f6a00" stroke-width=".8"/>`).join(''):'',
   screws=n?Array.from({length:n},(_,i)=>`<circle cx="${x+a.w*(i+.5)/n}" cy="${y+a.h*.3}" r="${Math.min(2.2,a.w/n*.28).toFixed(2)}" fill="#6d7478" stroke="#3d4a57" stroke-width=".4"/>`).join(''):'';
@@ -187,12 +195,12 @@ ${structureSvg(w,h,project.enclosure.plinthHeight)||`<rect y="${h-project.enclos
  <text x="0" y="-52" fill="#344962" font-size="25">${esc(project.project)}</text><text x="0" y="-28" fill="#6b7d90" font-size="15">${esc(encSpec()?.label||project.enclosure.line||'ABB')} · vista frontal con la puerta retirada</text>`+
  rails().map(r=>railSvg(r,fx,h,fy)).join('')+
  accessoriesSvg(fx,fy,h)+
- project.devices.map((d,i)=>{const yy=h-fy-d.y-d.h,pending=/confirm|placeholder|conflict|variant|revisar|pendiente/i.test(d.status||'');return `<g class="device ${i===selected?'active':''} ${pending?'pending':''}" data-index="${i}">
+ project.devices.map((d,i)=>{const yy=h-fy-d.y-d.h,up=(project.accessories||[]).filter(a=>a.type==='comb'&&a.decision!=='discarded'&&a.placed!==false&&(a.devices||[]).includes(d.tag)).reduce((m,a)=>Math.max(m,a.h+12),0),pending=/confirm|placeholder|conflict|variant|revisar|pendiente/i.test(d.status||'');return `<g class="device ${i===selected?'active':''} ${pending?'pending':''}" data-index="${i}">
  <g filter="url(#shDev)">${frontSvg(d,fx+d.x,yy)}</g>
  ${labelHolder(d,fx+d.x,yy)}
  <rect class="hitbox" x="${fx+d.x}" y="${yy}" width="${d.w}" height="${d.h}" style="fill:transparent;stroke:none;pointer-events:all"/>
  ${i===selected?`<rect x="${fx+d.x-2}" y="${yy-2}" width="${d.w+4}" height="${d.h+4}" style="fill:none;stroke:#156bca;stroke-width:3;stroke-dasharray:6 3;pointer-events:none"/>`:''}
- <text x="${fx+d.x+d.w/2}" y="${yy-6}" text-anchor="middle" fill="#142b41" font-size="${Math.min(20,d.w*.8/Math.max(d.tag.length,1)/.62).toFixed(1)}" font-weight="700">${esc(d.tag)}</text>
+ <text x="${fx+d.x+d.w/2}" y="${yy-6-up}" text-anchor="middle" fill="#142b41" font-size="${Math.min(20,d.w*.8/Math.max(d.tag.length,1)/.62).toFixed(1)}" font-weight="700">${esc(d.tag)}</text>
  </g>`}).join('');
  $('projectName').textContent=project.project;$('saveStatus').textContent=dirty?'Cambios pendientes':'Guardado';updateExportSummary();scheduleValidation();clearTimeout(normaTimer);normaTimer=setTimeout(()=>runNormativa(false),500);
  $('deviceList').innerHTML=project.devices.map((d,i)=>`<div class="detected"><a href="#" data-index="${i}">${esc(d.tag)}</a> · ${esc(d.model)}</div>`).join('');
