@@ -1,6 +1,6 @@
 # ESTADO — Topográficos de tableros ABB
 > Foto actual del proyecto. Se reescribe (no se acumula). El historial va en BITACORA.md.
-> Actualizado: 2026-11-15 21:47 · Codex
+> Actualizado: 2026-11-15 22:08 · Codex
 
 ## Objetivo
 PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tablero con dispositivos y envolvente ABB reales → editar en interfaz → exportar DXF (AutoCAD, 1:1 mm, bloques y capas), PNG, SVG, PDF.
@@ -36,10 +36,10 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 - Modelo de datos: **carcasa** (geometría CAD, `deviceShells`) ≠ **serie** (qué modelos la usan, `series`) ≠ **marcado** (lo impreso en el frente: `apariencias_abb.json -> marking`). Marcado frontal cargado para S200, S800, XT1, XT2 y logo visible de OT400; carcasas por polo (`poleModule`, S200): 2P-4P = polos repetidos.
 - **Cubre 167 de 206 equipos** de los 6 unifilares. Faltan: S293, SN201L, XT3S, S251 (asignada por hipótesis a S201 NA), OT varios, T2S/T4S, E2.2N, S803S (ver `docs/cobertura_unifilares.md`).
 - Series sin confirmar con fuente (`verified: false`): XT1 y XT2 para todas las versiones de poder de corte.
-- Pruebas: 55, `python -m unittest discover tests`. Correrlas antes de cada push.
+- Pruebas: 57, `python -m unittest discover tests`. Correrlas antes de cada push.
 
 ## Pendiente (anotarse con [Claude] / [Codex] antes de empezar)
-10. **[Codex, en curso] Llevar la maqueta Claude Artifact al editor real:** convertir `web/index.html` en el flujo de cuatro pantallas Tableros → Importar → Editor → Exportar, conservando el dibujo y conectando las API existentes de proyectos, importación, edición y exportación.
+10. **Interfaz de cuatro pasos completada:** la maqueta Claude Artifact ya está implementada en el editor real como Tableros → Importar → Editor → Exportar. Usa las API existentes de proyectos, importación, edición y exportación; estilos separados en `web/styles.css` y contrato básico en `tests/test_web_ui.py`.
 0. **[Claude, en curso] Posición de los rieles DIN según el gabinete** (regla del usuario: la fija el gabinete). Hoy el riel se centra y se pega debajo de los equipos (propuesta mía). Datos reales leídos del catálogo SR2 (págs. 2/4 y 2/8, imagen verificada): con el kit KD las filas de riel son de 185 mm de alto, y hay 2 filas (KD5040K, 500×400), 3 (KD6040K, 600×400), 4 (KD8060K, 800×600, 25 módulos por fila), 5 (KD1060K, 1000×600, 25 mód.; KD1080K, 1000×800, 36 mód.), 6 (KD1260K, 1200×600, 25 mód.; KD1280K, 1200×800, 36 mód.); filas de 14 módulos para 400 mm de ancho. Paneles PM1414K/PM1625K/PM1836K (185×400/600/800). Plan: cargar `kdKit` por gabinete (kit, filas, módulos por fila, alto de fila 185, página) y que `layout_auto.py` ponga los modulares en esas filas y los XT/OT en la placa. **Sin dato del catálogo** (marcar como supuesto): ancho de los soportes laterales KD, desde qué altura arrancan las filas y a qué altura va el riel dentro de la fila de 185 mm. Hay un dibujo en la pág. 2/4 (filas 1, 2, 3 desde arriba), pero no cota la distancia al borde.
 1. Marcado frontal completado para XT1 y XT2 (ABB, SACE Tmax, serie, bastidor, disparador e In) y para el logo visible del OT400. Imágenes oficiales guardadas en `docs/imagenes_abb/` y registradas; la foto OT no muestra modelo/corriente en el frente, por eso no se inventan. Falta cotejar en equipo real los textos pequeños y obtener una vista frontal de mayor resolución si ABB la publica.
 2. **Robustez/funcionalidad completada:** el editor crea proyectos vacíos con la envolvente ABB elegida, duplica el tablero completo y borra proyectos; TS4 queda protegido. La ubicación automática ya cubre riel y kit, pero los kits de montaje XT/OT no tienen CAD ni medidas.
@@ -53,5 +53,5 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 9. Sacar textos fijos del TS4 en `generar_topografico.py` (notas de la lámina). Validar con ABB Argentina gabinete, rieles y kits; cerrar BOM.
 
 ## Diseño de la interfaz (aprobado provisoriamente por el usuario; se ajustará con el uso)
-- Maqueta de 4 pantallas (Tableros, Importar, Editor, Exportar) en un lienzo de diseño de claude.ai: https://claude.ai/artifact/GJvAU9SANz5x9u69j9mra2 (la ve solo el usuario). No es código: el editor real (`web/index.html`) todavía no la sigue.
-- Orden previsto: 1) [hecho] un proyecto por tablero + lista de proyectos, 2) [descartado: la GENERAL es referencia], 3) [hecho] colocar equipos automáticamente + elegir gabinete, 4) rieles según kit del gabinete (pendiente 0), 5) llevar la maqueta al editor real.
+- Maqueta de 4 pantallas (Tableros, Importar, Editor, Exportar) en https://claude.ai/artifact/GJvAU9SANz5x9u69j9mra2. Implementada en el editor real (`web/index.html` + `web/styles.css`) el 2026-11-15.
+- Flujo real: Tableros administra proyectos y envolventes; Importar revisa el PDF; Editor conserva el SVG interactivo y normativa; Exportar prioriza DXF y resume capas, gabinete y equipos. Pendiente independiente: rieles según kit del gabinete (punto 0).

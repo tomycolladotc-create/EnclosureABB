@@ -20,6 +20,7 @@ CATALOG = ROOT / "datos" / "catalogo_abb.json"
 FRONTS = ROOT / "datos" / "frentes_cad.json"
 APPEARANCES = ROOT / "datos" / "apariencias_abb.json"
 WEB = ROOT / "web" / "index.html"
+WEB_STYLES = ROOT / "web" / "styles.css"
 MAX_PDF = 30 * 1024 * 1024
 logging.getLogger("pypdf").setLevel(logging.ERROR)
 
@@ -40,6 +41,8 @@ class Handler(BaseHTTPRequestHandler):
         route = urlparse(self.path).path
         if route == "/":
             return self.send_data(200, WEB.read_bytes(), "text/html")
+        if route == "/styles.css":
+            return self.send_data(200, WEB_STYLES.read_bytes(), "text/css")
         if route == "/api/projects":
             return self.send_data(200, proyectos.list_projects())
         if route == "/api/project":

@@ -3,6 +3,13 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-15 22:08 · Codex
+- Hecho: maqueta Claude Artifact convertida en interfaz real de cuatro pasos: Tableros, Importar, Editor y Exportar.
+- Archivos: `web/index.html`, nuevo `web/styles.css`, ruta estática en `app.py`, contrato en `tests/test_web_ui.py`.
+- Integrado: proyectos/envolventes, PDF, dibujo SVG, edición, normativa y DXF/PNG/SVG/PDF; vista verificada en navegador.
+- Pruebas: 57 OK; JavaScript válido; CSS servido HTTP 200. No se alteraron medidas, catálogo ni trabajo KD de Claude.
+- Siguiente: Claude puede continuar rieles KD; la UI nueva es desde ahora la interfaz oficial.
+
 ## 2026-11-15 21:47 · Codex
 - Hecho: gestión completa de proyectos: crear con envolvente ABB elegida, duplicar contenido/posiciones y borrar; TS4 queda protegido.
 - Archivos: `proyectos.py`, `app.py`, `web/index.html`, `tests/test_proyectos.py`, `README.md`.

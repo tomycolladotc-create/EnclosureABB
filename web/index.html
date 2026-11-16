@@ -3,47 +3,20 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Tableros ABB · Editor topográfico</title>
-<style>
-:root{font-family:system-ui,Segoe UI,sans-serif;color:#15243a;background:#f2f5f8}*{box-sizing:border-box}
-body{margin:0}header{background:#15243a;color:white;padding:14px 22px;display:flex;align-items:center;justify-content:space-between}h1{font-size:20px;margin:0}h2{font-size:15px;margin:0 0 13px}small,.hint{color:#66758a}.layout{display:grid;grid-template-columns:310px minmax(500px,1fr) 320px;gap:14px;padding:14px;height:calc(100vh - 60px)}
-aside,.drawing{background:white;border:1px solid #d9e1e9;border-radius:10px;overflow:auto;padding:16px}aside{display:flex;flex-direction:column;gap:14px}
-.drawing{display:flex;flex-direction:column;align-items:center;min-width:0}.drawing #board{height:calc(100% - 70px);max-width:100%;min-height:450px;touch-action:none}
-button,input,select{font:inherit}button{background:#156bca;color:white;border:0;border-radius:6px;padding:8px 10px;cursor:pointer}button.secondary{background:#e8eef5;color:#18314f}button.danger{background:#b52f39}button:disabled{opacity:.45;cursor:default}
-input,select{width:100%;border:1px solid #ccd7e2;border-radius:6px;padding:7px;margin-top:4px}label{font-size:12px;font-weight:600;display:block}.row{display:flex;gap:7px}.row>*{flex:1}.section{border-top:1px solid #e5eaf0;padding-top:14px}.info{background:#f2f6fa;border-radius:6px;padding:10px;font-size:12px;line-height:1.5}.warn{background:#fff4dd;color:#6f4a04}.device{cursor:grab}.device.active rect{stroke:#156bca;stroke-width:5}.device.pending rect{fill:#fff2df;stroke:#b87715}.device rect{fill:#e7f2eb;stroke:#247357;stroke-width:2}.device text{pointer-events:none}.device .model{font-size:13px;font-weight:400}.scroller{overflow:auto;max-height:215px}.detected{padding:7px;border-bottom:1px solid #e4eaf0;font-size:12px}#message{font-size:12px;min-height:18px}.toolbar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:7px}
-@media(max-width:1000px){.layout{grid-template-columns:1fr;height:auto}.drawing{min-height:700px}.drawing #board{height:650px}}
-@media print{header,aside,.toolbar,.hint,#message{display:none!important}.layout{display:block;padding:0;height:auto}.drawing{border:0;padding:0}.drawing #board{height:95vh;max-width:100%}body{background:white}}
-</style>
+<link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-<header><h1>Topográfico de tableros ABB</h1><span id="projectName"></span></header>
-<main class="layout">
-<aside>
- <section><h2>Proyecto y envolvente</h2><label>Gabinete ABB<select id="enclosure"></select></label><button id="autoLayout" style="margin-top:7px;width:100%">Armar tablero automático (elige el gabinete)</button><div id="enclosureInfo" class="info" style="margin-top:9px"></div></section>
- <section class="section"><h2>Importar unifilar DOC</h2><input id="pdf" type="file" accept="application/pdf"><p class="hint">Se extraen etiquetas y familias del texto del PDF. Revisá cada resultado antes de agregarlo.</p><div id="detected" class="scroller"></div></section>
- <section class="section"><h2>Agregar dispositivo</h2><label>Carcasa ABB<select id="shell"></select></label><label>Polos (solo carcasas por polo)<input id="newPoles" type="number" min="2" max="4" value="2"></label><label>Etiqueta<input id="newTag" placeholder="QF91"></label><label>Modelo<input id="newModel" placeholder="Referencia del dispositivo"></label><button id="add">Agregar al plano</button></section>
- <section class="section"><h2>Normativa argentina</h2><div class="row"><button id="normaComplete">Completar accesorios</button><button id="normaCheck" class="secondary">Revisar</button></div><div id="norma" class="scroller" style="margin-top:8px"></div><p class="hint">Reglas con su fuente en datos/normativa_argentina.json. Las marcadas "por verificar" falta confirmarlas con el texto oficial. El dibujo de peines y bornes es esquemático hasta tener su CAD.</p></section>
- <section class="section"><h2>Tablero (un proyecto por tablero)</h2><label>Abrir<select id="projectSel"></select></label><label style="margin-top:7px">Envolvente del tablero nuevo<select id="newProjectEnclosure"></select></label><div class="row" style="margin-top:7px"><input id="newProjectName" placeholder="Nombre nuevo o de la copia"><button id="newProject" class="secondary">Crear</button></div><div class="row" style="margin-top:7px"><button id="duplicateProject" class="secondary">Duplicar actual</button><button id="deleteProject" class="danger">Borrar actual</button></div><p class="hint">Crear inicia un tablero vacío con la envolvente elegida. Duplicar conserva equipos, posiciones y accesorios. El TS4 base está protegido.</p></section>
- <section class="section"><h2>Proyecto</h2><div class="row"><button id="save">Guardar</button><button id="undo" class="secondary">Deshacer</button></div><div class="row" style="margin-top:7px"><button id="openJson" class="secondary">Abrir JSON</button><button id="exportJson" class="secondary">Descargar JSON</button></div><input id="jsonFile" type="file" accept=".json,application/json" hidden></section>
-</aside>
-<div class="drawing">
- <div class="toolbar"><button id="fit" class="secondary">Tablero completo</button><button id="focus" class="secondary">Ver equipos</button><button id="zoomIn" class="secondary">+</button><button id="zoomOut" class="secondary">−</button><button id="exportDxf">Exportar DXF</button><button id="exportSvg" class="secondary">SVG</button><button id="exportPng" class="secondary">PNG</button><button id="exportPdf" class="secondary">PDF / imprimir</button></div>
- <div id="message" class="hint"></div>
- <svg id="board" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 2450"></svg>
- <p class="hint">Rueda: zoom · Arrastrá el fondo: desplazar · Arrastrá un equipo: mover. DXF en milímetros.</p>
-</div>
-<aside>
- <section><h2>Dispositivo seleccionado</h2><div id="empty" class="hint">Seleccioná un equipo en el dibujo.</div><div id="editor" hidden>
- <label>Etiqueta<input id="tag"></label><label>Modelo<input id="model"></label>
- <div class="row"><label>X (mm)<input id="x" type="number" step="1"></label><label>Y (mm)<input id="y" type="number" step="1"></label></div>
- <div id="fixedSize" class="info" style="margin-top:8px"></div>
- <label>Estado<input id="status"></label><div id="kit" class="info" style="margin-top:8px"></div><div id="cadInfo" class="info" style="margin-top:8px"></div>
- <div class="row" style="margin-top:10px"><button id="apply">Aplicar</button><button id="remove" class="danger">Borrar</button></div></div></section>
- <section class="section"><h2>Revisión técnica</h2><div class="info warn">La posición de equipos y canaletas es una propuesta. Confirmar kits en la celda, barras, conexiones, IP, BOM y referencias dudosas antes de fabricar.</div></section>
- <section class="section"><h2>Equipos</h2><div id="deviceList" class="scroller"></div></section>
-</aside>
-</main>
+<header class="app-header"><div class="brand">Topográficos ABB</div><nav class="steps" aria-label="Pasos"><button class="step" data-screen="projects">1&nbsp; Tableros</button><button class="step" data-screen="import">2&nbsp; Importar</button><button class="step" data-screen="editor">3&nbsp; Editor</button><button class="step" data-screen="export">4&nbsp; Exportar</button></nav><div class="header-status"><strong id="projectName"></strong> · <span id="saveStatus">Guardado</span></div></header>
+
+<main id="screen-projects" class="screen"><div class="page"><div class="page-head"><div><h1>Tableros</h1><p>Un proyecto por tablero. Cada uno se guarda y exporta por separado.</p></div><button class="primary" data-go="import">Importar unifilar (PDF)</button></div><div class="project-layout"><div id="projectCards" class="project-list"></div><aside class="panel"><h2>Nuevo tablero</h2><label>Nombre<input id="newProjectName" placeholder="Ej. TSB"></label><label>Envolvente ABB<select id="newProjectEnclosure"></select></label><button id="newProject" class="primary" style="width:100%">Crear tablero vacío</button><hr style="border:0;border-top:1px solid #e2e5e9;margin:20px 0"><label>Tablero actual<select id="projectSel"></select></label><div class="row"><button id="duplicateProject" class="secondary">Duplicar</button><button id="deleteProject" class="danger">Borrar</button></div><p class="hint">Para duplicar, escribí arriba el nombre de la copia. El TS4 base no se puede borrar.</p></aside></div></div></main>
+
+<main id="screen-import" class="screen"><div class="page"><div class="page-head"><div><h1>Revisar lo detectado</h1><p>El programa lee el unifilar y propone cada equipo con su carcasa. Lo que falta queda marcado.</p></div><div class="row"><button class="secondary" data-go="projects">Cancelar</button><button class="primary" data-go="editor">Ir al editor</button></div></div><div class="import-shell"><section class="panel"><div class="dropzone"><strong>PDF exportado desde ABB e-Design DOC</strong><p class="hint">Seleccioná el archivo. No se modifica el original.</p><input id="pdf" type="file" accept="application/pdf"></div><div id="detected" class="scroller" style="margin-top:15px"></div></section><aside class="panel"><h2>Criterio de importación</h2><p class="hint">Se incluyen equipos de 2 o más polos. Cada modelo se vincula con una carcasa ABB del catálogo y conserva la evidencia encontrada en el PDF.</p><div class="info warn">Revisá siempre modelos, polos y equipos marcados sin CAD antes de colocarlos.</div></aside></div></div></main>
+
+<main id="screen-editor" class="screen"><div class="editor-grid"><aside class="sidebar"><section><h2>EQUIPOS</h2><div id="deviceList" class="scroller"></div><button id="showAdd" class="secondary" style="width:100%;margin-top:9px">Agregar equipo</button></section><section id="addPanel"><h2>NUEVO EQUIPO</h2><label>Carcasa ABB<select id="shell"></select></label><label>Polos<input id="newPoles" type="number" min="2" max="4" value="2"></label><label>Etiqueta<input id="newTag" placeholder="QF91"></label><label>Modelo<input id="newModel" placeholder="Referencia"></label><button id="add" style="width:100%">Agregar al plano</button></section><section><h2>ENVOLVENTE Y RIELES</h2><label>Gabinete ABB<select id="enclosure"></select></label><button id="autoLayout" class="secondary" style="width:100%">Armar automáticamente</button><div id="enclosureInfo" class="info" style="margin-top:9px"></div></section><section><h2>PROYECTO</h2><div class="row"><button id="save" class="primary">Guardar</button><button id="undo" class="secondary">Deshacer</button></div><button id="openJson" class="secondary" style="width:100%;margin-top:8px">Abrir JSON</button><button id="exportJson" class="secondary" style="width:100%;margin-top:8px">Descargar JSON</button><input id="jsonFile" type="file" accept=".json,application/json" hidden></section></aside><div class="drawing"><div class="toolbar"><button id="fit" class="secondary">Tablero completo</button><button id="focus" class="secondary">Ver equipos</button><span class="spacer"></span><button id="zoomOut" class="secondary">−</button><strong id="zoomLabel">100%</strong><button id="zoomIn" class="secondary">+</button><button class="primary" data-go="export">Exportar</button></div><div id="message" class="hint"></div><svg id="board" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 2450"></svg><p class="hint">Arrastrá un equipo para moverlo. Los equipos DIN quedan atrapados por el riel del gabinete.</p></div><aside class="sidebar"><section><h2>DISPOSITIVO SELECCIONADO</h2><div id="empty" class="hint">Seleccioná un equipo en el dibujo.</div><div id="editor" hidden><label>Etiqueta<input id="tag"></label><label>Modelo<input id="model"></label><div class="row"><label>X (mm)<input id="x" type="number" step="1"></label><label>Y (mm)<input id="y" type="number" step="1"></label></div><div id="fixedSize" class="info"></div><label>Estado<input id="status"></label><div id="kit" class="info"></div><div id="cadInfo" class="info" style="margin-top:8px"></div><div class="row" style="margin-top:10px"><button id="apply">Aplicar</button><button id="remove" class="danger">Eliminar</button></div></div></section><section><h2>NORMATIVA ARGENTINA</h2><div class="row"><button id="normaComplete">Completar</button><button id="normaCheck" class="secondary">Revisar</button></div><div id="norma" class="scroller" style="margin-top:8px"></div></section><section><h2>REVISIÓN TÉCNICA</h2><div class="info warn">Confirmar kits, barras, conexiones, IP, BOM y referencias dudosas antes de fabricar.</div></section></aside></div></main>
+
+<main id="screen-export" class="screen"><div class="page"><div class="page-head"><div><h1>Exportar <span id="exportProjectName"></span></h1><p>El DXF es el formato principal para AutoCAD; los demás sirven para revisar y compartir.</p></div><button class="secondary" data-go="editor">Volver al editor</button></div><div class="export-grid"><section class="panel"><div class="formats"><button id="exportDxf" class="format primary-format"><strong>DXF</strong><span>AutoCAD, bloques por equipo, capas y atributos.</span></button><button id="exportPdf" class="format"><strong>PDF</strong><span>Para imprimir o enviar.</span></button><button id="exportPng" class="format"><strong>PNG</strong><span>Imagen frontal del tablero.</span></button><button id="exportSvg" class="format"><strong>SVG</strong><span>Vectorial y editable.</span></button></div><h2 style="margin-top:26px">Capas del DXF</h2><div class="layer-list"><label><input type="checkbox" checked disabled> ABB_ENVOLVENTE · Gabinete</label><label><input type="checkbox" checked disabled> ABB_AREA_FUNCIONAL · Zona funcional</label><label><input type="checkbox" checked disabled> ABB_RIEL_DIN_PROPUESTO · Rieles DIN</label><label><input type="checkbox" checked disabled> ABB_CAD_COLORES · Colores de equipos</label><label><input type="checkbox" checked disabled> ABB_CAD_FRENTE · Líneas del frente</label><label><input type="checkbox" checked disabled> ABB_SIN_CAD · Equipos pendientes</label><label><input type="checkbox" checked disabled> ABB_ETIQUETAS · Tags QF y QS</label><label><input type="checkbox" checked disabled> ABB_NOTAS · Notas técnicas</label><label><input type="checkbox" checked disabled> ABB_MARCADO · Inscripciones impresas</label></div></section><aside class="panel"><h2>Resumen</h2><dl class="export-summary"><dt>Gabinete</dt><dd id="summaryEnclosure">—</dd><dt>Equipos</dt><dd id="summaryDevices">—</dd><dt>Rieles</dt><dd id="summaryRails">—</dd></dl><div id="exportWarning" class="info warn" style="margin-top:18px"></div></aside></div></div></main>
 <script>
-let project,catalog,fronts,appearances,selected=null,history=[],drag=null,pan=null,view=null;
+let project,catalog,fronts,appearances,projectList=[],selected=null,history=[],drag=null,pan=null,view=null;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const clone=o=>JSON.parse(JSON.stringify(o));
@@ -84,6 +57,27 @@ function markingSvg(d,x,y){
 }
 function tieBarSvg(d,x,y,tiles){const b=appearances.items[d.shell]?.tieBar;if(!b||tiles<(b.minPoles||2))return '';return `<rect x="${x+b.x0}" y="${y+d.h-b.y1}" width="${d.w-b.x0-b.x1End}" height="${b.y1-b.y0}" style="fill:${b.color};stroke:${appearances.items[d.shell].lineColor};stroke-width:0.12;pointer-events:none"/>`}
 function notice(s){$('message').textContent=s}
+function showScreen(name){
+ document.querySelectorAll('.screen').forEach(el=>el.classList.toggle('active',el.id===`screen-${name}`));
+ document.querySelectorAll('.step').forEach(el=>el.classList.toggle('active',el.dataset.screen===name));
+ if(name==='editor')setTimeout(()=>{setView();render()},0);
+ if(name==='export')updateExportSummary();
+ location.hash=name;
+}
+function updateExportSummary(){
+ if(!project)return;
+ const e=project.enclosure.externalBody,missing=project.devices.filter(d=>!fronts?.items?.[d.shell]);
+ $('exportProjectName').textContent=project.project;
+ $('summaryEnclosure').textContent=`${e.width} × ${e.height} × ${e.depth} mm`;
+ $('summaryDevices').textContent=`${project.devices.length}`;
+ $('summaryRails').textContent=`${rails().length}`;
+ $('exportWarning').textContent=missing.length?`${missing.map(d=>d.tag).join(', ')}: sin CAD; se exportan como marcadores para reemplazar cuando esté el bloque.`:'Todos los equipos tienen una representación CAD cargada.';
+}
+function renderProjectCards(){
+ $('projectCards').innerHTML=projectList.map(p=>`<article class="project-card ${p.id===projectId?'current':''}"><div><h3>${esc(p.name)}</h3></div><span class="badge ${p.id===projectId?'live':''}">${p.id===projectId?'En edición':'Guardado'}</span><p>${p.devices} equipos · proyecto independiente</p><div class="actions"><button data-open="${esc(p.id)}">Abrir</button>${p.id===projectId?'<button class="secondary" data-go="editor">Continuar editando</button>':''}</div></article>`).join('');
+ $('projectCards').querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>{location.search='?id='+encodeURIComponent(b.dataset.open)+'#editor'});
+ $('projectCards').querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>showScreen(b.dataset.go));
+}
 function snapshot(){history.push(clone(project));if(history.length>40)history.shift();$('undo').disabled=false}
 function dimensions(){const e=project.enclosure;return {w:e.externalBody.width,h:e.overallHeightWithPlinth,fx:e.functionalAreaOffset.x,fy:e.functionalAreaOffset.y}}
 function setView(){const {w,h}=dimensions();if(!view)view={x:-140,y:-90,w:w+270,h:h+260};$('board').setAttribute('viewBox',`${view.x} ${view.y} ${view.w} ${view.h}`)}
@@ -168,7 +162,7 @@ ${structureSvg(w,h,project.enclosure.plinthHeight)||`<rect y="${h-project.enclos
  ${i===selected?`<rect x="${fx+d.x-2}" y="${yy-2}" width="${d.w+4}" height="${d.h+4}" style="fill:none;stroke:#156bca;stroke-width:3;stroke-dasharray:6 3;pointer-events:none"/>`:''}
  <text x="${fx+d.x+d.w/2}" y="${yy-6}" text-anchor="middle" fill="#142b41" font-size="${Math.min(20,d.w*.8/Math.max(d.tag.length,1)/.62).toFixed(1)}" font-weight="700">${esc(d.tag)}</text>
  </g>`}).join('');
- $('projectName').textContent=project.project;clearTimeout(normaTimer);normaTimer=setTimeout(()=>runNormativa(false),500);
+ $('projectName').textContent=project.project;$('saveStatus').textContent=history.length?'Cambios sin guardar':'Guardado';updateExportSummary();clearTimeout(normaTimer);normaTimer=setTimeout(()=>runNormativa(false),500);
  $('deviceList').innerHTML=project.devices.map((d,i)=>`<div class="detected"><a href="#" data-index="${i}">${esc(d.tag)}</a> · ${esc(d.model)}</div>`).join('');
  $('deviceList').querySelectorAll('a').forEach(a=>a.onclick=e=>{e.preventDefault();select(+a.dataset.index)});
  $('empty').hidden=selected!==null;$('editor').hidden=selected===null;
@@ -190,7 +184,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
  $('shell').innerHTML=catalog.deviceShells.map(s=>`<option value="${s.id}">${esc(s.label)}</option>`).join('');
  $('enclosure').value=project.enclosure.id||catalog.enclosures.find(x=>x.functional.height===project.enclosure.functional.height&&x.functional.width===project.enclosure.functional.width)?.id||'';const e=catalog.enclosures.find(x=>x.id===$('enclosure').value);if(e){project.enclosure.mountingLayout=clone(e.mountingLayout);project.devices.forEach(alignDin);$('enclosureInfo').textContent=`Exterior ${e.externalBody.width} × ${e.externalBody.height} × ${e.externalBody.depth} mm; zócalo ${e.plinthHeight} mm. Riel: ${(e.mountingLayout?.dinRails||[]).map(r=>r.type+' a Y='+r.y+' mm').join(', ')||'según kit del gabinete'}. Posición a validar con ABB.`;$('newProjectEnclosure').value=e.id}
  $('enclosure').onchange=loadEnclosure;
- fetch('/api/projects').then(x=>x.json()).then(list=>{$('projectSel').innerHTML=list.map(p=>`<option value="${esc(p.id)}">${esc(p.name)} · ${p.devices} equipos</option>`).join('');$('projectSel').value=projectId});
+ projectList=await fetch('/api/projects').then(x=>x.json());$('projectSel').innerHTML=projectList.map(p=>`<option value="${esc(p.id)}">${esc(p.name)} · ${p.devices} equipos</option>`).join('');$('projectSel').value=projectId;renderProjectCards();
  $('projectSel').onchange=()=>{location.search='?id='+encodeURIComponent($('projectSel').value)};
  $('newProject').onclick=async()=>{const name=$('newProjectName').value.trim();if(!name)return notice('Ingresá un nombre para el tablero.');const r=await fetch('/api/project-new',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,enclosureId:$('newProjectEnclosure').value})});const data=await r.json();if(!r.ok)return notice(data.error);location.search='?id='+encodeURIComponent(data.id)};
  $('duplicateProject').onclick=async()=>{const name=$('newProjectName').value.trim();if(!name)return notice('Escribí el nombre de la copia.');const r=await fetch('/api/project-duplicate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sourceId:projectId,name})});const data=await r.json();if(!r.ok)return notice(data.error);location.search='?id='+encodeURIComponent(data.id)};
@@ -203,7 +197,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
  $('remove').onclick=()=>{if(selected===null)return;snapshot();project.devices.splice(selected,1);selected=null;render();notice('Dispositivo borrado.')};
  $('undo').onclick=()=>{if(!history.length)return;project=history.pop();selected=null;$('undo').disabled=!history.length;render();notice('Último cambio deshecho.')};
  $('undo').disabled=true;
- $('save').onclick=async()=>{const r=await fetch('/api/save?id='+encodeURIComponent(projectId),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(project)});notice(r.ok?'Tablero guardado ('+projectId+')':(await r.json()).error)};
+ $('save').onclick=async()=>{const r=await fetch('/api/save?id='+encodeURIComponent(projectId),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(project)});if(r.ok){history=[];$('undo').disabled=true;$('saveStatus').textContent='Guardado';notice('Tablero guardado ('+projectId+')')}else notice((await r.json()).error)};
  $('exportJson').onclick=()=>download(filename('json'),JSON.stringify(project,null,2),'application/json');
  $('openJson').onclick=()=>$('jsonFile').click();
  $('jsonFile').onchange=async e=>{try{const x=JSON.parse(await e.target.files[0].text());if(!Array.isArray(x.devices)||!x.enclosure)throw Error('Proyecto inválido');snapshot();project=x;fixedDimensions();const ce=catalog.enclosures.find(v=>v.functional.height===project.enclosure.functional.height&&v.functional.width===project.enclosure.functional.width);if(ce){project.enclosure.mountingLayout=clone(ce.mountingLayout);project.devices.forEach(alignDin);$('enclosure').value=ce.id}selected=null;render();notice('Proyecto JSON abierto.')}catch(err){notice(err.message)}};
@@ -217,6 +211,9 @@ document.addEventListener('DOMContentLoaded',async()=>{
  svg.onpointermove=e=>{if(pan){view.x-=(e.clientX-pan.x)*view.w/svg.clientWidth;view.y-=(e.clientY-pan.y)*view.h/svg.clientHeight;pan={x:e.clientX,y:e.clientY};setView();return}if(!drag)return;if(!drag.saved){snapshot();drag.saved=true}const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const a=pt.matrixTransform(svg.getScreenCTM().inverse()),{fx,fy,h}=dimensions(),d=project.devices[drag.index];d.x=Math.round(Math.max(0,Math.min(project.enclosure.functional.width-d.w,a.x-fx-d.w/2)));if(isDin(d))alignDin(d);else d.y=Math.round(Math.max(0,Math.min(project.enclosure.functional.height-d.h,h-fy-a.y-d.h/2)));render()};
  svg.onpointerup=()=>{if(drag&&drag.saved&&project.devices[drag.index]){delete project.devices[drag.index].unplaced;delete project.devices[drag.index].placementNote}drag=null;pan=null};svg.onpointercancel=()=>{drag=null;pan=null};
  svg.addEventListener('wheel',e=>{e.preventDefault();zoomView(e.deltaY<0?.85:1.18)},{passive:false});
+ document.querySelectorAll('[data-screen]').forEach(b=>b.onclick=()=>showScreen(b.dataset.screen));
+ document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>showScreen(b.dataset.go));
+ showScreen((location.hash||'#projects').slice(1));
  render();
 });
 </script>
