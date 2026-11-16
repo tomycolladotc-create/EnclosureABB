@@ -102,7 +102,8 @@ class Handler(BaseHTTPRequestHandler):
             try:
                 project = json.loads(blob)
                 catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
-                new, summary = autolayout_conforme(project, catalog, free_rails=parse_qs(urlparse(self.path).query).get("free") == ["1"])
+                query = parse_qs(urlparse(self.path).query)
+                new, summary = autolayout_conforme(project, catalog, free_rails=query.get("free") == ["1"], only=(query.get("enclosure") or [None])[0])
                 return self.send_data(200, {"project": new, "summary": summary, "findings": check_project(new)})
             except (ValueError, UnicodeDecodeError, KeyError) as exc:
                 return self.send_data(422, {"error": str(exc)})

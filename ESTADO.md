@@ -102,3 +102,5 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 
 ### Actualización 2026-11-16 (frontend)
 La UI ahora tiene 3 pantallas (Tableros / Editor / Exportar) y el tablero sale ya conforme a normativa (chip de estado en vez de panel Completar/Revisar). Ver BITACORA 12:30. Pendiente de decidir: si el DXF conserva la tabla "LISTA DE MATERIALES".
+
+Antes de entregar cambios de interfaz: `python tests/e2e/prueba_interfaz.py` (61 chequeos en navegador real). Ver BITACORA 13:30.

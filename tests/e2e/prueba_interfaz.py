@@ -1,0 +1,228 @@
+"""Prueba de punta a punta de la interfaz con un navegador real (Playwright + Chrome).
+
+Uso:  python tests/e2e/prueba_interfaz.py [URL]   (por defecto levanta app.py en un puerto libre)
+Recorre todos los botones visibles; imprime PASS/FAIL y termina con código 1 si algo falla.
+No toca datos/ts4_topografia.json: trabaja sobre copias en datos/proyectos/ que borra al final.
+"""
+import os
+import shutil
+import subprocess
+import sys
+import time
+from pathlib import Path
+
+from playwright.sync_api import sync_playwright
+
+ROOT = Path(__file__).resolve().parents[2]
+PDFS = sorted((ROOT / "tests" / "unifilares").glob("*.pdf"))
+CHROME = next((c for c in ("/usr/bin/google-chrome", "/usr/bin/chromium") if Path(c).exists()), None)
+results = []
+
+
+def check(name, ok, detail=""):
+    results.append((name, bool(ok)))
+    print(("PASS " if ok else "FAIL ") + name + (f"  [{detail}]" if detail else ""), flush=True)
+
+
+def chip(pg):
+    return pg.inner_text("#normaChip")
+
+
+def chip_ok(pg):
+    return "error" not in chip(pg)
+
+
+def wait_idle(pg, ms=2500):
+    pg.wait_for_timeout(ms)
+
+
+def main():
+    url = sys.argv[1] if len(sys.argv) > 1 else None
+    server = None
+    ts4 = ROOT / "datos" / "ts4_topografia.json"
+    ts4_backup = ts4.read_bytes()
+    proj_dir = ROOT / "datos" / "proyectos"
+    before = set(proj_dir.glob("*.json")) if proj_dir.exists() else set()
+    if not url:
+        port = "8797"
+        env = {**os.environ, "ABB_EDITOR_PORT": port}
+        server = subprocess.Popen([sys.executable, str(ROOT / "app.py")], cwd=ROOT, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        time.sleep(2)
+        url = f"http://127.0.0.1:{port}"
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch(executable_path=CHROME, args=["--no-sandbox"]) if CHROME else p.chromium.launch()
+            ctx = browser.new_context(viewport={"width": 1440, "height": 900}, accept_downloads=True)
+            pg = ctx.new_page()
+            errors = []
+            pg.on("pageerror", lambda e: errors.append(str(e)))
+            pg.on("dialog", lambda d: d.accept("Copia prueba") if d.type == "prompt" else d.accept())
+
+            # 1) Abrir el TS4 guardado: debe quedar dentro de normativa sin tocar nada.
+            pg.goto(url + "/?id=ts4#editor")
+            wait_idle(pg, 5000)
+            check("abrir TS4: sin errores de normativa", chip_ok(pg), chip(pg))
+            check("abrir TS4: lista de circuitos", pg.locator("#deviceList .item").count() >= 10)
+            check("abrir TS4: sin botones viejos", pg.locator("#normaComplete, #normaCheck, #apply, #save").count() == 0)
+            wait_idle(pg, 3000); pg.reload(); wait_idle(pg, 5000)
+            check("reabrir TS4: no se vuelve a rearmar", "rearmado" not in pg.inner_text("#message"), pg.inner_text("#message")[:60])
+            check("reabrir TS4: sin errores", chip_ok(pg) and pg.evaluate("validationResult.errors") == 0, chip(pg))
+
+            # 2) Zoom.
+            vb = pg.get_attribute("#board", "viewBox")
+            pg.click("#zoomIn")
+            check("zoom +", pg.get_attribute("#board", "viewBox") != vb)
+            pg.click("#zoomOut"); pg.click("#focus"); pg.click("#fit")
+            check("zoom: ver todo", pg.get_attribute("#board", "viewBox") is not None)
+
+            # 3) Seleccionar y renombrar circuito.
+            pg.click("#deviceList .item >> nth=0")
+            check("seleccionar: tarjeta visible", pg.is_visible("#editor"))
+            pg.fill("#circuit", "PRUEBA-1"); pg.press("#circuit", "Tab"); wait_idle(pg, 600)
+            check("renombrar circuito", "PRUEBA-1" in pg.inner_text("#deviceList"))
+
+            # 4) Deshacer / rehacer.
+            pg.click("#undo"); wait_idle(pg, 400)
+            check("deshacer", "PRUEBA-1" not in pg.inner_text("#deviceList"))
+            pg.click("#redo"); wait_idle(pg, 400)
+            check("rehacer", "PRUEBA-1" in pg.inner_text("#deviceList"))
+            pg.keyboard.press("Control+z"); wait_idle(pg, 400)
+            check("Ctrl+Z", "PRUEBA-1" not in pg.inner_text("#deviceList"))
+
+            # 5) Arrastrar un equipo.
+            q = pg.evaluate("project.devices.findIndex(d=>d.tag==='QS1')")  # QS1 está solo en su fila: hay lugar a los costados
+            box = pg.locator(f"#board .device[data-index='{q}']").bounding_box()
+            x0 = pg.evaluate(f"project.devices[{q}].x")
+            pg.mouse.move(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
+            pg.mouse.down(); pg.mouse.move(box["x"] + box["width"] / 2 + 25, box["y"] + box["height"] / 2, steps=6); pg.mouse.up()
+            wait_idle(pg, 1500)
+            check("arrastrar equipo a lugar libre", pg.evaluate(f"project.devices[{q}].x") != x0)
+            pg.keyboard.press("Control+z"); wait_idle(pg, 1500)
+            # Soltarlo encima de otro: vuelve a su lugar y avisa.
+            a, b = pg.evaluate("[0,1].map(k=>project.devices.filter(d=>d.tag.startsWith('QF')&&!isDin(d))[k].tag)")
+            ia, ib = (pg.evaluate(f"project.devices.findIndex(d=>d.tag==='{t}')") for t in (a, b))
+            ba, bb = (pg.locator(f"#board .device[data-index='{k}']").bounding_box() for k in (ia, ib))
+            xa = pg.evaluate(f"project.devices[{ia}].x")
+            pg.mouse.move(ba["x"] + ba["width"] / 2, ba["y"] + ba["height"] / 2)
+            pg.mouse.down(); pg.mouse.move(bb["x"] + bb["width"] / 2, bb["y"] + bb["height"] / 2, steps=8); pg.mouse.up()
+            wait_idle(pg, 800)
+            check("soltar encima de otro: vuelve y avisa", pg.evaluate(f"project.devices[{ia}].x") == xa and "No hay lugar" in pg.inner_text("#message"))
+            pg.keyboard.press("Control+z"); wait_idle(pg, 1500)
+            # Equipo DIN (riel inferior): al soltarlo debe quedar en su riel, no saltar al primero.
+            i = pg.evaluate("project.devices.findIndex(d=>isDin(d))")
+            y0 = pg.evaluate(f"project.devices[{i}].y")
+            box = pg.locator(f"#board .device[data-index='{i}']").bounding_box()
+            pg.mouse.move(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
+            pg.mouse.down(); pg.mouse.move(box["x"] + box["width"] / 2 + 40, box["y"] + box["height"] / 2 + 3, steps=6); pg.mouse.up()
+            wait_idle(pg, 2000)
+            check("arrastrar DIN: queda en su riel", abs(pg.evaluate(f"project.devices[{i}].y") - y0) < 1, f"{y0} -> {pg.evaluate(f'project.devices[{i}].y')}")
+            check("arrastrar DIN: sin errores geométricos", pg.evaluate("validationResult.errors") == 0, str(pg.evaluate("validationResult.findings.map(f=>f.message)"))[:120])
+            pg.keyboard.press("Control+z"); wait_idle(pg, 1500)
+
+            # 6) Agregar equipo.
+            n = pg.evaluate("project.devices.length")
+            pg.click("#showAdd")
+            check("agregar: abre ventana", pg.is_visible("#addPanel"))
+            pg.fill("#newCircuit", "NUEVO-1"); pg.click("#add"); wait_idle(pg, 4000)
+            check("agregar: equipo sumado", pg.evaluate("project.devices.length") == n + 1)
+            check("agregar: aparece en la lista", "NUEVO-1" in pg.inner_text("#deviceList"))
+            check("agregar: sigue dentro de normativa", chip_ok(pg), chip(pg))
+            pg.click("#showAdd"); pg.click("#addCancel")
+            check("agregar: cancelar cierra", not pg.is_visible("#addPanel"))
+
+            # 7) Eliminar equipo.
+            pg.click("#deviceList .item:has-text('NUEVO-1')"); pg.click("#remove"); wait_idle(pg, 1500)
+            check("eliminar equipo", pg.evaluate("project.devices.length") == n)
+
+            # 8) Chip y menú.
+            pg.click("#normaChip")
+            check("chip: muestra detalle", pg.is_visible("#normaPanel") and len(pg.inner_text("#normaPanel")) > 5)
+            pg.click("#board", position={"x": 10, "y": 10})
+            check("chip: se cierra al hacer clic afuera", not pg.is_visible("#normaPanel"))
+            pg.click("#moreBtn")
+            check("menú ⋯ abre", pg.is_visible("#moreMenu"))
+            pg.click("#autoFree"); wait_idle(pg, 4000)
+            check("rearmar con riel libre", chip_ok(pg), chip(pg))
+            pg.click("#moreBtn"); pg.click("#autoLayout"); wait_idle(pg, 4000)
+            check("rearmar", chip_ok(pg), chip(pg))
+            pg.click("#moreBtn")
+            with pg.expect_download() as dl:
+                pg.click("#exportJson")
+            check("guardar copia JSON", Path(dl.value.path()).stat().st_size > 1000)
+            check("menú se cierra al elegir una opción", not pg.is_visible("#moreMenu"))
+            pg.click("#moreBtn")
+            options = pg.eval_on_selector_all("#enclosure option", "o=>o.map(x=>x.value)")
+            prev = pg.evaluate("project.enclosure.id")
+            small = pg.evaluate("[...catalog.enclosures].sort((a,b)=>a.externalBody.width*a.externalBody.height-b.externalBody.width*b.externalBody.height)[0].id")
+            pg.select_option("#enclosure", small); wait_idle(pg, 3000)
+            check("gabinete chico donde no entra: se mantiene el anterior", pg.evaluate("project.enclosure.id") == prev and pg.input_value("#enclosure") == prev)
+            big = pg.evaluate("[...catalog.enclosures].sort((a,b)=>b.externalBody.width*b.externalBody.height-a.externalBody.width*a.externalBody.height)[0].id")
+            pg.click("#moreBtn"); pg.select_option("#enclosure", big); wait_idle(pg, 4000)
+            check("cambiar a gabinete grande", pg.evaluate("project.enclosure.id") == big)
+            check("cambiar gabinete: dentro de normativa", chip_ok(pg) and pg.evaluate("validationResult.errors") == 0, chip(pg))
+            pg.click("#moreBtn"); pg.click("#autoLayout"); wait_idle(pg, 4000)
+
+            # 9) Exportar.
+            pg.click("[data-go=export]"); wait_idle(pg, 1500)
+            check("exportar: pantalla", pg.is_visible("#screen-export"))
+            for btn, size in (("#exportDxf", 5000), ("#exportSvg", 5000), ("#exportPng", 5000)):
+                with pg.expect_download() as dl:
+                    pg.click(btn)
+                check(f"exportar {btn[7:]}", Path(dl.value.path()).stat().st_size > size)
+            pg.click("summary:has-text('Lista de materiales')")
+            check("lista de materiales", pg.locator("#bomTable tr").count() > 3)
+            with pg.expect_download() as dl:
+                pg.click("#exportBom")
+            check("descargar CSV", Path(dl.value.path()).stat().st_size > 100)
+            pg.click("[data-go=editor] >> nth=-1"); wait_idle(pg, 800)
+            check("volver al editor", pg.is_visible("#screen-editor"))
+
+            # 10) Tableros: duplicar, abrir y borrar.
+            pg.click(".brand"); wait_idle(pg, 800)
+            check("tableros: tarjetas", pg.locator(".card-p").count() >= 1)
+            pg.click("[data-dup=ts4]"); wait_idle(pg, 4000)
+            pid = pg.evaluate("projectId")
+            check("duplicar tablero", pid != "ts4", pid)
+            check("duplicado dentro de normativa", chip_ok(pg), chip(pg))
+            pg.click(".brand"); wait_idle(pg, 800)
+            pg.click(f"[data-del='{pid}']"); wait_idle(pg, 2500)
+            check("borrar tablero", pg.evaluate("projectId") == "ts4")
+
+            # 11) Importar cada PDF de ejemplo desde Tableros.
+            for pdf in PDFS:
+                pg.goto(url + "/?id=ts4#projects"); pg.reload(); wait_idle(pg, 4000)
+                n_proj = pg.locator(".card-p").count()
+                pg.set_input_files("#pdfNew", str(pdf))
+                name = pdf.stem[-12:]
+                if "GENERAL" not in pdf.stem:
+                    wait_idle(pg, 7000)
+                if "GENERAL" in pdf.stem:  # unifilar de toda la planta: no entra en un gabinete; no debe quedar un tablero roto
+                    try:
+                        pg.wait_for_function("document.getElementById('message').textContent.includes('tableros distintos')", timeout=20000); ok = True
+                    except Exception:
+                        ok = False
+                    check(f"importar {name}: avisa varios tableros", ok, pg.inner_text("#message")[:90])
+                    check(f"importar {name}: no deja tablero roto", pg.is_visible("#screen-projects") and pg.locator(".card-p").count() == n_proj)
+                    continue
+                check(f"importar {name}: abre el editor", pg.is_visible("#screen-editor"))
+                check(f"importar {name}: con equipos", pg.evaluate("project.devices.length") > 0, str(pg.evaluate("project.devices.length")))
+                check(f"importar {name}: dentro de normativa", chip_ok(pg), chip(pg))
+
+            check("sin errores de JavaScript", not errors, "; ".join(errors[:3]))
+            browser.close()
+    finally:
+        if server:
+            server.terminate()
+            server.wait(10)
+        ts4.write_bytes(ts4_backup)
+        for f in (set(proj_dir.glob("*.json")) if proj_dir.exists() else set()) - before:
+            f.unlink()
+        if proj_dir.exists() and not any(proj_dir.iterdir()) and not before:
+            shutil.rmtree(proj_dir)
+    failed = [n for n, ok in results if not ok]
+    print(f"\n{len(results) - len(failed)}/{len(results)} OK" + (f" · fallan: {', '.join(failed)}" if failed else ""))
+    sys.exit(1 if failed else 0)
+
+
+if __name__ == "__main__":
+    main()

@@ -171,7 +171,7 @@ def _free_rail_alternative(project, candidates, catalog, rules, pe_reserve, chos
     return None
 
 
-def autolayout(project, catalog, rules=None, free_rails=False, exclude=()):
+def autolayout(project, catalog, rules=None, free_rails=False, exclude=(), only=None):
     """Devuelve (proyecto_nuevo, resumen). El proyecto original no se modifica."""
     rules = rules or load_rules()
     try:
@@ -182,7 +182,7 @@ def autolayout(project, catalog, rules=None, free_rails=False, exclude=()):
     candidates = sorted(catalog["enclosures"], key=lambda e: (e["externalBody"]["width"] * e["externalBody"]["height"], e["externalBody"]["depth"]))
     tried = []
     for enc in candidates:
-        if enc["id"] in exclude:
+        if enc["id"] in exclude or (only and enc["id"] != only):
             continue
         if free_rails and enc.get("kdKit"):  # opción del usuario: riel GD de posición libre en vez de las filas fijas del kit KD
             enc = {**enc, "kdKit": None, "railOptions": enc["kdKit"].get("freeRailOptions", [])}
@@ -204,23 +204,25 @@ def autolayout(project, catalog, rules=None, free_rails=False, exclude=()):
             d.pop("placementNote", None)
         new["accessories"] = [a for a in new.get("accessories", []) if not a.get("auto")]
         return new, {"gabinete": enc["id"], "kit": (enc.get("kdKit") or {}).get("kit"), "intentos": tried, "rielLibre": free_rails, "alternativaRielLibre": None if free_rails else _free_rail_alternative(project, candidates, catalog, rules, pe_reserve, enc)}
+    if only:
+        raise ValueError(f"El contenido no entra en el gabinete elegido ({only}); se mantiene el anterior")
     raise ValueError("Ningún gabinete del catálogo aloja este contenido con los criterios de datos/reglas_layout.json")
 
 
-def autolayout_conforme(project, catalog, rules=None, free_rails=False):
+def autolayout_conforme(project, catalog, rules=None, free_rails=False, only=None):
     """Arma el tablero y completa los accesorios de normativa; si alguno no entra (p. ej. los bornes PE), prueba el gabinete siguiente."""
     from accesorios import complete
     exclude, first = [], None
     while True:
         try:
-            new, summary = autolayout(project, catalog, rules, free_rails, exclude)
+            new, summary = autolayout(project, catalog, rules, free_rails, exclude, only)
         except ValueError:
             if first is None:
                 raise
             return first
         complete(new, auto_confirm=True)
         first = first or (new, summary)
-        if not any(a.get("placed") is False and a.get("type") in ("pe_terminal", "copper_busbar", "distribution_block") for a in new["accessories"]):
+        if only or not any(a.get("placed") is False and a.get("type") in ("pe_terminal", "copper_busbar", "distribution_block") for a in new["accessories"]):
             summary["gabinetesDescartados"] = list(exclude)
             return new, summary
         exclude.append(summary["gabinete"])

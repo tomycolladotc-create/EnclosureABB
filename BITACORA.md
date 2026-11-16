@@ -218,3 +218,14 @@
 - Peines: un peine sólo une equipos con los mismos polos (antes "mezcla de polos" daba error de normativa).
 - Observaciones que quedan (honestas, por falta de datos): peine S804 4P con neutro; mezcla de polos adyacentes sin peine; masas a tierra (manual en obra); profundidades ABB pendientes (aparecen como "datos pendientes", no cuentan en el chip).
 - Tests: 82 OK (nuevos: UI sin botones de normativa, auto-confirmación).
+
+
+## 2026-11-16 13:30 · Claude · Prueba de punta a punta y bugs de fondo
+- Nuevo `tests/e2e/prueba_interfaz.py` (Playwright + Chrome): recorre todos los botones (abrir/reabrir, zoom, renombrar, deshacer/rehacer, arrastrar, agregar/eliminar, chip, menú, rearmar, riel libre, cambiar gabinete, JSON, exportar DXF/SVG/PNG/CSV, duplicar/borrar, importar los 6 PDF de ejemplo). 61/61 OK. CORRERLA ANTES DE ENTREGAR CAMBIOS DE INTERFAZ.
+- Bug de fondo (venía de antes): al abrir un tablero se reemplazaban los rieles del armado automático por los del catálogo y todo DIN iba al primer riel → "QF81 es DIN pero no está sobre un riel". Ahora se respetan los rieles guardados; `alignDin` usa el riel más cercano.
+- Al abrir, si el tablero no cumple, se rearma solo (una vez).
+- Soltar un equipo encima de otro: vuelve a su lugar y avisa.
+- Cambiar gabinete (menú ⋯) rearma dentro de ese gabinete (`/api/autolayout?enclosure=id`); si no entra, se mantiene el anterior.
+- Navegación: `location.search` con `#editor` metía el hash en el id del proyecto (duplicar/abrir/crear). Corregido con `location.href`.
+- PDF de toda la planta (25_GENERAL, 132 equipos de ~20 tableros): ya no crea un tablero roto; avisa qué tableros contiene. Idea a futuro: separar automáticamente un tablero por prefijo de circuito (TS-1, TSB-1…).
+- Menú ⋯ se cierra al elegir una opción; aviso (toast) visible en todas las pantallas.
