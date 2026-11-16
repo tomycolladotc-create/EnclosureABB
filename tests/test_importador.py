@@ -83,6 +83,13 @@ class Marcado(unittest.TestCase):
         self.assertEqual(self.textos("QF81", devices), ["ABB", "S804N", "C32", "240/415V~36kA", "In=32A"])
         self.assertEqual(self.textos("QF90", devices), ["ABB", "S 201M-NA", "C 10", "10000", "3"])
 
+    def test_tmax_y_ot_ts4(self):
+        text = (ROOT / "tests" / "fixtures" / "ts4_texto_extraido.txt").read_text(encoding="utf-8")
+        devices = {d["tag"]: d for d in detect_devices(text, CATALOG)}
+        self.assertEqual(self.textos("QF82", devices), ["ABB", "SACE Tmax", "XT1C", "160", "In=80A", "TMD"])
+        self.assertEqual(self.textos("QF88", devices), ["ABB", "SACE Tmax", "XT2N", "160", "In=80A", "TMG"])
+        self.assertEqual(self.textos("QS1", devices), ["ABB"])
+
     def test_s200_tripolar_lleva_tension(self):
         pdf = ROOT / "tests" / "unifilares" / "BAF-E-EL-PL-104-0_Unifilares-12_TSB.pdf"
         devices = {d["tag"]: d for d in detect_devices(pdf_text(pdf), CATALOG)}

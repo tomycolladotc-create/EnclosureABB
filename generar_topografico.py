@@ -7,6 +7,8 @@ from pathlib import Path
 import cairosvg
 
 from cad_export import build_dxf
+from importador import ensure_marking
+from marcado import resolve
 
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT / "salida"
@@ -59,6 +61,24 @@ def svg_document(project, catalog, fronts, appearances):
         source = ids.get(device.get("shell"))
         if source:
             out.append(f'<svg x="{x}" y="{y}" width="{w}" height="{h}" viewBox="0 0 1 1" preserveAspectRatio="none"><use xlink:href="#{source}"/></svg>')
+            marking = (appearances["items"].get(device.get("shell")) or {}).get("marking")
+            for item in resolve(marking, device.get("marking", {}), device.get("poles")):
+                sy = y + h - item["y"]
+                font_size = item["h"] / 0.716
+                if item.get("box"):
+                    x0, y0, x1, y1 = item["box"]
+                    out.append(
+                        f'<rect x="{x+x0}" y="{y+h-y1}" width="{x1-x0}" height="{y1-y0}" '
+                        f'fill="none" stroke="{item["color"]}" stroke-width="0.12"/>'
+                    )
+                fit = f' textLength="{item["w"]}" lengthAdjust="spacingAndGlyphs"' if item.get("w") else ""
+                anchor = "middle" if item.get("align") == "center" else "start"
+                weight = "bold" if item.get("bold") else "normal"
+                out.append(
+                    f'<text x="{x+item["x"]}" y="{sy}" dominant-baseline="central" text-anchor="{anchor}" '
+                    f'fill="{item["color"]}" font-size="{font_size:.3f}" font-family="Arial" '
+                    f'font-weight="{weight}"{fit}>{escape(item["text"])}</text>'
+                )
         else:
             out.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" fill="#fff1d8" stroke="#b27a20" stroke-width="2" stroke-dasharray="5 3"/>')
             out.append(f'<text x="{x+w/2}" y="{y+h/2}" text-anchor="middle" font-family="Arial" font-size="8" fill="#7c5217">SIN CAD</text>')
@@ -82,6 +102,8 @@ def svg_document(project, catalog, fronts, appearances):
 def main():
     OUT.mkdir(exist_ok=True)
     project, catalog, fronts, appearances = (load(name) for name in ('ts4_topografia.json', 'catalogo_abb.json', 'frentes_cad.json', 'apariencias_abb.json'))
+    for device in project.get("devices", []):
+        ensure_marking(device, catalog)
     svg = svg_document(project, catalog, fronts, appearances)
     (OUT / 'TS4_vista_2D.svg').write_text(svg, encoding='utf-8')
     cairosvg.svg2png(bytestring=svg.encode(), write_to=str(OUT/'TS4_vista_2D.png'), output_width=2050, output_height=2450)

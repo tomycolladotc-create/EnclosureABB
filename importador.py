@@ -54,6 +54,24 @@ def marking_fields(model, block, rules):
             fields["sufijoGuion"] = "-" + fields["sufijo"]
     if "serie" in fields:
         fields.setdefault("sufijoGuion", "")
+    # Los Tmax escriben primero el bastidor (160) y recién después la unidad de
+    # disparo y su corriente: "XT1C 160 TMD 80-800". La regla genérica no debe
+    # confundir 160 (tamaño de bastidor) con In=80 A.
+    tmax = re.search(
+        r"\b(?P<serie>XT\d[A-Z]?)\s+(?P<frame>\d+)\s+"
+        r"(?P<trip>TM[A-Z]+)\s+(?P<In>\d+(?:[.,]\d+)?)"
+        r"(?:-(?P<setting>\d+(?:[.,]\d+)?))?\b",
+        model, re.IGNORECASE,
+    )
+    if tmax:
+        fields.update({
+            "serie": tmax.group("serie").upper(),
+            "frame": tmax.group("frame"),
+            "trip": tmax.group("trip").upper(),
+            "In": tmax.group("In").replace(".", ","),
+        })
+        if tmax.group("setting"):
+            fields["setting"] = tmax.group("setting").replace(".", ",")
     rating = re.search(rules["ratingPattern"], block)
     if rating:
         ka = rating.group(3)

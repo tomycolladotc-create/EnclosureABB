@@ -51,18 +51,24 @@
           "#707b82"
         ],
         [
-          0.07,
-          0.67,
-          0.25,
-          0.055,
+          0.403,
+          0.555,
+          0.445,
+          0.062,
           "#e31c23"
         ]
       ],
-      "logo": [
-        0.095,
-        0.68,
-        "ABB"
-      ]
+      "marking": {
+        "verifiedWith": "docs/imagenes_abb/XT1C_1SDA067405R1_frontal.png, imagen oficial ABB 9IBA255342 (400x400) de la referencia 1SDA067405R1. Frente calibrado con bbox transparente x=77..315 px, y=46..354 px contra 101,6x130 mm; la foto de catálogo usa una etiqueta genérica, por eso serie, bastidor, disparador e In salen del unifilar.",
+        "items": [
+          {"text": "ABB", "x": 42.3, "y": 76.0, "h": 3.0, "w": 11.0, "color": "#ffffff", "bold": true},
+          {"text": "SACE Tmax", "x": 70.0, "y": 76.0, "h": 2.4, "color": "#ffffff", "bold": true},
+          {"text": "{serie}", "x": 89.2, "y": 69.6, "h": 2.5, "color": "#d7dbdc"},
+          {"text": "{frame}", "x": 91.0, "y": 63.7, "h": 2.3, "color": "#d7dbdc"},
+          {"text": "In={In}A", "x": 53.0, "y": 32.3, "h": 2.0, "color": "#d7dbdc"},
+          {"text": "{trip}", "x": 88.8, "y": 31.2, "h": 2.1, "color": "#d7dbdc"}
+        ]
+      }
     },
     "abb.tmax.xt2.4p.fixed.front": {
       "source": "https://library.e.abb.com/public/562d7d51a06f4967a7b084c6f1fd657c/1SDH002293A1001%20-%20Disassembly%20instructions%20Tmax%20XT%20XT2%20Electronic.pdf",
@@ -112,18 +118,24 @@
           "#707b82"
         ],
         [
-          0.07,
-          0.67,
-          0.25,
-          0.055,
+          0.435,
+          0.555,
+          0.365,
+          0.062,
           "#e31c23"
         ]
       ],
-      "logo": [
-        0.095,
-        0.68,
-        "ABB"
-      ]
+      "marking": {
+        "verifiedWith": "docs/imagenes_abb/XT2N_1SDX176607R1_frontal.png, imagen oficial ABB 9IBA255267 (400x400) de la referencia 1SDX176607R1. Frente calibrado con bbox transparente x=60..338 px, y=46..354 px contra 120x130 mm; serie, bastidor, disparador e In se completan desde el unifilar.",
+        "items": [
+          {"text": "ABB", "x": 52.2, "y": 76.0, "h": 3.0, "w": 11.0, "color": "#ffffff", "bold": true},
+          {"text": "SACE Tmax", "x": 79.8, "y": 76.0, "h": 2.4, "color": "#ffffff", "bold": true},
+          {"text": "{serie}", "x": 103.6, "y": 69.6, "h": 2.5, "color": "#d7dbdc"},
+          {"text": "{frame}", "x": 105.2, "y": 63.7, "h": 2.3, "color": "#d7dbdc"},
+          {"text": "In={In}A", "x": 68.2, "y": 32.3, "h": 2.0, "color": "#d7dbdc"},
+          {"text": "{trip}", "x": 103.0, "y": 31.2, "h": 2.1, "color": "#d7dbdc"}
+        ]
+      }
     },
     "abb.s804n.4p.front": {
       "source": "https://new.abb.com/products/2CCS894001R0404/s804n-c40",
@@ -398,18 +410,19 @@
           "#7b8588"
         ],
         [
-          0.05,
-          0.68,
-          0.2,
-          0.055,
+          0.004,
+          0.861,
+          0.23,
+          0.059,
           "#e00016"
         ]
       ],
-      "logo": [
-        0.08,
-        0.69,
-        "ABB"
-      ]
+      "marking": {
+        "verifiedWith": "docs/imagenes_abb/OT400E04P_1SCA022719R1810_frontal.jpg, imagen oficial ABB 9PAA00000422688 (400x400) de la referencia 1SCA022719R1810. Cuerpo frontal calibrado aproximadamente con x=60..338 px, y=75..313 px contra 235x185 mm. La foto no muestra modelo ni corriente impresos en el frente; solo se reproduce el logo visible.",
+        "items": [
+          {"text": "ABB", "x": 2.5, "y": 165.2, "h": 5.4, "w": 22.0, "color": "#ffffff", "bold": true}
+        ]
+      }
     },
     "abb.s200m.1p.front": {
       "source": "https://new.abb.com/products/2CDS271001R0324/s201m-c32",
@@ -527,5 +540,5 @@
       }
     }
   },
-  "markingHelp": "marking: lo impreso en el frente del equipo REAL, medido en una foto frontal de ABB (fuente en verifiedWith). Medidas en mm: x desde el borde izquierdo, y (centro del texto) desde abajo, h = alto de las mayúsculas. Campos que salen del plano: {serie} {serieS} {curva} {In} {kA} {Icn} {sufijo} {sufijoGuion}. Si falta un campo, ese texto no se dibuja (no se inventa). when: condición sobre poles. box: recuadro [x0,y0,x1,y1] en mm. w: ancho a ocupar (logo). Carcasas sin 'marking' no llevan texto hasta medir su foto."
+  "markingHelp": "marking: lo impreso en el frente del equipo REAL, medido en una foto frontal de ABB (fuente en verifiedWith). Medidas en mm: x desde el borde izquierdo, y (centro del texto) desde abajo, h = alto de las mayúsculas. Campos que salen del plano: {serie} {serieS} {curva} {In} {kA} {Icn} {sufijo} {sufijoGuion} {frame} {trip} {setting}. Si falta un campo, ese texto no se dibuja (no se inventa). when: condición sobre poles. box: recuadro [x0,y0,x1,y1] en mm. w: ancho a ocupar (logo). Carcasas sin 'marking' no llevan texto hasta medir su foto."
 }

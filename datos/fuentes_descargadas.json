@@ -20,6 +20,33 @@
       "sha256": "6ec8fb831401d370e514cc74eafca51cf5d94eecaf940dce3230481de1980543",
       "texto": "docs/catalogos_abb/texto/1STC804013D0201_paginas.json",
       "usado_en": "datos/catalogo_abb.json -> enclosures[] SR2 (págs. 2/4-2/10, 9/6-9/7); pendiente: kits KD (pág. 2/4 y 2/8), IS2, AM2"
+    },
+    {
+      "archivo": "docs/imagenes_abb/XT1C_1SDA067405R1_frontal.png",
+      "documento": "Imagen frontal oficial ABB XT1C 160 TMD 80-800 4P (9IBA255342)",
+      "origen": "https://cdn.productimages.abb.com/9IBA255342_400x400.png",
+      "bajado": "2026-11-15",
+      "bytes": 73283,
+      "sha256": "8aed93aceda4815e990619958075f861c1fa7e504d6278a52545e4dcb1ef73ef",
+      "usado_en": "datos/apariencias_abb.json -> abb.tmax.xt1.4p.fixed.front.marking"
+    },
+    {
+      "archivo": "docs/imagenes_abb/XT2N_1SDX176607R1_frontal.png",
+      "documento": "Imagen frontal oficial ABB XT2N 160 TMG 80-240 4P + Acc (9IBA255267)",
+      "origen": "https://cdn.productimages.abb.com/9IBA255267_400x400.png",
+      "bajado": "2026-11-15",
+      "bytes": 92493,
+      "sha256": "80d8d88a1b6415281e2a393086ef5f1c18ebb3a86c20428e1bed216ba245cb72",
+      "usado_en": "datos/apariencias_abb.json -> abb.tmax.xt2.4p.fixed.front.marking"
+    },
+    {
+      "archivo": "docs/imagenes_abb/OT400E04P_1SCA022719R1810_frontal.jpg",
+      "documento": "Imagen frontal oficial ABB OT400E04P (9PAA00000422688)",
+      "origen": "https://cdn.productimages.abb.com/9PAA00000422688_400x400.jpg",
+      "bajado": "2026-11-15",
+      "bytes": 8361,
+      "sha256": "81242e314bb7038556501e46b330b92c78f6bc702d6504c528097c81fad368c0",
+      "usado_en": "datos/apariencias_abb.json -> abb.ot400e04.4p.front.marking"
     }
   ]
 }

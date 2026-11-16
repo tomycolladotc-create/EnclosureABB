@@ -3,6 +3,13 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-15 21:32 · Codex
+- Hecho: marcado frontal XT1/XT2 y logo OT400 medidos sobre imágenes oficiales ABB; el parser separa bastidor, disparador e In de Tmax.
+- Archivos: `importador.py`, `generar_topografico.py`, `datos/apariencias_abb.json`, `datos/fuentes_descargadas.json`, `docs/imagenes_abb/`, prueba de importador.
+- Ojo: las fotos XT usan etiqueta genérica; los valores variables salen del unifilar. La foto OT no muestra modelo/corriente y no se inventaron.
+- Pruebas: 53 OK; generación SVG/PNG/PDF/DXF; auditoría DXF 0 errores y 58 atributos.
+- Siguiente: profundidad real de equipos o familias faltantes; no tocar rieles mientras Claude siga asignado.
+
 ## 2026-11-15 21:24 · Codex
 - Hecho: Git local autenticado y clon oficial preparado; protocolo reforzado para que todo cambio se suba durante la misma sesión.
 - Archivos: `AGENTS.md`, `ESTADO.md`.
