@@ -11,7 +11,7 @@ from cad_export import build_dxf
 from importador import detect_devices, ensure_marking, shell_size
 from accesorios import complete
 from colocar import place_din
-from layout_auto import autolayout
+from layout_auto import autolayout, autolayout_conforme
 from normativa import check_project
 from validacion import validate
 from bom import build_bom, to_csv
@@ -102,9 +102,8 @@ class Handler(BaseHTTPRequestHandler):
             try:
                 project = json.loads(blob)
                 catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
-                new, summary = autolayout(project, catalog, free_rails=parse_qs(urlparse(self.path).query).get("free") == ["1"])
-                complete(new)
-                return self.send_data(200, {"project": new, "summary": summary})
+                new, summary = autolayout_conforme(project, catalog, free_rails=parse_qs(urlparse(self.path).query).get("free") == ["1"])
+                return self.send_data(200, {"project": new, "summary": summary, "findings": check_project(new)})
             except (ValueError, UnicodeDecodeError, KeyError) as exc:
                 return self.send_data(422, {"error": str(exc)})
         if route == "/api/validate":
@@ -169,7 +168,7 @@ class Handler(BaseHTTPRequestHandler):
             try:
                 project = json.loads(blob)
                 if route.endswith("/complete"):
-                    complete(project)
+                    complete(project, auto_confirm=True)
                 return self.send_data(200, {"accessories": project.get("accessories", []), "findings": check_project(project)})
             except (ValueError, UnicodeDecodeError, KeyError, StopIteration) as exc:
                 return self.send_data(422, {"error": str(exc)})

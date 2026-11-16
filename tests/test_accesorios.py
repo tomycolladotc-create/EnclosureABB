@@ -214,3 +214,17 @@ class CircuitosYComputo(unittest.TestCase):
         self.assertEqual(pe["quantity"], sum(1 for d in self.new["devices"] if d["tag"].startswith("QF")))
         equipos = [r for r in rows if r["category"] == "Equipo"]
         self.assertTrue(any("TS-4.2 (QF82)" in r["tags"] for r in equipos))
+
+
+class AutoConfirmacion(unittest.TestCase):
+    def test_complete_con_auto_confirm_deja_propuestas_confirmadas(self):
+        import json
+        from accesorios import complete
+        from layout_auto import autolayout
+        root = Path(__file__).resolve().parents[1]
+        catalog = json.loads((root / "datos" / "catalogo_abb.json").read_text(encoding="utf-8"))
+        project = json.loads((root / "datos" / "ts4_topografia.json").read_text(encoding="utf-8"))
+        new, _ = autolayout(project, catalog)
+        complete(new, auto_confirm=True)
+        pend = [a for a in new["accessories"] if a.get("needsConfirmation") and a.get("decision") != "confirmed"]
+        self.assertEqual(pend, [])

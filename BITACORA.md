@@ -207,3 +207,14 @@
 ## 2026-11-15 13:46–17:00 · Codex
 - Hecho: arquitectura, catálogo inicial, editor local, rieles por envolvente, 12 CAD ABB descargados, frentes 2D proyectados desde STEP, colores por familia, DXF con bloques. Caso de referencia: TS4-PORT 11-12-13-14.
 - Detalle: `docs/ARQUITECTURA.md`, `docs/estado_busqueda_CAD_TS4.md`.
+
+
+## 2026-11-16 12:30 · Claude · Frontend limpio y tablero ya conforme a normativa
+- Pedido de Thomas: interfaz más limpia, sin botones inútiles; que el tablero salga ya dentro de normativa (sin Completar/Revisar/Confirmar).
+- `web/index.html` + `web/styles.css` reescritos: 3 pantallas (Tableros, Editor, Exportar). Editor: lista de circuitos + "＋ Agregar equipo" (ventana), lienzo con zoom flotante, tarjeta del equipo seleccionado (sólo circuito, modelo, eliminar), chip "Normativa ✓ · N observaciones" con panel, menú "⋯" (gabinete, rearmar, riel libre, importar otro PDF, JSON). Autoguardado: ya no hay botón Guardar.
+- Importar PDF desde Tableros crea un tablero nuevo con el nombre del archivo y lo arma solo; "Importar otro unifilar" (menú ⋯) agrega al tablero abierto.
+- `accesorios.complete(..., auto_confirm=True)` confirma sola bloque/barra de distribución; `/api/normativa/complete` se llama solo tras cada cambio (si cambian los accesorios, se redibuja).
+- `layout_auto.autolayout_conforme`: si bornes PE/barras no entran, prueba el gabinete siguiente. Los PE se buscan en todos los rieles (antes sólo el primero).
+- Peines: un peine sólo une equipos con los mismos polos (antes "mezcla de polos" daba error de normativa).
+- Observaciones que quedan (honestas, por falta de datos): peine S804 4P con neutro; mezcla de polos adyacentes sin peine; masas a tierra (manual en obra); profundidades ABB pendientes (aparecen como "datos pendientes", no cuentan en el chip).
+- Tests: 82 OK (nuevos: UI sin botones de normativa, auto-confirmación).

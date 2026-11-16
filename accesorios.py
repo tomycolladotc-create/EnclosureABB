@@ -147,11 +147,11 @@ def propose(project, catalog=None):
         width, height = len(circuits) * pe["pasoMm"], pe["alturaMm"]
         item = {"type": "pe_terminal", "auto": True, "catalogId": pe["id"], "count": len(circuits), "w": width, "h": height,
                 "label": f"PE x{len(circuits)}", "provisional": True}
-        x = _free_x(devices, rails[0], width) if rails else None
-        if x is None:
+        spot = next(((x, r) for r in rails if (x := _free_x(devices, r, width)) is not None), None)  # primer riel con hueco
+        if spot is None:
             item.update(placed=False)
         else:
-            item.update(placed=True, x=x, y=rails[0]["y"] - height / 2)
+            item.update(placed=True, x=spot[0], y=spot[1]["y"] - height / 2)
         out.append(item)
 
     # 2) Cubrebornes transparentes (barrera aislante): uno general; sin geometría hasta tener el CAD.
@@ -164,7 +164,7 @@ def propose(project, catalog=None):
     group = []
     groups = []
     for d in s200:
-        if group and abs(group[-1]["y"] - d["y"]) <= 0.5 and 0 <= d["x"] - (group[-1]["x"] + group[-1]["w"]) <= GAP_MM:
+        if group and abs(group[-1]["y"] - d["y"]) <= 0.5 and 0 <= d["x"] - (group[-1]["x"] + group[-1]["w"]) <= GAP_MM and _poles(d) == _poles(group[-1]):  # un peine sólo une equipos con los mismos polos
             group.append(d)
         else:
             if len(group) > 1:
@@ -226,7 +226,7 @@ def propose(project, catalog=None):
     return out
 
 
-def complete(project, catalog=None):
+def complete(project, catalog=None, auto_confirm=False):
     """Reemplaza las propuestas anteriores (auto) y conserva los accesorios cargados a mano."""
     manual = [a for a in project.get("accessories", []) if not a.get("auto")]
     # Las decisiones del usuario (confirmar/descartar una propuesta) se conservan al recalcular.
@@ -236,5 +236,7 @@ def complete(project, catalog=None):
     for a in new:
         if a.get("needsConfirmation") and key(a) in decided:
             a["decision"] = decided[key(a)]
+        elif auto_confirm and a.get("needsConfirmation"):
+            a["decision"] = "confirmed"
     project["accessories"] = manual + new
     return project

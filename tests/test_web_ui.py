@@ -1,4 +1,4 @@
-"""Contrato mínimo de la interfaz de cuatro pasos y sus recursos estáticos."""
+"""Contrato mínimo de la interfaz (tableros, editor, exportar) y sus recursos estáticos."""
 import unittest
 from pathlib import Path
 
@@ -9,19 +9,23 @@ STYLES = ROOT / "web" / "styles.css"
 
 
 class WebUi(unittest.TestCase):
-    def test_cuatro_pantallas_y_controles_criticos(self):
+    def test_tres_pantallas_y_controles_criticos(self):
         html = INDEX.read_text(encoding="utf-8")
-        for screen in ("projects", "import", "editor", "export"):
+        for screen in ("projects", "editor", "export"):
             self.assertIn(f'id="screen-{screen}"', html)
-            self.assertIn(f'data-screen="{screen}"', html)
-        for control in ("projectCards", "pdf", "board", "exportDxf"):
+        for control in ("projectCards", "pdfNew", "board", "exportDxf", "normaChip", "showAdd"):
             self.assertIn(f'id="{control}"', html)
+
+    def test_sin_botones_de_normativa_manual(self):
+        html = INDEX.read_text(encoding="utf-8")
+        for gone in ("normaComplete", "normaCheck", "Confirmar</button>", "fixedSize", "cadInfo"):
+            self.assertNotIn(gone, html)
 
     def test_seguridad_y_validacion_estan_conectadas(self):
         html = INDEX.read_text(encoding="utf-8")
         self.assertIn("beforeunload", html)
         self.assertIn("scheduleAutosave", html)
-        self.assertIn("id='redo'", html)
+        self.assertIn('id="redo"', html)
         self.assertIn("/api/validate", html)
         self.assertIn('route == "/api/validate"', (ROOT / "app.py").read_text(encoding="utf-8"))
 

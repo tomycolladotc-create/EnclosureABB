@@ -98,3 +98,7 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 ## Diseño de la interfaz (aprobado provisoriamente por el usuario; se ajustará con el uso)
 - Maqueta de 4 pantallas (Tableros, Importar, Editor, Exportar) en https://claude.ai/artifact/GJvAU9SANz5x9u69j9mra2. Implementada en el editor real (`web/index.html` + `web/styles.css`) el 2026-11-15.
 - Flujo real: Tableros administra proyectos y envolventes; Importar revisa el PDF; Editor conserva el SVG interactivo y normativa; Exportar prioriza DXF y resume capas, gabinete y equipos. Pendiente independiente: rieles según kit del gabinete (punto 0).
+
+
+### Actualización 2026-11-16 (frontend)
+La UI ahora tiene 3 pantallas (Tableros / Editor / Exportar) y el tablero sale ya conforme a normativa (chip de estado en vez de panel Completar/Revisar). Ver BITACORA 12:30. Pendiente de decidir: si el DXF conserva la tabla "LISTA DE MATERIALES".
