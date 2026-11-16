@@ -44,6 +44,11 @@
 - Ojo: después de cambios grandes o antes de cerrar una sesión, actualizar coordinación y subir incluso el trabajo parcial.
 - Siguiente: respetar la asignación activa de Claude sobre rieles DIN y tomar un pendiente libre antes de modificar código.
 
+## 2026-11-16 11:40 · Claude
+- Pedido: tablero automático, sin botones. Importar PDF → agrega equipos propios y arma todo (gabinete, rieles, peines, canaletas) y abre el editor. 'Agregar equipo' (no tenía acción) ahora salta al formulario con QF sugerido + campo Circuito y rearma el tablero al agregar.
+- Filas de riel libre: `railRowGapMm`=110 y zonas de etiqueta/portaetiqueta reservadas al proponer canaletas (se veían etiquetas y peines pisando la fila de arriba). 80 pruebas OK. Probado con TSB (15 equipos → SRN6625K) en navegador real.
+- Ojo [Codex]: las pruebas de navegador crean proyectos en `datos/proyectos/`; borrarlos antes de commitear.
+
 ## 2026-11-16 02:00 · Claude
 - Cierre de sesión: el usuario instaló/corre el editor en su PC (`Descargas\EnclosureABB`, Python 3.12 ya instalado pero fuera del PATH; el .bat ahora lo encuentra). Plan, decisiones abiertas y sugerencias para la próxima sesión escritos en ESTADO.md ('PRÓXIMA SESIÓN'). Nada sin subir.
 

@@ -116,6 +116,7 @@ def _try(project, catalog, enc, rules, pe_reserve):
         if not row_block(devs, heights, col_gap):
             return None
     bottom_limit = margin  # borde inferior permitido para lo que se arma de arriba hacia abajo
+    tail_gap = row_gap  # separación que queda después de la última fila armada de arriba hacia abajo
     if rail_devs:
         kd = enc.get("kdKit")
         rail_devs = sorted(rail_devs, key=lambda d: d.get("shell") or "")
@@ -142,14 +143,18 @@ def _try(project, catalog, enc, rules, pe_reserve):
             rows = _pack_rail_rows(rail_devs, length, col_gap, pe_reserve)
             if rows is None:
                 return None
+            # Entre filas de riel libre se deja lugar para peine, etiqueta y canaleta (criterio de diseño en reglas_layout.json: railRowGapMm).
+            rail_gap = max(row_gap, rules.get("railRowGapMm", row_gap))
+            cursor += rail_gap - row_gap
+            tail_gap = rail_gap
             for n, row in enumerate(rows, 1):
                 row_h = max([d["h"] for d in row], default=44.5)
                 y_center = fh - (margin + cursor) - row_h / 2
                 rail = {**template, "id": f"DIN-{n}", "x": round((fw - length) / 2, 2), "y": round(y_center, 2), "length": length}
                 rails.append(rail)
                 _place_row(row, rail, y_center, col_gap, placed)
-                cursor += row_h + row_gap
-    if fh - (margin + cursor - row_gap) < bottom_limit - 1e-6:  # lo de arriba no debe invadir el borde ni la pila de filas del kit
+                cursor += row_h + rail_gap
+    if fh - (margin + cursor - tail_gap) < bottom_limit - 1e-6:  # lo de arriba no debe invadir el borde ni la pila de filas del kit
         return None
     return placed, rails
 

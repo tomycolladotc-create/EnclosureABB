@@ -40,6 +40,8 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 
 ## PRÓXIMA SESIÓN — empezar por acá (escrito por Claude, 2026-11-16 01:50)
 
+**Pedido del usuario 2026-11-16 (11:05):** que el tablero se genere SOLO, sin apretar botones: al elegir el PDF en 'Importar' se agregan todos los equipos propios, se arma gabinete/rieles/peines/canaletas y se abre el editor (`web/index.html`, manejador de `#pdf`; `runAuto` devuelve `{ok,error,gabinete}`). Al agregar un equipo a mano ('Agregar equipo' ahora lleva al formulario con etiqueta QF sugerida y campo Circuito) el tablero se rearma solo. Antes el botón 'Agregar equipo' no tenía acción (bug).
+
 **Lo que se hizo en esta tanda (Claude, commits fca97d6 → b5bfb32; 79 pruebas OK):**
 1. Medidas de peines PS1/4, PS1/60, PS3/60, PS4/12 desde fichas ABB (`accesorios_abb.json`).
 2. Rieles según el kit KD del SR2 (`kdKit` en 11 gabinetes; `layout_auto` usa filas fijas de 185 mm) + botón 'Armar con riel libre (GD)' (`/api/autolayout?free=1`).
@@ -50,7 +52,7 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 7. `iniciar_editor.bat` busca Python en `py`, `python` (ignora el atajo de la Tienda) y `%LOCALAPPDATA%\Programs\Python\Python312`. El usuario ya lo corre en `Descargas\EnclosureABB` (copia mínima de 31 archivos, sin CAD ni PDF).
 
 **Decisiones abiertas con el usuario (preguntar o decidir con criterio):**
-- Más separación entre filas cuando hay canaleta: la canaleta de arriba de la fila de riel sale chica o no sale (hueco de 40 mm menos peine y etiqueta). Propuesta hecha, sin respuesta: que `layout_auto` use `rowGap = max(rowGap, ancho_canaleta + 2*ductClearanceMm + TAG_ZONE)` en filas con riel libre.
+- (RESUELTO 2026-11-16 11:30) Separación entre filas con canaleta: `reglas_layout.json` → `railRowGapMm` 110 (peine + etiqueta + portaetiqueta + canaleta + aire) para filas de riel libre; `accesorios._propose_ducts` reserva TAG_ZONE_MM (30) arriba y HOLDER_ZONE_MM (14) abajo de cada equipo. Con kit KD el paso sigue siendo 185 mm.
 - El DXF trae la tabla 'LISTA DE MATERIALES' (la armó Codex) y ahora lleva descripciones de accesorios: el usuario pidió accesorios sin texto en el dibujo; decidir si esa tabla queda en el plano o solo en el CSV.
 - Archivo `datos/ts4_topografia.json`: el editor lo autoguarda; no commitear cambios accidentales (usar `git status`).
 

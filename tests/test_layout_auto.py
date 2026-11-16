@@ -60,6 +60,18 @@ class LayoutAuto(unittest.TestCase):
         area = lambda e: e["externalBody"]["width"] * e["externalBody"]["height"]
         self.assertLessEqual(area(free["enclosure"]), area(self.new["enclosure"]))
 
+    def test_filas_de_riel_libre_dejan_lugar_a_peine_etiqueta_y_canaleta(self):
+        free, _ = autolayout(load("ts4_topografia.json"), self.catalog, free_rails=True)
+        gap = load("reglas_layout.json")["railRowGapMm"]
+        rails = sorted(free["enclosure"]["mountingLayout"]["dinRails"], key=lambda r: -r["y"])
+        spans = []
+        for r in rails:
+            row = [d for d in free["devices"] if d["y"] <= r["y"] <= d["y"] + d["h"] and d["x"] < r["x"] + r["length"] and r["x"] < d["x"] + d["w"]]
+            if row:
+                spans.append((min(d["y"] for d in row), max(d["y"] + d["h"] for d in row)))
+        for upper, lower in zip(spans, spans[1:]):
+            self.assertGreaterEqual(upper[0] - lower[1], gap - 1e-6)
+
     def test_es_el_primero_que_entra_del_mas_chico_al_mas_grande(self):
         tried = self.summary["intentos"]
         self.assertTrue(tried[-1]["entra"])

@@ -15,6 +15,7 @@ RAIL_BAND_MM = 22.25   # franja vertical (mitad de 44,5 mm) que ocupa un borne d
 
 
 BAR_MARGIN_MM = 40.0  # criterio de diseño propuesto (no dato ABB): separación de la barra al borde de la placa
+HOLDER_ZONE_MM = 14.0  # portaetiqueta bajo cada equipo
 TAG_ZONE_MM = 30.0  # franja libre sobre los equipos para el texto de la etiqueta (criterio de dibujo)
 COMB_FACE_FALLBACK_MM = 18.0  # sin altura en el catálogo: valor esquemático, marcado en el dibujo como provisorio
 BAR_FACE_MM = 20.0  # cara de la barra AA8010 (20x5 mm)
@@ -97,8 +98,8 @@ def _propose_ducts(project, catalog, rails, devices, placed_acc):
     clear, max_w, pref_h, edge = rules.get("ductClearanceMm", 5), rules.get("ductMaxWidthMm", 60), rules.get("ductPreferredDepthMm", 40), rules.get("ductEdgeMm", 15)
     slot = rules.get("ductSlot", "8x12")
     fh = project["enclosure"]["functional"]["height"]
-    boxes = [{"x": d["x"], "y": d["y"], "w": d["w"], "h": d["h"], "tag": d.get("tag")} for d in devices]
-    boxes += [{"x": a["x"], "y": a["y"], "w": a["w"], "h": a["h"], "tag": None, "devs": a.get("devices")} for a in placed_acc
+    boxes = [{"x": d["x"], "y": d["y"], "w": d["w"], "h": d["h"], "tag": d.get("tag"), "up": TAG_ZONE_MM, "down": HOLDER_ZONE_MM} for d in devices]
+    boxes += [{"x": a["x"], "y": a["y"], "w": a["w"], "h": a["h"], "tag": None, "devs": a.get("devices"), "up": TAG_ZONE_MM if a["type"] == "comb" else 0, "down": 0} for a in placed_acc
               if a.get("placed", True) and a.get("x") is not None and a.get("w") and a.get("h")]
     lanes = {}
     for rail in rails:
@@ -108,10 +109,11 @@ def _propose_ducts(project, catalog, rails, devices, placed_acc):
         row += [b for b in boxes if b.get("devs") and set(b["devs"]) & tags and b not in row]  # el peine apoyado arriba es parte de la fila
         if not row:
             continue
-        lo, hi = min(b["y"] for b in row), max(b["y"] + b["h"] for b in row) + TAG_ZONE_MM  # sobre los equipos va el texto de la etiqueta
+        lo = min(b["y"] - b.get("down", 0) for b in row)  # bajo los equipos va el portaetiqueta
+        hi = max(b["y"] + b["h"] + b.get("up", 0) for b in row)  # sobre los equipos (y su peine) va el texto de la etiqueta
         others = [b for b in boxes if b not in row and _overlap_x(b, span)]
-        up = min([b["y"] for b in others if b["y"] >= hi - 1e-6], default=fh - edge)
-        down = max([b["y"] + b["h"] for b in others if b["y"] + b["h"] <= lo + 1e-6], default=edge)
+        up = min([b["y"] - b.get("down", 0) for b in others if b["y"] >= hi - TAG_ZONE_MM - 1e-6], default=fh - edge)
+        down = max([b["y"] + b["h"] + b.get("up", 0) for b in others if b["y"] + b["h"] <= lo + HOLDER_ZONE_MM + 1e-6], default=edge)
         for a, b in ((hi, min(up, fh - edge)), (max(down, edge), lo)):
             key = (round(a), round(b))
             cur = lanes.setdefault(key, [a, b, rail["x"], rail["x"] + rail["length"]])
