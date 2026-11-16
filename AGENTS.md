@@ -8,12 +8,16 @@
 **Mientras trabajás**
 - Respetar las "Reglas del usuario" de ESTADO.md. Lo específico va en `datos/*.json`, no en el código.
 - No tocar archivos que el otro agente tenga anotados.
+- Resolver de forma autónoma las decisiones técnicas ordinarias. Consultar al usuario solo cuando falte un dato no inferible o una decisión cambie materialmente el resultado.
+- Toda mejora funcional, dato, fuente o corrección debe quedar en un commit y subirse al repositorio durante la misma sesión. El repo es la fuente única de verdad.
 - Antes de subir: `python -m unittest discover tests` tiene que pasar.
 
 **Al terminar**
 1. Agregar una entrada **arriba** en `BITACORA.md` (máx. 6 líneas: Hecho / Archivos / Ojo / Siguiente).
 2. Reescribir `ESTADO.md` si cambió la foto (no acumular historial ahí).
 3. Commit con mensaje claro + push.
+
+Después de un cambio grande, actualizar `ESTADO.md` y `BITACORA.md` inmediatamente. Si la sesión está por terminar o el límite está cerca, actualizar ambos archivos y subir el trabajo parcial antes de continuar en otra sesión.
 
 No subir: salidas generadas (`salida/`), ZIPs, capturas de prueba. Los CAD de ABB sí van, en `cad/abb/<familia>/`, registrados en `datos/cad_argentina.json`.
 Idioma: español.
