@@ -12,12 +12,93 @@ from ezdxf.colors import rgb2int
 from importador import shell_size
 from marcado import resolve
 from normativa import check_project
-from bom import build_bom
+from bom import build_bom, bom_issues
 
 
 def _color(value):
     value = value.lstrip("#")
     return rgb2int(tuple(int(value[j:j + 2], 16) for j in (0, 2, 4)))
+
+
+_TRANSLIT = {"×": "x", "—": "-", "–": "-", "Ø": "%%c", "ø": "%%c", "²": "2", "³": "3", "°": "%%d", "±": "%%p", "·": "-", "≥": ">=", "≤": "<=", "“": '"', "”": '"', "‘": "'", "’": "'", "…": "..."}
+
+
+def _ascii(text):
+    """Texto apto para cualquier CAD: saca tildes (ó→o), usa los códigos DXF para Ø/°/± y no deja '?' sueltos."""
+    import unicodedata
+    out = "".join(_TRANSLIT.get(ch, ch) for ch in str(text))
+    out = unicodedata.normalize("NFKD", out).encode("ascii", "ignore").decode("ascii")
+    return out
+
+
+def _door_view(space, ox, project, structure, body, plinth):
+    """Puerta cerrada: placa grabada con la nomenclatura, perforaciones de los pilotos del unifilar
+    (corte Ø22 de catálogo y bisel Ø30 de CL2-523R) y cartel de riesgo eléctrico. Misma geometría que la
+    vista 'Puerta cerrada' del editor, con el eje Y hacia arriba."""
+    w, hb = body["width"], body["height"]
+    top = plinth + hb
+
+    def Y(y):  # coordenada desde el borde superior de la puerta
+        return top - y
+
+    def poly(points, layer, close=True):
+        space.add_lwpolyline(points, close=close, dxfattribs={"layer": layer})
+
+    def box(x, y, bw, bh, layer):
+        poly([(ox + x, Y(y)), (ox + x + bw, Y(y)), (ox + x + bw, Y(y + bh)), (ox + x, Y(y + bh))], layer)
+
+    def text(value, x, y, height, layer, bold=True):
+        space.add_text(_ascii(value), dxfattribs={"height": height, "layer": layer,
+                                                  "style": "ABB_ARIAL_BOLD" if bold else "ABB_ARIAL"}).set_placement(
+            (ox + x, Y(y)), align=ezdxf.enums.TextEntityAlignment.MIDDLE_CENTER)
+
+    box(0, 0, w, hb, "ABB_PUERTA_CERRADA")
+    box(7, 7, w - 14, hb - 14, "ABB_PUERTA_CERRADA")
+    if plinth:
+        poly([(ox, 0), (ox + w, 0), (ox + w, plinth), (ox, plinth)], "ABB_PUERTA_CERRADA")
+    for hy in (hb * 0.12, hb * 0.88):  # bisagras
+        box(0, hy - 22, 9, 44, "ABB_PUERTA_CERRADA")
+    locks = (structure or {}).get("locks")
+    lock_ys = [hb / 2] if not locks or locks.get("count") == 1 else [locks["F"], hb - locks["F"]]
+    for ly in lock_ys:
+        space.add_circle((ox + w - 34, Y(ly)), 15, dxfattribs={"layer": "ABB_PUERTA_CERRADA"})
+        space.add_circle((ox + w - 34, Y(ly)), 9.5, dxfattribs={"layer": "ABB_PUERTA_CERRADA"})
+    # Placa grabada con la nomenclatura del tablero.
+    name = str(project.get("project") or "TABLERO").upper()
+    pw = min(w * 0.62, 280)
+    phh = max(26, min(56, hb * 0.07))
+    px, py = (w - pw) / 2, max(40, hb * 0.09)
+    fs = min(phh * 0.55, pw * 0.88 / max(len(name), 1) / 0.62)
+    box(px, py, pw, phh, "ABB_PUERTA_GRABADO")
+    box(px + 3, py + 3, pw - 6, phh - 6, "ABB_PUERTA_GRABADO")
+    text(name, w / 2, py + phh / 2, fs, "ABB_PUERTA_GRABADO")
+    # Pilotos de presencia de tensión detectados en el unifilar: corte Ø22, bisel Ø30, letra grabada.
+    lights = (project.get("signals") or {}).get("pilotLights") or []
+    pitch = 48
+    ly = py + phh + max(55, hb * 0.07)
+    lx0 = w / 2 - (len(lights) - 1) * pitch / 2
+    if lights:
+        text("PRESENCIA DE TENSION", w / 2, ly - 29, 9.5, "ABB_PUERTA_SENIALIZACION")
+    for i, light in enumerate(lights):
+        cx = lx0 + i * pitch
+        space.add_circle((ox + cx, Y(ly)), 11, dxfattribs={"layer": "ABB_PUERTA_SENIALIZACION"})
+        space.add_circle((ox + cx, Y(ly)), 15, dxfattribs={"layer": "ABB_PUERTA_SENIALIZACION"})
+        text(light.get("label", ""), cx, ly + 27, 12, "ABB_PUERTA_SENIALIZACION")
+    # Cartel de riesgo eléctrico (triángulo amarillo con rayo + leyenda).
+    ts = max(70, min(w * 0.26, 130))
+    ty = ly + 60 if lights else py + phh + 50
+    tx = w / 2 - ts / 2
+
+    def P(x, y):
+        return (ox + tx + x, Y(ty + y))
+
+    poly([P(ts / 2, 0), P(ts, ts * 0.87), P(0, ts * 0.87)], "ABB_PUERTA_CARTEL")
+    poly([P(ts * 0.54, ts * 0.22), P(ts * 0.4, ts * 0.52), P(ts * 0.52, ts * 0.52), P(ts * 0.44, ts * 0.76),
+          P(ts * 0.64, ts * 0.44), P(ts * 0.52, ts * 0.44), P(ts * 0.6, ts * 0.22)], "ABB_PUERTA_CARTEL")
+    box(tx - ts * 0.08, ty + ts * 0.95, ts * 1.16, ts * 0.28, "ABB_PUERTA_CARTEL")
+    text("PELIGRO", w / 2, ty + ts * 1.03, ts * 0.09, "ABB_PUERTA_CARTEL")
+    text("RIESGO ELECTRICO", w / 2, ty + ts * 1.15, ts * 0.09, "ABB_PUERTA_CARTEL")
+    text("VISTA CON LA PUERTA CERRADA", w / 2, hb + plinth + 30, 14, "ABB_NOTAS")
 
 
 def build_dxf(project, catalog, fronts, appearances):
@@ -28,7 +109,7 @@ def build_dxf(project, catalog, fronts, appearances):
     layers = {
         "ABB_ENVOLVENTE": 7, "ABB_AREA_FUNCIONAL": 8,
         "ABB_RIEL_DIN_PROPUESTO": 4, "ABB_CAD_COLORES": 7, "ABB_CAD_FRENTE": 7,
-        "ABB_SIN_CAD": 2, "ABB_ETIQUETAS": 3, "ABB_NOTAS": 1, "ABB_MARCADO": 7, "ABB_ACCESORIOS": 3, "ABB_CANALETAS": 8, "ABB_PEINES": 30, "ABB_ESTRUCTURA": 8, "ABB_PUERTAS": 9, "ABB_CAJETIN": 7, "ABB_COTAS": 6, "ABB_BOM": 5,
+        "ABB_SIN_CAD": 2, "ABB_ETIQUETAS": 3, "ABB_NOTAS": 1, "ABB_MARCADO": 7, "ABB_ACCESORIOS": 3, "ABB_CANALETAS": 8, "ABB_PEINES": 30, "ABB_ESTRUCTURA": 8, "ABB_PUERTAS": 9, "ABB_CAJETIN": 7, "ABB_COTAS": 6, "ABB_BOM": 5, "ABB_PUERTA_CERRADA": 7, "ABB_PUERTA_GRABADO": 7, "ABB_PUERTA_SENIALIZACION": 1, "ABB_PUERTA_CARTEL": 2,
     }
     for name, color in layers.items():
         doc.layers.new(name, dxfattribs={"color": color})
@@ -144,7 +225,7 @@ def build_dxf(project, catalog, fronts, appearances):
                 res = shown.get(n)
                 if not res:
                     continue  # dato que el plano no trae o condición de polos: no se inventa
-                attrib = ref.add_attrib(f"M{n + 1}", res["text"].encode("ascii", "replace").decode("ascii"), (0, 0), dxfattribs={
+                attrib = ref.add_attrib(f"M{n + 1}", _ascii(res["text"]), (0, 0), dxfattribs={
                     "layer": "ABB_MARCADO", "height": item["h"], "true_color": _color(item["color"]),
                     "style": "ABB_ARIAL_BOLD" if item.get("bold") else "ABB_ARIAL"})
                 ax, ay = x + item["x"], y + item["y"]
@@ -212,33 +293,54 @@ def build_dxf(project, catalog, fronts, appearances):
                     cx = fx + acc["x"] + (i + 0.5) * acc["w"] / n
                     rect(cx - 2.2, fy + acc["y"] + acc["h"] * 0.2, 4.4, acc["h"] * 0.6, layer)
             # Sin texto en el dibujo: la descripción de accesorios va solo en el cómputo de materiales (bom.py).
-    # Avisos de normativa dentro del dibujo, para que no se pierdan al exportar.
-    for n, finding in enumerate(check_project(project)):
-        tag = "ERROR" if finding["severity"] == "error" else "AVISO"
-        note = f"NORMATIVA {tag}: {finding['message']}" + ("" if finding["ruleStatus"] == "verificada" else " (regla por verificar)")
-        space.add_text(note.encode("ascii", "replace").decode("ascii"), dxfattribs={"height": 8, "layer": "ABB_NOTAS", "insert": (35, 60 + 14 * n)})
     # Cotas: exterior y placa/área funcional (valores del catálogo y del proyecto)
     for base, p1, p2, ang in (((0, -28), (0, 0), (body["width"], 0), 0), ((body["width"] + 40, 0), (body["width"], 0), (body["width"], body["height"] + plinth), 90)):
         dim = space.add_linear_dim(base=base, p1=p1, p2=p2, angle=ang, dxfattribs={"layer": "ABB_COTAS"})
         dim.render()
-    # Cajetín debajo del tablero: lista de partes del gabinete con códigos ABB y página del catálogo.
-    if structure:
-        top = -60
-        space.add_text("LISTA DE PARTES DEL GABINETE (" + spec["label"] + ")", dxfattribs={"height": 14, "layer": "ABB_CAJETIN", "insert": (0, top)})
-        for n, part in enumerate(structure["bom"]):
-            line = f"{part['parte']}: {part['codigo']}" + (f" ({part['orden']})" if part.get("orden") else "") + f" - cat. pag. {part['pagina']}"
-            space.add_text(line.encode("ascii", "replace").decode("ascii"), dxfattribs={"height": 10, "layer": "ABB_CAJETIN", "insert": (0, top - 24 - 16 * n)})
-        space.add_text(("FUENTE: " + structure["source"]).encode("ascii", "replace").decode("ascii"), dxfattribs={"height": 7, "layer": "ABB_CAJETIN", "insert": (0, top - 40 - 16 * len(structure["bom"]))})
-    # BOM agrupada a la derecha del tablero. La versión CSV conserva además fuentes y estados completos.
-    bom_x, bom_y = body["width"] + 100, plinth + body["height"]
     revision = str(project.get("currentRevision", "SIN REVISION"))
-    space.add_text(f"LISTA DE MATERIALES - REV. {revision}".encode("ascii", "replace").decode("ascii"), dxfattribs={"height": 14, "layer": "ABB_BOM", "insert": (bom_x, bom_y)})
-    for n, row in enumerate(build_bom(project, catalog)):
-        line = f"{row['quantity']} x [{row['category']}] {row['code']} - {row['description']}"
-        space.add_text(line.encode("ascii", "replace").decode("ascii"), dxfattribs={"height": 8, "layer": "ABB_BOM", "insert": (bom_x, bom_y - 22 - 13 * n)})
-    title = f"{project.get('project', 'TABLERO')} - REV. {revision} - VISTA 2D FRONTAL - GEOMETRIA ABB DONDE HAY CAD"
-    space.add_text(title.encode("ascii", "replace").decode("ascii"), dxfattribs={"height": 17, "layer": "ABB_NOTAS", "insert": (35, plinth + body["height"] - 35)})
-    space.add_text("GABINETE Y RIEL: CONFIGURACION PRELIMINAR; VALIDAR CON ABB ARGENTINA", dxfattribs={"height": 10, "layer": "ABB_NOTAS", "insert": (35, 35)})
+    top_y = plinth + body["height"]
+    title = f"{project.get('project', 'TABLERO')} - REV. {revision} - VISTA 2D FRONTAL (PUERTA RETIRADA)"
+    space.add_text(_ascii(title), dxfattribs={"height": 17, "layer": "ABB_NOTAS", "insert": (0, top_y + 30)})
+    # Cajetín debajo del tablero: partes del gabinete. Mismo criterio que la lista de materiales (bom.py) para
+    # que el plano no contradiga la compra: sin menús de opciones ni la placa que ya viene con el gabinete.
+    y = -60
+    if structure:
+        space.add_text(_ascii("PARTES DEL GABINETE (" + spec["label"] + ")"), dxfattribs={"height": 14, "layer": "ABB_CAJETIN", "insert": (0, y)})
+        plate_included = str(structure["bom"][0].get("codigo", "")).startswith("SRN") if structure["bom"] else False
+        for n, part in enumerate(structure["bom"]):
+            code = str(part.get("codigo", ""))
+            if " / " in code or (n and plate_included and "placa" in str(part.get("parte", "")).lower()):
+                continue
+            y -= 16
+            line = f"{part['parte']}: {code}" + (f" ({part['orden']})" if part.get("orden") else "") + f" - cat. pag. {part['pagina']}"
+            space.add_text(_ascii(line), dxfattribs={"height": 10, "layer": "ABB_CAJETIN", "insert": (0, y)})
+        if plate_included:
+            y -= 16
+            space.add_text("La placa interna viene incluida con el gabinete (no se compra aparte).", dxfattribs={"height": 10, "layer": "ABB_CAJETIN", "insert": (0, y)})
+        y -= 18
+        space.add_text(_ascii("FUENTE: " + structure["source"]), dxfattribs={"height": 7, "layer": "ABB_CAJETIN", "insert": (0, y)})
+    # Avisos de normativa fuera del dibujo (debajo del cajetín), para que no se pierdan ni tapen equipos.
+    y -= 30
+    space.add_text("GABINETE Y RIEL: CONFIGURACION PRELIMINAR; VALIDAR CON ABB ARGENTINA", dxfattribs={"height": 10, "layer": "ABB_NOTAS", "insert": (0, y)})
+    for finding in check_project(project):
+        tag = "ERROR" if finding["severity"] == "error" else "AVISO"
+        note = f"NORMATIVA {tag}: {finding['message']}" + ("" if finding["ruleStatus"] == "verificada" else " (regla por verificar)")
+        y -= 14
+        space.add_text(_ascii(note), dxfattribs={"height": 8, "layer": "ABB_NOTAS", "insert": (0, y)})
+    # Vista con la puerta cerrada, al lado del frente interior (misma escala 1:1).
+    door_x = body["width"] + 150
+    _door_view(space, door_x, project, structure, body, plinth)
+    # BOM agrupada a la derecha de la vista de puerta, con los controles anti-error de compra al final.
+    bom_x, bom_y = door_x + body["width"] + 150, top_y
+    space.add_text(_ascii(f"LISTA DE MATERIALES - REV. {revision}"), dxfattribs={"height": 14, "layer": "ABB_BOM", "insert": (bom_x, bom_y)})
+    rows = build_bom(project, catalog)
+    for n, row in enumerate(rows):
+        line = f"{row['quantity']} {row.get('unit', 'u')} [{row['category']}] {row['code']} - {row['description']}"
+        space.add_text(_ascii(line), dxfattribs={"height": 8, "layer": "ABB_BOM", "insert": (bom_x, bom_y - 22 - 13 * n)})
+    issues = bom_issues(rows, project)
+    for k, issue in enumerate(issues):
+        text = issue.get("message", issue) if isinstance(issue, dict) else issue
+        space.add_text(_ascii("CONTROL: " + str(text)[:220]), dxfattribs={"height": 8, "layer": "ABB_NOTAS", "insert": (bom_x, bom_y - 40 - 13 * (len(rows) + k))})
     stream = StringIO()
     doc.write(stream)
     return stream.getvalue().encode("utf-8")

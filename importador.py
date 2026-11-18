@@ -160,6 +160,19 @@ def detect_devices(text, catalog):
     return found
 
 
+def detect_signals(text, catalog):
+    """Bloque de señalización del unifilar: luces testigo de presencia de tensión por fase y sus fusibles (van en la puerta)."""
+    pattern = catalog["importRules"].get("signalPattern")
+    m = re.search(pattern, " ".join(text.split()), re.IGNORECASE) if pattern else None
+    if not m:
+        return None
+    n = int(m.group("n"))
+    phases = list(m.group("fases"))[:n] if len(m.group("fases")) >= n else [f"L{i + 1}" for i in range(n)]
+    return {"pilotLights": [{"label": p, "function": "presencia de tensión", "voltage": m.group("v")} for p in phases],
+            "fuses": {"count": n, "type": m.group("fusible").lower(), "rating": m.group("fusA").replace(" ", " ")},
+            "evidence": m.group(0)[:160]}
+
+
 def ensure_marking(device, catalog):
     """Proyectos guardados antes del marcado: deduce los datos impresos del modelo (y de la evidencia, si está)."""
     if "marking" not in device and device.get("model"):

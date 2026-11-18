@@ -14,7 +14,7 @@ class BomRevisiones(unittest.TestCase):
     def test_bom_agrupa_equipos_y_cantidades_estructurales(self):
         rows = build_bom(PROJECT, CATALOG)
         equipment = next(row for row in rows if row["category"] == "Equipo")
-        structure = next(row for row in rows if row["category"] == "Estructura")
+        structure = next(row for row in rows if row["category"] == "Envolvente (estructura)")
         self.assertEqual((equipment["quantity"], equipment["tags"]), (2, "Q1, Q2"))
         self.assertEqual(structure["quantity"], 4)
 

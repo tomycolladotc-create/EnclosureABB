@@ -225,10 +225,10 @@ class CircuitosYComputo(unittest.TestCase):
         from bom import build_bom
         rows = build_bom(self.new, self.L("catalogo_abb.json"))
         cats = {r["category"] for r in rows}
-        for want in ("Canaleta", "Peine", "Bornera de tierra (PE)", "Riel DIN"):
+        for want in ("Canaleta", "Peine", "Bornera de tierra (PE)", "Montaje DIN"):
             self.assertIn(want, cats)
         ducts = [r for r in rows if r["category"] == "Canaleta"]
-        self.assertTrue(all("largo a cortar" in r["description"] and r["code"].startswith("1SL9") for r in ducts))
+        self.assertTrue(all("cortes:" in r["description"] and r["code"].startswith("1SL9") and r["unit"].startswith("tira") for r in ducts))
         pe = next(r for r in rows if r["category"] == "Bornera de tierra (PE)" and r["code"] == "1SNL312510R0000")
         self.assertEqual(pe["quantity"], -(-sum(1 for d in self.new["devices"] if d["tag"].startswith("QF")) // 7))
         equipos = [r for r in rows if r["category"] == "Equipo"]

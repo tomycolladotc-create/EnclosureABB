@@ -71,6 +71,32 @@
     "https://www.rapidonline.com/abb-017953523-four-pole-distribution-block-125a-28-3489"
    ],
    "nota": "sólo consulta web; datos en datos/accesorios_abb.json → distributionBlocks abb-brt125a"
+  },
+  {
+   "fecha": "2026-11-18",
+   "tema": "Códigos de pedido de los equipos de los unifilares de prueba (S200/S200L/S200M/S800/F204/T2S/OT)",
+   "urls": [
+    "https://automation-warehouse.com/products/2cds241801r0204",
+    "https://cdn.erply.com/files/396198/2CSF204001R1250.pdf",
+    "https://docs.rs-online.com/5e74/A700000015162099.pdf",
+    "https://elettroclimashop.com/cdn/4225250.pdf",
+    "https://empower.abb.com/ecatalog/ec/EN_NA/p/2CCS864001R0324",
+    "https://ie.rs-online.com/web/p/mcbs/7467769",
+    "https://no.rs-online.com/web/p/mcbs/7467719",
+    "https://onninen.pl/en/product/ABB-Overcurrent-circuit-breaker-4P-C-characteristic-40A-10kA-AC-S204M-C40-2CDS274001R0404-560664",
+    "https://plc-direct.com/products/2ccs864001r0824",
+    "https://plc-direct.com/products/2cds241801r0104",
+    "https://plc-direct.com/products/2cds241801r0164",
+    "https://plc-direct.com/products/s804n-c20",
+    "https://se.rs-online.com/web/p/mcbs/5355995",
+    "https://uk.rs-online.com/web/p/mcbs/1833669",
+    "https://uk.rs-online.com/web/p/mcbs/7467766",
+    "https://uk.rs-online.com/web/p/mcbs/7467778",
+    "https://uk.rs-online.com/web/p/mcbs/7467784",
+    "https://www.electricautomationnetwork.com/en/abb/t2s-160-pr221ds-ls-in160a-4p-f-f-abb-t2s160-1sda051142r1",
+    "https://www.electrisa.com/cdn/shop/files/14192448000.PDF"
+   ],
+   "nota": "sólo consulta web; datos volcados en datos/codigos_pedido_abb.json"
   }
  ]
 }

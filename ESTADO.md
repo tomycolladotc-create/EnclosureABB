@@ -1,6 +1,6 @@
 # ESTADO — Topográficos de tableros ABB
 > Foto actual del proyecto. Se reescribe (no se acumula). El historial va en BITACORA.md.
-> Actualizado: 2026-11-15 23:06 · Codex
+> Actualizado: 2026-11-18 · Claude
 
 ## Objetivo
 PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tablero con dispositivos y envolvente ABB reales → editar en interfaz → exportar DXF (AutoCAD, 1:1 mm, bloques y capas), PNG, SVG, PDF.
@@ -21,7 +21,8 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 |---|---|
 | `app.py` | servidor del editor (`iniciar_editor.bat` → http://127.0.0.1:8765) |
 | `importador.py` | lee el PDF y propone equipos; reglas en `catalogo_abb.json`: `importRules`, `series` (modelo → carcasa, con polos y fuente), `modelHints` |
-| `cad_export.py` | exporta DXF con bloques por familia |
+| `cad_export.py` | exporta DXF con bloques por familia + vista con la puerta cerrada (capas ABB_PUERTA_*) + lista de materiales y controles |
+| `bom.py` | lista de materiales anti-error de compra (`build_bom`, `bom_issues`); códigos de equipos en `datos/codigos_pedido_abb.json` (sólo verificados, con URL) |
 | `web/index.html` | interfaz |
 | `datos/` | catálogo ABB, colores (`apariencias_abb.json`), bloques 2D (`frentes_cad.json`), inventario CAD (`cad_argentina.json`), proyecto TS4 |
 | `cad/abb/` | CAD originales ABB → `work/proyectar_cad.py` → `datos/frentes_cad.json` |
@@ -76,6 +77,7 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 - Probar con los otros unifilares de `tests/unifilares` (TSB, TSEP, TS_AUX_1, GENERAL) y registrar qué falla; la importación de circuitos cubre la mayoría pero no los alimentadores de cabecera.
 
 ## Pendiente (anotarse con [Claude] / [Codex] antes de empezar)
+13. **Lista de materiales anti-error y puerta cerrada (Claude, 2026-11-18):** hecho (ver BITACORA). Pendiente: códigos de pedido sin verificar (OT100F4 variante, S 293-C 80, SN201L B16, F204-SX); cargar carcasas que faltan (OT100F4, OT160EV03, S 293, SN201L, F204) para que se dibujen; color de los pilotos (el unifilar no lo dice: se propone rojo); confirmar si los montantes/travesaños System pro E se venden por unidad o por juego.
 12. **BOM y revisiones completadas:** `bom.py` agrupa envolvente, estructura, rieles, equipos, kits y accesorios; exporta CSV UTF-8/Excel y dibuja la tabla en la capa DXF `ABB_BOM`. `revisiones.py` emite revisiones numéricas con fecha, descripción y responsable, persistidas en el JSON del proyecto y mostradas en Exportar/DXF. TS4 genera 18 renglones agrupados. No se tocaron datos ni geometría KD de Claude.
 11. **Seguridad y validación completadas:** autoguardado con borrador local recuperable, indicador Guardado/Cambios pendientes/Error, advertencia al salir, deshacer/rehacer y validación visual/manual. `validacion.py` controla superposición, límites de placa, posición/capacidad de riel y profundidad; si falta el dato ABB emite advertencia sin inventarlo. Reglas en `datos/reglas_validacion.json`, ruta `/api/validate` y pruebas dedicadas. No modifica la geometría KD asignada a Claude.
 10. **Interfaz de cuatro pasos completada:** la maqueta Claude Artifact ya está implementada en el editor real como Tableros → Importar → Editor → Exportar. Usa las API existentes de proyectos, importación, edición y exportación; estilos separados en `web/styles.css` y contrato básico en `tests/test_web_ui.py`.

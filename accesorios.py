@@ -74,8 +74,9 @@ def _describe(item, catalog):
         item.update(bomCategory="Cubrebornes", orderCode=None, quantity=1, description="Cubrebornes transparente (barrera aislante); código por definir")
     elif t == "comb":
         comb = by("combs")
-        item.update(bomCategory="Peine", quantity=1, orderCode=item.get("orderCode") or comb.get("orderCode"),
-                    description=f"Peine de conexión {comb.get('familia', '')} para {item.get('poleCount', '?')} polos (paso {item.get('pitchMm', 17.5)} mm), equipos: {', '.join(item.get('devices', []))}".replace("  ", " "))
+        pins = comb.get("modulos")  # pines por pieza (PS2/12 = 12): un grupo más largo lleva más de una pieza
+        item.update(bomCategory="Peine", quantity=-(-int(item.get("poleCount") or 1) // pins) if pins else 1, orderCode=item.get("orderCode") or comb.get("orderCode"),
+                    description=f"Peine de conexión {comb.get('familia', '')}/{pins} ({pins} pines por pieza) para {item.get('poleCount', '?')} polos (paso {item.get('pitchMm', 17.5)} mm), equipos: {', '.join(item.get('devices', []))}".replace("  ", " "))
     elif t == "distribution_block":
         blk = by("distributionBlocks")
         item.update(bomCategory="Bloque de distribución", quantity=1, orderCode=blk.get("orderCode"), description=f"Bloque de distribución {blk.get('tipo', '')} {blk.get('corrienteA', '')} A ({blk.get('marca', '')})".replace("  ", " "))

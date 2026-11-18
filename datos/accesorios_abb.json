@@ -717,5 +717,19 @@
    "espesor de pared y ancho de las 'uñas' laterales: no cotados; el dibujo de frente es esquemático",
    "verificar que la tapa de repuesto 1SL5316..22 corresponde a cada ancho (15…120)"
   ]
- }
+ },
+ "pilotLights": [
+  {
+   "id": "abb-cl2-523r",
+   "orderCode": "1SFA619403R5231",
+   "tipo": "CL2-523R",
+   "descripcion": "Luz piloto compacta LED 230 V AC, roja",
+   "color": "rojo",
+   "agujeroMm": 22,
+   "frenteMm": 30,
+   "profundidadMm": 52,
+   "source": "RS 910-8011 (CL2-523R, 1SFA619403R5231, 22 mm, 230 V AC); ficha ABB (esvika.ee): 0,03 × 0,03 × 0,052 m",
+   "status": "el unifilar no indica el color de los testigos: se propone rojo; confirmar"
+  }
+ ]
 }

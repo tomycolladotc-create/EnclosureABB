@@ -8,13 +8,13 @@ import os
 
 from pypdf import PdfReader
 from cad_export import build_dxf
-from importador import detect_devices, ensure_marking, shell_size
+from importador import detect_devices, detect_signals, ensure_marking, shell_size
 from accesorios import complete, load_accessory_catalog
 from colocar import place_din
 from layout_auto import autolayout, autolayout_conforme
 from normativa import check_project
 from validacion import validate
-from bom import build_bom, to_csv
+from bom import build_bom, bom_issues, to_csv
 from revisiones import add_revision
 import proyectos
 
@@ -83,7 +83,7 @@ class Handler(BaseHTTPRequestHandler):
                 reader = PdfReader(BytesIO(blob))
                 content = "\n".join(page.extract_text() or "" for page in reader.pages)
                 catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
-                return self.send_data(200, {"pages": len(reader.pages), "devices": detect_devices(content, catalog), "textAvailable": bool(content.strip())})
+                return self.send_data(200, {"pages": len(reader.pages), "devices": detect_devices(content, catalog), "signals": detect_signals(content, catalog), "textAvailable": bool(content.strip())})
             except Exception as exc:
                 return self.send_data(422, {"error": f"No se pudo leer el PDF: {exc}"})
         if route == "/api/save":
@@ -123,9 +123,10 @@ class Handler(BaseHTTPRequestHandler):
                 project = json.loads(blob)
                 catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
                 rows = build_bom(project, catalog)
+                issues = bom_issues(rows, project)
                 if route == "/api/export-bom":
-                    return self.send_data(200, to_csv(rows), "text/csv")
-                return self.send_data(200, {"rows": rows})
+                    return self.send_data(200, to_csv(rows, issues), "text/csv")
+                return self.send_data(200, {"rows": rows, "issues": issues})
             except (ValueError, KeyError, TypeError) as exc:
                 return self.send_data(422, {"error": str(exc)})
         if route == "/api/revision":

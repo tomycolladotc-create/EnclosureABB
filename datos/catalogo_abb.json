@@ -3617,22 +3617,26 @@
   ],
   "importRules": {
     "_ayuda": "Reglas del importador de PDF de ABB e-Design DOC. Son expresiones regulares; el código (importador.py) no conoce modelos ni textos fijos.",
-    "tagPattern": "-(QF\\d+|QS\\d+)\\b",
+    "tagPattern": "-(QF\\d+|QS\\d+|QD\\d+)\\b",
     "upstreamContextChars": 40,
     "upstreamPattern": "\\bDE\\s+[\\w .\\-]+?\\s-\\s*$",
     "evidenceChars": 90,
     "modelTerminators": [
       "[234]x\\d+(?:,\\d+)?(?:\\+\\d+x\\d+(?:,\\d+)?)?\\+PE",
       "\\s-WC\\d+",
-      "\\sSECCIONADOR"
+      "\\sSECCIONADOR",
+      "\\sDIFERENCIAL"
     ],
     "polesPatterns": [
       "\\b(\\d)x\\d+(?:,\\d+)?\\s*-\\s*\\d+(?:,\\d+)?\\s*kA",
-      "\\b\\d+\\s*A\\s*-\\s*(\\d)P\\b"
+      "\\b\\d+\\s*A\\s*-\\s*(\\d)P\\b",
+      "\\bF20(\\d)\\b"
     ],
     "ratingPattern": "\\b(\\d)x(\\d+(?:,\\d+)?)\\s*-\\s*(\\d+(?:,\\d+)?)\\s*kA",
     "modelParts": "^(?P<serie>(?:SN|S)\\s?\\d{3}[A-Z]?|XT\\d[A-Z]?|T\\d[A-Z]?|OT\\d+[A-Z]+\\d*)[\\s-]*(?:(?P<curva>[BCDKZ])\\s?(?P<In>\\d+(?:[.,]\\d+)?))?\\s*(?P<sufijo>NA)?\\b",
-    "_ayudaMarcado": "ratingPattern lee 'polos x In - kA' de la columna I Nom - Icc; modelParts separa serie, curva, In y sufijo del modelo para grabarlos en el frente."
+    "_ayudaMarcado": "ratingPattern lee 'polos x In - kA' de la columna I Nom - Icc; modelParts separa serie, curva, In y sufijo del modelo para grabarlos en el frente.",
+    "signalPattern": "Presencia de Tensi[oó]n\\s+(?P<fases>[RST]{1,3})\\b.{0,40}?\\(x(?P<n>\\d)\\).{0,40}?Fusible\\s+(?P<fusible>[\\wáéíóú]+)\\s+(?P<fusA>\\d+(?:,\\d+)?\\s*A).{0,30}?Testigo\\s+de\\s+fase\\s+(?P<v>\\d+\\s*V\\w*)",
+    "_ayudaSenales": "signalPattern lee el bloque de señalización del unifilar (luces 'Testigo de fase' de presencia de tensión por fase y sus fusibles); van a la puerta y a la lista de materiales."
   },
   "modelHints": [
     {
@@ -3722,5 +3726,29 @@
   "scope": {
     "minPoles": 2,
     "_ayuda": "El usuario no trabaja con equipos monopolares (mínimo bipolar; 1P+N cuenta como 2 polos). El importador marca los de menos polos como fuera de alcance."
+  },
+  "sr2Panels": {
+    "_ayuda": "Paneles modulares del kit KD (SR2). El kit KD son sólo los soportes; cada fila lleva un panel PM (incluye riel DIN y soportes) o, si queda vacía, un panel ciego PC.",
+    "porModulos": {
+      "14": {
+        "pm": "PM1414K",
+        "pc": "PC1406K",
+        "anchoMm": 400
+      },
+      "25": {
+        "pm": "PM1625K",
+        "pc": "PC1606K",
+        "anchoMm": 600
+      },
+      "36": {
+        "pm": "PM1836K",
+        "pc": "PC1806K",
+        "anchoMm": 800
+      }
+    },
+    "pmDescripcion": "Panel modular abisagrado + riel DIN + soportes (185 mm de alto)",
+    "pcDescripcion": "Panel modular ciego (185 mm de alto)",
+    "plateIncluded": "Los gabinetes SR2 con puerta ciega (SRN…K) traen la placa interna galvanizada incluida (pág. 2/5): no se compra PF aparte.",
+    "source": "ABB 1STC804013D0201 (02.2011) pág. 2/5 (placa incluida) y pág. 2/8 (GD, KD, PM, PC)"
   }
 }

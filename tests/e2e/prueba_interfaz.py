@@ -266,6 +266,18 @@ def main():
             check("cambiar gabinete: dentro de normativa", chip_ok(pg) and pg.evaluate("validationResult.errors") == 0, chip(pg))
             pg.click("#moreBtn"); pg.click("#autoLayout"); wait_idle(pg, 4000)
 
+            # 8b) Vista con la puerta cerrada.
+            pg.click("#viewDoor"); wait_idle(pg, 600)
+            board = pg.inner_html("#board")
+            check("puerta cerrada: placa con el nombre", pg.evaluate("project.project").upper()[:8] in board.upper())
+            check("puerta cerrada: cartel de riesgo eléctrico", "RIESGO ELÉCTRICO" in board)
+            n_lights = pg.evaluate("(project.signals?.pilotLights||[]).length")
+            check("puerta cerrada: un orificio por piloto del unifilar", board.count('fill="url(#gLens)"') == n_lights, f"{n_lights} pilotos")
+            box = pg.locator(".viewtoggle").first.bounding_box(); cbox = pg.locator(".canvas").bounding_box()
+            check("selector de vista centrado arriba", abs((box["x"] + box["width"] / 2) - (cbox["x"] + cbox["width"] / 2)) < 30)
+            pg.click("#viewInt"); wait_idle(pg, 600)
+            check("volver a la vista interior", pg.locator("#board .device").count() == pg.evaluate("project.devices.length"))
+
             # 9) Exportar.
             pg.click("[data-go=export]"); wait_idle(pg, 1500)
             check("exportar: pantalla", pg.is_visible("#screen-export"))
@@ -273,8 +285,21 @@ def main():
                 with pg.expect_download() as dl:
                     pg.click(btn)
                 check(f"exportar {btn[7:]}", Path(dl.value.path()).stat().st_size > size)
+            pg.click("#expDoor")
+            with pg.expect_download() as dl:
+                pg.click("#exportSvg")
+            door_svg = Path(dl.value.path()).read_text(encoding="utf-8")
+            check("exportar SVG de la puerta cerrada", "RIESGO" in door_svg and dl.value.suggested_filename.endswith("_puerta.svg"), dl.value.suggested_filename)
+            check("exportar puerta: vuelve a la vista interior", not pg.evaluate("doorView"))
+            pg.click("#expInt")
+            with pg.expect_download() as dl:
+                pg.click("#exportDxf")
+            dxf = Path(dl.value.path()).read_text(encoding="utf-8", errors="ignore")
+            check("DXF con la vista de puerta cerrada", "ABB_PUERTA_CERRADA" in dxf and "RIESGO ELECTRICO" in dxf)
             pg.click("summary:has-text('Lista de materiales')")
             check("lista de materiales", pg.locator("#bomTable tr").count() > 3)
+            codes = pg.eval_on_selector_all("#bomTable tr td:nth-child(2)", "els=>els.map(e=>e.textContent.trim())")
+            check("lista: sin códigos dobles ni ids internos", all("+" not in c and "_" not in c for c in codes), str([c for c in codes if "+" in c or "_" in c]))
             with pg.expect_download() as dl:
                 pg.click("#exportBom")
             check("descargar CSV", Path(dl.value.path()).stat().st_size > 100)

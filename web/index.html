@@ -37,10 +37,10 @@
 
 <main id="screen-editor" class="screen"><div class="editor">
 <aside class="list"><div class="list-head">Circuitos <span id="deviceCount" class="muted"></span></div><div id="enclosureInfo" class="enc-chip"></div><div id="deviceList" class="items"></div><div class="adds"><button id="showAdd" class="add">＋ Agregar equipo</button><button id="showDuct" class="add" title="Canaleta ranurada ABB de medida estándar">＋ Canaleta</button></div></aside>
-<section class="canvas"><svg id="board" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 2450"></svg>
+<section class="canvas"><div class="viewtoggle" role="group" aria-label="Vista"><button id="viewInt" class="on">Interior</button><button id="viewDoor">Puerta cerrada</button></div><svg id="board" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 2450"></svg>
 <div class="zoom"><button id="fit" class="icon" title="Ver tablero completo">⤢</button><button id="focus" class="icon" title="Acercar a los equipos">◎</button><button id="zoomOut" class="icon" aria-label="Alejar">−</button><span id="zoomLabel" class="muted">100%</span><button id="zoomIn" class="icon" aria-label="Acercar">＋</button></div>
 <div id="editor" class="card" hidden><div class="card-head"><strong id="selName"></strong><span id="selTag" class="muted"></span></div>
-<label>Circuito<input id="circuit" placeholder="ej. TS-4.2"></label><label>Modelo<input id="model"></label>
+<label>Circuito<input id="circuit" placeholder="ej. TS-4.2"></label><label>Modelo<input id="model"></label><label>Código ABB (para la lista de materiales)<input id="orderCode" placeholder="ej. 1SDA067415R1" autocomplete="off"></label>
 <div id="selInfo" class="muted"></div><div class="row"><button id="duplicate" class="secondary" title="Otro igual con el siguiente circuito">Duplicar</button><button id="remove" class="danger">Eliminar</button></div></div>
 <div id="ductCard" class="card" hidden><div class="card-head"><strong id="ductTitle">Canaleta</strong><span id="ductCode" class="muted"></span></div>
 <label>Sección (ancho × profundidad)<select id="ductSec"></select></label><label>Largo (mm)<input id="ductLen" type="number" min="50" step="5"></label>
@@ -54,8 +54,9 @@
 <main id="screen-export" class="screen"><div class="page narrow">
 <div class="page-head"><div><h1>Exportar <span id="exportProjectName"></span></h1><p id="exportSummary" class="muted"></p></div><button class="secondary" data-go="editor">Volver</button></div>
 <div class="formats"><button id="exportDxf" class="format main"><strong>DXF</strong><span>AutoCAD · bloques, capas y atributos</span></button><button id="exportPdf" class="format"><strong>PDF</strong><span>Imprimir o enviar</span></button><button id="exportPng" class="format"><strong>PNG</strong><span>Imagen frontal</span></button><button id="exportSvg" class="format"><strong>SVG</strong><span>Vectorial editable</span></button></div>
+<div class="exportview"><span>Vista para PDF, PNG y SVG</span><div class="viewtoggle inline" role="group" aria-label="Vista a exportar"><button id="expInt" class="on">Interior</button><button id="expDoor">Puerta cerrada</button></div><small class="muted">El DXF lleva las dos vistas, una al lado de la otra.</small></div>
 <div id="exportWarning" class="note"></div>
-<details class="fold"><summary>Lista de materiales <span id="bomCount" class="muted"></span></summary><div class="fold-body"><button id="exportBom" class="secondary">Descargar CSV</button><div class="tbl"><table><thead><tr><th>Categoría</th><th>Código</th><th>Descripción</th><th>Cant.</th><th>Estado</th></tr></thead><tbody id="bomTable"></tbody></table></div></div></details>
+<details class="fold"><summary>Lista de materiales <span id="bomCount" class="muted"></span></summary><div class="fold-body"><div id="bomIssues"></div><button id="exportBom" class="secondary">Descargar CSV</button><div class="tbl"><table><thead><tr><th>Categoría</th><th>Código</th><th>Descripción</th><th>Cant.</th><th>Unidad</th><th>Estado</th></tr></thead><tbody id="bomTable"></tbody></table></div></div></details>
 <details class="fold"><summary>Revisiones <span class="muted">· actual: <b id="currentRevision">sin emitir</b></span></summary><div class="fold-body"><label>Descripción<input id="revisionDescription" placeholder="Ej. Emisión inicial"></label><label>Responsable<input id="revisionAuthor" placeholder="Nombre"></label><button id="addRevision" class="secondary">Emitir revisión</button><div id="revisionList"></div></div></details>
 <span id="summaryEnclosure" hidden></span><span id="summaryDevices" hidden></span><span id="summaryRails" hidden></span>
 </div></main>
@@ -122,7 +123,7 @@ function updateExportSummary(){
  $('summaryEnclosure').textContent=`${e.width} × ${e.height} × ${e.depth} mm`;$('summaryDevices').textContent=`${project.devices.length}`;$('summaryRails').textContent=`${rails().length}`;
  $('exportSummary').textContent=`${encSpec()?.label||'Gabinete'} · ${project.devices.length} equipo${project.devices.length===1?'':'s'}`;
  renderRevisions();
- const notes=[];if(validationResult.errors)notes.push(`${validationResult.errors} error(es) geométricos pendientes`);const bad=findings.filter(f=>f.severity==='error'&&!f.manual).length;if(bad)notes.push(`${bad} error(es) de normativa`);if(missing.length)notes.push(`${missing.map(nameOf).join(', ')}: sin CAD; se exportan como marcadores`);
+ const notes=[];if(validationResult.errors)notes.push(`${validationResult.errors} error(es) geométricos pendientes`);const bad=findings.filter(f=>f.severity==='error'&&!f.manual).length;if(bad)notes.push(`${bad} error(es) de normativa`);if((project.devicesNotDrawn||[]).length)notes.push(`${project.devicesNotDrawn.length} equipo(s) del unifilar sin dibujar (sí están en la lista de materiales): ${project.devicesNotDrawn.map(d=>d.circuit||d.tag).join(', ')}`);if(missing.length)notes.push(`${missing.map(nameOf).join(', ')}: sin CAD; se exportan como marcadores`);
  $('exportWarning').className='note'+(notes.length?' warn':'');$('exportWarning').textContent=notes.length?notes.join('. ')+'.':'Tablero dentro de normativa y sin errores geométricos.';
 }
 function renderProjectCards(){
@@ -152,7 +153,7 @@ updateChip();
 }
 async function loadBom(){
  if(!project||!$('bomTable'))return;const r=await fetch('/api/bom',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(project)});if(!r.ok)return;
- bomRows=(await r.json()).rows;$('bomTable').innerHTML=bomRows.map(row=>`<tr><td>${esc(row.category)}</td><td>${esc(row.code)}</td><td>${esc(row.description)}</td><td>${row.quantity}</td><td>${esc(row.status)}</td></tr>`).join('');$('bomCount').textContent=`${bomRows.length} renglones agrupados`;
+ const data=await r.json();bomRows=data.rows;const issues=data.issues||[];$('bomTable').innerHTML=bomRows.map(row=>`<tr class="${row.code==='FALTA CÓDIGO'?'miss':''}"><td>${esc(row.category)}</td><td>${esc(row.code)}</td><td>${esc(row.description)}</td><td>${row.quantity}</td><td>${esc(row.unit||'u')}</td><td>${esc(row.status)}</td></tr>`).join('');$('bomCount').textContent=`${bomRows.length} renglones`+(issues.length?` · ${issues.length} control(es) a revisar`:' · listo para pedir');$('bomIssues').innerHTML=issues.map(t=>`<div class="note-line">${esc(t)}</div>`).join('');
 }
 function renderRevisions(){
  if(!$('revisionList'))return;const revisions=project.revisions||[];$('currentRevision').textContent=project.currentRevision??'sin emitir';$('revisionList').innerHTML=revisions.length?revisions.slice().reverse().map(item=>`<div class="rev"><strong>Rev. ${esc(item.code)}</strong> · ${esc(item.date)}<br>${esc(item.description)}<br><span class="hint">${esc(item.author)}</span></div>`).join(''):'<p class="hint">Todavía no hay revisiones emitidas.</p>';
@@ -273,6 +274,26 @@ function depthDefs(){return `<defs>
 </defs>`}
 const screw=(x,y,r=6)=>`<g style="pointer-events:none"><circle cx="${x}" cy="${y}" r="${r}" fill="url(#gScrew)" stroke="#4a535a" stroke-width="1"/><line x1="${x-r*.6}" y1="${y-r*.6}" x2="${x+r*.6}" y2="${y+r*.6}" stroke="#4a535a" stroke-width="1.4"/></g>`;
 // Herrajes de la puerta (vista con puerta retirada): cerraduras en las posiciones del catálogo (F desde el borde); bisagras esquemáticas del lado izquierdo.
+// Vista con la puerta cerrada: puerta ciega RAL 7035, cerraduras y bisagras del catálogo, placa grabada con la nomenclatura del tablero,
+// luces testigo del unifilar (agujero 22 mm, frente 30 mm del catálogo) con su letra grabada y cartel de riesgo eléctrico.
+let doorView=false;
+function doorSvg(w,h){const st=encSpec()?.structure,col=st?.colors?.enclosure?.hex||'#cbd0cc',L=st?.locks,locks=!L?[h/2]:L.count===1?[h/2]:[L.F,h-L.F],ph=project.enclosure.plinthHeight||0,H=h-ph;
+ const name=(project.project||'TABLERO').toUpperCase(),pw=Math.min(w*0.62,280),phh=Math.max(26,Math.min(56,H*0.07)),px=(w-pw)/2,py=Math.max(40,H*0.09),fs=Math.min(phh*0.55,pw*0.88/Math.max(name.length,1)/0.62);
+ const lights=(project.signals?.pilotLights)||[],pitch=48,ly=py+phh+Math.max(55,H*0.07),lx0=w/2-(lights.length-1)*pitch/2;
+ const lens={rojo:['#ff6b5e','#c0170c'],verde:['#7fe08a','#1d8a35'],amarillo:['#ffe36b','#c99a00']},lc=lens.rojo;
+ const lightSvg=lights.map((l,i)=>{const cx=lx0+i*pitch;return `<circle cx="${cx}" cy="${ly}" r="16.5" fill="#000" opacity=".18" transform="translate(1.5 2)"/><circle cx="${cx}" cy="${ly}" r="15" fill="#3a4046" stroke="#22272b" stroke-width="1"/><circle cx="${cx}" cy="${ly}" r="11.5" fill="url(#gLens)"/><ellipse cx="${cx-3.5}" cy="${ly-4}" rx="4.5" ry="3" fill="#fff" opacity=".55"/><text x="${cx}" y="${ly+31}" text-anchor="middle" font-size="12" font-weight="700" font-family="Arial" fill="#2a3036">${esc(l.label)}</text>`}).join('');
+ const lightsTitle=lights.length?`<text x="${w/2}" y="${ly-26}" text-anchor="middle" font-size="9.5" font-weight="700" letter-spacing="1" font-family="Arial" fill="#2a3036">PRESENCIA DE TENSIÓN</text>`:'';
+ const ts=Math.max(70,Math.min(w*0.26,130)),ty=(lights.length?ly+60:py+phh+50),tx=w/2,tri=`<g transform="translate(${tx-ts/2} ${ty})"><path d="M${ts/2} 0L${ts} ${ts*0.87}H0Z" fill="#ffd400" stroke="#111" stroke-width="${ts*0.045}" stroke-linejoin="round"/><path d="M${ts*0.54} ${ts*0.22}L${ts*0.4} ${ts*0.52}H${ts*0.52}L${ts*0.44} ${ts*0.76}L${ts*0.64} ${ts*0.44}H${ts*0.52}L${ts*0.6} ${ts*0.22}Z" fill="#111"/>
+  <rect x="${-ts*0.08}" y="${ts*0.95}" width="${ts*1.16}" height="${ts*0.28}" rx="2" fill="#ffd400" stroke="#111" stroke-width="1.2"/><text x="${ts/2}" y="${ts*1.06}" text-anchor="middle" font-size="${ts*0.1}" font-weight="800" font-family="Arial" fill="#111">PELIGRO</text><text x="${ts/2}" y="${ts*1.18}" text-anchor="middle" font-size="${ts*0.1}" font-weight="800" font-family="Arial" fill="#111">RIESGO ELÉCTRICO</text></g>`;
+ const lockSvg=locks.map(y=>`<circle cx="${w-34}" cy="${y}" r="15" fill="#4b545b" stroke="#262c30" stroke-width="1.2"/><circle cx="${w-34}" cy="${y}" r="9.5" fill="#2b3136"/><rect x="${w-37}" y="${y-7}" width="6" height="14" rx="1" fill="#0f1214"/>`).join('');
+ const hinges=[H*.12,H*.88].map(y=>`<rect x="0" y="${y-22}" width="9" height="44" rx="3" fill="#9aa2a8" stroke="#4a535a" stroke-width="1.2"/>`).join('');
+ return `<defs><radialGradient id="gLens" cx=".4" cy=".35" r=".75"><stop offset="0" stop-color="${lc[0]}"/><stop offset="1" stop-color="${lc[1]}"/></radialGradient><linearGradient id="gDoor" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".08"/></linearGradient></defs>
+ <rect width="${w}" height="${H}" rx="4" fill="${col}" stroke="#172c43" stroke-width="6"/>${ph?`<rect y="${H}" width="${w}" height="${ph}" fill="#9aa3aa" stroke="#4a535a" stroke-width="2"/>`:''}
+ <rect x="7" y="7" width="${w-14}" height="${H-14}" rx="3" fill="${col}" stroke="#8d969c" stroke-width="2"/><rect x="7" y="7" width="${w-14}" height="${H-14}" rx="3" fill="url(#gDoor)"/>
+ <rect x="18" y="18" width="${w-36}" height="${H-36}" rx="2" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="1.2"/>${hinges}${lockSvg}
+ <rect x="${px+1.5}" y="${py+2}" width="${pw}" height="${phh}" rx="3" fill="#000" opacity=".2"/><rect x="${px}" y="${py}" width="${pw}" height="${phh}" rx="3" fill="#1d2125" stroke="#0c0e10" stroke-width="1"/><rect x="${px+3}" y="${py+3}" width="${pw-6}" height="${phh-6}" rx="2" fill="none" stroke="#e9ecef" stroke-opacity=".5" stroke-width=".8"/>
+ <text x="${w/2}" y="${py+phh/2+fs*0.36}" text-anchor="middle" font-size="${fs.toFixed(1)}" font-weight="700" letter-spacing="1.5" font-family="Arial" fill="#f2f4f6">${esc(name)}</text>
+ ${lightsTitle}${lightSvg}${tri}`}
 function hardwareSvg(w,h){const st=encSpec()?.structure;if(!st?.locks||st.kind!=='monobloc')return '';const L=st.locks,ys=L.count===1?[h/2]:[L.F,h-L.F];
  return `<g style="pointer-events:none">`+ys.map(y=>`<rect x="${w-26}" y="${y-22}" width="20" height="44" rx="3" fill="#8e969c" stroke="#4a535a" stroke-width="1.5"/><circle cx="${w-16}" cy="${y}" r="6" fill="#2f363b"/>`).join('')+
  [h*.12,h*.88].map(y=>`<rect x="2" y="${y-18}" width="16" height="36" rx="3" fill="#a3abb1" stroke="#4a535a" stroke-width="1.3"/><line x1="2" y1="${y}" x2="18" y2="${y}" stroke="#4a535a" stroke-width="1.2"/>`).join('')+`</g>`}
@@ -296,6 +317,8 @@ const nameOf=d=>d.circuit||d.tag;
 function render(){
  const {w,h,fx,fy}=dimensions(),f=project.enclosure.functional;
  setView();
+ if(doorView){$('board').innerHTML=frontDefs()+doorSvg(w,h)+cotasSvg(w,h,fx,fy,f)+`<text x="0" y="-52" fill="#344962" font-size="25">${esc(project.project)}</text><text x="0" y="-28" fill="#6b7d90" font-size="15">${esc(encSpec()?.label||'ABB')} · vista con la puerta cerrada</text>`;$('editor').hidden=true;$('ductCard').hidden=true;$('viewInt').classList.toggle('on',false);$('viewDoor').classList.toggle('on',true);return}
+ $('viewInt').classList.toggle('on',true);$('viewDoor').classList.toggle('on',false);
  $('board').innerHTML=frontDefs()+depthDefs()+`<rect width="${w}" height="${h}" fill="url(#gBody)" stroke="#172c43" stroke-width="6"/>
 ${structureSvg(w,h,project.enclosure.plinthHeight)||`<rect y="${h-project.enclosure.plinthHeight}" width="${w}" height="${project.enclosure.plinthHeight}" fill="#e4eaf0" stroke="#66778a" stroke-width="2"/>`}
  ${plateSvg(fx,fy,h,f)}${hardwareSvg(w,h)}${cotasSvg(w,h,fx,fy,f)}
@@ -315,7 +338,7 @@ ${structureSvg(w,h,project.enclosure.plinthHeight)||`<rect y="${h-project.enclos
   if(da){$('ductTitle').textContent=ductName(da);$('ductCode').textContent=da.orderCode||'';const k=ducts.sections.findIndex(x=>x.widthMm===da.sectionMm&&x.heightMm===da.depthMm);if(document.activeElement!==$('ductSec'))$('ductSec').value=String(Math.max(0,k));if(document.activeElement!==$('ductLen'))$('ductLen').value=Math.round(da.orientation==='v'?da.h:da.w);$('ductRotate').textContent=da.orientation==='v'?'Pasar a horizontal':'Pasar a vertical'}
   if(selected!==null){const d=project.devices[selected];if(!d){selected=null;return render()}
   $('selName').textContent=nameOf(d);$('selTag').textContent=d.circuit?`Plano ${d.tag}`:'';
-  if(document.activeElement!==$('circuit'))$('circuit').value=d.circuit??'';if(document.activeElement!==$('model'))$('model').value=d.model??'';
+  if(document.activeElement!==$('circuit'))$('circuit').value=d.circuit??'';if(document.activeElement!==$('model'))$('model').value=d.model??'';if(document.activeElement!==$('orderCode'))$('orderCode').value=d.orderCode??'';
   const k=d.mountingKit||shell(d.shell);$('selInfo').textContent=`${d.w} × ${d.h} mm`+(isDin(d)?' · sobre riel DIN':k?.type||k?.kit?` · kit ${k.type||k.kit}`:'');}
   encInfo();
 }
@@ -356,6 +379,7 @@ const runAuto=async(free,only)=>{const q=new URLSearchParams();if(free)q.set('fr
    if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();$('ductRemove').click();return}}
   if(selected!==null&&(e.key==='Delete')&&!/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();$('remove').click();return}
   if(e.key==='Escape'){if($('addPanel').hidden&&$('ductPanel').hidden&&!/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName))clearSelection();$('addPanel').hidden=true;$('ductPanel').hidden=true;document.querySelectorAll('.popover').forEach(p=>p.hidden=true)}if((e.ctrlKey||e.metaKey)&&!/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)){if(e.key==='z'){e.preventDefault();$('undo').click()}if(e.key==='y'){e.preventDefault();$('redo').click()}}});
+ $('viewInt').onclick=()=>{doorView=false;render()};$('viewDoor').onclick=()=>{doorView=true;selected=null;selDuct=null;render();if(!(project.signals?.pilotLights||[]).length)notice('El unifilar de este tablero no trae luces testigo: la puerta va sin orificios.')};
  $('fit').onclick=fitView;$('focus').onclick=focusView;$('zoomIn').onclick=()=>zoomView(.75);$('zoomOut').onclick=()=>zoomView(1.33);
 const updatePoles=()=>{$('polesRow').hidden=!shell($('shell').value)?.poleModule};
   $('showAdd').onclick=()=>{$('shell').value=usualShell();const z=project.devices.find(d=>d.shell===$('shell').value);if(z?.poles)$('newPoles').value=z.poles;updatePoles();$('newCircuit').value=nextCircuit();$('addPanel').hidden=false;$('newCircuit').focus();$('newCircuit').select()};$('addCancel').onclick=()=>{$('addPanel').hidden=true};
@@ -375,7 +399,7 @@ const updatePoles=()=>{$('polesRow').hidden=!shell($('shell').value)?.poleModule
    $('newCircuit').value='';$('newModel').value='';$('addPanel').hidden=true;notice('Rearmando el tablero…');const auto=await runAuto(false);if(auto.ok){select(project.devices.findIndex(x=>x.tag===tag));if(!auto.changed)notice(`${d.circuit||tag} agregado.`)}else notice('Equipo agregado, pero no se pudo rearmar solo: '+auto.error)};
   $('duplicate').onclick=async()=>{if(selected===null)return;const src=project.devices[selected],nums=project.devices.map(d=>+((/^QF(\d+)$/.exec(d.tag)||[])[1])).filter(Number.isFinite);let n=Math.max(0,...nums)+1,tag='QF'+n;while(project.devices.some(d=>d.tag===tag))tag='QF'+(++n);
    const circ=nextCircuit();snapshot();const d={...clone(src),tag,circuit:circ||undefined,unplaced:true};delete d.placementNote;project.devices.splice(selected+1,0,d);notice('Rearmando el tablero…');const auto=await runAuto(false);if(auto.ok){select(project.devices.findIndex(x=>x.tag===tag));if(!auto.changed)notice(`${circ||tag} agregado (copia de ${nameOf(src)}).`)}else notice('No se pudo rearmar: '+auto.error)};
-  for(const key of ['circuit','model'])$(key).onchange=()=>{if(selected===null)return;snapshot();project.devices[selected][key]=$(key).value.trim()||(key==='model'?project.devices[selected][key]:undefined);render()};
+  for(const key of ['circuit','model','orderCode'])$(key).onchange=()=>{if(selected===null)return;snapshot();const v=$(key).value.trim();if(key==='orderCode'){const m=project.devices[selected].model;project.devices.forEach(d=>{if(d===project.devices[selected]||(m&&d.model===m))d.orderCode=v||undefined});notice(v?`Código ${v} asignado a todos los ${m||'equipos iguales'}.`:'Código borrado.');}else project.devices[selected][key]=v||(key==='model'?project.devices[selected][key]:undefined);render()};
  $('remove').onclick=()=>{if(selected===null)return;snapshot();project.devices.splice(selected,1);selected=null;render();notice('Equipo borrado. Ctrl+Z para deshacer.')};
  $('undo').onclick=()=>{if(!history.length)return;future.push(clone(project));project=history.pop();selected=null;$('undo').disabled=!history.length;$('redo').disabled=false;markDirty();render();notice('Último cambio deshecho.')};
  $('redo').onclick=()=>{if(!future.length)return;history.push(clone(project));project=future.pop();selected=null;$('undo').disabled=false;$('redo').disabled=!future.length;markDirty();render();notice('Cambio rehecho.')};
@@ -384,19 +408,25 @@ const updatePoles=()=>{$('polesRow').hidden=!shell($('shell').value)?.poleModule
  $('openJson').onclick=()=>$('jsonFile').click();
  $('jsonFile').onchange=async e=>{try{const x=JSON.parse(await e.target.files[0].text());if(!Array.isArray(x.devices)||!x.enclosure)throw Error('Proyecto inválido');snapshot();project=x;fixedDimensions();const ce=catalog.enclosures.find(v=>v.functional.height===project.enclosure.functional.height&&v.functional.width===project.enclosure.functional.width);if(ce){if(!project.enclosure.mountingLayout?.dinRails?.length){project.enclosure.mountingLayout=clone(ce.mountingLayout);project.devices.forEach(alignDin)}$('enclosure').value=ce.id}selected=null;render();notice('Proyecto JSON abierto.')}catch(err){notice(err.message)}};
  $('exportDxf').onclick=async()=>{const r=await fetch('/api/export-dxf',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(project)});if(!r.ok)return notice((await r.json()).error);download(filename('dxf'),await r.blob(),'application/dxf')};
- $('exportSvg').onclick=()=>download(filename('svg'),saveSvg(),'image/svg+xml');
- $('exportPng').onclick=()=>{const blob=new Blob([saveSvg()],{type:'image/svg+xml'}),url=URL.createObjectURL(blob),img=new Image();img.onload=()=>{const cv=document.createElement('canvas');cv.width=1650;cv.height=Math.round(cv.width*dimensions().h/dimensions().w);const ctx=cv.getContext('2d');ctx.fillStyle='white';ctx.fillRect(0,0,cv.width,cv.height);ctx.drawImage(img,0,0,cv.width,cv.height);cv.toBlob(b=>download(filename('png'),b,'image/png'));URL.revokeObjectURL(url)};img.src=url};
- $('exportPdf').onclick=()=>{const previous=clone(view);fitView();window.print();view=previous;setView()};
+ let exportDoor=false;
+ const withExportView=fn=>{const prev=doorView,prevSel=selected,prevDuct=selDuct;doorView=exportDoor;if(exportDoor){selected=null;selDuct=null}render();try{return fn()}finally{doorView=prev;selected=prevSel;selDuct=prevDuct;render()}};
+ const viewSuffix=()=>exportDoor?'_puerta':'';
+ $('expInt').onclick=()=>{exportDoor=false;$('expInt').classList.add('on');$('expDoor').classList.remove('on')};
+ $('expDoor').onclick=()=>{exportDoor=true;$('expDoor').classList.add('on');$('expInt').classList.remove('on')};
+ $('exportSvg').onclick=()=>withExportView(()=>download(filename('svg').replace(/\.svg$/,viewSuffix()+'.svg'),saveSvg(),'image/svg+xml'));
+ $('exportPng').onclick=()=>{const name=filename('png').replace(/\.png$/,viewSuffix()+'.png'),blob=new Blob([withExportView(saveSvg)],{type:'image/svg+xml'}),url=URL.createObjectURL(blob),img=new Image();img.onload=()=>{const cv=document.createElement('canvas');cv.width=1650;cv.height=Math.round(cv.width*dimensions().h/dimensions().w);const ctx=cv.getContext('2d');ctx.fillStyle='white';ctx.fillRect(0,0,cv.width,cv.height);ctx.drawImage(img,0,0,cv.width,cv.height);cv.toBlob(b=>download(name,b,'image/png'));URL.revokeObjectURL(url)};img.src=url};
+ $('exportPdf').onclick=()=>withExportView(()=>{const previous=clone(view);fitView();window.print();view=previous;setView()});
 const importPdf=async(file,fresh)=>{if(!file)return;notice('Leyendo PDF…');
    if(fresh){const name=file.name.replace(/\.pdf$/i,'').replace(/[_-]+/g,' ').trim()||'Tablero';const r0=await fetch('/api/project-new',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,enclosureId:catalog.enclosures[0].id})});const d0=await r0.json();if(!r0.ok)return notice(d0.error);projectId=d0.id;project=await fetch('/api/project?id='+encodeURIComponent(projectId)).then(x=>x.json());history=[];future=[];selected=null;view=null;findings=[];$('undo').disabled=true;window.history.replaceState(null,'','?id='+encodeURIComponent(projectId)+'#editor');projectList=await fetch('/api/projects').then(x=>x.json());renderProjectCards()}
    const r=await fetch('/api/import-pdf',{method:'POST',body:file});const data=await r.json();if(!r.ok)return notice(data.error);
+   const nd=data.devices.filter(d=>!d.upstream&&!d.shell&&!project.devices.some(x=>x.tag===d.tag)&&!(project.devicesNotDrawn||[]).some(x=>x.tag===d.tag)).map(d=>({tag:d.tag,circuit:d.circuit,model:d.model,poles:d.poles,status:d.status}));project.devicesNotDrawn=[...(project.devicesNotDrawn||[]),...nd];if(data.signals&&!project.signals)project.signals=data.signals;
    const add=data.devices.filter(d=>!d.upstream&&d.shell&&!project.devices.some(x=>x.tag===d.tag)),skipped=data.devices.filter(d=>!d.upstream&&!d.shell).length;if(fresh&&add.length)project.project=boardName(add,file.name);
    if(!add.length){showScreen('editor');return notice('No se detectaron equipos nuevos de 2 o más polos.')}
    const boards=[...new Set(add.map(d=>(/^(.+-\d+)\.\d+$/.exec(d.circuit||'')||[])[1]).filter(Boolean))];
    const before=clone(project);project.devices.push(...add.map(d=>({...d,x:150,y:150,unplaced:true})));notice('Armando el tablero…');const auto=await runAuto(false);
    if(!auto.ok){project=before;history.pop();const msg=`Este PDF tiene ${add.length} equipos`+(boards.length>1?` de ${boards.length} tableros distintos (${boards.slice(0,6).join(', ')}${boards.length>6?'…':''})`:'')+' y no entran en ningún gabinete del catálogo. Exportá desde e-Design el unifilar de un solo tablero.';
     if(fresh){await fetch('/api/project?id='+encodeURIComponent(projectId),{method:'DELETE'});sessionStorage.setItem('abb-notice',msg);window.history.replaceState(null,'','?id=ts4#projects');location.reload();return}render();return notice(msg)}
-   showScreen('editor');notice(auto.ok?`Tablero armado en ${auto.gabinete} con ${add.length} equipo(s).`+(skipped?` ${skipped} sin carcasa reconocida.`:''):`No se pudo armar solo: ${auto.error}`)};
+   showScreen('editor');notice(auto.ok?`Tablero armado en ${auto.gabinete} con ${add.length} equipo(s).`+(nd.length?` Sin dibujar (no están en el catálogo, pero van a la lista de materiales): ${nd.map(d=>(d.circuit||d.tag)+' '+(d.model||'')).join(', ')}.`:''):`No se pudo armar solo: ${auto.error}`)};
   $('pdf').onchange=async e=>{await importPdf(e.target.files[0],false);e.target.value=''};$('pdfNew').onchange=async e=>{await importPdf(e.target.files[0],true);e.target.value=''};$('importMore').onclick=()=>{$('moreMenu').hidden=true;$('pdf').click()};
   const dz=$('dropPdf');dz.ondragover=e=>{e.preventDefault();dz.classList.add('over')};dz.ondragleave=()=>dz.classList.remove('over');dz.ondrop=async e=>{e.preventDefault();dz.classList.remove('over');await importPdf(e.dataTransfer.files[0],true)};
  const svg=$('board');const plateXY=e=>{const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const p=pt.matrixTransform(svg.getScreenCTM().inverse()),{fx,fy,h}=dimensions();return {x:p.x-fx,y:h-fy-p.y}};
