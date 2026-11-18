@@ -10,10 +10,11 @@
 - No tocar archivos que el otro agente tenga anotados.
 - Resolver de forma autónoma las decisiones técnicas ordinarias. Consultar al usuario solo cuando falte un dato no inferible o una decisión cambie materialmente el resultado.
 - Toda mejora funcional, dato, fuente o corrección debe quedar en un commit y subirse al repositorio durante la misma sesión. El repo es la fuente única de verdad.
-- Antes de subir: `python -m unittest discover tests` tiene que pasar.
+- Antes de subir: `python -m unittest discover tests` tiene que pasar, y también la prueba de interfaz `python tests/e2e/prueba_interfaz.py`.
+- **Probar como usuario final, siempre** (pedido de Thomas, 2026-11-18): en cada sesión usar el programa como lo usaría un tablerista (importar un unifilar, revisar el tablero armado, corregir a mano, exportar DXF/PDF y la lista de materiales) y mirar las capturas. Cada error encontrado se arregla o se anota; cada mejora o agregado posible va a `docs/MEJORAS.md`. Objetivo: un producto fácil de usar, útil, confiable y que sirva de verdad.
 
 **Al terminar**
-1. Agregar una entrada **arriba** en `BITACORA.md` (máx. 6 líneas: Hecho / Archivos / Ojo / Siguiente).
+1. Agregar una entrada **arriba de todo** en `BITACORA.md` (la más nueva primero; nunca al final) (máx. 6 líneas: Hecho / Archivos / Ojo / Siguiente).
 2. Reescribir `ESTADO.md` si cambió la foto (no acumular historial ahí).
 3. Commit con mensaje claro + push.
 
