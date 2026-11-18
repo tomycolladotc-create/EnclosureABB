@@ -40,8 +40,9 @@ def list_projects(projects_dir=PROJECTS_DIR):
     out = []
     for pid, file in found.items():
         data = json.loads(file.read_text(encoding="utf-8"))
-        out.append({"id": pid, "name": data.get("project", pid), "devices": len(data.get("devices", []))})
-    return out
+        out.append({"id": pid, "name": data.get("project", pid), "devices": len(data.get("devices", [])),
+                    "enclosure": data.get("enclosure", {}).get("id"), "modified": int(file.stat().st_mtime * 1000)})
+    return sorted(out, key=lambda p: -p["modified"])  # el último que tocaste, primero
 
 
 def load(project_id, projects_dir=PROJECTS_DIR):

@@ -243,3 +243,18 @@
 - Servidor: `accesorios._manual_duct` normaliza la canaleta (código 1SL90../1SL91.. según ranura, largo, descripción para el cómputo); `GET /api/ducts`; DXF dibuja canaletas verticales.
 - Bug corregido: la revisión de normativa en segundo plano podía pisar un cambio recién hecho (respuesta vieja). Ahora se descarta si el proyecto cambió.
 - Tests 86 OK; e2e 78/78 (dos corridas).
+
+
+## 2026-11-17 23:15 · Claude · Fluidez (simulación de uso real)
+Simulación de un tablerista (importar TSEP/TSFT3, revisar, agregar, canaleta, exportar). Arreglos:
+- Nombre del tablero al importar: prefijo común de los circuitos (TSEP-1.. → "TSEP"); si no hay, el final del nombre del archivo.
+- Gabinete en una sola línea (antes repetía medidas contradictorias 800×600 / 603×803).
+- "Agregar equipo": propone el equipo más usado del tablero y el siguiente circuito (TSEP-16), seleccionado para sobrescribir.
+- Botón "Duplicar" en la tarjeta del equipo (misma carcasa/modelo, siguiente circuito).
+- Si al rearmar cambia el gabinete, se avisa "El gabinete cambió: A → B"; si no cambia, se conserva el zoom.
+- Escape y clic en el vacío quitan la selección; Supr borra el equipo seleccionado (Ctrl+Z deshace).
+- Reordenar en el riel: soltar un equipo DIN sobre otro del mismo riel lo inserta ahí y corre a los demás (también reordena `project.devices`, así un rearmado conserva el orden entre equipos de la misma carcasa).
+- Tooltip al pasar el mouse (circuito · modelo · QF; canaleta · orientación · largo). La lista lateral se desplaza hasta el equipo elegido en el dibujo.
+- Tableros: la revisión al abrir (rearmar si no cumple) sólo corre al entrar al editor; la lista se refresca al volver (antes mostraba datos viejos); tarjetas con gabinete y fecha, orden por última modificación (`proyectos.list_projects` devuelve `enclosure`, `modified`).
+- e2e: 98/98.
+Propuestas sin hacer (para decidir): separar PDF de planta en tableros; cajetín en el PDF; estirar canaletas desde los extremos e imán a bordes; fijar gabinete al agregar equipos; quitar "Nuevo tablero vacío" y "Revisiones" si no se usan.

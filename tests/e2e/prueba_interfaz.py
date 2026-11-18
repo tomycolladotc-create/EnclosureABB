@@ -130,6 +130,37 @@ def main():
             pg.click("#showAdd"); pg.click("#addCancel")
             check("agregar: cancelar cierra", not pg.is_visible("#addPanel"))
 
+            # 6b) Fluidez: valores propuestos, duplicar, Escape, clic en vacío, Supr, reordenar en el riel, tooltip.
+            pg.click("#showAdd")
+            check("agregar: propone el equipo más usado", pg.input_value("#shell") == pg.evaluate("usualShell()"))
+            check("agregar: propone el siguiente circuito", pg.input_value("#newCircuit") == pg.evaluate("nextCircuit()") != "", pg.input_value("#newCircuit"))
+            pg.click("#addCancel")
+            pg.click("#deviceList .item >> nth=0"); k = pg.evaluate("project.devices.length")
+            pg.click("#duplicate"); wait_idle(pg, 4000)
+            check("duplicar equipo", pg.evaluate("project.devices.length") == k + 1 and pg.is_visible("#editor"))
+            dup = pg.evaluate("project.devices[selected].tag")
+            check("tooltip en el equipo", pg.evaluate("!!document.querySelector('#board .device title')"))
+            pg.evaluate("document.activeElement.blur()"); pg.keyboard.press("Delete"); wait_idle(pg, 1500)
+            check("Supr borra el equipo", pg.evaluate("project.devices.length") == k and not pg.evaluate(f"project.devices.some(d=>d.tag==='{dup}')"))
+            pg.click("#deviceList .item >> nth=0"); pg.evaluate("document.activeElement.blur()"); pg.keyboard.press("Escape"); wait_idle(pg, 300)
+            check("Escape quita la selección", pg.evaluate("selected===null") and not pg.is_visible("#editor"))
+            pg.click("#deviceList .item >> nth=0"); bb = pg.locator("#board").bounding_box()
+            pg.mouse.click(bb["x"] + 12, bb["y"] + bb["height"] - 12); wait_idle(pg, 300)
+            check("clic en el vacío quita la selección", pg.evaluate("selected===null"))
+            # reordenar: dos equipos DIN contiguos del mismo riel
+            pair = pg.evaluate("""(()=>{const din=project.devices.filter(isDin);for(const a of din)for(const b of din)if(a!==b&&Math.abs(a.y-b.y)<1&&Math.abs(a.x+a.w-b.x)<1)return [a.tag,b.tag];return null})()""")
+            if pair:
+                ia, ib = (pg.evaluate(f"project.devices.findIndex(d=>d.tag==='{t}')") for t in pair)
+                ba, bb2 = (pg.locator(f"#board .device[data-index='{i}']").bounding_box() for i in (ia, ib))
+                pg.mouse.move(ba["x"] + ba["width"] / 2, ba["y"] + ba["height"] / 2); pg.mouse.down()
+                pg.mouse.move(bb2["x"] + bb2["width"] * .8, bb2["y"] + bb2["height"] / 2, steps=8); pg.mouse.up(); wait_idle(pg, 1500)
+                xa, xb = (pg.evaluate(f"project.devices.find(d=>d.tag==='{t}').x") for t in pair)
+                check("reordenar en el riel (soltar sobre otro)", xa > xb and "movido" in pg.inner_text("#message"), f"{pair} {xa} {xb}")
+                check("reordenar: sin superposiciones", pg.evaluate("validationResult.errors") == 0)
+                pg.keyboard.press("Control+z"); wait_idle(pg, 1500)
+            else:
+                check("reordenar en el riel: hay dos DIN contiguos", False)
+
             # 7) Eliminar equipo.
             pg.click("#deviceList .item:has-text('NUEVO-1')"); pg.click("#remove"); wait_idle(pg, 1500)
             check("eliminar equipo", pg.evaluate("project.devices.length") == n)
@@ -149,9 +180,9 @@ def main():
             wait_idle(pg, 1500)
             check("canaleta: código ABB asignado", (pg.evaluate("ductById(selDuct).orderCode") or "").startswith("1SL9"), pg.evaluate("ductById(selDuct).orderCode"))
             x0 = pg.evaluate("ductById(selDuct).x")
-            pg.click("#board", position={"x": 5, "y": 5}); pg.evaluate("document.activeElement.blur()")
+            pg.evaluate("document.activeElement.blur()")
             pg.keyboard.press("ArrowRight"); wait_idle(pg, 300)
-            check("canaleta: flecha mueve 5 mm", pg.evaluate("ductById(selDuct)?.x") in (x0 + 5, x0), str(pg.evaluate("ductById(selDuct)?.x")))
+            check("canaleta: flecha mueve 5 mm", pg.evaluate("ductById(selDuct)?.x") == x0 + 5 or "No hay lugar" in pg.inner_text("#message"), str(pg.evaluate("ductById(selDuct)?.x")))
             pg.fill("#ductLen", "450"); pg.press("#ductLen", "Tab"); wait_idle(pg, 400)
             check("canaleta: cambiar largo", pg.evaluate("ductById(selDuct).h") == 450)
             pg.select_option("#ductSec", str(pg.evaluate("ducts.sections.findIndex(x=>x.widthMm===25&&x.heightMm===40)"))); wait_idle(pg, 400)
@@ -229,6 +260,7 @@ def main():
             # 10) Tableros: duplicar, abrir y borrar.
             pg.click(".brand"); wait_idle(pg, 800)
             check("tableros: tarjetas", pg.locator(".card-p").count() >= 1)
+            check("tableros: tarjeta con gabinete y fecha", "·" in pg.inner_text(".card-p >> nth=0"))
             pg.click("[data-dup=ts4]"); wait_idle(pg, 4000)
             pid = pg.evaluate("projectId")
             check("duplicar tablero", pid != "ts4", pid)
@@ -256,6 +288,11 @@ def main():
                 check(f"importar {name}: abre el editor", pg.is_visible("#screen-editor"))
                 check(f"importar {name}: con equipos", pg.evaluate("project.devices.length") > 0, str(pg.evaluate("project.devices.length")))
                 check(f"importar {name}: dentro de normativa", chip_ok(pg), chip(pg))
+                check(f"importar {name}: nombre del tablero corto", "Unifilares" not in pg.inner_text("#projectName"), pg.inner_text("#projectName"))
+                short = pg.inner_text("#projectName"); n_dev = pg.evaluate("project.devices.length")
+                pg.click(".brand"); wait_idle(pg, 2500)
+                card = pg.inner_text(".card-p.current") if pg.locator(".card-p.current").count() else ""
+                check(f"importar {name}: tarjeta actualizada al volver", short in card and f"{n_dev} equipo" in card, card[:80])
 
             check("sin errores de JavaScript", not errors, "; ".join(errors[:3]))
             browser.close()

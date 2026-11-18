@@ -41,7 +41,7 @@
 <div class="zoom"><button id="fit" class="icon" title="Ver tablero completo">⤢</button><button id="focus" class="icon" title="Acercar a los equipos">◎</button><button id="zoomOut" class="icon" aria-label="Alejar">−</button><span id="zoomLabel" class="muted">100%</span><button id="zoomIn" class="icon" aria-label="Acercar">＋</button></div>
 <div id="editor" class="card" hidden><div class="card-head"><strong id="selName"></strong><span id="selTag" class="muted"></span></div>
 <label>Circuito<input id="circuit" placeholder="ej. TS-4.2"></label><label>Modelo<input id="model"></label>
-<div id="selInfo" class="muted"></div><button id="remove" class="danger">Eliminar equipo</button></div>
+<div id="selInfo" class="muted"></div><div class="row"><button id="duplicate" class="secondary" title="Otro igual con el siguiente circuito">Duplicar</button><button id="remove" class="danger">Eliminar</button></div></div>
 <div id="ductCard" class="card" hidden><div class="card-head"><strong id="ductTitle">Canaleta</strong><span id="ductCode" class="muted"></span></div>
 <label>Sección (ancho × profundidad)<select id="ductSec"></select></label><label>Largo (mm)<input id="ductLen" type="number" min="50" step="5"></label>
 <div class="row"><button id="ductRotate" class="secondary" title="Pasar de horizontal a vertical y viceversa">Girar</button><button id="ductRemove" class="danger">Eliminar</button></div>
@@ -110,8 +110,9 @@ function showScreen(name){
  document.querySelectorAll('.screen').forEach(el=>el.classList.toggle('active',el.id===`screen-${name}`));
  $('crumb').hidden=name==='projects';$('editorActions').hidden=name!=='editor';
  document.querySelectorAll('.popover').forEach(p=>p.hidden=true);
- if(name==='editor')setTimeout(()=>{setView();render()},0);
+ if(name==='editor')setTimeout(()=>{setView();render();if(catalog)openCheck()},0);
  if(name==='export'){updateExportSummary();loadBom()}
+ if(name==='projects'&&catalog)(async()=>{if(dirty)await saveProject(true);projectList=await fetch('/api/projects').then(x=>x.json());renderProjectCards()})();
  location.hash=name;
 }
 function updateExportSummary(){
@@ -119,13 +120,13 @@ function updateExportSummary(){
  const e=project.enclosure.externalBody,missing=project.devices.filter(d=>!fronts?.items?.[d.shell]);
  $('exportProjectName').textContent=project.project;
  $('summaryEnclosure').textContent=`${e.width} × ${e.height} × ${e.depth} mm`;$('summaryDevices').textContent=`${project.devices.length}`;$('summaryRails').textContent=`${rails().length}`;
- $('exportSummary').textContent=`${encSpec()?.label||'Gabinete'} · ${e.width} × ${e.height} × ${e.depth} mm · ${project.devices.length} equipos`;
+ $('exportSummary').textContent=`${encSpec()?.label||'Gabinete'} · ${project.devices.length} equipo${project.devices.length===1?'':'s'}`;
  renderRevisions();
  const notes=[];if(validationResult.errors)notes.push(`${validationResult.errors} error(es) geométricos pendientes`);const bad=findings.filter(f=>f.severity==='error'&&!f.manual).length;if(bad)notes.push(`${bad} error(es) de normativa`);if(missing.length)notes.push(`${missing.map(nameOf).join(', ')}: sin CAD; se exportan como marcadores`);
  $('exportWarning').className='note'+(notes.length?' warn':'');$('exportWarning').textContent=notes.length?notes.join('. ')+'.':'Tablero dentro de normativa y sin errores geométricos.';
 }
 function renderProjectCards(){
- $('projectCards').innerHTML=projectList.map(p=>`<article class="card-p ${p.id===projectId?'current':''}"><h3>${esc(p.name)}</h3><span class="muted">${p.devices} equipos</span><div class="acts"><button class="primary grow" data-open="${esc(p.id)}">Abrir</button><button class="secondary" data-dup="${esc(p.id)}">Duplicar</button>${p.id==='ts4'?'':`<button class="danger" data-del="${esc(p.id)}">Borrar</button>`}</div></article>`).join('');
+ $('projectCards').innerHTML=projectList.map(p=>`<article class="card-p ${p.id===projectId?'current':''}"><h3>${esc(p.name)}</h3><span class="muted">${p.devices} equipo${p.devices===1?'':'s'}${p.enclosure?' · '+esc((catalog?.enclosures.find(e=>e.id===p.enclosure)?.label||p.enclosure).split('·')[0].trim()):''}${p.modified?' · '+new Date(p.modified).toLocaleString('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):''}</span><div class="acts"><button class="primary grow" data-open="${esc(p.id)}">Abrir</button><button class="secondary" data-dup="${esc(p.id)}">Duplicar</button>${p.id==='ts4'?'':`<button class="danger" data-del="${esc(p.id)}">Borrar</button>`}</div></article>`).join('');
  $('projectCards').querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>{if(b.dataset.open===projectId)return showScreen('editor');location.href='?id='+encodeURIComponent(b.dataset.open)+'#editor'});
  $('projectCards').querySelectorAll('[data-dup]').forEach(b=>b.onclick=async()=>{const name=(prompt('Nombre de la copia')||'').trim();if(!name)return;const r=await fetch('/api/project-duplicate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sourceId:b.dataset.dup,name})});const data=await r.json();if(!r.ok)return notice(data.error);location.href='?id='+encodeURIComponent(data.id)+'#editor'});
  $('projectCards').querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{if(!confirm('¿Borrar definitivamente este tablero?'))return;const r=await fetch('/api/project?id='+encodeURIComponent(b.dataset.del),{method:'DELETE'});const data=await r.json();if(!r.ok)return notice(data.error);if(b.dataset.del===projectId){location.search='?id=ts4'}else{projectList=projectList.filter(p=>p.id!==b.dataset.del);renderProjectCards()}});
@@ -190,7 +191,7 @@ function manualDucts(){return (project.accessories||[]).filter(a=>a.type==='wiri
 function ductHits(a){return project.devices.find(o=>o.x<a.x+a.w-.5&&a.x<o.x+o.w-.5&&o.y<a.y+a.h-.5&&a.y<o.y+o.h-.5)}
 function ductName(a){return `Canaleta ${a.sectionMm||Math.min(a.w,a.h)}×${a.depthMm||'?'}`}
 function clampDuct(a){const f=project.enclosure.functional;a.w=Math.min(a.w,f.width);a.h=Math.min(a.h,f.height);a.x=Math.max(0,Math.min(f.width-a.w,a.x));a.y=Math.max(0,Math.min(f.height-a.h,a.y))}
-function ductSvgManual(a,fx,h,fy){const x=fx+a.x,y=h-fy-a.y-a.h,on=a.id===selDuct;return `<g class="duct" data-duct="${esc(a.id)}">${ductSvg(a,fx,h,fy)}<rect x="${x}" y="${y}" width="${a.w}" height="${a.h}" style="fill:transparent;stroke:none;pointer-events:all"/>${on?`<rect x="${x-2}" y="${y-2}" width="${a.w+4}" height="${a.h+4}" style="fill:none;stroke:#156bca;stroke-width:3;stroke-dasharray:6 3;pointer-events:none"/>`:''}</g>`}
+function ductSvgManual(a,fx,h,fy){const x=fx+a.x,y=h-fy-a.y-a.h,on=a.id===selDuct;return `<g class="duct" data-duct="${esc(a.id)}"><title>${ductName(a)} · ${a.orientation==='v'?'vertical':'horizontal'} · ${Math.round(a.orientation==='v'?a.h:a.w)} mm</title>${ductSvg(a,fx,h,fy)}<rect x="${x}" y="${y}" width="${a.w}" height="${a.h}" style="fill:transparent;stroke:none;pointer-events:all"/>${on?`<rect x="${x-2}" y="${y-2}" width="${a.w+4}" height="${a.h+4}" style="fill:none;stroke:#156bca;stroke-width:3;stroke-dasharray:6 3;pointer-events:none"/>`:''}</g>`}
 function toManualDucts(){if(project.ductMode==='manual')return;project.ductMode='manual';(project.accessories||[]).forEach((a,i)=>{if(a.type==='wiring_duct'&&a.auto){Object.assign(a,{auto:false,manual:true,provisional:false,orientation:'h',sectionMm:a.h,id:'duct-'+Date.now()+'-'+i})}})}
 function placeDuctFree(a){const f=project.enclosure.functional,others=manualDucts(),free=b=>!ductHits(b)&&!others.some(o=>o!==a&&o.x<b.x+b.w&&b.x<o.x+o.w&&o.y<b.y+b.h&&b.y<o.y+o.h);
  if(a.orientation==='v'){a.y=Math.round((f.height-a.h)/2);for(let x=15;x<=f.width-15-a.w;x+=5){a.x=x;if(free(a))return true}}else{a.x=Math.round((f.width-a.w)/2);for(let y=f.height-15-a.h;y>=15;y-=5){a.y=y;if(free(a))return true}}
@@ -263,7 +264,7 @@ ${structureSvg(w,h,project.enclosure.plinthHeight)||`<rect y="${h-project.enclos
  rails().map(r=>railSvg(r,fx,h,fy)).join('')+
  accessoriesSvg(fx,fy,h)+
  project.devices.map((d,i)=>{const yy=h-fy-d.y-d.h,pending=/confirm|placeholder|conflict|variant|revisar|pendiente/i.test(d.status||'');return `<g class="device ${i===selected?'active':''} ${pending?'pending':''}" data-index="${i}">
- <g filter="url(#shDev)">${frontSvg(d,fx+d.x,yy)}</g>
+ <title>${esc(nameOf(d))} · ${esc(d.model||'')} · ${esc(d.tag)}</title><g filter="url(#shDev)">${frontSvg(d,fx+d.x,yy)}</g>
  ${labelHolder(d,fx+d.x,yy)}
  <rect class="hitbox" x="${fx+d.x}" y="${yy}" width="${d.w}" height="${d.h}" style="fill:transparent;stroke:none;pointer-events:all"/>
  ${i===selected?`<rect x="${fx+d.x-2}" y="${yy-2}" width="${d.w+4}" height="${d.h+4}" style="fill:none;stroke:#156bca;stroke-width:3;stroke-dasharray:6 3;pointer-events:none"/>`:''}
@@ -279,8 +280,17 @@ ${structureSvg(w,h,project.enclosure.plinthHeight)||`<rect y="${h-project.enclos
   const k=d.mountingKit||shell(d.shell);$('selInfo').textContent=`${d.w} × ${d.h} mm`+(isDin(d)?' · sobre riel DIN':k?.type||k?.kit?` · kit ${k.type||k.kit}`:'');}
   encInfo();
 }
-function encInfo(){const e=encSpec();if(!e||!$('enclosureInfo'))return;const b=e.externalBody;$('enclosureInfo').textContent=`${e.label} · ${b.width}×${b.height}×${b.depth} mm`}
-function select(i){selected=i;selDuct=null;render()}
+let openChecked=false;
+async function openCheck(){if(openChecked||!project?.devices.length)return;openChecked=true;await Promise.all([runValidation(),runNormativa()]);const bad=(validationResult.errors||0)+findings.filter(f=>f.severity==='error'&&!f.manual).length;
+ if(bad||project.devices.some(d=>d.unplaced)){const a=await runAuto(false);if(a.ok)notice('Tablero rearmado para quedar dentro de normativa ('+a.gabinete+').')}}
+function encInfo(){const e=encSpec();if(!e||!$('enclosureInfo'))return;const b=e.externalBody;$('enclosureInfo').textContent=e.label}
+function select(i){selected=i;selDuct=null;render();$('deviceList').querySelector('.item.active')?.scrollIntoView({block:'nearest'})}
+function clearSelection(){if(selected===null&&!selDuct)return;selected=null;selDuct=null;render()}
+// Siguiente nombre de circuito: toma el prefijo más usado (TS-4. / TSEP-) y suma uno al mayor número.
+function nextCircuit(){const by={};for(const d of project.devices){const m=/^(.*?)(\d+)$/.exec(d.circuit||'');if(m)(by[m[1]]=by[m[1]]||[]).push(+m[2])}const best=Object.entries(by).sort((a,b)=>b[1].length-a[1].length)[0];if(!best)return '';let n=Math.max(...best[1])+1;while(project.devices.some(d=>d.circuit===best[0]+n))n++;return best[0]+n}
+function usualShell(){const c={};for(const d of project.devices)if(shell(d.shell))c[d.shell]=(c[d.shell]||0)+1;return Object.entries(c).sort((a,b)=>b[1]-a[1])[0]?.[0]||catalog.deviceShells[0].id}
+// Nombre del tablero: prefijo común de los circuitos (TSEP-1, TSEP-2 → TSEP); si no hay, el final del nombre del archivo.
+function boardName(devs,file){const c={};for(const d of devs){const k=(d.circuit||'').replace(/[-.]\d+$/,'');if(k&&k!==d.circuit)c[k]=(c[k]||0)+1}const best=Object.entries(c).sort((a,b)=>b[1]-a[1])[0];if(best&&best[1]>=devs.length/2)return best[0];const base=file.replace(/\.pdf$/i,'');return (base.split('_').pop()||base).replace(/[_-]+/g,' ').trim()||'Tablero'}
 function download(name,data,mime){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:mime}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 function filename(ext){return (project.project||'tablero').replace(/[^\w-]+/g,'_')+'.'+ext}
 function saveSvg(){const copy=$('board').cloneNode(true),{w,h}=dimensions();copy.setAttribute('viewBox',`-80 -80 ${w+160} ${h+160}`);copy.setAttribute('width',w+'mm');copy.setAttribute('height',h+'mm');return new XMLSerializer().serializeToString(copy)}
@@ -296,8 +306,8 @@ document.addEventListener('DOMContentLoaded',async()=>{
  $('enclosure').onchange=async()=>{const id=$('enclosure').value,prev=project.enclosure.id;$('moreMenu').hidden=true;const r=await runAuto(false,id);if(!r.ok){$('enclosure').value=prev}};
 projectList=await fetch('/api/projects').then(x=>x.json());renderProjectCards();
   $('newForm').onsubmit=async ev=>{ev.preventDefault();const name=$('newProjectName').value.trim();if(!name)return notice('Escribí un nombre para el tablero.');const r=await fetch('/api/project-new',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,enclosureId:$('newProjectEnclosure').value})});const data=await r.json();if(!r.ok)return notice(data.error);location.href='?id='+encodeURIComponent(data.id)+'#editor'};
-const runAuto=async(free,only)=>{const q=new URLSearchParams();if(free)q.set('free','1');if(only)q.set('enclosure',only);const r=await fetch('/api/autolayout?'+q,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(project)});const data=await r.json();if(!r.ok){notice(data.error);return{ok:false,error:data.error}}snapshot();project=data.project;selected=null;const e=catalog.enclosures.find(v=>v.id===data.summary.gabinete),s=data.summary;$('enclosure').value=s.gabinete;findings=data.findings||[];
-  view=null;render();updateChip();notice('Tablero armado en '+e.label+(s.alternativaRielLibre?` · con riel libre entraría en ${s.alternativaRielLibre.label}`:''));return{ok:true,gabinete:e.label}};
+const runAuto=async(free,only)=>{const q=new URLSearchParams();if(free)q.set('free','1');if(only)q.set('enclosure',only);const r=await fetch('/api/autolayout?'+q,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(project)});const data=await r.json();if(!r.ok){notice(data.error);return{ok:false,error:data.error}}snapshot();const prevEnc=project.enclosure.id,prevLabel=encSpec()?.label;project=data.project;selected=null;const e=catalog.enclosures.find(v=>v.id===data.summary.gabinete),s=data.summary,changed=prevEnc!==s.gabinete;$('enclosure').value=s.gabinete;findings=data.findings||[];
+  if(changed)view=null;render();updateChip();notice((changed&&prevLabel?`El gabinete cambió: ${prevLabel} → ${e.label} (no entraba en el anterior).`:'Tablero armado en '+e.label)+(s.alternativaRielLibre?` · con riel libre entraría en ${s.alternativaRielLibre.label}`:'')+(changed&&manualDucts().length?' Revisá tus canaletas: el gabinete es otro.':''));return{ok:true,gabinete:e.label,changed}};window.runAuto=runAuto;
   $('autoLayout').onclick=()=>{$('moreMenu').hidden=true;runAuto(false)};$('autoFree').onclick=()=>{$('moreMenu').hidden=true;runAuto(true)};
   $('normaChip').onclick=e=>{e.stopPropagation();$('moreMenu').hidden=true;$('normaPanel').hidden=!$('normaPanel').hidden};$('moreBtn').onclick=e=>{e.stopPropagation();$('normaPanel').hidden=true;$('moreMenu').hidden=!$('moreMenu').hidden};
   document.querySelectorAll('#moreMenu .menu-item').forEach(b=>b.addEventListener('click',()=>{$('moreMenu').hidden=true}));
@@ -305,10 +315,11 @@ const runAuto=async(free,only)=>{const q=new URLSearchParams();if(free)q.set('fr
   document.addEventListener('keydown',e=>{const da=selDuct&&ductById(selDuct);if(da&&!/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)){const st=e.shiftKey?1:5,mv={ArrowLeft:[-st,0],ArrowRight:[st,0],ArrowUp:[0,st],ArrowDown:[0,-st]}[e.key];
    if(mv){e.preventDefault();const old={x:da.x,y:da.y};snapshot();da.x+=mv[0];da.y+=mv[1];clampDuct(da);if(ductHits(da)){Object.assign(da,old);history.pop();notice(`No hay lugar ahí: se superpone con ${nameOf(ductHits({...da,x:da.x+mv[0],y:da.y+mv[1]})||{tag:'un equipo'})}.`)}render();return}
    if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();$('ductRemove').click();return}}
-  if(e.key==='Escape'){$('addPanel').hidden=true;$('ductPanel').hidden=true;document.querySelectorAll('.popover').forEach(p=>p.hidden=true)}if((e.ctrlKey||e.metaKey)&&!/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)){if(e.key==='z'){e.preventDefault();$('undo').click()}if(e.key==='y'){e.preventDefault();$('redo').click()}}});
+  if(selected!==null&&(e.key==='Delete')&&!/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();$('remove').click();return}
+  if(e.key==='Escape'){if($('addPanel').hidden&&$('ductPanel').hidden&&!/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName))clearSelection();$('addPanel').hidden=true;$('ductPanel').hidden=true;document.querySelectorAll('.popover').forEach(p=>p.hidden=true)}if((e.ctrlKey||e.metaKey)&&!/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)){if(e.key==='z'){e.preventDefault();$('undo').click()}if(e.key==='y'){e.preventDefault();$('redo').click()}}});
  $('fit').onclick=fitView;$('focus').onclick=focusView;$('zoomIn').onclick=()=>zoomView(.75);$('zoomOut').onclick=()=>zoomView(1.33);
 const updatePoles=()=>{$('polesRow').hidden=!shell($('shell').value)?.poleModule};
-  $('showAdd').onclick=()=>{updatePoles();$('addPanel').hidden=false;$('newCircuit').focus()};$('addCancel').onclick=()=>{$('addPanel').hidden=true};
+  $('showAdd').onclick=()=>{$('shell').value=usualShell();const z=project.devices.find(d=>d.shell===$('shell').value);if(z?.poles)$('newPoles').value=z.poles;updatePoles();$('newCircuit').value=nextCircuit();$('addPanel').hidden=false;$('newCircuit').focus();$('newCircuit').select()};$('addCancel').onclick=()=>{$('addPanel').hidden=true};
   const ductDefaultLen=()=>{const f=project.enclosure.functional;$('newDuctLen').value=$('newDuctOri').value==='v'?f.height-30:f.width-30};
   $('showDuct').onclick=()=>{if(!ducts.sections.length)return notice('No hay secciones de canaleta en el catálogo.');ductDefaultLen();$('ductPanel').hidden=false};$('ductCancel').onclick=()=>{$('ductPanel').hidden=true};$('newDuctOri').onchange=ductDefaultLen;
   $('ductForm').onsubmit=ev=>{ev.preventDefault();const sec=ducts.sections[+$('newDuctSec').value],v=$('newDuctOri').value==='v',f=project.enclosure.functional,L=Math.max(50,Math.min(v?f.height:f.width,Math.round(+$('newDuctLen').value||0)));
@@ -322,9 +333,11 @@ const updatePoles=()=>{$('polesRow').hidden=!shell($('shell').value)?.poleModule
   $('autoDucts').onclick=()=>{if(!confirm('Se borran las canaletas dibujadas a mano y el programa vuelve a proponerlas solo. ¿Seguir?'))return;snapshot();project.ductMode='auto';project.accessories=(project.accessories||[]).filter(a=>!(a.type==='wiring_duct'&&a.manual));selDuct=null;render()};$('shell').onchange=updatePoles;
   $('addForm').onsubmit=async ev=>{ev.preventDefault();const s=shell($('shell').value),nums=project.devices.map(d=>+((/^QF(\d+)$/.exec(d.tag)||[])[1])).filter(Number.isFinite);let n=Math.max(0,...nums)+1,tag='QF'+n;while(project.devices.some(d=>d.tag===tag))tag='QF'+(++n);
    snapshot();const poles=s.poleModule?Math.max(2,Math.min(4,+$('newPoles').value||2)):undefined,z=shellSize(s,poles);const d={tag,circuit:$('newCircuit').value.trim()||undefined,model:$('newModel').value.trim()||s.label,x:200,y:200,w:z.w,h:z.h,poles,shell:s.id,status:s.provisional?'variante pendiente':'modelo agregado; revisar',...(s.kit?{mountingKit:{type:s.kit,orderCode:s.kitOrderCode,moduleHeight:s.kitHeight}}:{})};alignDin(d);project.devices.push(d);
-   $('newCircuit').value='';$('newModel').value='';$('addPanel').hidden=true;notice('Rearmando el tablero…');const auto=await runAuto(false);if(auto.ok)select(project.devices.findIndex(x=>x.tag===tag));else notice('Equipo agregado, pero no se pudo rearmar solo: '+auto.error)};
+   $('newCircuit').value='';$('newModel').value='';$('addPanel').hidden=true;notice('Rearmando el tablero…');const auto=await runAuto(false);if(auto.ok){select(project.devices.findIndex(x=>x.tag===tag));if(!auto.changed)notice(`${d.circuit||tag} agregado.`)}else notice('Equipo agregado, pero no se pudo rearmar solo: '+auto.error)};
+  $('duplicate').onclick=async()=>{if(selected===null)return;const src=project.devices[selected],nums=project.devices.map(d=>+((/^QF(\d+)$/.exec(d.tag)||[])[1])).filter(Number.isFinite);let n=Math.max(0,...nums)+1,tag='QF'+n;while(project.devices.some(d=>d.tag===tag))tag='QF'+(++n);
+   const circ=nextCircuit();snapshot();const d={...clone(src),tag,circuit:circ||undefined,unplaced:true};delete d.placementNote;project.devices.splice(selected+1,0,d);notice('Rearmando el tablero…');const auto=await runAuto(false);if(auto.ok){select(project.devices.findIndex(x=>x.tag===tag));if(!auto.changed)notice(`${circ||tag} agregado (copia de ${nameOf(src)}).`)}else notice('No se pudo rearmar: '+auto.error)};
   for(const key of ['circuit','model'])$(key).onchange=()=>{if(selected===null)return;snapshot();project.devices[selected][key]=$(key).value.trim()||(key==='model'?project.devices[selected][key]:undefined);render()};
- $('remove').onclick=()=>{if(selected===null)return;snapshot();project.devices.splice(selected,1);selected=null;render();notice('Dispositivo borrado.')};
+ $('remove').onclick=()=>{if(selected===null)return;snapshot();project.devices.splice(selected,1);selected=null;render();notice('Equipo borrado. Ctrl+Z para deshacer.')};
  $('undo').onclick=()=>{if(!history.length)return;future.push(clone(project));project=history.pop();selected=null;$('undo').disabled=!history.length;$('redo').disabled=false;markDirty();render();notice('Último cambio deshecho.')};
  $('redo').onclick=()=>{if(!future.length)return;history.push(clone(project));project=future.pop();selected=null;$('undo').disabled=false;$('redo').disabled=!future.length;markDirty();render();notice('Cambio rehecho.')};
  $('undo').disabled=true;
@@ -338,7 +351,7 @@ const updatePoles=()=>{$('polesRow').hidden=!shell($('shell').value)?.poleModule
 const importPdf=async(file,fresh)=>{if(!file)return;notice('Leyendo PDF…');
    if(fresh){const name=file.name.replace(/\.pdf$/i,'').replace(/[_-]+/g,' ').trim()||'Tablero';const r0=await fetch('/api/project-new',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,enclosureId:catalog.enclosures[0].id})});const d0=await r0.json();if(!r0.ok)return notice(d0.error);projectId=d0.id;project=await fetch('/api/project?id='+encodeURIComponent(projectId)).then(x=>x.json());history=[];future=[];selected=null;view=null;findings=[];$('undo').disabled=true;window.history.replaceState(null,'','?id='+encodeURIComponent(projectId)+'#editor');projectList=await fetch('/api/projects').then(x=>x.json());renderProjectCards()}
    const r=await fetch('/api/import-pdf',{method:'POST',body:file});const data=await r.json();if(!r.ok)return notice(data.error);
-   const add=data.devices.filter(d=>!d.upstream&&d.shell&&!project.devices.some(x=>x.tag===d.tag)),skipped=data.devices.filter(d=>!d.upstream&&!d.shell).length;
+   const add=data.devices.filter(d=>!d.upstream&&d.shell&&!project.devices.some(x=>x.tag===d.tag)),skipped=data.devices.filter(d=>!d.upstream&&!d.shell).length;if(fresh&&add.length)project.project=boardName(add,file.name);
    if(!add.length){showScreen('editor');return notice('No se detectaron equipos nuevos de 2 o más polos.')}
    const boards=[...new Set(add.map(d=>(/^(.+-\d+)\.\d+$/.exec(d.circuit||'')||[])[1]).filter(Boolean))];
    const before=clone(project);project.devices.push(...add.map(d=>({...d,x:150,y:150,unplaced:true})));notice('Armando el tablero…');const auto=await runAuto(false);
@@ -348,18 +361,20 @@ const importPdf=async(file,fresh)=>{if(!file)return;notice('Leyendo PDF…');
   $('pdf').onchange=async e=>{await importPdf(e.target.files[0],false);e.target.value=''};$('pdfNew').onchange=async e=>{await importPdf(e.target.files[0],true);e.target.value=''};$('importMore').onclick=()=>{$('moreMenu').hidden=true;$('pdf').click()};
   const dz=$('dropPdf');dz.ondragover=e=>{e.preventDefault();dz.classList.add('over')};dz.ondragleave=()=>dz.classList.remove('over');dz.ondrop=async e=>{e.preventDefault();dz.classList.remove('over');await importPdf(e.dataTransfer.files[0],true)};
  const svg=$('board');const plateXY=e=>{const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const p=pt.matrixTransform(svg.getScreenCTM().inverse()),{fx,fy,h}=dimensions();return {x:p.x-fx,y:h-fy-p.y}};
- svg.onpointerdown=e=>{const dg=e.target.closest('.duct');if(dg){const a=ductById(dg.dataset.duct);if(a){selected=null;selDuct=a.id;const p=plateXY(e);drag={duct:a.id,start:{x:a.x,y:a.y},off:{x:p.x-a.x,y:p.y-a.y},saved:false};svg.setPointerCapture(e.pointerId);render();return}}const g=e.target.closest('.device');if(!g){pan={x:e.clientX,y:e.clientY};svg.setPointerCapture(e.pointerId);return}select(+g.dataset.index);drag={index:selected,point:svg.createSVGPoint(),start:clone(project.devices[selected]),saved:false};svg.setPointerCapture(e.pointerId)};
+ svg.onpointerdown=e=>{const dg=e.target.closest('.duct');if(dg){const a=ductById(dg.dataset.duct);if(a){selected=null;selDuct=a.id;const p=plateXY(e);drag={duct:a.id,start:{x:a.x,y:a.y},off:{x:p.x-a.x,y:p.y-a.y},saved:false};svg.setPointerCapture(e.pointerId);render();return}}const g=e.target.closest('.device');if(!g){pan={x:e.clientX,y:e.clientY,x0:e.clientX,y0:e.clientY};svg.setPointerCapture(e.pointerId);return}select(+g.dataset.index);drag={index:selected,point:svg.createSVGPoint(),start:clone(project.devices[selected]),saved:false};svg.setPointerCapture(e.pointerId)};
  svg.onpointermove=e=>{if(pan){view.x-=(e.clientX-pan.x)*view.w/svg.clientWidth;view.y-=(e.clientY-pan.y)*view.h/svg.clientHeight;pan={x:e.clientX,y:e.clientY};setView();return}if(!drag)return;if(!drag.saved){snapshot();drag.saved=true}if(drag.duct){const a=ductById(drag.duct),p=plateXY(e);if(!a)return;a.x=Math.round((p.x-drag.off.x)/5)*5;a.y=Math.round((p.y-drag.off.y)/5)*5;clampDuct(a);render();return}const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const a=pt.matrixTransform(svg.getScreenCTM().inverse()),{fx,fy,h}=dimensions(),d=project.devices[drag.index];d.x=Math.round(Math.max(0,Math.min(project.enclosure.functional.width-d.w,a.x-fx-d.w/2)));if(isDin(d))alignDin(d);else d.y=Math.round(Math.max(0,Math.min(project.enclosure.functional.height-d.h,h-fy-a.y-d.h/2)));render()};
- svg.onpointerup=()=>{if(drag&&drag.duct){const a=ductById(drag.duct),hit=a&&drag.saved&&ductHits(a);if(hit){Object.assign(a,drag.start);render();notice(`No hay lugar ahí: se superpone con ${nameOf(hit)}.`)}drag=null;pan=null;return}if(drag&&drag.saved&&project.devices[drag.index]){const d=project.devices[drag.index],hit=project.devices.find((o,j)=>j!==drag.index&&o.x<d.x+d.w-.5&&d.x<o.x+o.w-.5&&o.y<d.y+d.h-.5&&d.y<o.y+o.h-.5);
-  if(hit){Object.assign(d,{x:drag.start.x,y:drag.start.y});render();notice(`No hay lugar ahí: se superpone con ${nameOf(hit)}.`)}else{delete d.unplaced;delete d.placementNote}}drag=null;pan=null};svg.onpointercancel=()=>{drag=null;pan=null};
+ svg.onpointerup=ev=>{if(pan&&!drag&&Math.hypot(ev.clientX-pan.x0,ev.clientY-pan.y0)<4)clearSelection();if(drag&&drag.duct){const a=ductById(drag.duct),hit=a&&drag.saved&&ductHits(a);if(hit){Object.assign(a,drag.start);render();notice(`No hay lugar ahí: se superpone con ${nameOf(hit)}.`)}drag=null;pan=null;return}if(drag&&drag.saved&&project.devices[drag.index]){const d=project.devices[drag.index],hit=project.devices.find((o,j)=>j!==drag.index&&o.x<d.x+d.w-.5&&d.x<o.x+o.w-.5&&o.y<d.y+d.h-.5&&d.y<o.y+o.h-.5);
+  if(hit&&isDin(d)&&isDin(hit)&&Math.abs(hit.y-d.y)<1){const sameRow=Math.abs(drag.start.y-d.y)<1,row=project.devices.filter(o=>o!==d&&isDin(o)&&Math.abs(o.y-d.y)<1).sort((a,b)=>a.x-b.x),start=Math.min(...row.map(o=>o.x),sameRow?drag.start.x:Infinity),after=d.x+d.w/2>hit.x+hit.w/2,rail=rails().reduce((b,r)=>Math.abs(r.y-(d.y+d.h/2))<Math.abs(b.y-(d.y+d.h/2))?r:b,rails()[0]);
+   row.splice(row.indexOf(hit)+(after?1:0),0,d);const total=row.reduce((t,o)=>t+o.w,0);
+   if(rail&&start+total>rail.x+rail.length+.5){Object.assign(d,{x:drag.start.x,y:drag.start.y});render();notice('No entra en ese riel.')}
+   else{let x=start;row.forEach(o=>{o.x=Math.round(x*10)/10;x+=o.w});const arr=project.devices;arr.splice(arr.indexOf(d),1);arr.splice(arr.indexOf(hit)+(after?1:0),0,d);delete d.unplaced;delete d.placementNote;selected=arr.indexOf(d);render();notice(`${nameOf(d)} movido ${after?'después':'antes'} de ${nameOf(hit)}.`)}}
+  else if(hit){Object.assign(d,{x:drag.start.x,y:drag.start.y});render();notice(`No hay lugar ahí: se superpone con ${nameOf(hit)}.`)}else{delete d.unplaced;delete d.placementNote}}drag=null;pan=null};svg.onpointercancel=()=>{drag=null;pan=null};
  svg.addEventListener('wheel',e=>{e.preventDefault();zoomView(e.deltaY<0?.85:1.18)},{passive:false});
  document.querySelectorAll('[data-screen]').forEach(b=>b.onclick=()=>showScreen(b.dataset.screen));
  document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>showScreen(b.dataset.go));
  showScreen((location.hash||'#projects').slice(1));
  render();
- // Al abrir: si el tablero guardado no cumple (errores de normativa o geométricos, equipos sin ubicar), se rearma solo.
- if(project.devices.length){await Promise.all([runValidation(),runNormativa()]);const bad=(validationResult.errors||0)+findings.filter(f=>f.severity==='error'&&!f.manual).length;
-  if(bad||project.devices.some(d=>d.unplaced)){const a=await runAuto(false);if(a.ok)notice('Tablero rearmado para quedar dentro de normativa ('+a.gabinete+').')}}
+ if(location.hash==='#editor')await openCheck();
  const pendingNotice=sessionStorage.getItem('abb-notice');if(pendingNotice){sessionStorage.removeItem('abb-notice');notice(pendingNotice)}
 });
 window.addEventListener('beforeunload',event=>{if(!dirty)return;event.preventDefault();event.returnValue=''})
