@@ -45,5 +45,15 @@ class PuertaCerradaDXF(unittest.TestCase):
         self.assertEqual(bad, [])
 
 
+    def test_cartel_dentro_de_la_puerta_en_gabinete_chico(self):
+        import copy
+        p = copy.deepcopy(self.p)
+        p["enclosure"]["externalBody"] = {"width": 403, "height": 303}
+        p["enclosure"]["plinthHeight"] = 0
+        doc = ezdxf.read(StringIO(build_dxf(p, L("catalogo_abb.json"), L("frentes_cad.json"), L("apariencias_abb.json")).decode("utf-8")))
+        ys = [pt[1] for e in doc.modelspace().query('LWPOLYLINE[layer=="ABB_PUERTA_CARTEL"]') for pt in e.get_points()]
+        self.assertGreaterEqual(min(ys), 0)
+
+
 if __name__ == "__main__":
     unittest.main()

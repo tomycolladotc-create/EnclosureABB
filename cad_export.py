@@ -85,8 +85,8 @@ def _door_view(space, ox, project, structure, body, plinth):
         space.add_circle((ox + cx, Y(ly)), 15, dxfattribs={"layer": "ABB_PUERTA_SENIALIZACION"})
         text(light.get("label", ""), cx, ly + 27, 12, "ABB_PUERTA_SENIALIZACION")
     # Cartel de riesgo eléctrico (triángulo amarillo con rayo + leyenda).
-    ts = max(70, min(w * 0.26, 130))
     ty = ly + 60 if lights else py + phh + 50
+    ts = max(36, min(w * 0.26, 130, (hb - 24 - ty) / 1.25))  # el cartel siempre dentro de la puerta
     tx = w / 2 - ts / 2
 
     def P(x, y):

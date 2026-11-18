@@ -12,6 +12,15 @@
 - Tableros más compactos (riel cortado a medida, kit KD sin margen, reserva PE real).
 - Fluidez: agregar/duplicar equipo con el siguiente circuito, reordenar en el riel arrastrando, Esc/Supr/Ctrl+Z, aviso si cambia el gabinete.
 
+## Hallazgos de la prueba como usuario (2026-11-18, ronda 1) — corregidos
+- Puerta de gabinete chico (300 mm): el cartel de riesgo se salía de la puerta → se ajusta al lugar libre (editor y DXF).
+- Título del dibujo tapado por el selector de vista y subtítulo cortado en gabinetes chicos → título proporcional; selector arriba a la izquierda (a la derecha lo tapaba la tarjeta del equipo).
+- Cotas de rieles superpuestas ("76 mm222.25 mm") → cotas encadenadas y redondeadas al mm.
+- Vista de puerta mostraba cotas de placa y rieles → sólo medidas exteriores.
+- "Agregar equipo" proponía un circuito que ya existía entre los equipos no dibujados (TSL2-3) y un modelo genérico sin código ("S201M Na") → siguiente circuito libre real y el modelo más usado del tablero (con su código).
+- Tarjeta del equipo: ahora muestra qué código de pedido va a la lista (verificado) o si falta.
+- Peines: tramos iguales se suman ("2×14, 2×14" → "4×14"). Favicon (error 404 en consola).
+
 ## Por hacer (prioridad)
 1. **Cargar las carcasas que faltan** para que se dibujen (hoy van sólo a la lista): OT100F4, OT160EV03, S 293-C 80, SN201L B16, F204 — con medidas ABB y fuente. Sin esto, algunos tableros quedan sin su interruptor general en el dibujo.
 2. **Códigos sin verificar** (quedan "FALTA CÓDIGO"): variante del OT100F4 (N2 seccionador / C conmutador), S 293-C 80, SN201L B16, F204-SX AC-40/0,3 (¿AC o A selectivo?). Fusible tabaquera y portafusible de los testigos; cubrebornes.
@@ -23,7 +32,11 @@
 8. **Gabinetes que faltan**: SR2 con puerta vidriada, zócalos, IS2, AM2; disponibilidad en Argentina sin verificar.
 9. Puerta cerrada: agregar otros elementos de puerta si el unifilar los trae (voltímetro/amperímetro, selectoras, pulsadores de emergencia).
 
+10. **Siempre "FALTA CÓDIGO" en todos los tableros**: cubrebornes (no hay producto elegido) y fusible "tabaquera" + portafusible de los testigos. Elegir productos reales (ABB) para que la lista salga completa.
+11. Al agregar equipos el gabinete cambia solo (se avisa); evaluar pedir confirmación antes de cambiarlo.
+
 ## Propuestas para decidir (Thomas)
+- Canaletas: la lista pide tiras de 2 m pero ABB las vende por caja (32–48 m). ¿Mostrar la cantidad en cajas, o en tiras porque el distribuidor las vende sueltas?
 - Separar automáticamente un PDF de planta (varios tableros) en un tablero por unifilar.
 - Cajetín (rótulo) en el PDF exportado.
 - Imán a bordes al mover canaletas.

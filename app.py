@@ -60,7 +60,10 @@ class Handler(BaseHTTPRequestHandler):
                 ensure_marking(device, catalog)
             return self.send_data(200, project)
         if route == "/api/catalog":
-            return self.send_data(200, json.loads(CATALOG.read_text(encoding="utf-8")))
+            data = json.loads(CATALOG.read_text(encoding="utf-8"))
+            from bom import load_order_codes
+            data["orderCodes"] = load_order_codes()  # códigos verificados: el editor muestra cuál irá a la lista
+            return self.send_data(200, data)
         if route == "/api/ducts":  # secciones estándar de canaleta (catálogo ABB) para dibujarlas a mano
             return self.send_data(200, load_accessory_catalog().get("wiringDucts", {}))
         if route == "/api/fronts":

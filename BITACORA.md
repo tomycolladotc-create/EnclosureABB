@@ -3,6 +3,12 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-18 02:15 · Claude · Prueba como usuario final (ronda 1) + regla permanente
+- Thomas pide probar siempre como consumidor final. Regla agregada en AGENTS.md y ESTADO.md; BITACORA reordenada (más nueva arriba, como dice AGENTS).
+- Ronda: importar los 5 unifilares, puerta, lista, agregar 6 equipos, borrar/deshacer. Corregido: cartel fuera de la puerta en gabinetes de 300 mm (editor y DXF), título/selector superpuestos, cotas de rieles pisadas, cotas de interior en la puerta, "Agregar" repetía un circuito no dibujado y usaba un modelo genérico sin código, tarjeta sin el código que va a la lista, tramos de peine repetidos, favicon 404.
+- Archivos: web/index.html, web/styles.css, app.py (/api/catalog incluye orderCodes), bom.py, cad_export.py, tests. Hallazgos y pendientes en docs/MEJORAS.md.
+- Tests 114 OK; e2e 114/114.
+
 ## 2026-11-18 · Claude · Lista de materiales sin errores de compra + vista con la puerta cerrada
 - Thomas: la lista no puede inducir una compra errónea; quiere ver la puerta cerrada con los orificios de los pilotos del unifilar, la nomenclatura grabada y el cartel de riesgo eléctrico.
 - BOM (`bom.py`), errores encontrados y corregidos: gabinete repetido; placa PF pedida aunque viene con el SR2; menú de opciones GD como código; id interno "terminal_cover" como código; canaletas por pieza (ahora tiras de 2 m con despiece); equipos no dibujados ausentes; QD diferenciales no detectados; pilotos y fusibles ausentes; paneles ciegos PC sobre cajas moldeadas; peine PS2/12 insuficiente para 14 polos; peines del mismo código en varios renglones (ahora uno, con los tramos); System pro E: renglón "envolvente" PUPM2100 = mismo artículo que los montantes 1STQ007035A0000 (pedido doble) → se compra pieza por pieza; "PDLB1127 + PDNB1507" en un renglón → dos; panel lateral "uno por lado" → 2; riel sin opción de catálogo ya no dice "? mm".

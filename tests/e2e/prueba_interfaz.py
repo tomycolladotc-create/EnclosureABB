@@ -274,8 +274,13 @@ def main():
             n_lights = pg.evaluate("(project.signals?.pilotLights||[]).length")
             check("puerta cerrada: un orificio por piloto del unifilar", board.count('fill="url(#gLens)"') == n_lights, f"{n_lights} pilotos")
             box = pg.locator(".viewtoggle").first.bounding_box(); cbox = pg.locator(".canvas").bounding_box()
-            check("selector de vista centrado arriba", abs((box["x"] + box["width"] / 2) - (cbox["x"] + cbox["width"] / 2)) < 30)
+            check("selector de vista arriba a la izquierda (no lo tapa la tarjeta del equipo)", box["x"] < cbox["x"] + 40 and box["y"] < cbox["y"] + 40)
             pg.click("#viewInt"); wait_idle(pg, 600)
+            pg.click("#deviceList .item >> nth=0"); wait_idle(pg, 400)
+            known = pg.evaluate("!!knownCode(project.devices[selected])")
+            ph = pg.get_attribute("#orderCode", "placeholder")
+            check("tarjeta: muestra el código que va a la lista (o que falta)", ("verificado" in ph) if known else ("falta" in ph), ph)
+            pg.keyboard.press("Escape")
             check("volver a la vista interior", pg.locator("#board .device").count() == pg.evaluate("project.devices.length"))
 
             # 9) Exportar.

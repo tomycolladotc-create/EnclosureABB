@@ -38,6 +38,6 @@ input:focus,select:focus{outline:2px solid #9bb7e8;border-color:#6d94dc}
 #revisionList .rev{padding:8px 0;border-top:1px solid var(--line);font-size:12px}
 @media print{.topbar,.list,.zoom,.toast,.card,.enc-chip{display:none!important}.screen{display:none!important}#screen-editor{display:block!important}.editor{display:block;height:auto}.canvas{background:#fff}#board{height:95vh}body{background:#fff}}
 .tbl tr.miss td{background:#fde8e9;color:#a4202b}#bomIssues{margin-bottom:10px}
-.viewtoggle{position:absolute;left:50%;transform:translateX(-50%);top:12px;z-index:3;display:flex;background:#fff;border:1px solid var(--line);border-radius:10px;padding:3px;box-shadow:0 4px 14px #14213d14}.viewtoggle button{background:transparent!important;color:var(--muted)!important;font-weight:600;padding:6px 12px;font-size:13px}.viewtoggle button.on{background:#14213d!important;color:#fff!important}
+.viewtoggle{position:absolute;left:14px;top:12px;z-index:3;display:flex;background:#fff;border:1px solid var(--line);border-radius:10px;padding:3px;box-shadow:0 4px 14px #14213d14}.viewtoggle button{background:transparent!important;color:var(--muted)!important;font-weight:600;padding:6px 12px;font-size:13px}.viewtoggle button.on{background:#14213d!important;color:#fff!important}
 
 .viewtoggle.inline{position:static;transform:none;box-shadow:none}.exportview{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 14px}.exportview>span{font-weight:600;font-size:13px}

@@ -219,7 +219,7 @@ def build_bom(project, catalog, accessory_catalog=None, order_codes=None):
         key = (category, code, base)  # mismo código = un solo renglón
         entry = grouped_acc.setdefault(key, {"q": 0, "tags": [], "spans": []})
         if item.get("type") == "comb":
-            entry["spans"].append(f"{item.get('quantity', 1)}×{item.get('poleCount', '?')}")
+            entry["spans"].append((item.get("poleCount", "?"), int(item.get("quantity", 1))))
         entry["q"] += int(item.get("quantity", 1))
         entry["tags"] += item.get("devices", [])
         for extra in item.get("bomExtra", []):  # renglones asociados (p. ej. topes de la bornera)
@@ -234,7 +234,10 @@ def build_bom(project, catalog, accessory_catalog=None, order_codes=None):
             + (f" · se vende por caja de {pack} m" if pack else ""), n, f"tira {strip / 1000:g} m", source=duct_spec.get("source", ""))
     for (category, code, description), entry in grouped_acc.items():
         if entry["spans"]:
-            description += " · tramos (piezas × polos a puentear): " + ", ".join(entry["spans"])
+            spans = {}
+            for poles_, q in entry["spans"]:  # mismos tramos se suman: "2×14, 2×14" → "4×14"
+                spans[poles_] = spans.get(poles_, 0) + q
+            description += " · tramos (piezas × polos a puentear): " + ", ".join(f"{q}×{n}" for n, q in sorted(spans.items(), key=lambda x: -int(x[0]) if str(x[0]).isdigit() else 0))
         add(category, code, description, entry["q"], "u", entry["tags"], status="verificado" if code != MISSING else "falta código de pedido")
     return rows
 
