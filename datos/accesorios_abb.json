@@ -1,665 +1,713 @@
 {
-  "_ayuda": "Accesorios de tablero (peines, bornes y barras de tierra). Regla del proyecto: NADA inventado; cada ítem con fuente y estado. availability: 'argentina-confirmada' (ABB Argentina lo lista/certifica), 'solo-distribuidor-exterior' (código real visto en distribuidor, sin confirmar venta en Argentina), 'por-confirmar'. Sin CAD ni medidas de frente todavía: se agregan al bajar el CAD oficial (misma metodología que deviceShells). Las 'pendientes' listan lo que falta buscar. POLÍTICA (decidida por el usuario): los accesorios genéricos (peines, bornes y barras de tierra y neutro, tapas) pueden ser de cualquier marca conocida con equivalente; no preguntar por la marca. Cada ítem lleva 'marca' y, si es equivalente, 'equivalenteDe'. El archivo conserva su nombre por historia.",
-  "version": 1,
-  "combs": [
+ "_ayuda": "Accesorios de tablero (peines, bornes y barras de tierra). Regla del proyecto: NADA inventado; cada ítem con fuente y estado. availability: 'argentina-confirmada' (ABB Argentina lo lista/certifica), 'solo-distribuidor-exterior' (código real visto en distribuidor, sin confirmar venta en Argentina), 'por-confirmar'. Sin CAD ni medidas de frente todavía: se agregan al bajar el CAD oficial (misma metodología que deviceShells). Las 'pendientes' listan lo que falta buscar. POLÍTICA (decidida por el usuario): los accesorios genéricos (peines, bornes y barras de tierra y neutro, tapas) pueden ser de cualquier marca conocida con equivalente; no preguntar por la marca. Cada ítem lleva 'marca' y, si es equivalente, 'equivalenteDe'. El archivo conserva su nombre por historia.",
+ "version": 1,
+ "combs": [
+  {
+   "id": "abb-ps1-12",
+   "familia": "PS1",
+   "orderCode": "2CDL210001R1012",
+   "fases": 1,
+   "modulos": 12,
+   "pasoMm": 17.5,
+   "corrienteA": 63,
+   "compatibleCon": [
+    "S200",
+    "F200",
+    "DDA200"
+   ],
+   "availability": "por-confirmar",
+   "source": "RS Online (ph.rs-online.com/web/p/busbars/4896489); hoja PS1/12 (pood.esvika.ee/ProductSpecifications/Download?id=12220); ipd.com.au",
+   "status": "medidas y corriente de hojas de datos de distribuidores (esvika, ipd.com.au); falta hoja ABB y Argentina",
+   "marca": "ABB",
+   "anchoMm": 20,
+   "largoMm": 211,
+   "icwKA": 25,
+   "tensionV": 690
+  },
+  {
+   "id": "abb-ps1-4",
+   "familia": "PS1",
+   "orderCode": "2CDL210001R1004",
+   "fases": 1,
+   "modulos": 4,
+   "pasoMm": 17.5,
+   "corrienteA": 63,
+   "compatibleCon": [
+    "S200"
+   ],
+   "availability": "por-confirmar",
+   "source": "automa.net (código PS1/4); plc-direct.com/products/2cdl210001r1004; proax.ca/en/product/1672332/abb2cdl210001r1004 (distribuidor oficial ABB); ficha ABB reproducida por Sonepar (res.cloudinary.com/sonepar-fr .../15776815_FT.pdf); fichas ABB leídas 2026-11-15 (Sonepar 15776815_FT.pdf): ancho 21, alto 18, largo 67 mm",
+   "status": "63 A, 25 kA, 690 V; medidas de la ficha ABB (21 x 18 x 67 mm; el orden ancho/alto/largo es el que da la ficha, sin dibujo); falta confirmar Argentina",
+   "marca": "ABB",
+   "icwKA": 25,
+   "tensionV": 690,
+   "pesoKg": 0.03,
+   "seccionMm2": 10,
+   "anchoMm": 21,
+   "alturaMm": 18,
+   "largoMm": 67
+  },
+  {
+   "id": "abb-ps1-60",
+   "familia": "PS1",
+   "orderCode": "2CDL210001R1060",
+   "fases": 1,
+   "modulos": 60,
+   "pasoMm": 17.5,
+   "corrienteA": 63,
+   "compatibleCon": [
+    "S200",
+    "F200",
+    "DDA200"
+   ],
+   "availability": "por-confirmar",
+   "source": "RS Online (ph.rs-online.com/web/p/busbars/4896568); ficha ABB PS1/60 (pood.esvika.ee/ProductSpecifications/Download?id=12224; cdn.erply.com/files/396198/2CDL210001R1060.pdf); ficha ABB PS1/60 leída 2026-11-15 (cdn.erply.com): 20 x 17 x 1050 mm, 0,26 kg",
+   "status": "63 A, 25 kA, 690 V; 20 x 17 x 1050 mm de la ficha ABB; se corta a medida; falta confirmar Argentina",
+   "marca": "ABB",
+   "icwKA": 25,
+   "tensionV": 690,
+   "anchoMm": 20,
+   "alturaMm": 17,
+   "largoMm": 1050,
+   "pesoKg": 0.26
+  },
+  {
+   "id": "abb-ps3-12",
+   "familia": "PS3",
+   "orderCode": "2CDL230001R1012",
+   "fases": 3,
+   "modulos": 12,
+   "pasoMm": 17.5,
+   "corrienteA": 63,
+   "compatibleCon": [
+    "S200",
+    "F200",
+    "DDA200"
+   ],
+   "availability": "por-confirmar",
+   "source": "RS Online (pt.rs-online.com, listado relacionado de PS3)",
+   "status": "dos versiones con medidas distintas en las fuentes (18x30,3x214 y 21x27x211): confirmar cuál vende ABB Argentina",
+   "marca": "ABB",
+   "icwKA": 25,
+   "tensionV": 690,
+   "variantes": [
     {
-      "id": "abb-ps1-12",
-      "familia": "PS1",
-      "orderCode": "2CDL210001R1012",
-      "fases": 1,
-      "modulos": 12,
-      "pasoMm": 17.5,
-      "corrienteA": 63,
-      "compatibleCon": [
-        "S200",
-        "F200",
-        "DDA200"
-      ],
-      "availability": "por-confirmar",
-      "source": "RS Online (ph.rs-online.com/web/p/busbars/4896489); hoja PS1/12 (pood.esvika.ee/ProductSpecifications/Download?id=12220); ipd.com.au",
-      "status": "medidas y corriente de hojas de datos de distribuidores (esvika, ipd.com.au); falta hoja ABB y Argentina",
-      "marca": "ABB",
-      "anchoMm": 20,
-      "largoMm": 211,
-      "icwKA": 25,
-      "tensionV": 690
+     "orderCode": "2CDL230001R1012",
+     "anchoMm": 18,
+     "alturaMm": 30.3,
+     "largoMm": 214,
+     "source": "hoja PS3/12 (pood.esvika.ee id=12222; static.rapidonline.com/pdf/01-0073_v1.pdf)"
     },
     {
-      "id": "abb-ps1-4",
-      "familia": "PS1",
-      "orderCode": "2CDL210001R1004",
-      "fases": 1,
-      "modulos": 4,
-      "pasoMm": 17.5,
-      "corrienteA": 63,
-      "compatibleCon": [
-        "S200"
-      ],
-      "availability": "por-confirmar",
-      "source": "automa.net (código PS1/4); plc-direct.com/products/2cdl210001r1004; proax.ca/en/product/1672332/abb2cdl210001r1004 (distribuidor oficial ABB); ficha ABB reproducida por Sonepar (res.cloudinary.com/sonepar-fr .../15776815_FT.pdf); fichas ABB leídas 2026-11-15 (Sonepar 15776815_FT.pdf): ancho 21, alto 18, largo 67 mm",
-      "status": "63 A, 25 kA, 690 V; medidas de la ficha ABB (21 x 18 x 67 mm; el orden ancho/alto/largo es el que da la ficha, sin dibujo); falta confirmar Argentina",
-      "marca": "ABB",
-      "icwKA": 25,
-      "tensionV": 690,
-      "pesoKg": 0.03,
-      "seccionMm2": 10,
-      "anchoMm": 21,
-      "alturaMm": 18,
-      "largoMm": 67
-    },
-    {
-      "id": "abb-ps1-60",
-      "familia": "PS1",
-      "orderCode": "2CDL210001R1060",
-      "fases": 1,
-      "modulos": 60,
-      "pasoMm": 17.5,
-      "corrienteA": 63,
-      "compatibleCon": [
-        "S200",
-        "F200",
-        "DDA200"
-      ],
-      "availability": "por-confirmar",
-      "source": "RS Online (ph.rs-online.com/web/p/busbars/4896568); ficha ABB PS1/60 (pood.esvika.ee/ProductSpecifications/Download?id=12224; cdn.erply.com/files/396198/2CDL210001R1060.pdf); ficha ABB PS1/60 leída 2026-11-15 (cdn.erply.com): 20 x 17 x 1050 mm, 0,26 kg",
-      "status": "63 A, 25 kA, 690 V; 20 x 17 x 1050 mm de la ficha ABB; se corta a medida; falta confirmar Argentina",
-      "marca": "ABB",
-      "icwKA": 25,
-      "tensionV": 690,
-      "anchoMm": 20,
-      "alturaMm": 17,
-      "largoMm": 1050,
-      "pesoKg": 0.26
-    },
-    {
-      "id": "abb-ps3-12",
-      "familia": "PS3",
-      "orderCode": "2CDL230001R1012",
-      "fases": 3,
-      "modulos": 12,
-      "pasoMm": 17.5,
-      "corrienteA": 63,
-      "compatibleCon": [
-        "S200",
-        "F200",
-        "DDA200"
-      ],
-      "availability": "por-confirmar",
-      "source": "RS Online (pt.rs-online.com, listado relacionado de PS3)",
-      "status": "dos versiones con medidas distintas en las fuentes (18x30,3x214 y 21x27x211): confirmar cuál vende ABB Argentina",
-      "marca": "ABB",
-      "icwKA": 25,
-      "tensionV": 690,
-      "variantes": [
-        {
-          "orderCode": "2CDL230001R1012",
-          "anchoMm": 18,
-          "alturaMm": 30.3,
-          "largoMm": 214,
-          "source": "hoja PS3/12 (pood.esvika.ee id=12222; static.rapidonline.com/pdf/01-0073_v1.pdf)"
-        },
-        {
-          "orderCode": "2CDL231001R1012",
-          "anchoMm": 21,
-          "alturaMm": 27,
-          "largoMm": 211,
-          "source": "plc-direct.com/products/2cdl231001r1012; novapart.co (farnell 3411464)"
-        }
-      ]
-    },
-    {
-      "id": "abb-ps3-60",
-      "familia": "PS3",
-      "orderCode": "2CDL230001R1060",
-      "fases": 3,
-      "modulos": 60,
-      "pasoMm": 17.5,
-      "corrienteA": 63,
-      "compatibleCon": [
-        "S200",
-        "F200",
-        "DDA200"
-      ],
-      "availability": "por-confirmar",
-      "source": "RS Online (pt.rs-online.com/web/p/peines-de-conexion/5391648); ficha ABB PS3/60 (cdn.erply.com/files/396198/2CDL230001R1060.pdf); largo 1056 mm: ahlsell.se (artículo 2102712); ficha ABB PS3/60 leída 2026-11-15 (cdn.erply.com): 14,8 x 29 x 1056 mm, 0,487 kg",
-      "status": "63 A, 25 kA, 690 V; 14,8 x 29 x 1056 mm de la ficha ABB; se corta a medida; falta confirmar Argentina",
-      "marca": "ABB",
-      "icwKA": 25,
-      "tensionV": 690,
-      "largoMm": 1056,
-      "anchoMm": 14.8,
-      "alturaMm": 29,
-      "pesoKg": 0.487
-    },
-    {
-      "id": "abb-ps2",
-      "marca": "ABB",
-      "familia": "PS2",
-      "orderCode": "2CDL220001R1012",
-      "fases": 2,
-      "compatibleCon": [
-        "S200",
-        "F200",
-        "DDA200"
-      ],
-      "availability": "por-confirmar",
-      "source": "plc-direct.com/products/2cdl220001r1012; ipd.com.au/busbar-2ph-ins-ps2-12; santaclarasystems.com/abb/ps2-12 (medidas netas 18 x 30,3 x 214); ficha ABB: static.chipdip.ru/lib/375/DOC045375944.pdf",
-      "status": "PS2/12: 2 fases, 12 pines, 6 equipos, 63 A, 690 V; Icw no figura en las fuentes leídas (otros PS son 25 kA, no se copió); falta confirmar Argentina",
-      "modulos": 12,
-      "pasoMm": 17.5,
-      "corrienteA": 63,
-      "tensionV": 690,
-      "anchoMm": 18,
-      "alturaMm": 30.3,
-      "largoMm": 214,
-      "pesoKg": 0.075,
-      "seccionMm2": 10,
-      "claseProducto": "equipos de 2 polos (L1+N): S201 1P+N y similares"
-    },
-    {
-      "id": "abb-ps4",
-      "marca": "ABB",
-      "familia": "PS4",
-      "orderCode": "2CDL240101R1012",
-      "fases": 4,
-      "compatibleCon": [
-        "S200"
-      ],
-      "availability": "por-confirmar",
-      "source": "voltimum.co.uk/product-details/w6bhVWP9/abb/ps-412-busbar (código 2CDL240101R1012, EAN 4016779656054); ficha ABB reproducida por Tameson: storage.tameson.com/asset/Products/Manuals/EN/e2zy2_chr_en_1.pdf; ficha ABB PS4/12 leída 2026-11-15 (Tameson): 19,3 x 30,5 x 212 mm, 0,105 kg",
-      "status": "63 A, 25 kA, 690 V; 19,3 x 30,5 x 212 mm de la ficha ABB; falta confirmar Argentina",
-      "modulos": 12,
-      "pasoMm": 17.5,
-      "corrienteA": 63,
-      "icwKA": 25,
-      "tensionV": 690,
-      "claseProducto": "equipos de 4 polos (S204, F204)",
-      "anchoMm": 19.3,
-      "alturaMm": 30.5,
-      "largoMm": 212,
-      "pesoKg": 0.105
-    },
-    {
-      "id": "schneider-domae-14804",
-      "marca": "Schneider Electric",
-      "familia": "Domae",
-      "orderCode": "14804",
-      "fases": 4,
-      "corrienteA": 80,
-      "largoMm": 54,
-      "anchoMm": 18,
-      "availability": "argentina-listado",
-      "source": "se.com/ar: 'Comb busbar Domae 4 poles 80 A L 54 x 18 mm' (www.se.com/ar/es/product/14804)",
-      "status": "figura en el sitio de Schneider Argentina; compatibilidad con S200 no aplica (línea Domae)"
-    },
-    {
-      "id": "abb-s803-bb250",
-      "familia": "S800",
-      "orderCode": "2CCS800900R0071",
-      "tipo": "S803-BB250",
-      "fases": 3,
-      "modulos": 24,
-      "pasoMm": 27,
-      "corrienteA": 250,
-      "compatibleCon": [
-        "S800"
-      ],
-      "claseProducto": "S803 (3 polos); no cubre el neutro de un S804",
-      "anchoMm": 60,
-      "alturaMm": 27,
-      "largoMm": 654,
-      "seccionMm2": 60,
-      "tensionV": 690,
-      "pesoKg": 1.604,
-      "ip": "IP20",
-      "alimentacion": {
-        "tipo": "S803-BBPC120",
-        "orderCode": "2CCS800900R0101",
-        "seccionMm2": 120
-      },
-      "availability": "por-confirmar",
-      "marca": "ABB",
-      "source": "ipd.com.au (S803-BB250); media.bluestonepim.com ficha ABB S803-BB250; electrika.com 2CCS800900R0071 y 2CCS800900R0101; novapart.co (farnell 3411429)",
-      "status": "peine de 3 fases para S800, 250 A, 24 pines, 654 x 60 x 27 mm; para S804 (4 polos) no hay peine con neutro en las fuentes; falta confirmar Argentina"
+     "orderCode": "2CDL231001R1012",
+     "anchoMm": 21,
+     "alturaMm": 27,
+     "largoMm": 211,
+     "source": "plc-direct.com/products/2cdl231001r1012; novapart.co (farnell 3411464)"
     }
-  ],
-  "earthTerminals": [
-    {
-      "id": "entrelec-m4-6p",
-      "orderCode": "1SNA165113R1600",
-      "tipo": "M4/6.P",
-      "seccionMm2": 4,
-      "pasoMm": 6,
-      "color": "verde-amarillo",
-      "contactoRiel": true,
-      "riel": [
-        "TH35-7.5",
-        "G32"
-      ],
-      "profundidadMm": 40.5,
-      "alturaMm": 44.5,
-      "availability": "solo-distribuidor-exterior",
-      "source": "Hoja de datos M4/6.P (static.chipdip.ru/lib/568/DOC028568289.pdf)",
-      "status": "OJO: la línea de borneras DIN de ABB pasó a TE Connectivity; confirmar quién la vende en Argentina",
-      "marca": "ABB Entrelec (hoy TE Connectivity)"
-    },
-    {
-      "id": "entrelec-m6-8p",
-      "orderCode": "1SNA165114R1700",
-      "tipo": "M6/8.P",
-      "seccionMm2": 6,
-      "pasoMm": 8,
-      "color": "verde-amarillo",
-      "contactoRiel": true,
-      "riel": [
-        "G32",
-        "TH35-7.5",
-        "TH35-15"
-      ],
-      "availability": "solo-distribuidor-exterior",
-      "source": "Hoja de datos M6/8.P (electricautomationnetwork.com/PDF/ENGLISH/ENTRELEC/1SNA165114R1700.pdf)",
-      "status": "mismo aviso de TE Connectivity",
-      "marca": "ABB Entrelec (hoy TE Connectivity)"
-    }
-  ],
-  "pendientes": [
-    "Bornes de neutro (azul) y barras de tierra y neutro para gabinete: solo se vio la serie DBTI de Entrelec en RS; falta ficha y estado en Argentina.",
-    "Tapas ciegas y cubrebornes transparentes: no buscado todavía.",
-    "CAD de peines y bornes: bajar de ABB/TE para dibujarlos en el frente.",
-    "Disponibilidad en Argentina de cada código: ABB tiene un buscador de distribuidores autorizados (new.abb.com/low-voltage/efinder-country/ar) que muestra stock por código; falta consultarlo para PS1/PS3 y el resto (el buscador exige entrar al sitio).",
-    "Medidas de frente del Schneider Distribloc, Legrand y Steck (módulos DIN y alto) si se eligen.",
-    "S800: el peine S803-BB250 es de 3 fases (S803); un S804 (4 polos) no tiene peine con neutro en las fuentes leídas.",
-    "PS3/12 sigue con dos versiones de medidas distintas en las fuentes; elegir cuál vende ABB Argentina.",
-    "Barra de fase de cobre con dimensionado propio (IEC 61439 / tabla del fabricante): no cargada; AA8010 es de neutro/tierra según el catálogo.",
-    "Icw del PS2/12 y corriente de PBFC2005: no figuran en las fichas leídas. Las fichas dan 'Pitch 44698' (error de hoja de cálculo): se usa 17,5 mm de otras fuentes. CAD de los peines: la página ABB lo ofrece en un visor dinámico ('CAD outline drawing (40)') que no se pudo bajar desde el navegador integrado; pendiente."
-  ],
-  "distributionBars": [
-    {
-      "id": "abb-aa8010",
-      "marca": "ABB",
-      "orderCode": "AA8010",
-      "tipo": "4 barras de cobre 20x5 mm, L=1000 mm (neutro o tierra)",
-      "familia": "SR2",
-      "corrienteA": 320,
-      "seccion": "20x5 mm",
-      "largoMm": 1000,
-      "cantidad": 4,
-      "paso": "agujeros M6 cada 25 mm",
-      "soportes": {
-        "orderCode": "AA8011",
-        "cantidad": 5,
-        "descripcion": "5 soportes para barra"
-      },
-      "acabado": "sin tratar",
-      "availability": "por-confirmar",
-      "source": "ficha ABB AA8010 reproducida por Sonepar (res.cloudinary.com/sonepar-fr .../472440_FT.pdf: 320 A, 20x5 mm); catálogo ABB 1STC804013D0201 pág. 2/9 (barras 20x5 con agujeros M6 a 25 mm, soportes AA8011; se montan sobre las placas de fondo)",
-      "status": "la ficha ABB da 320 A, pero el catálogo la describe como barra de neutro o tierra, no de fase; el catálogo no dice que se corte a medida; falta confirmar Argentina"
-    },
-    {
-      "id": "abb-pbfc2005",
-      "marca": "ABB",
-      "orderCode": "1STQ007401A0000",
-      "tipo": "barra plana de cobre 20x5 mm, L=1750 mm",
-      "familia": "System pro E power",
-      "corrienteA": null,
-      "seccion": "20x5 mm",
-      "largoMm": 1750,
-      "availability": "por-confirmar",
-      "source": "ficha ABB PBFC2005 (sacchi.it/static/pim/hlr-system/ABB/MD22_BMECAT_20240410/ELPBFC2005.pdf)",
-      "status": "código y medidas de la ficha; falta la corriente admisible y confirmar Argentina"
-    }
-  ],
-  "distributionBlocks": [
-    {
-      "id": "abb-brt125a",
-      "marca": "ABB",
-      "orderCode": "1SNA179535R2300",
-      "tipo": "BRT125A",
-      "polos": 4,
-      "salidas": "4 x 12 conexiones",
-      "corrienteA": 125,
-      "pasoMm": 128,
-      "riel": [
-        "TH35-7.5",
-        "TH35-15"
-      ],
-      "availability": "por-confirmar",
-      "source": "automa.net (1SNA179535R2300): BRT125A, bloque de distribución, 4 polos, 125 A; Farnell (farnell.com/datasheets/2917447.pdf): ancho 128 mm; RS Online 413-2331: 11 vías, 128 x 85 x 60 mm",
-      "status": "la línea de borneras de ABB ahora es de TE Connectivity; la descripción ABB dice 4x12 conexiones y RS lista 11 vías: confirmar con la hoja 1SNC160001C0207; falta confirmar Argentina | alto de frente 85 mm tomado de RS Online (ancho 85 de su ficha); confirmar con la hoja ABB",
-      "anchoMm": 128,
-      "profundidadMm": null,
-      "vias": 11,
-      "dimensionesRS": {
-        "largoMm": 128,
-        "anchoMm": 85,
-        "alturaMm": 60
-      },
-      "alturaFrenteMm": 85
-    },
-    {
-      "id": "steck-sdm9904",
-      "marca": "Steck",
-      "orderCode": "SDM9904",
-      "polos": [
-        2,
-        4
-      ],
-      "corrienteA": null,
-      "modulosDin": [
-        4,
-        6,
-        8
-      ],
-      "riel": [
-        "NS35"
-      ],
-      "availability": "por-confirmar",
-      "source": "Ingeniería Eléctrica (editores-srl.com.ar, ie333_steck_bloques.pdf): referencias SDM9904 y SDM9907, 100 A y 125 A, 4/6/8 módulos DIN, 2 y 4 polos",
-      "status": "Steck publicó en Argentina (Ingeniería Eléctrica, julio 2018) cinco referencias SDM9904, SDM9907, SDM9911, SDM9906 y SDM9915; la tabla no se puede emparejar (módulos 4/6/8, polos 2/4, 100 y 125 A). Hoja: isaindustrial.com/wp-content/uploads/2025/01/Serie-SDM.pdf"
-    },
-    {
-      "id": "steck-sdm9907",
-      "marca": "Steck",
-      "orderCode": "SDM9907",
-      "polos": [
-        2,
-        4
-      ],
-      "corrienteA": null,
-      "modulosDin": [
-        4,
-        6,
-        8
-      ],
-      "riel": [
-        "NS35"
-      ],
-      "availability": "por-confirmar",
-      "source": "idem steck-sdm9904",
-      "status": "Steck publicó en Argentina (Ingeniería Eléctrica, julio 2018) cinco referencias SDM9904, SDM9907, SDM9911, SDM9906 y SDM9915; la tabla no se puede emparejar (módulos 4/6/8, polos 2/4, 100 y 125 A). Hoja: isaindustrial.com/wp-content/uploads/2025/01/Serie-SDM.pdf"
-    },
-    {
-      "id": "schneider-distribloc-125",
-      "marca": "Schneider Electric",
-      "orderCode": "04045",
-      "tipo": "Distribloc 125 A",
-      "polos": 4,
-      "corrienteA": 125,
-      "availability": "por-confirmar",
-      "source": "Catálogo Schneider (storage.electrika.com, página 524): bloque de distribución 125 A ref. 04045; 160 A ref. 04046",
-      "status": "catálogo general, no se confirmó Argentina"
-    },
-    {
-      "id": "schneider-distribloc-160",
-      "marca": "Schneider Electric",
-      "orderCode": "04046",
-      "tipo": "Distribloc 160 A",
-      "polos": 4,
-      "corrienteA": 160,
-      "availability": "por-confirmar",
-      "source": "idem schneider-distribloc-125",
-      "status": "idem"
-    },
-    {
-      "id": "steck-sdm9911",
-      "marca": "Steck",
-      "orderCode": "SDM9911",
-      "polos": [
-        2,
-        4
-      ],
-      "corrienteA": null,
-      "modulosDin": [
-        4,
-        6,
-        8
-      ],
-      "availability": "por-confirmar",
-      "source": "Ingeniería Eléctrica julio 2018 (editores-srl.com.ar/sites/default/files/ie333_steck_bloques.pdf)",
-      "status": "tabla sin emparejar; falta hoja de datos"
-    },
-    {
-      "id": "steck-sdm9906",
-      "marca": "Steck",
-      "orderCode": "SDM9906",
-      "polos": [
-        2,
-        4
-      ],
-      "corrienteA": null,
-      "modulosDin": [
-        4,
-        6,
-        8
-      ],
-      "availability": "por-confirmar",
-      "source": "Ingeniería Eléctrica julio 2018 (editores-srl.com.ar/sites/default/files/ie333_steck_bloques.pdf)",
-      "status": "tabla sin emparejar; falta hoja de datos"
-    },
-    {
-      "id": "steck-sdm9915",
-      "marca": "Steck",
-      "orderCode": "SDM9915",
-      "polos": [
-        2,
-        4
-      ],
-      "corrienteA": null,
-      "modulosDin": [
-        4,
-        6,
-        8
-      ],
-      "availability": "por-confirmar",
-      "source": "Ingeniería Eléctrica julio 2018 (editores-srl.com.ar/sites/default/files/ie333_steck_bloques.pdf)",
-      "status": "tabla sin emparejar; falta hoja de datos"
-    },
-    {
-      "id": "legrand-400408",
-      "marca": "Legrand",
-      "orderCode": "400408",
-      "polos": 4,
-      "corrienteA": 125,
-      "salidas": 10,
-      "modulosDin": 6,
-      "availability": "por-confirmar",
-      "source": "legrand.es/productos/repartidor-modular-barras-escalonadas-4-polos-125a-10-salidas-6-modulos-400408",
-      "status": "catálogo España; falta Argentina"
-    },
-    {
-      "id": "legrand-400407",
-      "marca": "Legrand",
-      "orderCode": "400407",
-      "polos": 4,
-      "corrienteA": 125,
-      "salidas": 14,
-      "modulosDin": 8,
-      "availability": "por-confirmar",
-      "source": "legrand.es (listado repartidores modulares 40-250)",
-      "status": "catálogo España; falta Argentina"
-    },
-    {
-      "id": "legrand-004873",
-      "marca": "Legrand",
-      "orderCode": "004873",
-      "polos": 4,
-      "corrienteA": 160,
-      "salidas": 14,
-      "modulosDin": 10,
-      "availability": "por-confirmar",
-      "source": "legrand.es (listado repartidores modulares 40-250)",
-      "status": "catálogo España; falta Argentina"
-    }
-  ],
-  "wiringDucts": {
-    "familia": "Canaleta ranurada libre de halógenos, gris RAL 7035 (con tapa)",
-    "lengthMm": 2000,
-    "slots": {
-      "8x12": "ranura 8 mm / paso 12 mm (códigos 1SL90..)",
-      "4x6": "ranura 4 mm / paso 6 mm (códigos 1SL91..)"
-    },
-    "sections": [
-      {
-        "widthMm": 15,
-        "heightMm": 17,
-        "code8x12": "1SL9019A00",
-        "code4x6": "1SL9119A00",
-        "packMeters": 46
-      },
-      {
-        "widthMm": 25,
-        "heightMm": 30,
-        "code8x12": "1SL9033A00",
-        "code4x6": "1SL9133A00",
-        "packMeters": 58
-      },
-      {
-        "widthMm": 40,
-        "heightMm": 30,
-        "code8x12": "1SL9035A00",
-        "code4x6": "1SL9135A00",
-        "packMeters": 38
-      },
-      {
-        "widthMm": 60,
-        "heightMm": 30,
-        "code8x12": "1SL9037A00",
-        "code4x6": "1SL9137A00",
-        "packMeters": 52
-      },
-      {
-        "widthMm": 25,
-        "heightMm": 40,
-        "code8x12": "1SL9043A00",
-        "code4x6": "1SL9143A00",
-        "packMeters": 48
-      },
-      {
-        "widthMm": 40,
-        "heightMm": 40,
-        "code8x12": "1SL9045A00",
-        "code4x6": "1SL9145A00",
-        "packMeters": 30
-      },
-      {
-        "widthMm": 60,
-        "heightMm": 40,
-        "code8x12": "1SL9047A00",
-        "code4x6": "1SL9147A00",
-        "packMeters": 40
-      },
-      {
-        "widthMm": 80,
-        "heightMm": 40,
-        "code8x12": "1SL9049A00",
-        "code4x6": "1SL9149A00",
-        "packMeters": 32
-      },
-      {
-        "widthMm": 100,
-        "heightMm": 40,
-        "code8x12": "1SL9051A00",
-        "code4x6": "1SL9151A00",
-        "packMeters": 24
-      },
-      {
-        "widthMm": 120,
-        "heightMm": 40,
-        "code8x12": "1SL9053A00",
-        "code4x6": "1SL9153A00",
-        "packMeters": 20
-      },
-      {
-        "widthMm": 25,
-        "heightMm": 60,
-        "code8x12": "1SL9063A00",
-        "code4x6": "1SL9163A00",
-        "packMeters": 34
-      },
-      {
-        "widthMm": 40,
-        "heightMm": 60,
-        "code8x12": "1SL9065A00",
-        "code4x6": "1SL9165A00",
-        "packMeters": 22
-      },
-      {
-        "widthMm": 60,
-        "heightMm": 60,
-        "code8x12": "1SL9067A00",
-        "code4x6": "1SL9167A00",
-        "packMeters": 32
-      },
-      {
-        "widthMm": 80,
-        "heightMm": 60,
-        "code8x12": "1SL9069A00",
-        "code4x6": "1SL9169A00",
-        "packMeters": 24
-      },
-      {
-        "widthMm": 100,
-        "heightMm": 60,
-        "code8x12": "1SL9071A00",
-        "code4x6": "1SL9171A00",
-        "packMeters": 20
-      },
-      {
-        "widthMm": 120,
-        "heightMm": 60,
-        "code8x12": "1SL9073A00",
-        "code4x6": "1SL9173A00",
-        "packMeters": 14
-      },
-      {
-        "widthMm": 25,
-        "heightMm": 80,
-        "code8x12": "1SL9083A00",
-        "code4x6": "1SL9183A00",
-        "packMeters": 28
-      },
-      {
-        "widthMm": 40,
-        "heightMm": 80,
-        "code8x12": "1SL9085A00",
-        "code4x6": "1SL9185A00",
-        "packMeters": 36
-      },
-      {
-        "widthMm": 60,
-        "heightMm": 80,
-        "code8x12": "1SL9087A00",
-        "code4x6": "1SL9187A00",
-        "packMeters": 24
-      },
-      {
-        "widthMm": 80,
-        "heightMm": 80,
-        "code8x12": "1SL9089A00",
-        "code4x6": "1SL9189A00",
-        "packMeters": 16
-      },
-      {
-        "widthMm": 100,
-        "heightMm": 80,
-        "code8x12": "1SL9091A00",
-        "code4x6": "1SL9191A00",
-        "packMeters": 16
-      },
-      {
-        "widthMm": 120,
-        "heightMm": 80,
-        "code8x12": "1SL9093A00",
-        "code4x6": "1SL9193A00",
-        "packMeters": 12
-      }
-    ],
-    "source": "ABB 1STC804013D0201 (02.2011) pág. 6/5 'Ordering codes - Halogen free wiring ducts with vertical slots' y págs. 9/40-9/41 (cotas, largo 2000); tabla leída de la imagen de la página 2026-11-16",
-    "status": "códigos y secciones del catálogo (BxH: B = cara visible de frente, H = alto desde la placa, supuesto por convención). El largo se corta a medida; el catálogo da 2000 mm. Disponibilidad en Argentina sin verificar. Existe también la línea termoplástica RAL 7030 (pág. 6/6), sin cargar.",
-    "pendientes": [
-      "interpretación de las dos cifras de ranura (primera = ancho de ranura, segunda = paso) tomada del dibujo, sin cota explícita",
-      "espesor de pared y ancho de las 'uñas' laterales: no cotados; el dibujo de frente es esquemático",
-      "verificar que la tapa de repuesto 1SL5316..22 corresponde a cada ancho (15…120)"
-    ]
+   ]
+  },
+  {
+   "id": "abb-ps3-60",
+   "familia": "PS3",
+   "orderCode": "2CDL230001R1060",
+   "fases": 3,
+   "modulos": 60,
+   "pasoMm": 17.5,
+   "corrienteA": 63,
+   "compatibleCon": [
+    "S200",
+    "F200",
+    "DDA200"
+   ],
+   "availability": "por-confirmar",
+   "source": "RS Online (pt.rs-online.com/web/p/peines-de-conexion/5391648); ficha ABB PS3/60 (cdn.erply.com/files/396198/2CDL230001R1060.pdf); largo 1056 mm: ahlsell.se (artículo 2102712); ficha ABB PS3/60 leída 2026-11-15 (cdn.erply.com): 14,8 x 29 x 1056 mm, 0,487 kg",
+   "status": "63 A, 25 kA, 690 V; 14,8 x 29 x 1056 mm de la ficha ABB; se corta a medida; falta confirmar Argentina",
+   "marca": "ABB",
+   "icwKA": 25,
+   "tensionV": 690,
+   "largoMm": 1056,
+   "anchoMm": 14.8,
+   "alturaMm": 29,
+   "pesoKg": 0.487
+  },
+  {
+   "id": "abb-ps2",
+   "marca": "ABB",
+   "familia": "PS2",
+   "orderCode": "2CDL220001R1012",
+   "fases": 2,
+   "compatibleCon": [
+    "S200",
+    "F200",
+    "DDA200"
+   ],
+   "availability": "por-confirmar",
+   "source": "plc-direct.com/products/2cdl220001r1012; ipd.com.au/busbar-2ph-ins-ps2-12; santaclarasystems.com/abb/ps2-12 (medidas netas 18 x 30,3 x 214); ficha ABB: static.chipdip.ru/lib/375/DOC045375944.pdf",
+   "status": "PS2/12: 2 fases, 12 pines, 6 equipos, 63 A, 690 V; Icw no figura en las fuentes leídas (otros PS son 25 kA, no se copió); falta confirmar Argentina",
+   "modulos": 12,
+   "pasoMm": 17.5,
+   "corrienteA": 63,
+   "tensionV": 690,
+   "anchoMm": 18,
+   "alturaMm": 30.3,
+   "largoMm": 214,
+   "pesoKg": 0.075,
+   "seccionMm2": 10,
+   "claseProducto": "equipos de 2 polos (L1+N): S201 1P+N y similares"
+  },
+  {
+   "id": "abb-ps4",
+   "marca": "ABB",
+   "familia": "PS4",
+   "orderCode": "2CDL240101R1012",
+   "fases": 4,
+   "compatibleCon": [
+    "S200"
+   ],
+   "availability": "por-confirmar",
+   "source": "voltimum.co.uk/product-details/w6bhVWP9/abb/ps-412-busbar (código 2CDL240101R1012, EAN 4016779656054); ficha ABB reproducida por Tameson: storage.tameson.com/asset/Products/Manuals/EN/e2zy2_chr_en_1.pdf; ficha ABB PS4/12 leída 2026-11-15 (Tameson): 19,3 x 30,5 x 212 mm, 0,105 kg",
+   "status": "63 A, 25 kA, 690 V; 19,3 x 30,5 x 212 mm de la ficha ABB; falta confirmar Argentina",
+   "modulos": 12,
+   "pasoMm": 17.5,
+   "corrienteA": 63,
+   "icwKA": 25,
+   "tensionV": 690,
+   "claseProducto": "equipos de 4 polos (S204, F204)",
+   "anchoMm": 19.3,
+   "alturaMm": 30.5,
+   "largoMm": 212,
+   "pesoKg": 0.105
+  },
+  {
+   "id": "schneider-domae-14804",
+   "marca": "Schneider Electric",
+   "familia": "Domae",
+   "orderCode": "14804",
+   "fases": 4,
+   "corrienteA": 80,
+   "largoMm": 54,
+   "anchoMm": 18,
+   "availability": "argentina-listado",
+   "source": "se.com/ar: 'Comb busbar Domae 4 poles 80 A L 54 x 18 mm' (www.se.com/ar/es/product/14804)",
+   "status": "figura en el sitio de Schneider Argentina; compatibilidad con S200 no aplica (línea Domae)"
+  },
+  {
+   "id": "abb-s803-bb250",
+   "familia": "S800",
+   "orderCode": "2CCS800900R0071",
+   "tipo": "S803-BB250",
+   "fases": 3,
+   "modulos": 24,
+   "pasoMm": 27,
+   "corrienteA": 250,
+   "compatibleCon": [
+    "S800"
+   ],
+   "claseProducto": "S803 (3 polos); no cubre el neutro de un S804",
+   "anchoMm": 60,
+   "alturaMm": 27,
+   "largoMm": 654,
+   "seccionMm2": 60,
+   "tensionV": 690,
+   "pesoKg": 1.604,
+   "ip": "IP20",
+   "alimentacion": {
+    "tipo": "S803-BBPC120",
+    "orderCode": "2CCS800900R0101",
+    "seccionMm2": 120
+   },
+   "availability": "por-confirmar",
+   "marca": "ABB",
+   "source": "ipd.com.au (S803-BB250); media.bluestonepim.com ficha ABB S803-BB250; electrika.com 2CCS800900R0071 y 2CCS800900R0101; novapart.co (farnell 3411429)",
+   "status": "peine de 3 fases para S800, 250 A, 24 pines, 654 x 60 x 27 mm; para S804 (4 polos) no hay peine con neutro en las fuentes; falta confirmar Argentina"
   }
+ ],
+ "earthTerminals": [
+  {
+   "id": "te-dbl125-pe",
+   "estilo": "repartidor",
+   "orderCode": "1SNL312510R0000",
+   "tipo": "DBL125",
+   "marca": "TE Connectivity ENTRELEC (ex ABB Entrelec)",
+   "descripcion": "Repartidor unipolar 125 A usado como bornera equipotencial de puesta a tierra (marcador PE incluido)",
+   "corrienteA": 125,
+   "icw1sA": 4200,
+   "entradas": {
+    "cantidad": 1,
+    "diametrosMm": [
+     9.8
+    ],
+    "seccion": "10…35 mm²"
+   },
+   "salidas": {
+    "cantidad": 7,
+    "diametrosMm": [
+     6.8,
+     6.4,
+     6.4,
+     6.4,
+     6.4,
+     6.4,
+     6.4
+    ],
+    "seccion": "2,5…16 mm²"
+   },
+   "anchoMm": 28.2,
+   "altoFrenteMm": 75,
+   "profundidadMm": 50.7,
+   "riel": [
+    "TH35"
+   ],
+   "marcadorPE": "incluido (marcadores L1, L2, L3, N, PE, +, - con cada bloque)",
+   "tope": {
+    "tipo": "BAM4",
+    "orderCode": "1SNK900001R0000",
+    "anchoMm": 10,
+    "altoMm": null,
+    "nota": "alto no publicado en el catálogo leído; se dibuja igual al bloque"
+   },
+   "dibujo": "disposición de bornes esquemática (entrada arriba, salidas abajo): el catálogo no trae el frente acotado",
+   "availability": "por-confirmar",
+   "source": "Catálogo TE ENTRELEC DBL power distribution blocks (tti.com …/te-connectivity-1snl-dbl-power-distribution-blocks-product-catalog-ap.pdf): conexiones, diámetros, paso 28,2 mm, Icw 4200 A, cotas 75/50,7 mm, topes BAM4; RS Online 100-3920 (alto 75 mm); Gexpro 1SNL312510R0000 (ancho 28,2 mm)",
+   "status": "la línea DBL de ABB pasó a TE Connectivity en 2018 (mismo código 1SNL…); confirmar distribuidor en Argentina; criterio de uso (bornera equipotencial PE) pedido por Thomas 2026-11-18"
+  },
+  {
+   "id": "entrelec-m4-6p",
+   "orderCode": "1SNA165113R1600",
+   "tipo": "M4/6.P",
+   "seccionMm2": 4,
+   "pasoMm": 6,
+   "color": "verde-amarillo",
+   "contactoRiel": true,
+   "riel": [
+    "TH35-7.5",
+    "G32"
+   ],
+   "profundidadMm": 40.5,
+   "alturaMm": 44.5,
+   "availability": "solo-distribuidor-exterior",
+   "source": "Hoja de datos M4/6.P (static.chipdip.ru/lib/568/DOC028568289.pdf)",
+   "status": "OJO: la línea de borneras DIN de ABB pasó a TE Connectivity; confirmar quién la vende en Argentina",
+   "marca": "ABB Entrelec (hoy TE Connectivity)"
+  },
+  {
+   "id": "entrelec-m6-8p",
+   "orderCode": "1SNA165114R1700",
+   "tipo": "M6/8.P",
+   "seccionMm2": 6,
+   "pasoMm": 8,
+   "color": "verde-amarillo",
+   "contactoRiel": true,
+   "riel": [
+    "G32",
+    "TH35-7.5",
+    "TH35-15"
+   ],
+   "availability": "solo-distribuidor-exterior",
+   "source": "Hoja de datos M6/8.P (electricautomationnetwork.com/PDF/ENGLISH/ENTRELEC/1SNA165114R1700.pdf)",
+   "status": "mismo aviso de TE Connectivity",
+   "marca": "ABB Entrelec (hoy TE Connectivity)"
+  }
+ ],
+ "pendientes": [
+  "Bornes de neutro (azul) y barras de tierra y neutro para gabinete: solo se vio la serie DBTI de Entrelec en RS; falta ficha y estado en Argentina.",
+  "Tapas ciegas y cubrebornes transparentes: no buscado todavía.",
+  "CAD de peines y bornes: bajar de ABB/TE para dibujarlos en el frente.",
+  "Disponibilidad en Argentina de cada código: ABB tiene un buscador de distribuidores autorizados (new.abb.com/low-voltage/efinder-country/ar) que muestra stock por código; falta consultarlo para PS1/PS3 y el resto (el buscador exige entrar al sitio).",
+  "Medidas de frente del Schneider Distribloc, Legrand y Steck (módulos DIN y alto) si se eligen.",
+  "S800: el peine S803-BB250 es de 3 fases (S803); un S804 (4 polos) no tiene peine con neutro en las fuentes leídas.",
+  "PS3/12 sigue con dos versiones de medidas distintas en las fuentes; elegir cuál vende ABB Argentina.",
+  "Barra de fase de cobre con dimensionado propio (IEC 61439 / tabla del fabricante): no cargada; AA8010 es de neutro/tierra según el catálogo.",
+  "Icw del PS2/12 y corriente de PBFC2005: no figuran en las fichas leídas. Las fichas dan 'Pitch 44698' (error de hoja de cálculo): se usa 17,5 mm de otras fuentes. CAD de los peines: la página ABB lo ofrece en un visor dinámico ('CAD outline drawing (40)') que no se pudo bajar desde el navegador integrado; pendiente."
+ ],
+ "distributionBars": [
+  {
+   "id": "abb-aa8010",
+   "marca": "ABB",
+   "orderCode": "AA8010",
+   "tipo": "4 barras de cobre 20x5 mm, L=1000 mm (neutro o tierra)",
+   "familia": "SR2",
+   "corrienteA": 320,
+   "seccion": "20x5 mm",
+   "largoMm": 1000,
+   "cantidad": 4,
+   "paso": "agujeros M6 cada 25 mm",
+   "soportes": {
+    "orderCode": "AA8011",
+    "cantidad": 5,
+    "descripcion": "5 soportes para barra"
+   },
+   "acabado": "sin tratar",
+   "availability": "por-confirmar",
+   "source": "ficha ABB AA8010 reproducida por Sonepar (res.cloudinary.com/sonepar-fr .../472440_FT.pdf: 320 A, 20x5 mm); catálogo ABB 1STC804013D0201 pág. 2/9 (barras 20x5 con agujeros M6 a 25 mm, soportes AA8011; se montan sobre las placas de fondo)",
+   "status": "la ficha ABB da 320 A, pero el catálogo la describe como barra de neutro o tierra, no de fase; el catálogo no dice que se corte a medida; falta confirmar Argentina"
+  },
+  {
+   "id": "abb-pbfc2005",
+   "marca": "ABB",
+   "orderCode": "1STQ007401A0000",
+   "tipo": "barra plana de cobre 20x5 mm, L=1750 mm",
+   "familia": "System pro E power",
+   "corrienteA": null,
+   "seccion": "20x5 mm",
+   "largoMm": 1750,
+   "availability": "por-confirmar",
+   "source": "ficha ABB PBFC2005 (sacchi.it/static/pim/hlr-system/ABB/MD22_BMECAT_20240410/ELPBFC2005.pdf)",
+   "status": "código y medidas de la ficha; falta la corriente admisible y confirmar Argentina"
+  }
+ ],
+ "distributionBlocks": [
+  {
+   "id": "abb-brt125a",
+   "marca": "ABB",
+   "orderCode": "1SNA179535R2300",
+   "tipo": "BRT125A",
+   "polos": 4,
+   "salidas": "4 x 12 conexiones",
+   "corrienteA": 125,
+   "pasoMm": 128,
+   "riel": [
+    "TH35-7.5",
+    "TH35-15"
+   ],
+   "availability": "por-confirmar",
+   "source": "automa.net (1SNA179535R2300): BRT125A, bloque de distribución, 4 polos, 125 A; Farnell (farnell.com/datasheets/2917447.pdf): ancho 128 mm; RS Online 413-2331: 11 vías, 128 x 85 x 60 mm",
+   "status": "la línea de borneras de ABB ahora es de TE Connectivity; la descripción ABB dice 4x12 conexiones y RS lista 11 vías: confirmar con la hoja 1SNC160001C0207; falta confirmar Argentina | alto de frente 85 mm tomado de RS Online (ancho 85 de su ficha); confirmar con la hoja ABB",
+   "anchoMm": 128,
+   "profundidadMm": null,
+   "vias": 11,
+   "dimensionesRS": {
+    "largoMm": 128,
+    "anchoMm": 85,
+    "alturaMm": 60
+   },
+   "alturaFrenteMm": 85
+  },
+  {
+   "id": "steck-sdm9904",
+   "marca": "Steck",
+   "orderCode": "SDM9904",
+   "polos": [
+    2,
+    4
+   ],
+   "corrienteA": null,
+   "modulosDin": [
+    4,
+    6,
+    8
+   ],
+   "riel": [
+    "NS35"
+   ],
+   "availability": "por-confirmar",
+   "source": "Ingeniería Eléctrica (editores-srl.com.ar, ie333_steck_bloques.pdf): referencias SDM9904 y SDM9907, 100 A y 125 A, 4/6/8 módulos DIN, 2 y 4 polos",
+   "status": "Steck publicó en Argentina (Ingeniería Eléctrica, julio 2018) cinco referencias SDM9904, SDM9907, SDM9911, SDM9906 y SDM9915; la tabla no se puede emparejar (módulos 4/6/8, polos 2/4, 100 y 125 A). Hoja: isaindustrial.com/wp-content/uploads/2025/01/Serie-SDM.pdf"
+  },
+  {
+   "id": "steck-sdm9907",
+   "marca": "Steck",
+   "orderCode": "SDM9907",
+   "polos": [
+    2,
+    4
+   ],
+   "corrienteA": null,
+   "modulosDin": [
+    4,
+    6,
+    8
+   ],
+   "riel": [
+    "NS35"
+   ],
+   "availability": "por-confirmar",
+   "source": "idem steck-sdm9904",
+   "status": "Steck publicó en Argentina (Ingeniería Eléctrica, julio 2018) cinco referencias SDM9904, SDM9907, SDM9911, SDM9906 y SDM9915; la tabla no se puede emparejar (módulos 4/6/8, polos 2/4, 100 y 125 A). Hoja: isaindustrial.com/wp-content/uploads/2025/01/Serie-SDM.pdf"
+  },
+  {
+   "id": "schneider-distribloc-125",
+   "marca": "Schneider Electric",
+   "orderCode": "04045",
+   "tipo": "Distribloc 125 A",
+   "polos": 4,
+   "corrienteA": 125,
+   "availability": "por-confirmar",
+   "source": "Catálogo Schneider (storage.electrika.com, página 524): bloque de distribución 125 A ref. 04045; 160 A ref. 04046",
+   "status": "catálogo general, no se confirmó Argentina"
+  },
+  {
+   "id": "schneider-distribloc-160",
+   "marca": "Schneider Electric",
+   "orderCode": "04046",
+   "tipo": "Distribloc 160 A",
+   "polos": 4,
+   "corrienteA": 160,
+   "availability": "por-confirmar",
+   "source": "idem schneider-distribloc-125",
+   "status": "idem"
+  },
+  {
+   "id": "steck-sdm9911",
+   "marca": "Steck",
+   "orderCode": "SDM9911",
+   "polos": [
+    2,
+    4
+   ],
+   "corrienteA": null,
+   "modulosDin": [
+    4,
+    6,
+    8
+   ],
+   "availability": "por-confirmar",
+   "source": "Ingeniería Eléctrica julio 2018 (editores-srl.com.ar/sites/default/files/ie333_steck_bloques.pdf)",
+   "status": "tabla sin emparejar; falta hoja de datos"
+  },
+  {
+   "id": "steck-sdm9906",
+   "marca": "Steck",
+   "orderCode": "SDM9906",
+   "polos": [
+    2,
+    4
+   ],
+   "corrienteA": null,
+   "modulosDin": [
+    4,
+    6,
+    8
+   ],
+   "availability": "por-confirmar",
+   "source": "Ingeniería Eléctrica julio 2018 (editores-srl.com.ar/sites/default/files/ie333_steck_bloques.pdf)",
+   "status": "tabla sin emparejar; falta hoja de datos"
+  },
+  {
+   "id": "steck-sdm9915",
+   "marca": "Steck",
+   "orderCode": "SDM9915",
+   "polos": [
+    2,
+    4
+   ],
+   "corrienteA": null,
+   "modulosDin": [
+    4,
+    6,
+    8
+   ],
+   "availability": "por-confirmar",
+   "source": "Ingeniería Eléctrica julio 2018 (editores-srl.com.ar/sites/default/files/ie333_steck_bloques.pdf)",
+   "status": "tabla sin emparejar; falta hoja de datos"
+  },
+  {
+   "id": "legrand-400408",
+   "marca": "Legrand",
+   "orderCode": "400408",
+   "polos": 4,
+   "corrienteA": 125,
+   "salidas": 10,
+   "modulosDin": 6,
+   "availability": "por-confirmar",
+   "source": "legrand.es/productos/repartidor-modular-barras-escalonadas-4-polos-125a-10-salidas-6-modulos-400408",
+   "status": "catálogo España; falta Argentina"
+  },
+  {
+   "id": "legrand-400407",
+   "marca": "Legrand",
+   "orderCode": "400407",
+   "polos": 4,
+   "corrienteA": 125,
+   "salidas": 14,
+   "modulosDin": 8,
+   "availability": "por-confirmar",
+   "source": "legrand.es (listado repartidores modulares 40-250)",
+   "status": "catálogo España; falta Argentina"
+  },
+  {
+   "id": "legrand-004873",
+   "marca": "Legrand",
+   "orderCode": "004873",
+   "polos": 4,
+   "corrienteA": 160,
+   "salidas": 14,
+   "modulosDin": 10,
+   "availability": "por-confirmar",
+   "source": "legrand.es (listado repartidores modulares 40-250)",
+   "status": "catálogo España; falta Argentina"
+  }
+ ],
+ "wiringDucts": {
+  "familia": "Canaleta ranurada libre de halógenos, gris RAL 7035 (con tapa)",
+  "lengthMm": 2000,
+  "slots": {
+   "8x12": "ranura 8 mm / paso 12 mm (códigos 1SL90..)",
+   "4x6": "ranura 4 mm / paso 6 mm (códigos 1SL91..)"
+  },
+  "sections": [
+   {
+    "widthMm": 15,
+    "heightMm": 17,
+    "code8x12": "1SL9019A00",
+    "code4x6": "1SL9119A00",
+    "packMeters": 46
+   },
+   {
+    "widthMm": 25,
+    "heightMm": 30,
+    "code8x12": "1SL9033A00",
+    "code4x6": "1SL9133A00",
+    "packMeters": 58
+   },
+   {
+    "widthMm": 40,
+    "heightMm": 30,
+    "code8x12": "1SL9035A00",
+    "code4x6": "1SL9135A00",
+    "packMeters": 38
+   },
+   {
+    "widthMm": 60,
+    "heightMm": 30,
+    "code8x12": "1SL9037A00",
+    "code4x6": "1SL9137A00",
+    "packMeters": 52
+   },
+   {
+    "widthMm": 25,
+    "heightMm": 40,
+    "code8x12": "1SL9043A00",
+    "code4x6": "1SL9143A00",
+    "packMeters": 48
+   },
+   {
+    "widthMm": 40,
+    "heightMm": 40,
+    "code8x12": "1SL9045A00",
+    "code4x6": "1SL9145A00",
+    "packMeters": 30
+   },
+   {
+    "widthMm": 60,
+    "heightMm": 40,
+    "code8x12": "1SL9047A00",
+    "code4x6": "1SL9147A00",
+    "packMeters": 40
+   },
+   {
+    "widthMm": 80,
+    "heightMm": 40,
+    "code8x12": "1SL9049A00",
+    "code4x6": "1SL9149A00",
+    "packMeters": 32
+   },
+   {
+    "widthMm": 100,
+    "heightMm": 40,
+    "code8x12": "1SL9051A00",
+    "code4x6": "1SL9151A00",
+    "packMeters": 24
+   },
+   {
+    "widthMm": 120,
+    "heightMm": 40,
+    "code8x12": "1SL9053A00",
+    "code4x6": "1SL9153A00",
+    "packMeters": 20
+   },
+   {
+    "widthMm": 25,
+    "heightMm": 60,
+    "code8x12": "1SL9063A00",
+    "code4x6": "1SL9163A00",
+    "packMeters": 34
+   },
+   {
+    "widthMm": 40,
+    "heightMm": 60,
+    "code8x12": "1SL9065A00",
+    "code4x6": "1SL9165A00",
+    "packMeters": 22
+   },
+   {
+    "widthMm": 60,
+    "heightMm": 60,
+    "code8x12": "1SL9067A00",
+    "code4x6": "1SL9167A00",
+    "packMeters": 32
+   },
+   {
+    "widthMm": 80,
+    "heightMm": 60,
+    "code8x12": "1SL9069A00",
+    "code4x6": "1SL9169A00",
+    "packMeters": 24
+   },
+   {
+    "widthMm": 100,
+    "heightMm": 60,
+    "code8x12": "1SL9071A00",
+    "code4x6": "1SL9171A00",
+    "packMeters": 20
+   },
+   {
+    "widthMm": 120,
+    "heightMm": 60,
+    "code8x12": "1SL9073A00",
+    "code4x6": "1SL9173A00",
+    "packMeters": 14
+   },
+   {
+    "widthMm": 25,
+    "heightMm": 80,
+    "code8x12": "1SL9083A00",
+    "code4x6": "1SL9183A00",
+    "packMeters": 28
+   },
+   {
+    "widthMm": 40,
+    "heightMm": 80,
+    "code8x12": "1SL9085A00",
+    "code4x6": "1SL9185A00",
+    "packMeters": 36
+   },
+   {
+    "widthMm": 60,
+    "heightMm": 80,
+    "code8x12": "1SL9087A00",
+    "code4x6": "1SL9187A00",
+    "packMeters": 24
+   },
+   {
+    "widthMm": 80,
+    "heightMm": 80,
+    "code8x12": "1SL9089A00",
+    "code4x6": "1SL9189A00",
+    "packMeters": 16
+   },
+   {
+    "widthMm": 100,
+    "heightMm": 80,
+    "code8x12": "1SL9091A00",
+    "code4x6": "1SL9191A00",
+    "packMeters": 16
+   },
+   {
+    "widthMm": 120,
+    "heightMm": 80,
+    "code8x12": "1SL9093A00",
+    "code4x6": "1SL9193A00",
+    "packMeters": 12
+   }
+  ],
+  "source": "ABB 1STC804013D0201 (02.2011) pág. 6/5 'Ordering codes - Halogen free wiring ducts with vertical slots' y págs. 9/40-9/41 (cotas, largo 2000); tabla leída de la imagen de la página 2026-11-16",
+  "status": "códigos y secciones del catálogo (BxH: B = cara visible de frente, H = alto desde la placa, supuesto por convención). El largo se corta a medida; el catálogo da 2000 mm. Disponibilidad en Argentina sin verificar. Existe también la línea termoplástica RAL 7030 (pág. 6/6), sin cargar.",
+  "pendientes": [
+   "interpretación de las dos cifras de ranura (primera = ancho de ranura, segunda = paso) tomada del dibujo, sin cota explícita",
+   "espesor de pared y ancho de las 'uñas' laterales: no cotados; el dibujo de frente es esquemático",
+   "verificar que la tapa de repuesto 1SL5316..22 corresponde a cada ancho (15…120)"
+  ]
+ }
 }

@@ -1,52 +1,66 @@
 {
-  "_ayuda": "Todo archivo bajado de internet para este proyecto se guarda en el repo y se registra acá (origen, fecha, hash, para qué se usó). Los PDF son catálogos públicos de ABB, guardados para uso interno en este repo privado. El texto por página (texto/*.json) sirve para buscar sin abrir el PDF; las tablas pierden encabezados, verificar mirando la imagen de la página.",
-  "archivos": [
-    {
-      "archivo": "docs/catalogos_abb/ABB_SPEP185_catalogo_1STC803009D0103.pdf",
-      "documento": "System pro E power - Empty enclosures and 185 mm Busbar System, Technical Catalogue (1STC803009D0103)",
-      "origen": "https://library.e.abb.com/public/ea19569e71bd4a55ac10d34ebc2c89d8/Katalog_185_1STC803009D0103%20SPEP%20185%20catalogue%202024%20Rev%203.pdf",
-      "bajado": "2026-11-15",
-      "bytes": 44649801,
-      "sha256": "27cf77cfc939dafec3d0b2411529291e6f0f5d16027c4836f5ca09b218c9de54",
-      "texto": "docs/catalogos_abb/texto/1STC803009D0103_paginas.json",
-      "usado_en": "datos/catalogo_abb.json -> enclosures[] de estructura System pro E (structure, páginas 20-24, 31, 46, 129-136)"
-    },
-    {
-      "archivo": "docs/catalogos_abb/ABB_Enclosures_Automation_1STC804013D0201.pdf",
-      "documento": "General Catalogue - Enclosures for Automation (1STC804013D0201, 02.2011)",
-      "origen": "https://content.voltimum.com/au/190/ABB_-_Enclosures_for_Automation_1stc804013d0201.pdf (copia del catálogo de ABB SACE en Voltimum)",
-      "bajado": "2026-11-15",
-      "bytes": 19516707,
-      "sha256": "6ec8fb831401d370e514cc74eafca51cf5d94eecaf940dce3230481de1980543",
-      "texto": "docs/catalogos_abb/texto/1STC804013D0201_paginas.json",
-      "usado_en": "datos/catalogo_abb.json -> enclosures[] SR2 (págs. 2/4-2/10, 9/6-9/7); pendiente: kits KD (pág. 2/4 y 2/8), IS2, AM2"
-    },
-    {
-      "archivo": "docs/imagenes_abb/XT1C_1SDA067405R1_frontal.png",
-      "documento": "Imagen frontal oficial ABB XT1C 160 TMD 80-800 4P (9IBA255342)",
-      "origen": "https://cdn.productimages.abb.com/9IBA255342_400x400.png",
-      "bajado": "2026-11-15",
-      "bytes": 73283,
-      "sha256": "8aed93aceda4815e990619958075f861c1fa7e504d6278a52545e4dcb1ef73ef",
-      "usado_en": "datos/apariencias_abb.json -> abb.tmax.xt1.4p.fixed.front.marking"
-    },
-    {
-      "archivo": "docs/imagenes_abb/XT2N_1SDX176607R1_frontal.png",
-      "documento": "Imagen frontal oficial ABB XT2N 160 TMG 80-240 4P + Acc (9IBA255267)",
-      "origen": "https://cdn.productimages.abb.com/9IBA255267_400x400.png",
-      "bajado": "2026-11-15",
-      "bytes": 92493,
-      "sha256": "80d8d88a1b6415281e2a393086ef5f1c18ebb3a86c20428e1bed216ba245cb72",
-      "usado_en": "datos/apariencias_abb.json -> abb.tmax.xt2.4p.fixed.front.marking"
-    },
-    {
-      "archivo": "docs/imagenes_abb/OT400E04P_1SCA022719R1810_frontal.jpg",
-      "documento": "Imagen frontal oficial ABB OT400E04P (9PAA00000422688)",
-      "origen": "https://cdn.productimages.abb.com/9PAA00000422688_400x400.jpg",
-      "bajado": "2026-11-15",
-      "bytes": 8361,
-      "sha256": "81242e314bb7038556501e46b330b92c78f6bc702d6504c528097c81fad368c0",
-      "usado_en": "datos/apariencias_abb.json -> abb.ot400e04.4p.front.marking"
-    }
-  ]
+ "_ayuda": "Todo archivo bajado de internet para este proyecto se guarda en el repo y se registra acá (origen, fecha, hash, para qué se usó). Los PDF son catálogos públicos de ABB, guardados para uso interno en este repo privado. El texto por página (texto/*.json) sirve para buscar sin abrir el PDF; las tablas pierden encabezados, verificar mirando la imagen de la página.",
+ "archivos": [
+  {
+   "archivo": "docs/catalogos_abb/ABB_SPEP185_catalogo_1STC803009D0103.pdf",
+   "documento": "System pro E power - Empty enclosures and 185 mm Busbar System, Technical Catalogue (1STC803009D0103)",
+   "origen": "https://library.e.abb.com/public/ea19569e71bd4a55ac10d34ebc2c89d8/Katalog_185_1STC803009D0103%20SPEP%20185%20catalogue%202024%20Rev%203.pdf",
+   "bajado": "2026-11-15",
+   "bytes": 44649801,
+   "sha256": "27cf77cfc939dafec3d0b2411529291e6f0f5d16027c4836f5ca09b218c9de54",
+   "texto": "docs/catalogos_abb/texto/1STC803009D0103_paginas.json",
+   "usado_en": "datos/catalogo_abb.json -> enclosures[] de estructura System pro E (structure, páginas 20-24, 31, 46, 129-136)"
+  },
+  {
+   "archivo": "docs/catalogos_abb/ABB_Enclosures_Automation_1STC804013D0201.pdf",
+   "documento": "General Catalogue - Enclosures for Automation (1STC804013D0201, 02.2011)",
+   "origen": "https://content.voltimum.com/au/190/ABB_-_Enclosures_for_Automation_1stc804013d0201.pdf (copia del catálogo de ABB SACE en Voltimum)",
+   "bajado": "2026-11-15",
+   "bytes": 19516707,
+   "sha256": "6ec8fb831401d370e514cc74eafca51cf5d94eecaf940dce3230481de1980543",
+   "texto": "docs/catalogos_abb/texto/1STC804013D0201_paginas.json",
+   "usado_en": "datos/catalogo_abb.json -> enclosures[] SR2 (págs. 2/4-2/10, 9/6-9/7); pendiente: kits KD (pág. 2/4 y 2/8), IS2, AM2"
+  },
+  {
+   "archivo": "docs/imagenes_abb/XT1C_1SDA067405R1_frontal.png",
+   "documento": "Imagen frontal oficial ABB XT1C 160 TMD 80-800 4P (9IBA255342)",
+   "origen": "https://cdn.productimages.abb.com/9IBA255342_400x400.png",
+   "bajado": "2026-11-15",
+   "bytes": 73283,
+   "sha256": "8aed93aceda4815e990619958075f861c1fa7e504d6278a52545e4dcb1ef73ef",
+   "usado_en": "datos/apariencias_abb.json -> abb.tmax.xt1.4p.fixed.front.marking"
+  },
+  {
+   "archivo": "docs/imagenes_abb/XT2N_1SDX176607R1_frontal.png",
+   "documento": "Imagen frontal oficial ABB XT2N 160 TMG 80-240 4P + Acc (9IBA255267)",
+   "origen": "https://cdn.productimages.abb.com/9IBA255267_400x400.png",
+   "bajado": "2026-11-15",
+   "bytes": 92493,
+   "sha256": "80d8d88a1b6415281e2a393086ef5f1c18ebb3a86c20428e1bed216ba245cb72",
+   "usado_en": "datos/apariencias_abb.json -> abb.tmax.xt2.4p.fixed.front.marking"
+  },
+  {
+   "archivo": "docs/imagenes_abb/OT400E04P_1SCA022719R1810_frontal.jpg",
+   "documento": "Imagen frontal oficial ABB OT400E04P (9PAA00000422688)",
+   "origen": "https://cdn.productimages.abb.com/9PAA00000422688_400x400.jpg",
+   "bajado": "2026-11-15",
+   "bytes": 8361,
+   "sha256": "81242e314bb7038556501e46b330b92c78f6bc702d6504c528097c81fad368c0",
+   "usado_en": "datos/apariencias_abb.json -> abb.ot400e04.4p.front.marking"
+  }
+ ],
+ "consultadas": [
+  {
+   "fecha": "2026-11-18",
+   "tema": "Bornera equipotencial PE (DBL125) y topes",
+   "urls": [
+    "https://www.tti.com/content/dam/tti-commons/supplier/te-connectivity/doc/te-connectivity-1snl-dbl-power-distribution-blocks-product-catalog-ap.pdf",
+    "https://th.rs-online.com/web/p/distribution-blocks/1003920",
+    "https://www.gexpro.com/p/1017877/entrelec/terminal-block-distribution-gray-125a-feed-through-282mm-w/888614490413/1snl312510r0000",
+    "https://www.te.com/en/about-te/news-center/abb-entrelec-news.html",
+    "https://www.electricautomationnetwork.com/PDF/ENGLISH/ENTRELEC/1SNA399903R0200.pdf"
+   ],
+   "nota": "sólo consulta web (no se descargaron archivos); datos volcados en datos/accesorios_abb.json → earthTerminals te-dbl125-pe"
+  }
+ ]
 }

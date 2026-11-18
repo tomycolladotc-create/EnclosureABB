@@ -178,6 +178,15 @@ def build_dxf(project, catalog, fronts, appearances):
                     finger = max(3, acc["h"] * 0.3)
                     for yy in (acc["y"] + finger, acc["y"] + acc["h"] - finger):
                         space.add_line((fx + acc["x"], fy + yy), (fx + acc["x"] + acc["w"], fy + yy), dxfattribs={"layer": layer})
+            if acc["type"] == "pe_terminal" and acc.get("style") == "repartidor":  # bloques repartidores PE + topes (bornes esquemáticos)
+                sw, bw, H = acc.get("stopW", 0), acc.get("blockW", acc["w"]), acc["h"]
+                for i in range(acc.get("blocks", 1)):
+                    bx = fx + acc["x"] + sw + i * bw
+                    space.add_line((bx, fy + acc["y"]), (bx, fy + acc["y"] + H), dxfattribs={"layer": layer})
+                    space.add_circle((bx + bw / 2, fy + acc["y"] + H * 0.9), 4.9, dxfattribs={"layer": layer})  # entrada Ø9,8
+                    for k in range(acc.get("outputs", 7)):
+                        space.add_circle((bx + bw * (0.7 if k % 2 else 0.3), fy + acc["y"] + H * (0.63 - 0.145 * (k // 2))), 3.2, dxfattribs={"layer": layer})
+                space.add_line((fx + acc["x"] + acc["w"] - sw, fy + acc["y"]), (fx + acc["x"] + acc["w"] - sw, fy + acc["y"] + H), dxfattribs={"layer": layer})
             if acc["type"] == "comb":  # una clavija por polo
                 n = acc.get("poleCount") or max(1, round(acc["w"] / (acc.get("pitchMm") or 17.5)))
                 for i in range(n):

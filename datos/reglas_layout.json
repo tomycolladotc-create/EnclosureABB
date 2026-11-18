@@ -20,5 +20,7 @@
   "_ayuda_railRowGapMm": "Propuesta de diseño (no dato de ABB): separación vertical entre filas de riel libre = peine (~30) + franja de etiqueta (30) + portaetiqueta (14) + canaleta mínima (25) + aire. Con kit KD el paso es el del kit (185 mm).",
   "ductSideMaxWidthMm": 60,
   "ductMinFreeBetweenMm": 50,
-  "ductMinWidthMm": 25
+  "ductMinWidthMm": 25,
+  "peTerminalId": "te-dbl125-pe",
+  "_ayuda_pe": "Bornera de tierra por defecto (id de datos/accesorios_abb.json → earthTerminals). Con 'repartidor' se usa un bloque por cada N salidas (N del catálogo) y un tope en cada punta. 'entrelec-m4-6p' vuelve a los bornes individuales."
 }

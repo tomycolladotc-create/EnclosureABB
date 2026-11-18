@@ -59,7 +59,14 @@ def _describe(item, catalog):
     """Datos para el cómputo de materiales (bom.py): categoría, descripción, código y cantidad. El dibujo NO lleva estos textos."""
     t = item["type"]
     by = lambda key: next((x for x in catalog.get(key, []) if x["id"] == item.get("catalogId")), {})
-    if t == "pe_terminal":
+    if t == "pe_terminal" and item.get("style") == "repartidor":
+        pe = by("earthTerminals")
+        stop = pe.get("tope") or {}
+        item.update(bomCategory="Bornera de tierra (PE)", orderCode=pe.get("orderCode"), quantity=item.get("blocks", 1),
+                    description=f"Repartidor unipolar {pe.get('tipo')} {pe.get('corrienteA')} A como bornera equipotencial PE: {pe['entradas']['cantidad']} entrada {pe['entradas']['seccion']} + {pe['salidas']['cantidad']} salidas {pe['salidas']['seccion']}, marcador PE ({pe.get('marca')})",
+                    bomExtra=[{"bomCategory": "Bornera de tierra (PE)", "orderCode": stop.get("orderCode"), "quantity": 2,
+                               "description": f"Tope de fin de bornera {stop.get('tipo')} ({stop.get('anchoMm')} mm), uno en cada punta"}] if stop else [])
+    elif t == "pe_terminal":
         pe = by("earthTerminals")
         item.update(bomCategory="Borne PE", orderCode=pe.get("orderCode"), quantity=item.get("count", 1),
                     description=f"Borne de tierra {pe.get('tipo', '')} {pe.get('seccionMm2', '')} mm² para riel DIN ({pe.get('marca', '')})".replace("  ", " "))
@@ -195,11 +202,22 @@ def propose(project, catalog=None):
 
     # 1) Bornes de puesta a tierra: uno por circuito de salida (QF). Simplificación declarada.
     circuits = [d for d in project.get("devices", []) if str(d.get("tag", "")).startswith("QF")]
-    pe = next(t for t in catalog["earthTerminals"] if t["id"] == "entrelec-m4-6p")
+    pe_id = _load_rules().get("peTerminalId", "entrelec-m4-6p")
+    pe = next((t for t in catalog["earthTerminals"] if t["id"] == pe_id), None) or next(t for t in catalog["earthTerminals"] if t["id"] == "entrelec-m4-6p")
     if circuits:
-        width, height = len(circuits) * pe["pasoMm"], pe["alturaMm"]
-        item = {"type": "pe_terminal", "auto": True, "catalogId": pe["id"], "count": len(circuits), "w": width, "h": height,
-                "label": f"PE x{len(circuits)}", "provisional": True}
+        if pe.get("estilo") == "repartidor":
+            # Bornera equipotencial: bloques repartidores agrupados (cada uno con N salidas) y un tope en cada punta.
+            outs = pe["salidas"]["cantidad"]
+            blocks = -(-len(circuits) // outs)
+            stop = (pe.get("tope") or {}).get("anchoMm", 0)
+            width, height = blocks * pe["anchoMm"] + 2 * stop, pe["altoFrenteMm"]
+            item = {"type": "pe_terminal", "style": "repartidor", "auto": True, "catalogId": pe["id"], "count": blocks * outs, "blocks": blocks,
+                    "blockW": pe["anchoMm"], "stopW": stop, "outputs": outs, "inputs": pe["entradas"]["cantidad"], "w": width, "h": height,
+                    "label": f"Bornera PE {pe['tipo']} x{blocks}", "provisional": True}
+        else:
+            width, height = len(circuits) * pe["pasoMm"], pe["alturaMm"]
+            item = {"type": "pe_terminal", "auto": True, "catalogId": pe["id"], "count": len(circuits), "w": width, "h": height,
+                    "label": f"PE x{len(circuits)}", "provisional": True}
         spot = next(((x, r) for r in rails if (x := _free_x(devices, r, width)) is not None), None)  # primer riel con hueco
         if spot is None:
             item.update(placed=False)

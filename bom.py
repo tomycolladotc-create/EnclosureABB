@@ -73,6 +73,9 @@ def build_bom(project, catalog):
         description = item.get("description") or item.get("label") or item.get("type")
         key = (category, item.get("orderCode") or item.get("id") or item.get("type"), description)
         grouped_accessories[key] = grouped_accessories.get(key, 0) + int(item.get("quantity", 1))
+        for extra in item.get("bomExtra", []):  # renglones asociados (p. ej. topes de la bornera)
+            k = (extra["bomCategory"], extra.get("orderCode") or "POR CONFIRMAR", extra["description"])
+            grouped_accessories[k] = grouped_accessories.get(k, 0) + int(extra.get("quantity", 1))
     for (category, code, description), quantity in grouped_accessories.items():
         add(category, code, description, quantity, status="propuesta por confirmar")
     return rows

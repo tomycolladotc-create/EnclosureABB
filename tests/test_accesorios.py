@@ -225,12 +225,12 @@ class CircuitosYComputo(unittest.TestCase):
         from bom import build_bom
         rows = build_bom(self.new, self.L("catalogo_abb.json"))
         cats = {r["category"] for r in rows}
-        for want in ("Canaleta", "Peine", "Borne PE", "Riel DIN"):
+        for want in ("Canaleta", "Peine", "Bornera de tierra (PE)", "Riel DIN"):
             self.assertIn(want, cats)
         ducts = [r for r in rows if r["category"] == "Canaleta"]
         self.assertTrue(all("largo a cortar" in r["description"] and r["code"].startswith("1SL9") for r in ducts))
-        pe = next(r for r in rows if r["category"] == "Borne PE")
-        self.assertEqual(pe["quantity"], sum(1 for d in self.new["devices"] if d["tag"].startswith("QF")))
+        pe = next(r for r in rows if r["category"] == "Bornera de tierra (PE)" and r["code"] == "1SNL312510R0000")
+        self.assertEqual(pe["quantity"], -(-sum(1 for d in self.new["devices"] if d["tag"].startswith("QF")) // 7))
         equipos = [r for r in rows if r["category"] == "Equipo"]
         self.assertTrue(any("TS-4.2 (QF82)" in r["tags"] for r in equipos))
 
@@ -299,3 +299,27 @@ class CanaletasManuales(unittest.TestCase):
             doc = ezdxf.read(io.StringIO(doc.decode() if isinstance(doc, bytes) else doc))
         lines = [e for e in doc.modelspace() if e.dxf.layer == "ABB_CANALETAS" and e.dxftype() == "LINE"]
         self.assertTrue(any(abs(e.dxf.start.x - e.dxf.end.x) < 1e-6 and abs(e.dxf.start.y - e.dxf.end.y) > 400 for e in lines))
+
+
+
+class BorneraEquipotencial(unittest.TestCase):
+    def test_repartidores_pe_con_topes_y_salidas_suficientes(self):
+        import json
+        from accesorios import complete
+        from layout_auto import autolayout_conforme
+        from bom import build_bom
+        root = Path(__file__).resolve().parents[1]
+        cat = json.loads((root / "datos" / "catalogo_abb.json").read_text(encoding="utf-8"))
+        project = json.loads((root / "datos" / "ts4_topografia.json").read_text(encoding="utf-8"))
+        new, _ = autolayout_conforme(project, cat)
+        pe = next(a for a in new["accessories"] if a["type"] == "pe_terminal")
+        qf = sum(1 for d in new["devices"] if d["tag"].startswith("QF"))
+        self.assertEqual(pe["style"], "repartidor")
+        self.assertGreaterEqual(pe["count"], qf)
+        self.assertEqual(pe["blocks"], -(-qf // 7))
+        self.assertAlmostEqual(pe["w"], pe["blocks"] * 28.2 + 2 * 10)
+        self.assertEqual(pe["h"], 75)
+        rows = [r for r in build_bom(new, cat) if r["category"] == "Bornera de tierra (PE)"]
+        codes = {r["code"]: r["quantity"] for r in rows}
+        self.assertEqual(codes.get("1SNL312510R0000"), pe["blocks"])
+        self.assertEqual(codes.get("1SNK900001R0000"), 2)

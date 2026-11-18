@@ -77,7 +77,7 @@ const rails=()=>project.enclosure.mountingLayout?.dinRails||[];
 const isDin=d=>shell(d.shell)?.mounting==='din'||d.mounting==='din'||(catalog.modelHints||[]).some(h=>h.mounting==='din'&&new RegExp(h.modelRegex,'i').test(d.model||''));
 function alignDin(d){const rs=rails();if(!rs.length||!isDin(d))return;const cy=d.y+d.h/2,rail=rs.reduce((b,r)=>Math.abs(r.y-cy)<Math.abs(b.y-cy)?r:b,rs[0]);d.y=rail.y-d.h/2;d.x=Math.max(rail.x,Math.min(rail.x+rail.length-d.w,d.x))}
 function frontDefs(){
- return `<defs>${Object.entries(fronts.items).map(([id,front],i)=>{
+ return `<defs><radialGradient id="gBrass" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#f6e2a0"/><stop offset=".55" stop-color="#cfa548"/><stop offset="1" stop-color="#8a6a24"/></radialGradient>${Object.entries(fronts.items).map(([id,front],i)=>{
   const paint=appearances.items[id],blocks=paint?`<g transform="translate(0 1) scale(1 -1)"><rect x="0" y="0" width="1" height="1" style="fill:${paint.base};stroke:none"/>${paint.parts.map(([x,y,w,h,c])=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" style="fill:${c};stroke:none"/>`).join('')}</g>`:'';
   const logo=paint?.logo?`<text x="${paint.logo[0]}" y="${1-paint.logo[1]}" fill="white" font-size="0.035" font-weight="bold" font-family="Arial">${esc(paint.logo[2])}</text>`:'';
   return `<symbol id="abb-front-${i}" viewBox="0 0 1 1" overflow="visible">${blocks}${logo}<g transform="translate(0 1) scale(1 -1)" fill="none" stroke="${paint?.lineColor||'#263744'}" stroke-width="0.004" stroke-linecap="round" stroke-linejoin="round">${front.paths.map(path=>`<path d="M${path.map(p=>p.join(' ')).join('L')}"/>`).join('')}</g></symbol>`;
@@ -203,8 +203,21 @@ function placeDuctFree(a){const f=project.enclosure.functional,others=manualDuct
 // Peine: cuerpo aislante apoyado sobre los equipos y una clavija de cobre por polo (paso del catálogo, 17,5 mm).
 function combSvg(a,fx,h,fy){const x=fx+a.x,y=h-fy-a.y-a.h,pitch=a.pitchMm||17.5,n=a.poleCount||Math.round(a.w/pitch),pins=Array.from({length:n},(_,i)=>{const cx=x+(i+.5)*a.w/n;return `<rect x="${cx-2.2}" y="${y+a.h*.2}" width="4.4" height="${a.h*.6}" rx="1" fill="#c8773a" stroke="#7a4420" stroke-width=".4"/><circle cx="${cx}" cy="${y+a.h*.5}" r="1" fill="#7a4420"/>`}).join('');
  return `<g style="pointer-events:none"><g filter="url(#shDev)"><rect x="${x}" y="${y}" width="${a.w}" height="${a.h}" rx="2" fill="#5d6772" stroke="#2f3a45" stroke-width="1" style="stroke-dasharray:${a.provisional?'4 2':'0'}"/></g><rect x="${x}" y="${y}" width="${a.w}" height="${a.h*.25}" rx="2" fill="#fff" opacity=".22"/>${pins}</g>`}
+// Bornera equipotencial PE: repartidores unipolares (gris, tapa transparente) con entrada grande arriba y salidas abajo, marcador PE y topes en las puntas.
+// Medidas, cantidad y diámetros de bornes del catálogo; la ubicación de cada borne en el frente es esquemática (el fabricante no publica el frente acotado).
+function peBlockSvg(a,fx,h,fy){const x=fx+a.x,y=h-fy-a.y-a.h,H=a.h,sw=a.stopW||0,bw=a.blockW||(a.w-2*sw),n=a.blocks||1,outs=a.outputs||7;
+ const screw=(cx,cy,r)=>`<circle cx="${cx}" cy="${cy}" r="${r+1.2}" fill="#2f3a45" opacity=".55"/><circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#gBrass)" stroke="#7a5c1c" stroke-width=".4"/><path d="M${cx-r*.65} ${cy}H${cx+r*.65}M${cx} ${cy-r*.65}V${cy+r*.65}" stroke="#5b4413" stroke-width="${Math.max(.5,r*.22)}" stroke-linecap="round"/>`;
+ const stop=sx=>`<rect x="${sx}" y="${y-1}" width="${sw}" height="${H+2}" rx="1.5" fill="#59626b" stroke="#2f3a45" stroke-width=".6"/><rect x="${sx+sw*.3}" y="${y+4}" width="${sw*.4}" height="${H-8}" rx="1" fill="#6f7983"/>`;
+ let blocks='';for(let i=0;i<n;i++){const bx=x+sw+i*bw,cx=bx+bw/2;let outsSvg='';for(let k=0;k<outs;k++){const col=k%2,row=Math.floor(k/2);outsSvg+=screw(bx+bw*(col?0.7:0.3),y+H*0.37+row*H*0.145,k===0?2.9:2.7)}
+  blocks+=`<g><rect x="${bx}" y="${y}" width="${bw}" height="${H}" rx="2" fill="#c7ccd0" stroke="#5f6b75" stroke-width=".8"/>
+   <rect x="${bx+1.2}" y="${y+H*0.2}" width="${bw-2.4}" height="${H*0.7}" rx="1.5" fill="#1e2a33" opacity=".85"/>
+   ${screw(cx,y+H*0.1,4.2)}${outsSvg}
+   <rect x="${bx+1.2}" y="${y+H*0.2}" width="${bw-2.4}" height="${H*0.7}" rx="1.5" fill="#dfeaf2" opacity=".28" stroke="#9db3c4" stroke-width=".6"/>
+   <rect x="${bx+2}" y="${y+H*0.21}" width="${(bw-4)*.35}" height="${H*0.68}" fill="#fff" opacity=".18"/>
+   <rect x="${bx+3}" y="${y+H-6.5}" width="${bw-6}" height="4.5" rx="1" fill="#2fa84f"/><path d="${Array.from({length:Math.ceil((bw-6)/4)},(_,j)=>`M${bx+3+j*4} ${y+H-2}l2.5 -4.5h2l-2.5 4.5z`).join('')}" fill="#f2d21b"/></g>`}
+ return `<g style="pointer-events:none"><g filter="url(#shDev)">${stop(x)}${blocks}${stop(x+a.w-sw)}</g></g>`}
 function accessoriesSvg(fx,fy,h){return (project.accessories||[]).filter(a=>a.placed!==false&&a.decision!=='discarded'&&a.w&&a.x!==undefined).map(a=>{
- if(a.type==='wiring_duct')return ductSvgManual(a,fx,h,fy);if(a.type==='comb')return combSvg(a,fx,h,fy);
+ if(a.type==='wiring_duct')return ductSvgManual(a,fx,h,fy);if(a.type==='comb')return combSvg(a,fx,h,fy);if(a.type==='pe_terminal'&&a.style==='repartidor')return peBlockSvg(a,fx,h,fy);
  const color=a.type==='pe_terminal'?'#c9d400':a.type==='copper_busbar'?'#c8773a':a.type==='distribution_block'?'#b8865b':'#9aa7b4',x=fx+a.x,y=h-fy-a.y-a.h;
  const n=a.type==='pe_terminal'?+((/x\s*(\d+)/i.exec(a.label||'')||[])[1]||0):0,seps=n>1?Array.from({length:n-1},(_,i)=>`<line x1="${x+a.w*(i+1)/n}" y1="${y}" x2="${x+a.w*(i+1)/n}" y2="${y+a.h}" stroke="#5f6a00" stroke-width=".8"/>`).join(''):'',
   screws=n?Array.from({length:n},(_,i)=>`<circle cx="${x+a.w*(i+.5)/n}" cy="${y+a.h*.3}" r="${Math.min(2.2,a.w/n*.28).toFixed(2)}" fill="#6d7478" stroke="#3d4a57" stroke-width=".4"/>`).join(''):'';
