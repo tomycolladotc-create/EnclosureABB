@@ -373,17 +373,24 @@
     "TH35-15"
    ],
    "availability": "por-confirmar",
-   "source": "automa.net (1SNA179535R2300): BRT125A, bloque de distribución, 4 polos, 125 A; Farnell (farnell.com/datasheets/2917447.pdf): ancho 128 mm; RS Online 413-2331: 11 vías, 128 x 85 x 60 mm",
-   "status": "la línea de borneras de ABB ahora es de TE Connectivity; la descripción ABB dice 4x12 conexiones y RS lista 11 vías: confirmar con la hoja 1SNC160001C0207; falta confirmar Argentina | alto de frente 85 mm tomado de RS Online (ancho 85 de su ficha); confirmar con la hoja ABB",
+   "source": "automa.net (1SNA179535R2300): BRT125A, bloque de distribución, 4 polos, 125 A; Farnell (farnell.com/datasheets/2917447.pdf): ancho 128 mm; RS Online 413-2331: 11 vías, 128 x 85 x 60 mm; Farnell 2917447: 4 polos, 4 x 12 conexiones, 125 A, paso 128 mm; RS 413-2331: 11 vías, entrada 35 mm², salida 4 x 16 mm², tapa y etiqueta de advertencia incluidas; Rapid 28-3489: 85 (W) x 60 (H) x 128 (L) mm",
+   "status": "la línea de borneras de ABB pasó a TE Connectivity (2018), mismo código; 12 conexiones por polo = 1 entrada + 11 salidas (Farnell + RS)",
    "anchoMm": 128,
-   "profundidadMm": null,
+   "profundidadMm": 60,
    "vias": 11,
    "dimensionesRS": {
     "largoMm": 128,
     "anchoMm": 85,
     "alturaMm": 60
    },
-   "alturaFrenteMm": 85
+   "alturaFrenteMm": 85,
+   "entradasPorPolo": 1,
+   "salidasPorPolo": 11,
+   "seccionEntrada": "35 mm²",
+   "seccionSalida": "16 mm²",
+   "cubierta": "tapa protectora contra contacto (touchproof) incluida",
+   "etiqueta": "etiqueta de advertencia de riesgo eléctrico incluida",
+   "dibujo": "4 barras horizontales (L1, L2, L3, N con colores IRAM marrón/negro/rojo/celeste), 1 entrada + 11 salidas por polo; ubicación de bornes esquemática (sin frente acotado del fabricante)"
   },
   {
    "id": "steck-sdm9904",

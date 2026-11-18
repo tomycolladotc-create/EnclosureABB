@@ -61,6 +61,16 @@
     "https://www.electricautomationnetwork.com/PDF/ENGLISH/ENTRELEC/1SNA399903R0200.pdf"
    ],
    "nota": "sólo consulta web (no se descargaron archivos); datos volcados en datos/accesorios_abb.json → earthTerminals te-dbl125-pe"
+  },
+  {
+   "fecha": "2026-11-18",
+   "tema": "Bloque de distribución BRT125A",
+   "urls": [
+    "https://www.farnell.com/datasheets/2917447.pdf",
+    "https://ph.rs-online.com/web/p/distribution-blocks/4132331",
+    "https://www.rapidonline.com/abb-017953523-four-pole-distribution-block-125a-28-3489"
+   ],
+   "nota": "sólo consulta web; datos en datos/accesorios_abb.json → distributionBlocks abb-brt125a"
   }
  ]
 }

@@ -275,3 +275,10 @@ Propuestas sin hacer (para decidir): separar PDF de planta en tableros; cajetín
 - Tests 88 OK; e2e 104/104.
 
 - 01:15 · Identificación PAT: cuerpo verde-amarillo rayado, símbolo de tierra y rótulo amarillo "PAT" de punta a punta de los bloques (como el rótulo de obra de la foto de Thomas); en DXF, símbolo de tierra. Disponibilidad en Argentina: no se verifica para este accesorio (pedido de Thomas).
+
+
+## 2026-11-18 01:40 · Claude · Bloque de distribución y barra de cobre realistas
+- BRT125A (1SNA179535R2300): 4 polos, 4 x 12 conexiones = 1 entrada (35 mm²) + 11 salidas (16 mm²) por polo, 128 x 85 x 60 mm, tapa y etiqueta de advertencia (Farnell, RS, Rapid). Dibujo: 4 barras de cobre L1 L2 L3 N con colores IRAM (marrón, negro, rojo, celeste), bornes de latón, tapa, triángulo de riesgo eléctrico; DXF con barras y bornes. Ubicación de bornes esquemática (anotado).
+- Barra AA8010: agujeros M6 cada 25 mm (catálogo) y soportes aislantes (esquemáticos).
+- Bugs: el bloque sólo buscaba lugar en el primer riel (ahora en todos); para >125 A se elegía un bloque sin medidas (Schneider Distribloc 160) que no se podía ubicar → ahora sólo bloques con medidas y, si no hay, la barra ABB.
+- Tests 88 OK; e2e 104/104.

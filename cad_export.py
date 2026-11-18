@@ -190,6 +190,22 @@ def build_dxf(project, catalog, fronts, appearances):
                 ex, ey, es = fx + acc["x"] + sw + 6, fy + acc["y"] + H * 0.1, 3.5  # símbolo de tierra para identificar la bornera PAT
                 for x1, y1, x2, y2 in ((ex, ey + es, ex, ey), (ex - es * .9, ey, ex + es * .9, ey), (ex - es * .6, ey - es * .38, ex + es * .6, ey - es * .38), (ex - es * .3, ey - es * .76, ex + es * .3, ey - es * .76)):
                     space.add_line((x1, y1), (x2, y2), dxfattribs={"layer": layer})
+            if acc["type"] == "distribution_block":  # 4 barras con sus bornes (esquemático)
+                n, ins, outs = acc.get("poles") or 4, acc.get("inputsPerPole") or 1, acc.get("outputsPerPole") or 11
+                top, rh = acc["y"] + acc["h"] * 0.08, acc["h"] * 0.82 / n
+                for p in range(n):
+                    cy = fy + top + rh * (p + 0.5)
+                    space.add_line((fx + acc["x"] + 16, cy - rh * .22), (fx + acc["x"] + acc["w"] - 6, cy - rh * .22), dxfattribs={"layer": layer})
+                    space.add_line((fx + acc["x"] + 16, cy + rh * .22), (fx + acc["x"] + acc["w"] - 6, cy + rh * .22), dxfattribs={"layer": layer})
+                    bx, bw = fx + acc["x"] + 16, acc["w"] - 22
+                    for k in range(ins):
+                        space.add_circle((bx + 6 + k * 10, cy), min(4.2, rh * .3), dxfattribs={"layer": layer})
+                    for k in range(outs):
+                        space.add_circle((bx + 6 + ins * 10 + 3 + k * ((bw - ins * 10 - 12) / max(1, outs - 1)), cy), min(2.6, rh * .2), dxfattribs={"layer": layer})
+            if acc["type"] == "copper_busbar":  # agujeros M6 cada 25 mm
+                pitch = acc.get("holePitchMm", 25)
+                for k in range(int((acc["w"] - pitch / 2) // pitch)):
+                    space.add_circle((fx + acc["x"] + pitch / 2 + k * pitch, fy + acc["y"] + acc["h"] / 2), 3.2, dxfattribs={"layer": layer})
             if acc["type"] == "comb":  # una clavija por polo
                 n = acc.get("poleCount") or max(1, round(acc["w"] / (acc.get("pitchMm") or 17.5)))
                 for i in range(n):

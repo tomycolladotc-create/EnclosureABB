@@ -219,8 +219,27 @@ function peBlockSvg(a,fx,h,fy){const x=fx+a.x,y=h-fy-a.y-a.h,H=a.h,sw=a.stopW||0
  const lx=x+sw+1.5,lw=a.w-2*sw-3,ly=y+H*0.83,lh=H*0.14,fs=Math.min(lh*.72,lw/7);
  const label=`<rect x="${lx}" y="${ly}" width="${lw}" height="${lh}" rx="1.2" fill="#ffe100" stroke="#1d1d1b" stroke-width=".7"/>${earth(lx+lh*.75,ly+lh*.42,lh*.38,'#1d1d1b')}<text x="${lx+lw/2+lh*.4}" y="${ly+lh*.74}" text-anchor="middle" font-size="${fs.toFixed(1)}" font-weight="800" font-family="Arial" fill="#1d1d1b" letter-spacing=".6">PAT</text>`;
  return `<g style="pointer-events:none"><title>Bornera equipotencial de puesta a tierra (PAT) · ${n} × DBL125</title><g filter="url(#shDev)">${stop(x)}${blocks}${stop(x+a.w-sw)}</g>${label}</g>`}
+// Bloque de distribución tetrapolar (BRT125A): 4 barras horizontales L1 L2 L3 N (colores IRAM), 1 entrada + 11 salidas por polo, tapa y etiqueta de advertencia.
+// Medidas y cantidad de bornes del catálogo; la ubicación exacta de cada borne es esquemática.
+function distBlockSvg(a,fx,h,fy){const x=fx+a.x,y=h-fy-a.y-a.h,W=a.w,H=a.h,np=a.poles||4,ins=a.inputsPerPole||1,outs=a.outputsPerPole||11,cols=['#7a4a26','#1d1d1b','#c62828','#4fa3d9'],names=['L1','L2','L3','N'];
+ const screw=(cx,cy,r)=>`<circle cx="${cx}" cy="${cy}" r="${r+1}" fill="#1d2630" opacity=".55"/><circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#gBrass)" stroke="#7a5c1c" stroke-width=".35"/><path d="M${cx-r*.62} ${cy}H${cx+r*.62}M${cx} ${cy-r*.62}V${cy+r*.62}" stroke="#5b4413" stroke-width="${Math.max(.45,r*.22)}" stroke-linecap="round"/>`;
+ const top=y+H*0.1,rowH=(H*0.82)/np;let rows='';
+ for(let p=0;p<np;p++){const cy=top+rowH*(p+.5),bx=x+16,bw=W-22;
+  rows+=`<rect x="${x+4}" y="${cy-rowH*.32}" width="9" height="${rowH*.64}" rx="1" fill="${cols[p%4]}"/><text x="${x+8.5}" y="${cy+2}" text-anchor="middle" font-size="5.2" font-weight="700" font-family="Arial" fill="${p===3?'#0b2a3d':'#fff'}">${names[p]||''}</text>
+   <rect x="${bx}" y="${cy-rowH*.22}" width="${bw}" height="${rowH*.44}" rx="1" fill="#b87333" opacity=".9"/><rect x="${bx}" y="${cy-rowH*.22}" width="${bw}" height="${rowH*.12}" fill="#f0b07a" opacity=".5"/>`;
+  for(let k=0;k<ins;k++)rows+=screw(bx+6+k*10,cy,Math.min(4.2,rowH*.3));
+  for(let k=0;k<outs;k++)rows+=screw(bx+6+ins*10+3+k*((bw-ins*10-12)/Math.max(1,outs-1)),cy,Math.min(2.6,rowH*.2))}
+ const tri=`<g transform="translate(${x+W-15} ${y+2.2})"><path d="M5 0L10 8.6H0Z" fill="#ffe100" stroke="#1d1d1b" stroke-width=".6"/><path d="M5.6 2.2L4 5.2h1.6L4.4 7.6" stroke="#1d1d1b" stroke-width=".6" fill="none"/></g>`;
+ return `<g style="pointer-events:none"><title>Bloque de distribución ${esc(a.label||'')} · ${np} polos · ${ins}+${outs} conexiones por polo</title><g filter="url(#shDev)"><rect x="${x}" y="${y}" width="${W}" height="${H}" rx="3" fill="#c7ccd0" stroke="#5f6b75" stroke-width=".9"/>
+  <rect x="${x+2}" y="${top-2}" width="${W-4}" height="${H*0.82+4}" rx="2" fill="#24303a"/>${rows}
+  <rect x="${x+2}" y="${top-2}" width="${W-4}" height="${H*0.82+4}" rx="2" fill="#dfeaf2" opacity=".2" stroke="#9db3c4" stroke-width=".7"/><rect x="${x+3}" y="${top-1}" width="${(W-6)*.3}" height="${H*0.82+2}" fill="#fff" opacity=".12"/>${tri}</g></g>`}
+// Barra de cobre (AA8010 20x5): agujeros M6 cada 25 mm (catálogo ABB) y soportes aislantes; los soportes se dibujan esquemáticos.
+function busbarSvg(a,fx,h,fy){const x=fx+a.x,y=h-fy-a.y-a.h,W=a.w,H=a.h,p=a.holePitchMm||25,n=Math.floor((W-p/2)/p),ns=a.supports||Math.max(2,Math.round(W/250));
+ let holes='';for(let k=0;k<n;k++){const cx=x+p/2+k*p;holes+=`<circle cx="${cx}" cy="${y+H/2}" r="3.2" fill="#3b2a1a"/><circle cx="${cx}" cy="${y+H/2}" r="2.2" fill="#2a1d12"/>`}
+ let sup='';for(let k=0;k<ns;k++){const sx=x+(W-14)*k/Math.max(1,ns-1);sup+=`<rect x="${sx}" y="${y-5}" width="14" height="${H+10}" rx="2" fill="#c9302c" stroke="#7d1c19" stroke-width=".6"/>`}
+ return `<g style="pointer-events:none"><title>${esc(a.label||'Barra de cobre')}</title><g filter="url(#shDev)">${sup}<rect x="${x}" y="${y}" width="${W}" height="${H}" rx="1" fill="#c47a3c" stroke="#7a4420" stroke-width=".7"/><rect x="${x}" y="${y}" width="${W}" height="${H*.3}" fill="#f1b27c" opacity=".55"/>${holes}</g></g>`}
 function accessoriesSvg(fx,fy,h){return (project.accessories||[]).filter(a=>a.placed!==false&&a.decision!=='discarded'&&a.w&&a.x!==undefined).map(a=>{
- if(a.type==='wiring_duct')return ductSvgManual(a,fx,h,fy);if(a.type==='comb')return combSvg(a,fx,h,fy);if(a.type==='pe_terminal'&&a.style==='repartidor')return peBlockSvg(a,fx,h,fy);
+ if(a.type==='wiring_duct')return ductSvgManual(a,fx,h,fy);if(a.type==='comb')return combSvg(a,fx,h,fy);if(a.type==='pe_terminal'&&a.style==='repartidor')return peBlockSvg(a,fx,h,fy);if(a.type==='distribution_block')return distBlockSvg(a,fx,h,fy);if(a.type==='copper_busbar')return busbarSvg(a,fx,h,fy);
  const color=a.type==='pe_terminal'?'#c9d400':a.type==='copper_busbar'?'#c8773a':a.type==='distribution_block'?'#b8865b':'#9aa7b4',x=fx+a.x,y=h-fy-a.y-a.h;
  const n=a.type==='pe_terminal'?+((/x\s*(\d+)/i.exec(a.label||'')||[])[1]||0):0,seps=n>1?Array.from({length:n-1},(_,i)=>`<line x1="${x+a.w*(i+1)/n}" y1="${y}" x2="${x+a.w*(i+1)/n}" y2="${y+a.h}" stroke="#5f6a00" stroke-width=".8"/>`).join(''):'',
   screws=n?Array.from({length:n},(_,i)=>`<circle cx="${x+a.w*(i+.5)/n}" cy="${y+a.h*.3}" r="${Math.min(2.2,a.w/n*.28).toFixed(2)}" fill="#6d7478" stroke="#3d4a57" stroke-width=".4"/>`).join(''):'';

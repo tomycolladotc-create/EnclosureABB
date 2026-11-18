@@ -261,8 +261,9 @@ def propose(project, catalog=None):
     heavy = [(a, tag) for a, tag in amps if comb_limit is not None and a > comb_limit]
     if heavy:
         need = max(a for a, _ in heavy)
-        usable = sorted((b for b in catalog.get("distributionBlocks", []) if b.get("corrienteA") and b["corrienteA"] >= need),
-                        key=lambda b: (b["corrienteA"], b.get("anchoMm") is None))
+        # sólo bloques con medidas de frente (se pueden dibujar y ubicar); si no hay, barra de cobre del catálogo
+        usable = sorted((b for b in catalog.get("distributionBlocks", []) if b.get("corrienteA") and b["corrienteA"] >= need and b.get("anchoMm") and b.get("alturaFrenteMm")),
+                        key=lambda b: b["corrienteA"])
         item = {"type": "distribution_block", "auto": True, "provisional": True, "needsConfirmation": True, "decision": None, "devices": [tag for _, tag in heavy], "needA": need}
         if not usable:
             # Sin bloque que alcance: barra de cobre del catálogo (distributionBars) si su corriente alcanza; el usuario confirma o descarta.
@@ -277,19 +278,20 @@ def propose(project, catalog=None):
                 y = BAR_MARGIN_MM
                 if any(d["y"] < y + height + 10 and d["x"] < BAR_MARGIN_MM + width and BAR_MARGIN_MM < d["x"] + d["w"] for d in devices):
                     y = fh - BAR_MARGIN_MM - height  # el borde inferior está ocupado: va arriba
-                item.update(type="copper_busbar", catalogId=bar["id"], corrienteA=bar["corrienteA"], label=f"{bar['orderCode']} {bar['corrienteA']:g} A", x=BAR_MARGIN_MM, y=y, w=width, h=height, placed=True,
+                item.update(type="copper_busbar", catalogId=bar["id"], corrienteA=bar["corrienteA"], holePitchMm=25, supports=(bar.get("soportes") or {}).get("cantidad"), label=f"{bar['orderCode']} {bar['corrienteA']:g} A", x=BAR_MARGIN_MM, y=y, w=width, h=height, placed=True,
                             note=("barra de cobre propuesta: confirmar o descartar. " + ("Se acortó a la placa; el catálogo no dice que se corte a medida. " if width < bar["largoMm"] else "")
                                   + bar.get("status", "")))
         else:
             block = usable[0]
             width, height = block.get("anchoMm"), block.get("alturaFrenteMm")
-            item.update(catalogId=block["id"], corrienteA=block["corrienteA"], label=f"{block.get('tipo', block['id'])} {block['corrienteA']:g} A")
+            item.update(catalogId=block["id"], corrienteA=block["corrienteA"], label=f"{block.get('tipo', block['id'])} {block['corrienteA']:g} A",
+                        poles=block.get("polos") if isinstance(block.get("polos"), int) else None, inputsPerPole=block.get("entradasPorPolo"), outputsPerPole=block.get("salidasPorPolo"))
             taken = devices + [a for a in out if a.get("placed") and a.get("x") is not None and a.get("w")]  # los bornes PE ya puestos también ocupan el riel
-            x = _free_x(taken, rails[0], width, height) if rails and width and height else None
-            if x is None:
+            spot = next(((x, r) for r in rails if (x := _free_x(taken, r, width, height)) is not None), None) if width and height else None
+            if spot is None:
                 item.update(placed=False, note="sin lugar en el riel o sin medidas de frente en el catálogo")
             else:
-                item.update(placed=True, x=x, y=rails[0]["y"] - height / 2, w=width, h=height)
+                item.update(placed=True, x=spot[0], y=spot[1]["y"] - height / 2, w=width, h=height)
         out.append(item)
     if project.get("ductMode") != "manual":  # en modo manual las canaletas las dibuja el usuario
         out.extend(_propose_ducts(project, catalog, rails, devices, out))
