@@ -268,9 +268,10 @@
     "nota": "alto no publicado en el catálogo leído; se dibuja igual al bloque"
    },
    "dibujo": "disposición de bornes esquemática (entrada arriba, salidas abajo): el catálogo no trae el frente acotado",
-   "availability": "por-confirmar",
+   "availability": "no-aplica",
    "source": "Catálogo TE ENTRELEC DBL power distribution blocks (tti.com …/te-connectivity-1snl-dbl-power-distribution-blocks-product-catalog-ap.pdf): conexiones, diámetros, paso 28,2 mm, Icw 4200 A, cotas 75/50,7 mm, topes BAM4; RS Online 100-3920 (alto 75 mm); Gexpro 1SNL312510R0000 (ancho 28,2 mm)",
-   "status": "la línea DBL de ABB pasó a TE Connectivity en 2018 (mismo código 1SNL…); confirmar distribuidor en Argentina; criterio de uso (bornera equipotencial PE) pedido por Thomas 2026-11-18"
+   "status": "la línea DBL de ABB pasó a TE Connectivity en 2018 (mismo código 1SNL…); disponibilidad en Argentina: no se verifica para este accesorio (pedido de Thomas 2026-11-18)",
+   "identificacion": "cuerpo verde-amarillo, símbolo de tierra y rótulo amarillo PAT para distinguirla en el frente (criterio de dibujo pedido por Thomas)"
   },
   {
    "id": "entrelec-m4-6p",

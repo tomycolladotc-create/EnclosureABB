@@ -273,3 +273,5 @@ Propuestas sin hacer (para decidir): separar PDF de planta en tableros; cajetín
 - Producto: TE ENTRELEC (ex ABB) DBL125 1SNL312510R0000: 125 A, 1 entrada Ø9,8 (10…35 mm²), 7 salidas (1×Ø6,8 + 6×Ø6,4; 2,5…16 mm²), 28,2 × 75 × 50,7 mm, Icw 4200 A 1 s, marcador PE incluido; topes BAM4 1SNK900001R0000 (10 mm). Fuentes en datos/accesorios_abb.json y datos/fuentes_descargadas.json (consultadas). La disposición de bornes en el frente es esquemática (el fabricante no publica el frente acotado) y está anotada.
 - `reglas_layout.json: peTerminalId` elige la bornera (vuelve a M4/6.P con "entrelec-m4-6p"). Un bloque cada 7 circuitos + 2 topes; cómputo con renglón de topes (`bomExtra` en bom.py). Dibujo en editor (cuerpo gris, tapa, bornes de latón, marcador verde-amarillo, topes) y en DXF (bloques, bornes como círculos).
 - Tests 88 OK; e2e 104/104.
+
+- 01:15 · Identificación PAT: cuerpo verde-amarillo rayado, símbolo de tierra y rótulo amarillo "PAT" de punta a punta de los bloques (como el rótulo de obra de la foto de Thomas); en DXF, símbolo de tierra. Disponibilidad en Argentina: no se verifica para este accesorio (pedido de Thomas).

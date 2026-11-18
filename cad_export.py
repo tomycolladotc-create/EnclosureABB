@@ -187,6 +187,9 @@ def build_dxf(project, catalog, fronts, appearances):
                     for k in range(acc.get("outputs", 7)):
                         space.add_circle((bx + bw * (0.7 if k % 2 else 0.3), fy + acc["y"] + H * (0.63 - 0.145 * (k // 2))), 3.2, dxfattribs={"layer": layer})
                 space.add_line((fx + acc["x"] + acc["w"] - sw, fy + acc["y"]), (fx + acc["x"] + acc["w"] - sw, fy + acc["y"] + H), dxfattribs={"layer": layer})
+                ex, ey, es = fx + acc["x"] + sw + 6, fy + acc["y"] + H * 0.1, 3.5  # símbolo de tierra para identificar la bornera PAT
+                for x1, y1, x2, y2 in ((ex, ey + es, ex, ey), (ex - es * .9, ey, ex + es * .9, ey), (ex - es * .6, ey - es * .38, ex + es * .6, ey - es * .38), (ex - es * .3, ey - es * .76, ex + es * .3, ey - es * .76)):
+                    space.add_line((x1, y1), (x2, y2), dxfattribs={"layer": layer})
             if acc["type"] == "comb":  # una clavija por polo
                 n = acc.get("poleCount") or max(1, round(acc["w"] / (acc.get("pitchMm") or 17.5)))
                 for i in range(n):
