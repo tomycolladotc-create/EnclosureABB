@@ -234,3 +234,12 @@
 ## 2026-11-16 12:20 · Claude · Un solo rótulo por equipo
 - Pedido de Thomas: el nombre del circuito aparecía dos veces (arriba del equipo y en el porta-etiqueta). Se quitó el de arriba en el editor (render) y en el DXF el texto pasó a un porta-etiqueta bajo el equipo (rectángulo 12 mm + texto, capa ABB_ETIQUETAS), igual que en pantalla.
 - Tests 82 OK; e2e 61/61 OK.
+
+
+## 2026-11-17 22:50 · Claude · Canaletas a mano
+- Pedido de Thomas: las canaletas automáticas no sirven bien; quiere dibujarlas él con medidas estándar donde quiera.
+- Editor: botón "＋ Canaleta" (sección del catálogo ABB `wiringDucts.sections`, orientación H/V, largo). Al agregar la primera, `project.ductMode = "manual"`: las automáticas existentes se convierten en editables y `accesorios.propose` deja de proponer canaletas. Menú ⋯ → "Volver a canaletas automáticas".
+- Canaleta seleccionada: tarjeta con sección, largo, girar, eliminar; arrastre con paso de 5 mm; flechas 5 mm (Shift 1 mm); Supr elimina. No puede quedar sobre un equipo (vuelve a su lugar); si un rearmado la deja encima de un equipo, el chip de normativa lo marca como error.
+- Servidor: `accesorios._manual_duct` normaliza la canaleta (código 1SL90../1SL91.. según ranura, largo, descripción para el cómputo); `GET /api/ducts`; DXF dibuja canaletas verticales.
+- Bug corregido: la revisión de normativa en segundo plano podía pisar un cambio recién hecho (respuesta vieja). Ahora se descarta si el proyecto cambió.
+- Tests 86 OK; e2e 78/78 (dos corridas).

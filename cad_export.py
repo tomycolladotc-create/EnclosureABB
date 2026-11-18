@@ -170,9 +170,14 @@ def build_dxf(project, catalog, fronts, appearances):
             layer = {"wiring_duct": "ABB_CANALETAS", "comb": "ABB_PEINES"}.get(acc["type"], "ABB_ACCESORIOS")
             rect(fx + acc["x"], fy + acc["y"], acc["w"], acc["h"], layer)
             if acc["type"] == "wiring_duct":  # tapa central: las uñas laterales quedan a cada lado (esquemático)
-                finger = max(3, acc["h"] * 0.3)
-                for yy in (acc["y"] + finger, acc["y"] + acc["h"] - finger):
-                    space.add_line((fx + acc["x"], fy + yy), (fx + acc["x"] + acc["w"], fy + yy), dxfattribs={"layer": layer})
+                if acc.get("orientation") == "v":
+                    finger = max(3, acc["w"] * 0.3)
+                    for xx in (acc["x"] + finger, acc["x"] + acc["w"] - finger):
+                        space.add_line((fx + xx, fy + acc["y"]), (fx + xx, fy + acc["y"] + acc["h"]), dxfattribs={"layer": layer})
+                else:
+                    finger = max(3, acc["h"] * 0.3)
+                    for yy in (acc["y"] + finger, acc["y"] + acc["h"] - finger):
+                        space.add_line((fx + acc["x"], fy + yy), (fx + acc["x"] + acc["w"], fy + yy), dxfattribs={"layer": layer})
             if acc["type"] == "comb":  # una clavija por polo
                 n = acc.get("poleCount") or max(1, round(acc["w"] / (acc.get("pitchMm") or 17.5)))
                 for i in range(n):

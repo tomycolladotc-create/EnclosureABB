@@ -228,3 +228,55 @@ class AutoConfirmacion(unittest.TestCase):
         complete(new, auto_confirm=True)
         pend = [a for a in new["accessories"] if a.get("needsConfirmation") and a.get("decision") != "confirmed"]
         self.assertEqual(pend, [])
+
+
+class CanaletasManuales(unittest.TestCase):
+    def setUp(self):
+        import json
+        from layout_auto import autolayout_conforme
+        root = Path(__file__).resolve().parents[1]
+        self.catalog = json.loads((root / "datos" / "catalogo_abb.json").read_text(encoding="utf-8"))
+        project = json.loads((root / "datos" / "ts4_topografia.json").read_text(encoding="utf-8"))
+        self.project, _ = autolayout_conforme(project, self.catalog)
+
+    def test_modo_manual_conserva_la_canaleta_y_no_propone_otras(self):
+        from accesorios import complete
+        p = self.project
+        p["ductMode"] = "manual"
+        p["accessories"] = [a for a in p["accessories"] if a["type"] != "wiring_duct"]
+        p["accessories"].append({"type": "wiring_duct", "id": "duct-1", "manual": True, "orientation": "v",
+                                 "sectionMm": 60, "depthMm": 60, "w": 60, "h": 700, "x": 10, "y": 100})
+        complete(p, auto_confirm=True)
+        ducts = [a for a in p["accessories"] if a["type"] == "wiring_duct"]
+        self.assertEqual(len(ducts), 1)
+        d = ducts[0]
+        self.assertEqual((d["w"], d["h"], d["lengthMm"]), (60, 700, 700))
+        self.assertTrue(d["orderCode"].startswith("1SL90"))
+        self.assertIn("60x60", d["description"])
+
+    def test_seccion_fuera_de_catalogo_se_rechaza(self):
+        from accesorios import complete
+        p = self.project
+        p["accessories"].append({"type": "wiring_duct", "id": "x", "manual": True, "orientation": "h", "sectionMm": 33, "depthMm": 40, "w": 300, "h": 33, "x": 0, "y": 0})
+        with self.assertRaises(ValueError):
+            complete(p)
+
+    def test_bom_y_dxf_con_canaleta_vertical(self):
+        import ezdxf, io
+        from accesorios import complete
+        from bom import build_bom
+        from cad_export import build_dxf
+        p = self.project
+        p["ductMode"] = "manual"
+        p["accessories"] = [a for a in p["accessories"] if a["type"] != "wiring_duct"]
+        p["accessories"].append({"type": "wiring_duct", "id": "duct-1", "manual": True, "orientation": "v", "sectionMm": 40, "depthMm": 40, "w": 40, "h": 500, "x": 5, "y": 200})
+        complete(p, auto_confirm=True)
+        rows = build_bom(p, self.catalog)
+        self.assertTrue(any(r["category"] == "Canaleta" and "500 mm" in r["description"] for r in rows))
+        import json
+        root = Path(__file__).resolve().parents[1] / "datos"
+        doc = build_dxf(p, self.catalog, json.loads((root / "frentes_cad.json").read_text(encoding="utf-8")), json.loads((root / "apariencias_abb.json").read_text(encoding="utf-8")))
+        if isinstance(doc, (bytes, str)):
+            doc = ezdxf.read(io.StringIO(doc.decode() if isinstance(doc, bytes) else doc))
+        lines = [e for e in doc.modelspace() if e.dxf.layer == "ABB_CANALETAS" and e.dxftype() == "LINE"]
+        self.assertTrue(any(abs(e.dxf.start.x - e.dxf.end.x) < 1e-6 and abs(e.dxf.start.y - e.dxf.end.y) > 400 for e in lines))

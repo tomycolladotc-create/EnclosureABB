@@ -9,7 +9,7 @@ import os
 from pypdf import PdfReader
 from cad_export import build_dxf
 from importador import detect_devices, ensure_marking, shell_size
-from accesorios import complete
+from accesorios import complete, load_accessory_catalog
 from colocar import place_din
 from layout_auto import autolayout, autolayout_conforme
 from normativa import check_project
@@ -61,6 +61,8 @@ class Handler(BaseHTTPRequestHandler):
             return self.send_data(200, project)
         if route == "/api/catalog":
             return self.send_data(200, json.loads(CATALOG.read_text(encoding="utf-8")))
+        if route == "/api/ducts":  # secciones estándar de canaleta (catálogo ABB) para dibujarlas a mano
+            return self.send_data(200, load_accessory_catalog().get("wiringDucts", {}))
         if route == "/api/fronts":
             return self.send_data(200, json.loads(FRONTS.read_text(encoding="utf-8")))
         if route == "/api/appearances":

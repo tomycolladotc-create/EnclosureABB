@@ -77,7 +77,29 @@ def _describe(item, catalog):
         item.update(bomCategory="Barra de cobre", quantity=1, orderCode=bar.get("orderCode"), description=f"Barra de distribución {bar.get('tipo', '')} {bar.get('corrienteA', '')} A; soportes {bar.get('soportes', {}).get('orderCode', 'por definir')} x{bar.get('soportes', {}).get('cantidad', '?')}")
     elif t == "wiring_duct":
         item.update(bomCategory="Canaleta", quantity=1,
-                    description=f"Canaleta ranurada {item['h']:g}x{item['depthMm']:g} mm, gris RAL 7035, ranura {item['slot']}; largo a cortar {item['lengthMm']:g} mm (tira de 2000 mm)")
+                    description=f"Canaleta ranurada {item.get('sectionMm', item['h']):g}x{item['depthMm']:g} mm, gris RAL 7035, ranura {item['slot']}; largo a cortar {item['lengthMm']:g} mm (tira de 2000 mm)")
+
+
+def _manual_duct(item, catalog):
+    """Canaleta dibujada por el usuario: sección estándar del catálogo ABB (ancho visible x profundidad), horizontal o vertical."""
+    spec = catalog.get("wiringDucts") or {}
+    vertical = item.get("orientation") == "v"
+    width = item.get("sectionMm") or (item["w"] if vertical else item["h"])
+    sec = next((x for x in spec.get("sections", []) if x["widthMm"] == width and x["heightMm"] == item.get("depthMm")), None) \
+        or next((x for x in spec.get("sections", []) if x["widthMm"] == width), None)
+    if sec is None:
+        raise ValueError(f"Sección de canaleta {width} mm no está en el catálogo ABB")
+    slot = item.get("slot") or _load_rules().get("ductSlot", "8x12")
+    length = item["h"] if vertical else item["w"]
+    code = sec["code8x12"] if slot == "8x12" else sec["code4x6"]
+    if vertical:
+        item["w"] = sec["widthMm"]
+    else:
+        item["h"] = sec["widthMm"]
+    item.update(auto=False, manual=True, provisional=False, catalogId="wiringDucts", sectionMm=sec["widthMm"], depthMm=sec["heightMm"],
+                slot=slot, orderCode=code, lengthMm=round(length, 2), label=f"Canaleta {sec['widthMm']}x{sec['heightMm']} {code}")
+    item.pop("note", None)
+    _describe(item, catalog)
 
 
 def _load_rules():
@@ -220,7 +242,8 @@ def propose(project, catalog=None):
             else:
                 item.update(placed=True, x=x, y=rails[0]["y"] - height / 2, w=width, h=height)
         out.append(item)
-    out.extend(_propose_ducts(project, catalog, rails, devices, out))
+    if project.get("ductMode") != "manual":  # en modo manual las canaletas las dibuja el usuario
+        out.extend(_propose_ducts(project, catalog, rails, devices, out))
     for item in out:
         _describe(item, catalog)
     return out
@@ -228,7 +251,11 @@ def propose(project, catalog=None):
 
 def complete(project, catalog=None, auto_confirm=False):
     """Reemplaza las propuestas anteriores (auto) y conserva los accesorios cargados a mano."""
+    catalog = catalog or load_accessory_catalog()
     manual = [a for a in project.get("accessories", []) if not a.get("auto")]
+    for a in manual:
+        if a.get("type") == "wiring_duct":
+            _manual_duct(a, catalog)
     # Las decisiones del usuario (confirmar/descartar una propuesta) se conservan al recalcular.
     key = lambda a: (a.get("type"), tuple(a.get("devices", [])))
     decided = {key(a): a["decision"] for a in project.get("accessories", []) if a.get("auto") and a.get("decision")}
