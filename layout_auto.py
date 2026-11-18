@@ -124,11 +124,16 @@ def _try(project, catalog, enc, rules, pe_reserve):
             # Kit KD del gabinete: filas de riel fijas (185 mm de paso, largo = módulos x 17,5 mm); no se inventa otra posición.
             length, pitch = kd["modulesPerRow"] * kd["moduleMm"], kd["rowPitchMm"]
             rows = _pack_rail_rows(rail_devs, length, col_gap, pe_reserve)
-            if rows is None or len(rows) > kd["rows"] or any(d["h"] > pitch for d in rail_devs) or length > usable_w:
+            if rows is None or len(rows) > kd["rows"] or any(d["h"] > pitch for d in rail_devs) or length > fw:
                 return None
-            bottom_limit = margin + len(rows) * pitch + row_gap  # pila de filas contiguas apoyada abajo de la placa
+            stack = len(rows) * pitch
+            if stack > fh:
+                return None
+            # Pila de filas contiguas apoyada abajo; si con el margen no entra, el kit ocupa la placa sin margen (los soportes del kit van de borde a borde).
+            base = margin if margin + stack <= fh else (fh - stack) / 2
+            bottom_limit = base + stack + (row_gap if base == margin else 0)
             for n, row in enumerate(rows, 1):
-                y_center = margin + (len(rows) - n) * pitch + pitch / 2
+                y_center = base + (len(rows) - n) * pitch + pitch / 2
                 rail = {"id": f"DIN-{n}", "type": f"Fila {n} del kit {kd['kit']}", "orderCode": None, "kdKit": kd["kit"], "fixed": True, "height": 35,
                         "x": round((fw - length) / 2, 2), "y": round(y_center, 2), "length": length}
                 rails.append(rail)
@@ -136,9 +141,14 @@ def _try(project, catalog, enc, rules, pe_reserve):
         else:
             # Gabinete sin kit KD: riel más largo de railOptions que entra en el ancho útil, posición propuesta por el armado (no fijada por el gabinete).
             options = [o for o in enc.get("railOptions", []) if o["length"] <= usable_w]
-            if not options:
+            if options:
+                template = copy.deepcopy(max(options, key=lambda o: o["length"]))
+            elif enc.get("railOptions"):
+                # El riel DIN se corta a medida (práctica habitual): el más corto del catálogo, cortado al ancho útil.
+                template = copy.deepcopy(min(enc["railOptions"], key=lambda o: o["length"]))
+                template.update(length=round(usable_w, 1), cutFromMm=template["length"])
+            else:
                 return None
-            template = copy.deepcopy(max(options, key=lambda o: o["length"]))
             length = template["length"]
             rows = _pack_rail_rows(rail_devs, length, col_gap, pe_reserve)
             if rows is None:
@@ -156,6 +166,13 @@ def _try(project, catalog, enc, rules, pe_reserve):
                 cursor += row_h + rail_gap
     if fh - (margin + cursor - tail_gap) < bottom_limit - 1e-6:  # lo de arriba no debe invadir el borde ni la pila de filas del kit
         return None
+    if rails and not main and not kit and not enc.get("kdKit"):
+        # Tablero sólo de riel libre: se centra el bloque de filas en la altura para que quede lugar a canaleta arriba Y abajo.
+        shift = (fh - (margin + cursor - tail_gap) - margin) / 2
+        if shift > 0:
+            for r in rails:
+                r["y"] = round(r["y"] - shift, 2)
+            placed = {t: (x, round(y - shift, 2)) for t, (x, y) in placed.items()}
     return placed, rails
 
 
@@ -176,7 +193,12 @@ def autolayout(project, catalog, rules=None, free_rails=False, exclude=(), only=
     rules = rules or load_rules()
     try:
         circuits = sum(1 for d in project["devices"] if str(d.get("tag", "")).startswith("QF"))
-        pe_reserve = circuits * next(t["pasoMm"] for t in load_accessory_catalog()["earthTerminals"] if t["id"] == "entrelec-m4-6p")
+        terms = load_accessory_catalog()["earthTerminals"]
+        pe = next((t for t in terms if t["id"] == rules.get("peTerminalId")), None) or next(t for t in terms if t["id"] == "entrelec-m4-6p")
+        if pe.get("estilo") == "repartidor":  # bloques repartidores + un tope en cada punta
+            pe_reserve = (-(-circuits // pe["salidas"]["cantidad"]) * pe["anchoMm"] + 2 * (pe.get("tope") or {}).get("anchoMm", 0)) if circuits else 0.0
+        else:
+            pe_reserve = circuits * pe["pasoMm"]
     except (StopIteration, KeyError):
         pe_reserve = 0.0
     candidates = sorted(catalog["enclosures"], key=lambda e: (e["externalBody"]["width"] * e["externalBody"]["height"], e["externalBody"]["depth"]))

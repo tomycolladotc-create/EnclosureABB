@@ -282,3 +282,15 @@ Propuestas sin hacer (para decidir): separar PDF de planta en tableros; cajetín
 - Barra AA8010: agujeros M6 cada 25 mm (catálogo) y soportes aislantes (esquemáticos).
 - Bugs: el bloque sólo buscaba lugar en el primer riel (ahora en todos); para >125 A se elegía un bloque sin medidas (Schneider Distribloc 160) que no se podía ubicar → ahora sólo bloques con medidas y, si no hay, la barra ABB.
 - Tests 88 OK; e2e 104/104.
+
+
+## 2026-11-18 02:10 · Claude · Tableros más compactos (prueba desde cero con 5 unifilares)
+- Thomas: el tablero queda demasiado grande. Causas encontradas en layout_auto.py:
+  1. Si el riel GD más corto (400 mm) no entraba en el ancho útil se descartaba el gabinete → ahora el riel se corta a medida (`cutFromMm` en el riel).
+  2. Kit KD que llena la placa (3 × 185 = 555 de 560 mm) + margen de 40 → se descartaba; ahora la pila de filas puede ocupar la placa sin margen.
+  3. La reserva para la bornera PE usaba la M4/6.P; ahora usa la bornera configurada (DBL125: bloques + topes).
+  4. `railRowGapMm` 110 → 80 (ya no existe la franja del rótulo superior).
+  5. Tableros sólo de riel libre: el bloque de filas se centra en altura (canaleta arriba y abajo).
+- Resultado: TSB y TSEP 600×600 → 600×400 (kit KD 3 filas); TA-1 500×400 → 300×400; TSL2 y TSFT3 500×400 → 300×300; TS4 sin cambio. Todos sin errores de normativa ni geométricos.
+- Pendiente detectado en la prueba: equipos sin carcasa en el catálogo quedan afuera (OT100F4, OT160EV03, S 293-C 80 ×3, SN201L B16) → hay tableros sin su interruptor general. Propuesto a Thomas cargarlos con medidas ABB.
+- Tests 88 OK; e2e 104/104.
