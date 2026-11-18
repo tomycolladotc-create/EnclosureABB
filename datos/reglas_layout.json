@@ -11,11 +11,14 @@
   "minDepthForKitDevicesMm": 200,
   "_ayuda_profundidad": "Propuesta de diseño (no dato de ABB): los gabinetes con menos profundidad no se usan si el tablero lleva equipos de kit (XT/OT).",
   "ductClearanceMm": 5,
-  "ductMaxWidthMm": 60,
+  "ductMaxWidthMm": 80,
   "ductPreferredDepthMm": 40,
   "ductEdgeMm": 15,
   "ductSlot": "8x12",
-  "_ayuda_canaletas": "Propuesta de diseño (no dato de ABB): canaletas horizontales arriba y abajo de cada fila de riel, en el hueco libre; ancho = el mayor del catálogo que entra (máx. ductMaxWidthMm), alto lo más cercano a ductPreferredDepthMm. No se dimensiona por llenado de cables (faltan secciones de conductores).",
+  "_ayuda_canaletas": "Propuesta de diseño (no dato de ABB), según tablero armado por Thomas 2026-11-17: verticales a ambos lados de la placa (hasta ductSideMaxWidthMm) y horizontales arriba y abajo de cada fila de equipos, de vertical a vertical, siempre la más ancha del catálogo que entra (hasta ductMaxWidthMm). Entre filas: una compartida, o una pegada a cada fila si sobran ductMinFreeBetweenMm. Profundidad lo más cercana a ductPreferredDepthMm. No se dimensiona por llenado de cables.",
   "railRowGapMm": 110,
-  "_ayuda_railRowGapMm": "Propuesta de diseño (no dato de ABB): separación vertical entre filas de riel libre = peine (~30) + franja de etiqueta (30) + portaetiqueta (14) + canaleta mínima (25) + aire. Con kit KD el paso es el del kit (185 mm)."
+  "_ayuda_railRowGapMm": "Propuesta de diseño (no dato de ABB): separación vertical entre filas de riel libre = peine (~30) + franja de etiqueta (30) + portaetiqueta (14) + canaleta mínima (25) + aire. Con kit KD el paso es el del kit (185 mm).",
+  "ductSideMaxWidthMm": 60,
+  "ductMinFreeBetweenMm": 50,
+  "ductMinWidthMm": 25
 }

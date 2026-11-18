@@ -144,7 +144,26 @@ class CanaletasYPeines(unittest.TestCase):
             ducts = [a for a in new["accessories"] if a["type"] == "wiring_duct"]
             self.assertTrue(ducts)
             for d in ducts:
-                self.assertIn(d["orderCode"], sections[(d["h"], d["depthMm"])])
+                self.assertIn(d["orderCode"], sections[(d["sectionMm"], d["depthMm"])])
+                self.assertEqual(d["sectionMm"], d["w"] if d["orientation"] == "v" else d["h"])
+
+    def test_criterio_armador_verticales_y_filas(self):
+        """Ejemplo de Thomas: verticales a los lados y horizontales arriba y abajo de cada fila, de vertical a vertical."""
+        for new in self.layouts.values():
+            ducts = [a for a in new["accessories"] if a["type"] == "wiring_duct"]
+            vert = [a for a in ducts if a["orientation"] == "v"]
+            hor = [a for a in ducts if a["orientation"] == "h"]
+            fw = new["enclosure"]["functional"]["width"]
+            if len(vert) == 2:
+                left, right = sorted(vert, key=lambda a: a["x"])
+                for h in hor:
+                    self.assertAlmostEqual(h["x"], left["x"] + left["w"], places=1)
+                    self.assertAlmostEqual(h["x"] + h["w"], right["x"], places=1)
+            # cada fila de equipos tiene una canaleta horizontal arriba o abajo a menos de 60 mm
+            for d in new["devices"]:
+                near = [h for h in hor if 0 <= d["y"] - (h["y"] + h["h"]) <= 60 or 0 <= h["y"] - (d["y"] + d["h"]) <= 60]
+                self.assertTrue(near, d["tag"])
+            self.assertTrue(all(25 <= a["sectionMm"] <= 80 for a in ducts))
 
     def test_canaletas_no_pisan_equipos_ni_salen_de_la_placa(self):
         for new in self.layouts.values():

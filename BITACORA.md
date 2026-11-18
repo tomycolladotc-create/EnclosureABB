@@ -258,3 +258,11 @@ Simulación de un tablerista (importar TSEP/TSFT3, revisar, agregar, canaleta, e
 - Tableros: la revisión al abrir (rearmar si no cumple) sólo corre al entrar al editor; la lista se refresca al volver (antes mostraba datos viejos); tarjetas con gabinete y fecha, orden por última modificación (`proyectos.list_projects` devuelve `enclosure`, `modified`).
 - e2e: 98/98.
 Propuestas sin hacer (para decidir): separar PDF de planta en tableros; cajetín en el PDF; estirar canaletas desde los extremos e imán a bordes; fijar gabinete al agregar equipos; quitar "Nuevo tablero vacío" y "Revisiones" si no se usan.
+
+
+## 2026-11-18 00:30 · Claude · Canaletas automáticas con criterio de armador + estirar desde los extremos
+- Thomas mostró un tablero armado por él: canaletas verticales a ambos lados y horizontales arriba y abajo de cada fila (también cajas moldeadas en kit KD), lo más anchas que entren.
+- `accesorios._propose_ducts` reescrito: verticales laterales (hasta `ductSideMaxWidthMm` 60) si hay lugar entre borde y equipos/rieles; filas = equipos/accesorios solapados en altura (no sólo rieles DIN); canaleta arriba y abajo de cada fila, de vertical a vertical; entre filas una compartida o una pegada a cada fila si sobran `ductMinFreeBetweenMm`; ancho = el mayor del catálogo que entra (25..`ductMaxWidthMm` 80). Se quitó la franja de 30 mm sobre los equipos (era para el rótulo superior eliminado el 16/11).
+- Editor: todas las canaletas se pueden tocar; al tocar una automática pasan todas a manual (aviso). Extremos con "agarre" (cursor ↔ / ↕): arrastrar estira o acorta en pasos de 5 mm (mín. 50 mm); si queda sobre un equipo, vuelve.
+- Bugs: al pasar a manual se perdía la orientación vertical; canaleta nueva sin hueco libre caía sobre equipos (ahora puede cruzar canaletas, nunca equipos).
+- Tests 87 OK; e2e 104/104 (dos corridas).

@@ -111,47 +111,78 @@ def _overlap_x(a, b):
 
 
 def _propose_ducts(project, catalog, rails, devices, placed_acc):
-    """Canaletas horizontales en el hueco libre arriba y abajo de cada fila de riel (compartida si dos filas la rodean).
-    Criterios en datos/reglas_layout.json (propuesta de diseño); secciones y códigos de datos/accesorios_abb.json (catálogo ABB)."""
+    """Canaletas automáticas con el criterio de un armador (ejemplo de Thomas, 2026-11-17):
+    - una vertical a cada lado de la placa, de arriba abajo, si hay lugar entre el borde y los equipos/rieles;
+    - horizontales arriba y abajo de cada fila de equipos (cajas moldeadas, seccionadores o DIN), de vertical a vertical;
+      entre dos filas cercanas la canaleta es compartida; si el hueco es grande, una pegada a cada fila;
+    - siempre la más ancha del catálogo ABB que entra (hasta ductMaxWidthMm), profundidad lo más cercana a ductPreferredDepthMm.
+    Criterios en datos/reglas_layout.json (propuesta de diseño); secciones y códigos de datos/accesorios_abb.json."""
     spec = catalog.get("wiringDucts")
-    if not spec or not rails:
+    if not spec:
         return []
     rules = _load_rules()
-    clear, max_w, pref_h, edge = rules.get("ductClearanceMm", 5), rules.get("ductMaxWidthMm", 60), rules.get("ductPreferredDepthMm", 40), rules.get("ductEdgeMm", 15)
+    clear, max_w, pref_h, edge = rules.get("ductClearanceMm", 5), rules.get("ductMaxWidthMm", 80), rules.get("ductPreferredDepthMm", 40), rules.get("ductEdgeMm", 15)
+    side_max = rules.get("ductSideMaxWidthMm", max_w)
     slot = rules.get("ductSlot", "8x12")
-    fh = project["enclosure"]["functional"]["height"]
-    boxes = [{"x": d["x"], "y": d["y"], "w": d["w"], "h": d["h"], "tag": d.get("tag"), "up": TAG_ZONE_MM, "down": HOLDER_ZONE_MM} for d in devices]
-    boxes += [{"x": a["x"], "y": a["y"], "w": a["w"], "h": a["h"], "tag": None, "devs": a.get("devices"), "up": TAG_ZONE_MM if a["type"] == "comb" else 0, "down": 0} for a in placed_acc
+    fw, fh = project["enclosure"]["functional"]["width"], project["enclosure"]["functional"]["height"]
+    boxes = [{"x": d["x"], "y": d["y"] - HOLDER_ZONE_MM, "w": d["w"], "h": d["h"] + HOLDER_ZONE_MM} for d in devices]  # bajo cada equipo va su portaetiqueta
+    boxes += [{"x": a["x"], "y": a["y"], "w": a["w"], "h": a["h"]} for a in placed_acc
               if a.get("placed", True) and a.get("x") is not None and a.get("w") and a.get("h")]
-    lanes = {}
-    for rail in rails:
-        span = {"x": rail["x"], "w": rail["length"]}
-        row = [b for b in boxes if _overlap_x(b, span) and b["y"] <= rail["y"] <= b["y"] + b["h"]]
-        tags = {b["tag"] for b in row if b["tag"]}
-        row += [b for b in boxes if b.get("devs") and set(b["devs"]) & tags and b not in row]  # el peine apoyado arriba es parte de la fila
-        if not row:
-            continue
-        lo = min(b["y"] - b.get("down", 0) for b in row)  # bajo los equipos va el portaetiqueta
-        hi = max(b["y"] + b["h"] + b.get("up", 0) for b in row)  # sobre los equipos (y su peine) va el texto de la etiqueta
-        others = [b for b in boxes if b not in row and _overlap_x(b, span)]
-        up = min([b["y"] - b.get("down", 0) for b in others if b["y"] >= hi - TAG_ZONE_MM - 1e-6], default=fh - edge)
-        down = max([b["y"] + b["h"] + b.get("up", 0) for b in others if b["y"] + b["h"] <= lo + HOLDER_ZONE_MM + 1e-6], default=edge)
-        for a, b in ((hi, min(up, fh - edge)), (max(down, edge), lo)):
-            key = (round(a), round(b))
-            cur = lanes.setdefault(key, [a, b, rail["x"], rail["x"] + rail["length"]])
-            cur[2], cur[3] = min(cur[2], rail["x"]), max(cur[3], rail["x"] + rail["length"])
-    out = []
-    for (a, b, x0, x1) in sorted(lanes.values()):
-        gap = b - a - 2 * clear
-        fits = [s for s in spec["sections"] if s["widthMm"] <= gap and s["widthMm"] <= max_w]
-        if not fits:
-            continue
-        sec = max(fits, key=lambda s: (s["widthMm"], -abs(s["heightMm"] - pref_h)))
+    if not boxes:
+        return []
+
+    def pick(gap, limit):
+        fits = [x for x in spec["sections"] if rules.get("ductMinWidthMm", 25) <= x["widthMm"] <= min(gap, limit)]
+        return max(fits, key=lambda x: (x["widthMm"], -abs(x["heightMm"] - pref_h))) if fits else None
+
+    def duct(sec, x, y, w, h, orientation):
         code = sec["code8x12"] if slot == "8x12" else sec["code4x6"]
-        out.append({"type": "wiring_duct", "auto": True, "provisional": True, "catalogId": "wiringDucts", "orderCode": code,
-                    "label": f"Canaleta {sec['widthMm']}x{sec['heightMm']} {code}", "x": round(x0, 2), "y": round(a + clear + (gap - sec["widthMm"]) / 2, 2),
-                    "w": round(x1 - x0, 2), "h": sec["widthMm"], "depthMm": sec["heightMm"], "slot": slot, "lengthMm": round(x1 - x0, 2),
-                    "note": "canaleta propuesta; sección no dimensionada por llenado de cables"})
+        length = h if orientation == "v" else w
+        return {"type": "wiring_duct", "auto": True, "provisional": True, "catalogId": "wiringDucts", "orderCode": code, "orientation": orientation,
+                "label": f"Canaleta {sec['widthMm']}x{sec['heightMm']} {code}", "x": round(x, 2), "y": round(y, 2), "w": round(w, 2), "h": round(h, 2),
+                "sectionMm": sec["widthMm"], "depthMm": sec["heightMm"], "slot": slot, "lengthMm": round(length, 2),
+                "note": "canaleta propuesta; sección no dimensionada por llenado de cables"}
+
+    out = []
+    # 1) Verticales laterales: el hueco entre el borde (menos ductEdgeMm) y lo más cercano (equipos, accesorios, rieles).
+    spans = boxes + [{"x": r["x"], "w": r["length"]} for r in rails]
+    left_free = min(b["x"] for b in spans) - edge - clear
+    right_free = fw - edge - max(b["x"] + b["w"] for b in spans) - clear
+    x0, x1 = edge, fw - edge  # tramo horizontal disponible
+    sec = pick(left_free, side_max)
+    if sec:
+        out.append(duct(sec, edge, edge, sec["widthMm"], fh - 2 * edge, "v"))
+        x0 = edge + sec["widthMm"]
+    sec = pick(right_free, side_max)
+    if sec:
+        out.append(duct(sec, fw - edge - sec["widthMm"], edge, sec["widthMm"], fh - 2 * edge, "v"))
+        x1 = fw - edge - sec["widthMm"]
+
+    # 2) Filas de equipos: cajas que se solapan en altura forman una fila.
+    rows = []
+    for b in sorted(boxes, key=lambda b: b["y"]):
+        if rows and b["y"] < rows[-1][1] - 1e-6:
+            rows[-1][1] = max(rows[-1][1], b["y"] + b["h"])
+        else:
+            rows.append([b["y"], b["y"] + b["h"]])
+    # 3) Huecos: bajo la primera fila, entre filas y sobre la última. Cada fila lleva canaleta arriba y abajo.
+    gaps = [(edge, rows[0][0], "below")] + [(rows[k][1], rows[k + 1][0], "between") for k in range(len(rows) - 1)] + [(rows[-1][1], fh - edge, "above")]
+    for lo, hi, kind in gaps:
+        free = hi - lo - 2 * clear
+        sec = pick(free, max_w)
+        if not sec:
+            continue
+        w = sec["widthMm"]
+        if kind == "between" and free >= 2 * w + clear + rules.get("ductMinFreeBetweenMm", 50):
+            # hueco grande: una canaleta pegada a cada fila
+            out.append(duct(sec, x0, hi - clear - w, x1 - x0, w, "h"))
+            out.append(duct(sec, x0, lo + clear, x1 - x0, w, "h"))
+        elif kind == "below":
+            out.append(duct(sec, x0, hi - clear - w, x1 - x0, w, "h"))  # pegada bajo la fila de abajo
+        elif kind == "above":
+            out.append(duct(sec, x0, lo + clear, x1 - x0, w, "h"))  # pegada sobre la fila de arriba
+        else:
+            out.append(duct(sec, x0, lo + clear + (free - w) / 2, x1 - x0, w, "h"))  # compartida, centrada
     return out
 
 
