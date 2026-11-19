@@ -734,5 +734,40 @@
    "source": "RS 910-8011 (CL2-523R, 1SFA619403R5231, 22 mm, 230 V AC); ficha ABB (esvika.ee): 0,03 × 0,03 × 0,052 m",
    "status": "el unifilar no indica el color de los testigos: se propone rojo; confirmar"
   }
- ]
+ ],
+ "signalFuseHolders": [
+  {
+   "id": "abb-e91-32",
+   "marca": "ABB",
+   "orderCode": "2CSM200923R1801",
+   "tipo": "E 91/32",
+   "descripcion": "Seccionador portafusible (tabaquera) 1P para fusible cilíndrico 10x38, 32 A, riel DIN, sin indicador de fusión",
+   "polos": 1,
+   "fusible": "10x38",
+   "anchoMm": 18,
+   "altoMm": 85,
+   "profundidadMm": 64,
+   "modulos": 1,
+   "source": "ficha ABB E 91/32 (2CSM200923R1801): 18 × 85 × 64 mm, 1 módulo — manualmachine.com/abb/e9132/16827954-data-sheet ; proax.ca (2CSM200923R1801)",
+   "status": "código y medidas de la ficha ABB; falta confirmar disponibilidad en Argentina"
+  }
+ ],
+ "signalFuses": [
+  {
+   "id": "abb-e9f10-gg1",
+   "marca": "ABB",
+   "orderCode": "2CSM277113R1801",
+   "tipo": "E 9F10 GG1",
+   "descripcion": "Fusible cilíndrico 10x38 gG 1 A",
+   "corrienteA": 1,
+   "tamano": "10x38",
+   "source": "aleta.hr (2CSM277113R1801, E 9F10 GG1, 10x38 gG 1 A)",
+   "status": "código de distribuidor (no de la ficha ABB): confirmar antes de comprar"
+  }
+ ],
+ "signalDefaults": {
+  "voltage": "220 Vca",
+  "fuseA": 1,
+  "_ayuda": "Valores propuestos cuando el usuario agrega testigos y el unifilar no los trae (Argentina 3×380/220 V): luz a 220 Vca fase-neutro y fusible de 1 A como en los unifilares del proyecto. Confirmar."
+ }
 }

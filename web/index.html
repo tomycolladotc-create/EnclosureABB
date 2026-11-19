@@ -20,6 +20,7 @@
 <button id="autoLayout" class="menu-item">Rearmar el tablero</button>
 <button id="autoFree" class="menu-item" title="Riel GD con posición propuesta por el programa">Rearmar con riel libre (GD)</button>
 <button id="autoDucts" class="menu-item" hidden>Volver a canaletas automáticas</button>
+<label class="menu-check" title="Luces de presencia de tensión en la puerta, una por fase, con su portafusible 1P sobre el riel"><input type="checkbox" id="signalsToggle"> Testigos de fase en la puerta (con fusibles)</label>
 <button id="importMore" class="menu-item">Importar otro unifilar (PDF)…</button>
 <hr><button id="openJson" class="menu-item">Abrir proyecto (JSON)…</button><button id="exportJson" class="menu-item">Guardar copia (JSON)</button>
 </div></div>
@@ -206,6 +207,14 @@ function combSvg(a,fx,h,fy){const x=fx+a.x,y=h-fy-a.y-a.h,pitch=a.pitchMm||17.5,
  return `<g style="pointer-events:none"><g filter="url(#shDev)"><rect x="${x}" y="${y}" width="${a.w}" height="${a.h}" rx="2" fill="#5d6772" stroke="#2f3a45" stroke-width="1" style="stroke-dasharray:${a.provisional?'4 2':'0'}"/></g><rect x="${x}" y="${y}" width="${a.w}" height="${a.h*.25}" rx="2" fill="#fff" opacity=".22"/>${pins}</g>`}
 // Bornera equipotencial PE: repartidores unipolares (gris, tapa transparente) con entrada grande arriba y salidas abajo, marcador PE y topes en las puntas.
 // Medidas, cantidad y diámetros de bornes del catálogo; la ubicación de cada borne en el frente es esquemática (el fabricante no publica el frente acotado).
+function signalFusesSvg(a,fx,h,fy){const x=fx+a.x,y=h-fy-a.y-a.h,H=a.h,n=a.count||1,pw=a.poleW||a.w/n,ph=a.phases||[];let g='';
+ for(let i=0;i<n;i++){const bx=x+i*pw,cx=bx+pw/2;g+=`<g><rect x="${bx}" y="${y}" width="${pw}" height="${H}" rx="1.5" fill="#eef1f3" stroke="#8a96a1" stroke-width=".7"/>
+  <rect x="${bx+pw*.12}" y="${y+H*.06}" width="${pw*.76}" height="${H*.12}" rx="1" fill="#cfd6dc"/><rect x="${bx+pw*.12}" y="${y+H*.82}" width="${pw*.76}" height="${H*.12}" rx="1" fill="#cfd6dc"/>
+  <circle cx="${cx}" cy="${y+H*.12}" r="${pw*.2}" fill="#9aa5ae"/><circle cx="${cx}" cy="${y+H*.88}" r="${pw*.2}" fill="#9aa5ae"/>
+  <rect x="${bx+pw*.08}" y="${y+H*.25}" width="${pw*.84}" height="${H*.5}" rx="2" fill="#3a4148" stroke="#22282d" stroke-width=".6"/>
+  <rect x="${bx+pw*.3}" y="${y+H*.32}" width="${pw*.4}" height="${H*.3}" rx="1" fill="#d9c27a" opacity=".85"/>
+  <text x="${cx}" y="${y+H*.71}" fill="#fff" font-size="${Math.min(6,pw*.38)}" font-family="Arial" font-weight="bold" text-anchor="middle">${esc(ph[i]||'')}</text></g>`}
+ return `<g class="acc" data-acc="signal_fuses">${g}</g>`}
 function peBlockSvg(a,fx,h,fy){const x=fx+a.x,y=h-fy-a.y-a.h,H=a.h,sw=a.stopW||0,bw=a.blockW||(a.w-2*sw),n=a.blocks||1,outs=a.outputs||7;
  const screw=(cx,cy,r)=>`<circle cx="${cx}" cy="${cy}" r="${r+1.2}" fill="#1d2a22" opacity=".6"/><circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#gBrass)" stroke="#7a5c1c" stroke-width=".4"/><path d="M${cx-r*.65} ${cy}H${cx+r*.65}M${cx} ${cy-r*.65}V${cy+r*.65}" stroke="#5b4413" stroke-width="${Math.max(.5,r*.22)}" stroke-linecap="round"/>`;
  const earth=(cx,cy,s,c)=>`<path d="M${cx} ${cy-s}V${cy}M${cx-s*.9} ${cy}H${cx+s*.9}M${cx-s*.6} ${cy+s*.38}H${cx+s*.6}M${cx-s*.3} ${cy+s*.76}H${cx+s*.3}" stroke="${c}" stroke-width="${s*.22}" stroke-linecap="round" fill="none"/>`;
@@ -240,7 +249,7 @@ function busbarSvg(a,fx,h,fy){const x=fx+a.x,y=h-fy-a.y-a.h,W=a.w,H=a.h,p=a.hole
  let sup='';for(let k=0;k<ns;k++){const sx=x+(W-14)*k/Math.max(1,ns-1);sup+=`<rect x="${sx}" y="${y-5}" width="14" height="${H+10}" rx="2" fill="#c9302c" stroke="#7d1c19" stroke-width=".6"/>`}
  return `<g style="pointer-events:none"><title>${esc(a.label||'Barra de cobre')}</title><g filter="url(#shDev)">${sup}<rect x="${x}" y="${y}" width="${W}" height="${H}" rx="1" fill="#c47a3c" stroke="#7a4420" stroke-width=".7"/><rect x="${x}" y="${y}" width="${W}" height="${H*.3}" fill="#f1b27c" opacity=".55"/>${holes}</g></g>`}
 function accessoriesSvg(fx,fy,h){return (project.accessories||[]).filter(a=>a.placed!==false&&a.decision!=='discarded'&&a.w&&a.x!==undefined).map(a=>{
- if(a.type==='wiring_duct')return ductSvgManual(a,fx,h,fy);if(a.type==='comb')return combSvg(a,fx,h,fy);if(a.type==='pe_terminal'&&a.style==='repartidor')return peBlockSvg(a,fx,h,fy);if(a.type==='distribution_block')return distBlockSvg(a,fx,h,fy);if(a.type==='copper_busbar')return busbarSvg(a,fx,h,fy);
+ if(a.type==='wiring_duct')return ductSvgManual(a,fx,h,fy);if(a.type==='comb')return combSvg(a,fx,h,fy);if(a.type==='pe_terminal'&&a.style==='repartidor')return peBlockSvg(a,fx,h,fy);if(a.type==='distribution_block')return distBlockSvg(a,fx,h,fy);if(a.type==='copper_busbar')return busbarSvg(a,fx,h,fy);if(a.type==='signal_fuses')return signalFusesSvg(a,fx,h,fy);
  const color=a.type==='pe_terminal'?'#c9d400':a.type==='copper_busbar'?'#c8773a':a.type==='distribution_block'?'#b8865b':'#9aa7b4',x=fx+a.x,y=h-fy-a.y-a.h;
  const n=a.type==='pe_terminal'?+((/x\s*(\d+)/i.exec(a.label||'')||[])[1]||0):0,seps=n>1?Array.from({length:n-1},(_,i)=>`<line x1="${x+a.w*(i+1)/n}" y1="${y}" x2="${x+a.w*(i+1)/n}" y2="${y+a.h}" stroke="#5f6a00" stroke-width=".8"/>`).join(''):'',
   screws=n?Array.from({length:n},(_,i)=>`<circle cx="${x+a.w*(i+.5)/n}" cy="${y+a.h*.3}" r="${Math.min(2.2,a.w/n*.28).toFixed(2)}" fill="#6d7478" stroke="#3d4a57" stroke-width=".4"/>`).join(''):'';
@@ -322,7 +331,7 @@ function knownCode(d){const k=modelKey(d.model);return (catalog.orderCodes?.item
 // Título del dibujo: tamaño proporcional al ancho del gabinete para que no se salga en los chicos (300 mm).
 function titleSvg(w,view){const t=Math.max(14,Math.min(25,w*0.045)),u=Math.max(9,Math.min(15,w*0.024));
  return `<text x="0" y="${-28-u-8}" fill="#344962" font-size="${t.toFixed(1)}">${esc(project.project)}</text><text x="0" y="-28" fill="#6b7d90" font-size="${u.toFixed(1)}">${esc(encSpec()?.label||project.enclosure.line||'ABB')} · ${view}</text>`}
-function render(){
+function render(){const _st=document.getElementById('signalsToggle');if(_st)_st.checked=!!(project.signals?.pilotLights||[]).length;
  const {w,h,fx,fy}=dimensions(),f=project.enclosure.functional;
  setView();
  if(doorView){$('board').innerHTML=frontDefs()+doorSvg(w,h)+cotasSvg(w,h,fx,fy,f,true)+`${titleSvg(w,'vista con la puerta cerrada')}`;$('editor').hidden=true;$('ductCard').hidden=true;$('viewInt').classList.toggle('on',false);$('viewDoor').classList.toggle('on',true);return}
@@ -389,7 +398,7 @@ const runAuto=async(free,only)=>{const q=new URLSearchParams();if(free)q.set('fr
    if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();$('ductRemove').click();return}}
   if(selected!==null&&(e.key==='Delete')&&!/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();$('remove').click();return}
   if(e.key==='Escape'){if($('addPanel').hidden&&$('ductPanel').hidden&&!/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName))clearSelection();$('addPanel').hidden=true;$('ductPanel').hidden=true;document.querySelectorAll('.popover').forEach(p=>p.hidden=true)}if((e.ctrlKey||e.metaKey)&&!/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)){if(e.key==='z'){e.preventDefault();$('undo').click()}if(e.key==='y'){e.preventDefault();$('redo').click()}}});
- $('viewInt').onclick=()=>{doorView=false;render()};$('viewDoor').onclick=()=>{doorView=true;selected=null;selDuct=null;render();if(!(project.signals?.pilotLights||[]).length)notice('El unifilar de este tablero no trae luces testigo: la puerta va sin orificios.')};
+ $('viewInt').onclick=()=>{doorView=false;render()};$('viewDoor').onclick=()=>{doorView=true;selected=null;selDuct=null;render();if(!(project.signals?.pilotLights||[]).length)notice('Este tablero no tiene testigos de fase: la puerta va sin orificios. Podés agregarlos desde ⋯ → Testigos de fase en la puerta.')};
  $('fit').onclick=fitView;$('focus').onclick=focusView;$('zoomIn').onclick=()=>zoomView(.75);$('zoomOut').onclick=()=>zoomView(1.33);
 const updatePoles=()=>{$('polesRow').hidden=!shell($('shell').value)?.poleModule};
   $('showAdd').onclick=()=>{$('shell').value=usualShell();const z=project.devices.find(d=>d.shell===$('shell').value);if(z?.poles)$('newPoles').value=z.poles;updatePoles();$('newModel').value=usualModel($('shell').value);$('newCircuit').value=nextCircuit();$('addPanel').hidden=false;$('newCircuit').focus();$('newCircuit').select()};$('addCancel').onclick=()=>{$('addPanel').hidden=true};
@@ -438,6 +447,14 @@ const importPdf=async(file,fresh)=>{if(!file)return;notice('Leyendo PDF…');
     if(fresh){await fetch('/api/project?id='+encodeURIComponent(projectId),{method:'DELETE'});sessionStorage.setItem('abb-notice',msg);window.history.replaceState(null,'','?id=ts4#projects');location.reload();return}render();return notice(msg)}
    showScreen('editor');notice(auto.ok?`Tablero armado en ${auto.gabinete} con ${add.length} equipo(s).`+(nd.length?` Sin dibujar (no están en el catálogo, pero van a la lista de materiales): ${nd.map(d=>(d.circuit||d.tag)+' '+(d.model||'')).join(', ')}.`:''):`No se pudo armar solo: ${auto.error}`)};
   $('pdf').onchange=async e=>{await importPdf(e.target.files[0],false);e.target.value=''};$('pdfNew').onchange=async e=>{await importPdf(e.target.files[0],true);e.target.value=''};$('importMore').onclick=()=>{$('moreMenu').hidden=true;$('pdf').click()};
+  const mainDevice=()=>project.devices.find(d=>/^QS/.test(d.tag||''))||project.devices.find(d=>/PRINCIPAL|GENERAL|SECCIONADOR/i.test(d.evidence||''))||(project.devices.filter(d=>!d.circuit).length===1?project.devices.find(d=>!d.circuit):null);
+  const syncSignalsToggle=()=>{$('signalsToggle').checked=!!(project.signals?.pilotLights||[]).length};
+  $('signalsToggle').onchange=async e=>{$('moreMenu').hidden=true;snapshot();
+   if(e.target.checked){const m=mainDevice(),poles=m?.poles||(m?.shell||'').match(/\.(\d)p/)?.[1]||3,phases=+poles>=3?['R','S','T']:['R'],def=catalog.signalDefaults||{};
+    project.signals={pilotLights:phases.map(p=>({label:p,function:'presencia de tensión',voltage:def.voltage||'220 Vca'})),fuses:{count:phases.length,type:'tabaquera',rating:`${def.fuseA||1} A`},origin:'agregado en el editor'}}
+   else project.signals=null;
+   const auto=await runAuto(false,project.enclosure.id);if(!auto.ok){const auto2=await runAuto(false);if(!auto2.ok)return}
+   syncSignalsToggle();notice(e.target.checked?`Testigos ${project.signals.pilotLights.map(l=>l.label).join('-')} en la puerta y sus fusibles en el riel.`:'Testigos y fusibles quitados.')};
   const dz=$('dropPdf');dz.ondragover=e=>{e.preventDefault();dz.classList.add('over')};dz.ondragleave=()=>dz.classList.remove('over');dz.ondrop=async e=>{e.preventDefault();dz.classList.remove('over');await importPdf(e.dataTransfer.files[0],true)};
  const svg=$('board');const plateXY=e=>{const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const p=pt.matrixTransform(svg.getScreenCTM().inverse()),{fx,fy,h}=dimensions();return {x:p.x-fx,y:h-fy-p.y}};
  svg.onpointerdown=e=>{const dg=e.target.closest('.duct');if(dg){const a=dg.dataset.duct?ductById(dg.dataset.duct):project.accessories[+dg.dataset.auto];if(a){if(!a.manual){snapshot();toManualDucts();notice('Canaletas en edición manual: ya no se recalculan solas (menú ⋯ → volver a automáticas).')}selected=null;selDuct=a.id;const p=plateXY(e);drag={duct:a.id,grip:e.target.closest('.grip')?.dataset.end,start:{x:a.x,y:a.y,w:a.w,h:a.h},off:{x:p.x-a.x,y:p.y-a.y},saved:false};svg.setPointerCapture(e.pointerId);render();return}}const g=e.target.closest('.device');if(!g){pan={x:e.clientX,y:e.clientY,x0:e.clientX,y0:e.clientY};svg.setPointerCapture(e.pointerId);return}select(+g.dataset.index);drag={index:selected,point:svg.createSVGPoint(),start:clone(project.devices[selected]),saved:false};svg.setPointerCapture(e.pointerId)};

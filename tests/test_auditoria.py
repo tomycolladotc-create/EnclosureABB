@@ -192,3 +192,62 @@ class ListaDeCompra(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestigosDeFase(unittest.TestCase):
+    """Pedido de Thomas 2026-11-19: testigos de fase en la puerta con sus fusibles, que también aparecen ubicados en el tablero."""
+
+    SIG = {"pilotLights": [{"label": p, "function": "presencia de tensión", "voltage": "220 Vca"} for p in "RST"],
+           "fuses": {"count": 3, "type": "tabaquera", "rating": "1 A"}}
+
+    def armar(self, devs, signals=SIG):
+        return autolayout_conforme(project(devs, signals=copy.deepcopy(signals)), CAT)[0]
+
+    def test_fusibles_ubicados_en_el_riel_uno_por_testigo(self):
+        devs = [dev("QS1", "OT80F4", "abb.ot63_80f4.4p.front", evidence="SECCIONADOR"), dev("QF1", "S204-C25", "abb.s200m.1p.front", "A-1", poles=4)]
+        p = self.armar(devs)
+        fus = next(a for a in p["accessories"] if a["type"] == "signal_fuses")
+        self.assertTrue(fus["placed"])
+        self.assertEqual((fus["count"], fus["phases"]), (3, ["R", "S", "T"]))
+        self.assertEqual(fus["w"], 3 * 18)  # E 91/32: 18 mm por polo (ficha ABB)
+        rails = p["enclosure"]["mountingLayout"]["dinRails"]
+        self.assertTrue(any(abs(fus["y"] + fus["h"] / 2 - r["y"]) < 1 and r["x"] <= fus["x"] and fus["x"] + fus["w"] <= r["x"] + r["length"] for r in rails))
+        others = p["devices"] + [a for a in p["accessories"] if a is not fus and a.get("placed") and a.get("x") is not None and a["type"] not in ("wiring_duct", "comb")]
+        for o in others:
+            overlap = fus["x"] < o["x"] + o["w"] and o["x"] < fus["x"] + fus["w"] and fus["y"] < o["y"] + o["h"] and o["y"] < fus["y"] + fus["h"]
+            self.assertFalse(overlap, f"el fusible pisa {o.get('tag') or o.get('type')}")
+        self.assertNotIn("signal_fuses_missing", codes(p))
+
+    def test_lista_con_portafusible_y_fusible_con_codigo(self):
+        p = self.armar([dev("QS1", "OT80F4", "abb.ot63_80f4.4p.front", evidence="SECCIONADOR")])
+        rows = build_bom(p, CAT)
+        sig = {r["code"]: r for r in rows if r["category"] == "Señalización"}
+        self.assertEqual(sig["2CSM200923R1801"]["quantity"], 3)  # E 91/32
+        self.assertEqual(sig["2CSM277113R1801"]["quantity"], 3)  # E 9F10 GG1
+        self.assertEqual(sig["1SFA619403R5231"]["quantity"], 3)  # luces CL2-523R en la puerta
+        self.assertFalse(any(r["code"] == "FALTA CÓDIGO" and "Fusible" in r["description"] for r in rows))
+
+    def test_tablero_solo_de_cajas_igual_tiene_riel_para_los_fusibles(self):
+        p = self.armar([dev("QS1", "OT160EV03", "abb.ot160_250e03.3p.front", evidence="SECCIONADOR"),
+                        dev("QF1", "XT1S 160 TMD 125-1250", "abb.tmax.xt1.3p.fixed.front", "A-1")])
+        fus = next(a for a in p["accessories"] if a["type"] == "signal_fuses")
+        self.assertTrue(fus["placed"])
+
+    def test_sin_testigos_no_hay_fusibles(self):
+        p = self.armar([dev("QS1", "OT80F4", "abb.ot63_80f4.4p.front", evidence="SECCIONADOR")], signals=None)
+        self.assertFalse([a for a in p["accessories"] if a["type"] == "signal_fuses"])
+
+    def test_auditoria_detecta_testigos_sin_fusibles(self):
+        p = project([], signals=copy.deepcopy(self.SIG))
+        self.assertIn("signal_fuses_missing", codes(p))
+
+    def test_dxf_dibuja_los_fusibles(self):
+        from cad_export import build_dxf
+        p = self.armar([dev("QS1", "OT80F4", "abb.ot63_80f4.4p.front", evidence="SECCIONADOR")])
+        import io
+        import ezdxf
+        data = build_dxf(p, CAT, L("frentes_cad.json"), L("apariencias_abb.json"))
+        doc = ezdxf.read(io.StringIO(data.decode("utf-8", "replace")))
+        texts = [e.dxf.text for e in doc.modelspace().query('TEXT[layer=="ABB_ETIQUETAS"]')]
+        for phase in "RST":
+            self.assertIn(phase, texts)

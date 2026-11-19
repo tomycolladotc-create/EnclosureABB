@@ -187,7 +187,8 @@ def build_bom(project, catalog, accessory_catalog=None, order_codes=None):
         add("Señalización", pl.get("orderCode"), f"Luz piloto {pl.get('tipo', '')} {pl.get('descripcion', '')} (22 mm, en la puerta) · testigos de presencia de tensión {'-'.join(l['label'] for l in lights)} {lights[0].get('voltage', '')}"
             + (f" · {pl['status']}" if pl.get("status") else ""), len(lights), "u", [l["label"] for l in lights], "a confirmar (color)", pl.get("source", ""))
     fuses = sig.get("fuses") or {}
-    if fuses.get("count"):
+    has_fuse_item = any(a.get("type") == "signal_fuses" for a in project.get("accessories", []))  # ya van como accesorio, con código
+    if fuses.get("count") and not has_fuse_item:
         add("Señalización", None, f"Fusible {fuses.get('type', '')} {fuses.get('rating', '')} con su portafusible, para los testigos de fase (según unifilar)", int(fuses["count"]), "u")
 
     # Seccionadores OT: se venden sin manija (y sin eje si se accionan desde la puerta); sin ellos no se pueden operar.

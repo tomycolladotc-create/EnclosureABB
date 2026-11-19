@@ -101,6 +101,14 @@ def _describe(item, catalog):
     elif t == "copper_busbar":
         bar = by("distributionBars")
         item.update(bomCategory="Barra de cobre", quantity=1, orderCode=bar.get("orderCode"), description=f"Barra de distribución {bar.get('tipo', '')} {bar.get('corrienteA', '')} A; soportes {bar.get('soportes', {}).get('orderCode', 'por definir')} x{bar.get('soportes', {}).get('cantidad', '?')}")
+    elif t == "signal_fuses":
+        holder = by("signalFuseHolders")
+        fuse = next((x for x in catalog.get("signalFuses", []) if x["id"] == item.get("fuseCatalogId")), {})
+        phases = "-".join(p for p in item.get("phases", []) if p)
+        item.update(bomCategory="Señalización", orderCode=holder.get("orderCode"), quantity=item.get("count", 1),
+                    description=f"Portafusible {holder.get('tipo', '')} 1P 10x38 (tabaquera) para los testigos de fase {phases} ({holder.get('marca', 'ABB')})",
+                    bomExtra=[{"bomCategory": "Señalización", "orderCode": fuse.get("orderCode"), "quantity": item.get("count", 1),
+                               "description": f"Fusible {fuse.get('tipo', '10x38')} {fuse.get('descripcion', '')} para los testigos" + (f" · {fuse['status']}" if fuse.get("status") else "")}])
     elif t == "pe_bar":
         item.update(quantity=1)
     elif t == "wiring_duct":
@@ -242,6 +250,23 @@ def propose(project, catalog=None):
         spot = next(((x, r) for r in rails if (x := _free_x(devices, r, width)) is not None), None)  # primer riel con hueco
         if spot is None:
             item.update(placed=False)
+        else:
+            item.update(placed=True, x=spot[0], y=spot[1]["y"] - height / 2)
+        out.append(item)
+
+    # 1a) Fusibles de los testigos de fase (luces en la puerta): un portafusible por luz, sobre el riel (pedido de Thomas 2026-11-19).
+    lights = (project.get("signals") or {}).get("pilotLights") or []
+    holder = next(iter(catalog.get("signalFuseHolders", [])), None)
+    if lights and holder:
+        n = len(lights)
+        width, height = n * holder["anchoMm"], holder["altoMm"]
+        fuse = next(iter(catalog.get("signalFuses", [])), {})
+        item = {"type": "signal_fuses", "auto": True, "catalogId": holder["id"], "fuseCatalogId": fuse.get("id"), "count": n, "poleW": holder["anchoMm"],
+                "phases": [l.get("label") for l in lights], "w": width, "h": height, "label": f"Fusibles testigos x{n}", "provisional": False}
+        taken = devices + [a for a in out if a.get("placed") and a.get("x") is not None and a.get("w")]
+        spot = next(((x, r) for r in rails if (x := _free_x(taken, r, width, height)) is not None), None)
+        if spot is None:
+            item.update(placed=False, note="no entra en el riel")
         else:
             item.update(placed=True, x=spot[0], y=spot[1]["y"] - height / 2)
         out.append(item)

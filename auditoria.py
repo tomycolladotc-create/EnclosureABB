@@ -189,6 +189,16 @@ def audit(project, catalog, rules=None, board_title=None):
         if sin_kit:
             out.append(_f("error", "spe_kit_missing", f"En System pro E falta el kit de montaje de {', '.join(sin_kit)}.", sin_kit))
 
+    # A14 · cada testigo de fase de la puerta lleva su fusible, ubicado en el riel (pedido de Thomas 2026-11-19).
+    lights = (project.get("signals") or {}).get("pilotLights") or []
+    if lights:
+        fuses = [a for a in project.get("accessories", []) if a.get("type") == "signal_fuses"]
+        count = sum(a.get("count", 0) for a in fuses)
+        if count != len(lights):
+            out.append(_f("error", "signal_fuses_missing", f"Hay {len(lights)} testigo(s) de fase en la puerta y {count} fusible(s) en el tablero.", []))
+        elif any(a.get("placed") is False for a in fuses):
+            out.append(_f("error", "signal_fuses_unplaced", "Los fusibles de los testigos no tienen lugar en el riel.", []))
+
     # A9 · nombre del tablero = el del rótulo del unifilar.
     if board_title and project.get("project") != board_title:
         out.append(_f("warning", "board_name_mismatch", f"El tablero se llama «{project.get('project')}» y el unifilar dice «{board_title}».", []))

@@ -264,6 +264,18 @@ def main():
             pg.click("#moreBtn"); pg.select_option("#enclosure", big); wait_idle(pg, 4000)
             check("cambiar a gabinete grande", pg.evaluate("project.enclosure.id") == big)
             check("cambiar gabinete: dentro de normativa", chip_ok(pg) and pg.evaluate("validationResult.errors") == 0, chip(pg))
+            # Testigos de fase en la puerta con sus fusibles en el riel (pedido 2026-11-19).
+            had = pg.evaluate("!!(project.signals&&project.signals.pilotLights&&project.signals.pilotLights.length)")
+            if had:
+                pg.click("#moreBtn"); pg.click("#signalsToggle"); wait_idle(pg, 4000)
+                check("testigos: se pueden quitar", not pg.evaluate("project.accessories.some(a=>a.type==='signal_fuses')"))
+            pg.click("#moreBtn"); pg.click("#signalsToggle"); wait_idle(pg, 4000)
+            check("testigos: fusibles ubicados en el riel", pg.evaluate("project.accessories.some(a=>a.type==='signal_fuses'&&a.placed&&a.count===project.signals.pilotLights.length)"))
+            check("testigos: fusibles dibujados", pg.locator("[data-acc=signal_fuses]").count() == 1)
+            check("testigos: tablero sin errores", pg.evaluate("validationResult.errors") == 0, chip(pg))
+            pg.click("#viewDoor"); pg.wait_for_timeout(500)
+            check("testigos: luces en la puerta", pg.evaluate("project.signals.pilotLights.length") >= 1 and pg.evaluate("[...document.querySelectorAll('#board text')].some(t=>t.textContent.trim()==='R')"))
+            pg.click("#viewInt"); pg.wait_for_timeout(300)
             pg.click("#moreBtn"); pg.click("#autoLayout"); wait_idle(pg, 4000)
 
             # 8b) Vista con la puerta cerrada.

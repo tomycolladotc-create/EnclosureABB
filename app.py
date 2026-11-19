@@ -63,6 +63,7 @@ class Handler(BaseHTTPRequestHandler):
             data = json.loads(CATALOG.read_text(encoding="utf-8"))
             from bom import load_order_codes
             data["orderCodes"] = load_order_codes()  # códigos verificados: el editor muestra cuál irá a la lista
+            data["signalDefaults"] = load_accessory_catalog().get("signalDefaults", {})  # testigos de fase agregados a mano
             return self.send_data(200, data)
         if route == "/api/ducts":  # secciones estándar de canaleta (catálogo ABB) para dibujarlas a mano
             return self.send_data(200, load_accessory_catalog().get("wiringDucts", {}))

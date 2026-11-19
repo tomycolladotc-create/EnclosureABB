@@ -145,13 +145,14 @@ def _try(project, catalog, enc, rules, pe_reserve, extra_rows=0):
 
     bottom_limit = margin  # borde inferior permitido para lo que se arma de arriba hacia abajo
     tail_gap = row_gap  # separación que queda después de la última fila armada de arriba hacia abajo
-    kd = enc.get("kdKit") if rail_devs else None
+    need_rail = bool(rail_devs) or bool((project.get("signals") or {}).get("pilotLights"))  # los fusibles de los testigos van en riel
+    kd = enc.get("kdKit") if need_rail else None
     if din_main and (main or kit) and kd:
         return None  # con kit KD las filas de riel quedan abajo: el general de riel no quedaría arriba
     if not rail_devs or kd or not din_main:
         if not kit_rows():
             return None
-    if rail_devs:
+    if need_rail:
         if kd:
             # Kit KD del gabinete: filas de riel fijas (185 mm de paso, largo = módulos x 17,5 mm); no se inventa otra posición.
             length, pitch = kd["modulesPerRow"] * kd["moduleMm"], kd["rowPitchMm"]
@@ -255,6 +256,12 @@ def autolayout(project, catalog, rules=None, free_rails=False, exclude=(), only=
             pe_reserve = circuits * pe["pasoMm"]
     except (StopIteration, KeyError):
         pe_reserve = 0.0
+    # Lugar en el riel para los fusibles de los testigos de fase (uno por luz).
+    lights = len((project.get("signals") or {}).get("pilotLights") or [])
+    if lights:
+        holder = next(iter(load_accessory_catalog().get("signalFuseHolders", [])), None)
+        if holder:
+            pe_reserve += lights * holder["anchoMm"]  # van pegados a la bornera PE (sin separación)
     candidates = sorted(catalog["enclosures"], key=lambda e: (e["externalBody"]["width"] * e["externalBody"]["height"], e["externalBody"]["depth"]))
     tried = []
     for enc in candidates:

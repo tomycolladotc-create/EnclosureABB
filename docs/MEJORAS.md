@@ -12,6 +12,10 @@
 - Tableros más compactos (riel cortado a medida, kit KD sin margen, reserva PE real).
 - Fluidez: agregar/duplicar equipo con el siguiente circuito, reordenar en el riel arrastrando, Esc/Supr/Ctrl+Z, aviso si cambia el gabinete.
 
+## Testigos de fase (2026-11-19)
+- Hecho: opción en ⋯ para agregar/quitar testigos en la puerta con sus fusibles E 91/32 ubicados en el riel; van a la lista con código.
+- Pendiente: ubicar los fusibles al lado del general (hoy van al final del riel, junto a la bornera PE); elegir color de las luces desde el editor; confirmar el código del fusible E 9F10 GG1 con ABB Argentina.
+
 ## Revisión de errores (2026-11-19, tarde) → ver `docs/LECCIONES.md`
 - Corregidos los 19 errores de la revisión (tabla en LECCIONES). La auditoría los detecta en la interfaz.
 - Pendiente: barras de fase ABB de más de 125 A en el catálogo (hoy quedan «a dimensionar»); barra de tierra ABB para PE grueso.

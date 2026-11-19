@@ -3,6 +3,12 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-19 15:00 · Claude · Testigos de fase en la puerta con sus fusibles ubicados en el riel
+- Hecho: opción en ⋯ «Testigos de fase en la puerta (con fusibles)»: agrega/quita las luces (una por fase según el general) y un portafusible ABB E 91/32 (2CSM200923R1801, 18 × 85 mm, ficha ABB) por luz, dibujado y ubicado en el riel (web y DXF, con la fase R/S/T). Los del unifilar se cargan solos al importar. El armado reserva su lugar; si no hay riel, crea uno.
+- Lista: portafusibles E 91/32 + fusibles E 9F10 GG1 (2CSM277113R1801, código de distribuidor: confirmar) + luces CL2-523R. Auditoría `signal_fuses_missing/unplaced`.
+- Archivos: accesorios.py, layout_auto.py, bom.py, auditoria.py, cad_export.py, web/index.html, web/styles.css, app.py, datos/accesorios_abb.json, tests.
+- Ojo: el color de las luces sigue «rojo propuesto, confirmar». Siguiente: poner los fusibles junto al general en vez de junto a la bornera PE.
+
 ## 2026-11-19 13:30 · Claude · Revisión de los 24 tableros del GENERAL: 19 errores corregidos y auditoría para que no vuelvan
 - Hecho: revisión tablero por tablero (a ojo + auditoría nueva `auditoria.py`, que corre dentro de la validación). Errores: restos del TS4 de plantilla en todos, nombres inventados, orden fuera de unifilar, general no arriba/compartiendo fila, filas sin canaleta, huecos y gabinetes de más, barras chicas o de neutro usadas para fases, PE grueso sin barra, S290 sin lugar, S803 mal medido, kits SPE y manijas OT fuera de la lista, Emax en caja mural, E2.2 mal pintado.
 - Archivos: auditoria.py (nuevo), layout_auto.py, accesorios.py, bom.py, importador.py (detect_board), proyectos.py, normativa.py, catálogos, docs/LECCIONES.md (nuevo), tests/test_auditoria.py (nuevo).

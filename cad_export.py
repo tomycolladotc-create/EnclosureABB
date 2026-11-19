@@ -284,6 +284,18 @@ def build_dxf(project, catalog, fronts, appearances):
                         space.add_circle((bx + 6 + k * 10, cy), min(4.2, rh * .3), dxfattribs={"layer": layer})
                     for k in range(outs):
                         space.add_circle((bx + 6 + ins * 10 + 3 + k * ((bw - ins * 10 - 12) / max(1, outs - 1)), cy), min(2.6, rh * .2), dxfattribs={"layer": layer})
+            if acc["type"] == "signal_fuses":  # portafusibles 1P (uno por testigo de fase): divisiones, ventana del fusible y fase
+                n, pw = acc.get("count", 1), acc.get("poleW") or acc["w"] / max(1, acc.get("count", 1))
+                for i in range(n):
+                    bx = fx + acc["x"] + i * pw
+                    if i:
+                        space.add_line((bx, fy + acc["y"]), (bx, fy + acc["y"] + acc["h"]), dxfattribs={"layer": layer})
+                    rect(bx + pw * 0.08, fy + acc["y"] + acc["h"] * 0.25, pw * 0.84, acc["h"] * 0.5, layer)
+                    rect(bx + pw * 0.3, fy + acc["y"] + acc["h"] * 0.38, pw * 0.4, acc["h"] * 0.3, layer)
+                    phase = (acc.get("phases") or [None] * n)[i] if i < len(acc.get("phases") or []) else None
+                    if phase:
+                        space.add_text(_ascii(str(phase)), dxfattribs={"height": min(5, pw * 0.35), "layer": "ABB_ETIQUETAS"}).set_placement(
+                            (bx + pw / 2, fy + acc["y"] + acc["h"] * 0.3), align=ezdxf.enums.TextEntityAlignment.MIDDLE_CENTER)
             if acc["type"] == "copper_busbar":  # agujeros M6 cada 25 mm
                 pitch = acc.get("holePitchMm", 25)
                 for k in range(int((acc["w"] - pitch / 2) // pitch)):
