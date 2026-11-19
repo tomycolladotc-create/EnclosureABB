@@ -1031,28 +1031,63 @@
       "base": "none",
       "parts": [
         [
-          0.234,
-          0.028,
-          0.701,
-          0.741,
+          0.0664,
+          0.0162,
+          0.8672,
+          0.876,
           "#30373d"
         ],
         [
-          0.234,
-          0.687,
-          0.701,
-          0.082,
+          0.2796,
+          0.0162,
+          0.654,
+          0.876,
+          "#3a4249"
+        ],
+        [
+          0.2796,
+          0.6819,
+          0.654,
+          0.2103,
           "#242b31"
         ],
         [
-          0.455,
-          0.066,
-          0.23,
-          0.612,
+          0.4289,
+          0.0647,
+          0.2938,
+          0.6172,
           "#4a5259"
+        ],
+        [
+          0.0,
+          0.0,
+          0.0664,
+          0.1078,
+          "#8a949c"
+        ],
+        [
+          0.9336,
+          0.0,
+          0.0664,
+          0.1078,
+          "#8a949c"
+        ],
+        [
+          0.3009,
+          0.8922,
+          0.2323,
+          0.1078,
+          "#5b636a"
+        ],
+        [
+          0.7867,
+          0.8922,
+          0.1303,
+          0.1078,
+          "#5b636a"
         ]
       ],
-      "appearanceStatus": "paleta genérica Emax; rellenos alineados con el contorno del frente del CAD (lección 2026-11-19: estaban corridos respecto del dibujo)"
+      "appearanceStatus": "rellenos medidos sobre las piezas del STEP ABB 'E2.2 IV F' (cuerpo 4P 366 × 325 mm, frente con mecanismo 276 mm, pies de fijación 28 × 40 mm a cada lado, borneras de auxiliares 40 mm arriba); colores genéricos Emax. Lección 2026-11-19: antes sólo se pintaba el frente y el resto del cuerpo quedaba como líneas grises"
     },
     "abb.ot63_80f3.3p.front": {
       "source": "paleta OT (foto de familia OT de ABB, ver abb.ot100_125f3.3p.front)",
