@@ -231,14 +231,14 @@ def build_bom(project, catalog, accessory_catalog=None, order_codes=None):
         if item.get("type") == "comb" and code != MISSING:  # un peine por código: los tramos (polos por fila) van en la descripción
             base = re.sub(r" para \S+ polos", "", base)
         key = (category, code, base)  # mismo código = un solo renglón
-        entry = grouped_acc.setdefault(key, {"q": 0, "tags": [], "spans": []})
+        entry = grouped_acc.setdefault(key, {"q": 0, "tags": [], "spans": [], "check": item.get("purchaseCheck")})
         if item.get("type") == "comb":
             entry["spans"].append((item.get("poleCount", "?"), int(item.get("quantity", 1))))
         entry["q"] += int(item.get("quantity", 1))
         entry["tags"] += item.get("devices", [])
         for extra in item.get("bomExtra", []):  # renglones asociados (p. ej. topes de la bornera)
             k = (extra["bomCategory"], _code(extra.get("orderCode")), extra["description"])
-            grouped_acc.setdefault(k, {"q": 0, "tags": [], "spans": []})["q"] += int(extra.get("quantity", 1))
+            grouped_acc.setdefault(k, {"q": 0, "tags": [], "spans": [], "check": extra.get("purchaseCheck")})["q"] += int(extra.get("quantity", 1))
     for (code, sec, depth, slot), pieces in ducts.items():
         bins = _strips([p for p in pieces if p <= strip], strip) + [[p] for p in pieces if p > strip]
         n = sum(-(-sum(b) // strip) for b in bins)
@@ -252,13 +252,17 @@ def build_bom(project, catalog, accessory_catalog=None, order_codes=None):
             for poles_, q in entry["spans"]:  # mismos tramos se suman: "2×14, 2×14" → "4×14"
                 spans[poles_] = spans.get(poles_, 0) + q
             description += " · tramos (piezas × polos a puentear): " + ", ".join(f"{q}×{n}" for n, q in sorted(spans.items(), key=lambda x: -int(x[0]) if str(x[0]).isdigit() else 0))
-        add(category, code, description, entry["q"], "u", entry["tags"], status="verificado" if code != MISSING else "falta código de pedido")
+        add(category, code, description, entry["q"], "u", entry["tags"],
+            status=f"a confirmar: {entry['check']}" if entry.get("check") else "verificado" if code != MISSING else "falta código de pedido")
     return rows
 
 
 def bom_issues(rows, project=None):
     """Controles antes de comprar: devuelve una lista de textos (vacía = listo para pedir)."""
     issues = []
+    to_check = [r for r in rows if str(r.get("status", "")).startswith("a confirmar:") and r["code"] != MISSING]
+    if to_check:
+        issues.append(f"{len(to_check)} renglón(es) a confirmar antes de comprar: " + "; ".join(f"{r['code']}: {r['status'][13:80]}" for r in to_check))
     missing = [r for r in rows if r["code"] == MISSING]
     if missing:
         issues.append(f"{len(missing)} renglón(es) sin código de pedido: " + "; ".join(f"{r['category']}: {r['description'][:60]}" for r in missing))

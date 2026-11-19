@@ -257,6 +257,9 @@ def main():
             pg.click("#moreBtn")
             options = pg.eval_on_selector_all("#enclosure option", "o=>o.map(x=>x.value)")
             prev = pg.evaluate("project.enclosure.id")
+            spill = pg.evaluate("""[...document.querySelectorAll('#board .device')].flatMap(g=>{const hb=g.querySelector('.hitbox');if(!hb)return [];const r=hb.getBoundingClientRect();
+              return [...g.querySelectorAll('text')].filter(t=>t.getAttribute('fill')!=='#1c1c1c'&&t.textContent.trim()).filter(t=>{const b=t.getBoundingClientRect();return b.width>0&&(b.left<r.left-1||b.right>r.right+1)}).map(t=>t.textContent)}).slice(0,5)""")
+            check("ningún texto impreso sale del ancho de su equipo", not spill, str(spill))
             small = pg.evaluate("[...catalog.enclosures].sort((a,b)=>a.externalBody.width*a.externalBody.height-b.externalBody.width*b.externalBody.height)[0].id")
             pg.select_option("#enclosure", small); wait_idle(pg, 3000)
             check("gabinete chico donde no entra: se mantiene el anterior", pg.evaluate("project.enclosure.id") == prev and pg.input_value("#enclosure") == prev)
@@ -302,6 +305,21 @@ def main():
                 with pg.expect_download() as dl:
                     pg.click(btn)
                 check(f"exportar {btn[7:]}", Path(dl.value.path()).stat().st_size > size)
+            # Lección 26: el encuadre de la exportación incluye todo lo dibujado (las cotas salían cortadas) y el PNG no se deforma.
+            png = Path(dl.value.path()).read_bytes()
+            pw, ph_ = int.from_bytes(png[16:20], "big"), int.from_bytes(png[20:24], "big")
+            vb = pg.evaluate("contentBounds()")
+            check("PNG con la proporción del encuadre (sin deformar)", abs(pw / ph_ - vb["w"] / vb["h"]) < 0.01, f"{pw}x{ph_} vs {vb['w']:.0f}x{vb['h']:.0f}")
+            outside = pg.evaluate("""(()=>{fitView();const s=$('board').getBoundingClientRect();return [...$('board').querySelectorAll('text')].filter(t=>{const r=t.getBoundingClientRect();
+              return r.width>0&&(r.left<s.left-0.5||r.right>s.right+0.5||r.top<s.top-0.5||r.bottom>s.bottom+0.5)}).map(t=>t.textContent).slice(0,5)})()""")
+            check("encuadre: ningún texto (cotas, títulos) queda cortado", not outside, str(outside))
+            same_font = pg.evaluate("(()=>{const d=new DOMParser().parseFromString(saveSvg(),'image/svg+xml');return d.documentElement.getAttribute('font-family')===getComputedStyle($('board')).fontFamily})()")
+            check("SVG/PNG exportado con la misma letra con la que se calculó el encuadre", same_font)
+            spill = pg.evaluate("""[...document.querySelectorAll('#board .device')].flatMap(g=>{const hb=g.querySelector('.hitbox');if(!hb)return [];const r=hb.getBoundingClientRect();
+              return [...g.querySelectorAll('text')].filter(t=>t.getAttribute('fill')!=='#1c1c1c'&&t.textContent.trim()).filter(t=>{const b=t.getBoundingClientRect();return b.width>0&&(b.left<r.left-1||b.right>r.right+1)}).map(t=>t.textContent)}).slice(0,5)""")
+            check("ningún texto impreso sale del ancho de su equipo", not spill, str(spill))
+            small = pg.evaluate("[...document.querySelectorAll('#board .device text[font-weight=\"700\"]')].map(t=>+t.getAttribute('font-size')).filter(f=>f<catalog.layoutRules.labels.fontMinMm-0.01).length")
+            check("etiquetas con letra legible (≥ mínimo de reglas_layout)", small == 0, str(small))
             pg.click("#expDoor")
             with pg.expect_download() as dl:
                 pg.click("#exportSvg")

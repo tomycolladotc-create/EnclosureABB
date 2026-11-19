@@ -290,22 +290,29 @@ class PinturaCompleta(unittest.TestCase):
         looks, fronts = L("apariencias_abb.json")["items"], L("frentes_cad.json")["items"]
         for shell, front in fronts.items():
             holes = front.get("silhouetteHoles") or []
+            w, h = front["sourceProjectionExtent"]
+            tol = 1.0 / max(w, h)  # 1 mm
             for rings, _, kind in regions(front, looks[shell]):
-                if kind != "detalle":
+                if kind not in ("detalle", "superficie"):
                     continue
-                for q in rings:  # los vértices caen sobre el borde: se controla el interior de cada trapecio
-                    cx, cy = sum(p[0] for p in q) / len(q), sum(p[1] for p in q) / len(q)
-                    self.assertTrue(point_in_silhouette(cx, cy, front["silhouette"] + holes), f"{shell}: detalle fuera del equipo en {(cx, cy)}")
+                for q in rings:
+                    if kind == "detalle":  # trapecio del recorte: los vértices caen sobre el borde, se controla su interior
+                        cx, cy = sum(p[0] for p in q) / len(q), sum(p[1] for p in q) / len(q)
+                        self.assertTrue(point_in_silhouette(cx, cy, front["silhouette"] + holes), f"{shell}: detalle fuera del equipo en {(cx, cy)}")
+                    else:  # superficie del CAD: sus vértices son las líneas del CAD, dentro de la silueta (1 mm)
+                        fuera = [p for p in q if not point_in_silhouette(p[0], p[1], front["silhouette"], tol)]
+                        self.assertLess(len(fuera), max(2, len(q) // 20), f"{shell}: superficie pintada fuera del equipo {fuera[:3]}")
 
     def test_la_etiqueta_roja_abb_queda_entera_sobre_el_equipo(self):
         """Un detalle grande (franja, borne) recortado está bien: el recorte le da la forma real. La etiqueta roja ABB no:
         si se recorta, está mal ubicada (pasó en el OT400: quedaba afuera, arriba a la izquierda)."""
-        from pintura import clip_rect
+        from pintura import clip_rect, part_rect
         area = lambda q: abs(sum(q[i - 1][0] * p[1] - p[0] * q[i - 1][1] for i, p in enumerate(q)) / 2)
         looks, fronts = L("apariencias_abb.json")["items"], L("frentes_cad.json")["items"]
         for shell, front in fronts.items():
             rings = front["silhouette"] + (front.get("silhouetteHoles") or [])
-            for x, y, w, h, color in looks[shell]["parts"]:
+            for part in looks[shell]["parts"]:
+                (x, y, w, h), color = part_rect(front, part), (part["color"] if isinstance(part, dict) else part[4])
                 if color.lower() in [c.lower() for c in json.loads((ROOT / "datos" / "reglas_validacion.json").read_text(encoding="utf-8"))["brandLabelColors"]]:
                     kept = sum(area(q) for q in clip_rect(rings, x, y, x + w, y + h)) / (w * h)
                     with self.subTest(shell=shell):
@@ -327,8 +334,10 @@ class PinturaCompleta(unittest.TestCase):
 
     def test_textos_impresos_caen_sobre_el_equipo(self):
         from pintura import fit, point_in_silhouette
+        from pintura import resolve
         shells = {s["id"]: s for s in CAT["deviceShells"]}
-        looks, fronts = L("apariencias_abb.json")["items"], L("frentes_cad.json")["items"]
+        fronts, looks = resolve(L("frentes_cad.json"), L("apariencias_abb.json"), CAT)
+        fronts, looks = fronts["items"], looks["items"]
         for shell, look in looks.items():
             if shell not in fronts:
                 continue
@@ -344,6 +353,62 @@ class PinturaCompleta(unittest.TestCase):
                 with self.subTest(shell=shell, texto=it["text"]):
                     self.assertTrue(point_in_silhouette((cx - dx) / dw, (it["y"] - dy) / dh, fronts[shell]["silhouette"], 0.02), "texto fuera del equipo")
 
+    def test_ningun_color_a_ojo_sobre_una_superficie_del_cad(self):
+        """Lección 25: las ventanas del OT400, el panel del XT y la etiqueta del OT160 estaban puestos con rectángulos a ojo y
+        quedaban corridos de las líneas del CAD (hasta 60 %). Un color que representa una superficie que el CAD encierra con
+        líneas se pone con una semilla y se pinta la forma exacta; el rectángulo libre queda sólo donde el CAD no la dibuja."""
+        from pintura import similar_region
+        looks, fronts = L("apariencias_abb.json")["items"], L("frentes_cad.json")["items"]
+        for shell, front in fronts.items():
+            for n, part in enumerate(looks[shell]["parts"]):
+                if isinstance(part, dict):
+                    continue
+                zone = similar_region(front, part)
+                with self.subTest(shell=shell, parte=n):
+                    self.assertIsNone(zone, f"el rectángulo {part[:4]} copia a ojo la superficie del CAD {zone and [round(v, 3) for v in zone['bbox']]}: usar {{\"seed\": …}}")
+
+    def test_no_aparecen_rectangulos_nuevos_casi_alineados_con_el_cad(self):
+        """Un borde a 0,6–3 mm de una línea paralela del CAD se ve corrido: fue puesto a ojo. Los que quedan están en una lista
+        congelada (reglas_validacion.json → freeRectNearMissKnown) hasta verificarlos con foto; no se aceptan nuevos."""
+        from pintura import near_miss_edges
+        known = json.loads((ROOT / "datos" / "reglas_validacion.json").read_text(encoding="utf-8"))["freeRectNearMissKnown"]["items"]
+        looks, fronts = L("apariencias_abb.json")["items"], L("frentes_cad.json")["items"]
+        for shell, front in fronts.items():
+            for n, part in enumerate(looks[shell]["parts"]):
+                if isinstance(part, dict):
+                    continue
+                edges = sorted(e for e, _ in near_miss_edges(front, part))
+                with self.subTest(shell=shell, parte=n):
+                    self.assertLessEqual(set(edges), set(known.get(shell, {}).get(str(n), [])), f"borde casi alineado con el CAD (puesto a ojo): {edges}")
+
+    def test_cada_semilla_cae_en_una_superficie_y_la_pintura_esta_resuelta(self):
+        from pintura import resolve
+        fronts, looks = resolve(L("frentes_cad.json"), L("apariencias_abb.json"), CAT)  # falla si una semilla no cae en una superficie
+        for shell, front in fronts["items"].items():
+            with self.subTest(shell=shell):
+                self.assertTrue(front.get("paint"), "sin pintura resuelta")
+
+    def test_no_se_escribe_un_logo_encima_de_las_letras_que_ya_dibuja_el_cad(self):
+        """En el OT160–250 4P el CAD dibuja ABB y además se escribía ABB en blanco corrido: se veía el logo dos veces."""
+        from pintura import resolve, part_rect, fit
+        shells = {s["id"]: s for s in CAT["deviceShells"]}
+        fronts, looks = resolve(L("frentes_cad.json"), L("apariencias_abb.json"), CAT)
+        for shell, look in looks["items"].items():
+            front = fronts["items"].get(shell)
+            if not front:
+                continue
+            spec = shells[shell]
+            W = (spec.get("poleModule") or {}).get("width") or spec["width"]
+            dx, dy, dw, dh = fit(front["sourceProjectionExtent"], W, spec["height"])
+            for part in look["parts"]:
+                if isinstance(part, dict) and "behindCadText" in part:
+                    x, y, w, h = part_rect(front, part)
+                    for it in (look.get("marking") or {}).get("items", []):
+                        cx = (it["x"] - dx) / dw
+                        cy = (it["y"] - dy) / dh
+                        with self.subTest(shell=shell, texto=it["text"]):
+                            self.assertFalse(x <= cx <= x + w and y <= cy <= y + h, "texto escrito sobre las letras del CAD")
+
     def test_recorte_de_un_rectangulo_contra_una_silueta_en_l(self):
         from pintura import clip_rect
         area = lambda q: abs(sum(q[i - 1][0] * p[1] - p[0] * q[i - 1][1] for i, p in enumerate(q)) / 2)
@@ -353,3 +418,13 @@ class PinturaCompleta(unittest.TestCase):
         self.assertAlmostEqual(sum(area(q) for q in clip_rect([L_shape, hole], 0.25, 0.0, 0.75, 0.5)), 0.25 - 0.005, places=9)
         tri = [(0, 0), (1, 0), (0, 1)]  # borde inclinado que cruza el recorte
         self.assertAlmostEqual(sum(area(q) for q in clip_rect([tri], 0.0, 0.0, 1.0, 0.5)), 0.375, places=9)
+
+
+class EtiquetaDelGabinete(unittest.TestCase):
+    def test_todas_las_etiquetas_salen_de_la_misma_regla(self):
+        """Lección 27: el SR2 decía «300 × 400 (placa 360 × 260)» y el System pro E «750 × 1800»: órdenes mezclados."""
+        from etiquetas import enclosure_label
+        for e in CAT["enclosures"]:
+            with self.subTest(gabinete=e["id"]):
+                self.assertEqual(e["label"], enclosure_label(e))
+                self.assertIn("alto", e["label"])

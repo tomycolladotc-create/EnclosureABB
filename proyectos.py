@@ -7,11 +7,14 @@ import copy
 import json
 import re
 import unicodedata
+import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 DATA = ROOT / "datos"
-PROJECTS_DIR = DATA / "proyectos"
+# ABB_PROJECTS_DIR: carpeta de proyectos para pruebas automáticas (lección 30: una corrida de prueba dejó 24 tableros
+# en datos/proyectos y se subieron al repositorio; las pruebas nunca escriben en los proyectos del usuario).
+PROJECTS_DIR = Path(os.environ["ABB_PROJECTS_DIR"]) if os.environ.get("ABB_PROJECTS_DIR") else DATA / "proyectos"
 LEGACY = {"ts4": DATA / "ts4_topografia.json"}
 ID_PATTERN = re.compile(r"[a-z0-9][a-z0-9_-]{0,40}")
 

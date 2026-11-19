@@ -3,6 +3,11 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-19 21:30 · Claude · 2.ª revisión de los 24 tableros: pintura por superficies del CAD, encuadre, etiquetas, lista
+- Hecho: revisados los 24 a tamaño completo + puertas + listas. Corregido en origen: colores sobre superficies del CAD (semillas) y logos calculados; pantalla y DXF dibujan la misma pintura (pintura.resolve en el servidor, con candado y precálculo); encuadre de exportación medido (cotas cortadas, PNG estirado); subtítulo alto×ancho; etiquetas con letra mínima y misma regla en Python y JS (verificado con node); «a confirmar» en la lista; pruebas fuera de datos/proyectos (los 24 subidos por error se sacaron del repo).
+- Resultado: 167 tests, 122/122 interfaz, regresión igual, auditoría 0 en los 24.
+- Ojo: 37 rectángulos libres casi alineados quedan congelados hasta verificarlos con foto ABB; S290 sigue sin CAD (contorno con el modelo); 63 renglones de equipos sin código de pedido.
+
 ## 2026-11-19 18:00 · Claude · Frentes del CAD sin deformar y medidas verificadas contra el CAD
 - Hecho: el frente se dibuja con escala uniforme y centrado (pintura.fit, web y DXF); OT400 4P pasa a 258 mm (contorno real del CAD con orejas) y su logo ABB queda dentro de la etiqueta roja; las diferencias catálogo/CAD que quedan (S800 DXF, SN201) están explicadas en cadAspectNote. Tests nuevos: medida = CAD (≤2 %) o nota; textos impresos dentro del equipo.
 - Resultado: 160 tests, regresión de 24 tableros igual (ningún tablero del GENERAL usa OT400), 118/118 de interfaz, auditoría 0 en los 24 rearmados.

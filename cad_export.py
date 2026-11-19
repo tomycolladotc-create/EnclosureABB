@@ -4,10 +4,14 @@ Los trazos de cada bloque vienen de datos/frentes_cad.json, generados por
 work/proyectar_cad.py desde CAD ABB. El JSON del proyecto sólo guarda instancias.
 """
 
+import json
 from io import StringIO
+from pathlib import Path
 
 import ezdxf
-from pintura import fit as paint_fit, regions as paint_regions
+from pintura import fit as paint_fit, resolve as paint_resolve
+from etiquetas import label_boxes
+LABEL_RULES = json.loads((Path(__file__).resolve().parent / "datos" / "reglas_layout.json").read_text(encoding="utf-8"))["labels"]
 from ezdxf.colors import rgb2int
 
 from importador import shell_size
@@ -103,6 +107,8 @@ def _door_view(space, ox, project, structure, body, plinth):
 
 
 def build_dxf(project, catalog, fronts, appearances):
+    if not all("paint" in f for sid, f in fronts["items"].items() if sid in appearances["items"]):
+        fronts, appearances = paint_resolve(fronts, appearances, catalog)  # misma pintura y marcado que la pantalla
     doc = ezdxf.new("R2010", setup=True)
     doc.header["$INSUNITS"] = 4  # mm
     doc.styles.add("ABB_ARIAL", font="arial.ttf")
@@ -172,7 +178,8 @@ def build_dxf(project, catalog, fronts, appearances):
 
             if palette:
                 # Pintura calculada (pintura.py): silueta exacta del CAD, agujeros y detalles recortados a la silueta.
-                for rings, tint, _kind in paint_regions(front, palette):
+                for zone in front["paint"]:
+                    rings, tint = zone["rings"], zone["color"]
                     hatch = block.add_hatch(dxfattribs={"layer": "ABB_CAD_COLORES", "true_color": _color(tint)})
                     for ring in rings:
                         hatch.paths.add_polyline_path([(round(ox + x * fw_, 4), round(fy0 + y * fh_, 4)) for x, y in ring], is_closed=True)
@@ -208,6 +215,7 @@ def build_dxf(project, catalog, fronts, appearances):
         blocks[key] = name
         return name
 
+    label_box = {id(d): b for d, b in zip(project["devices"], label_boxes(project["devices"], cabinet["functional"]["width"], LABEL_RULES))}
     for device in project["devices"]:
         x = fx + float(device["x"])
         y = fy + float(device["y"])
@@ -234,13 +242,16 @@ def build_dxf(project, catalog, fronts, appearances):
                     attrib.set_placement((ax, ay), align=ezdxf.enums.TextEntityAlignment.MIDDLE_CENTER
                                          if item.get("align") == "center" else ezdxf.enums.TextEntityAlignment.MIDDLE_LEFT)
         else:
-            rect(x, y, width, height, "ABB_SIN_CAD")
+            rect(x, y, width, height, "ABB_SIN_CAD")  # contorno de la ficha: sin frente CAD de ABB, se rotula el modelo
+            space.add_text(str(device.get("model") or ""), dxfattribs={"height": round(min(5.7, width / max(len(str(device.get("model") or "")), 1) / 0.75), 2),
+                                                                     "layer": "ABB_SIN_CAD"}).set_placement((x + width / 2, y + height / 2), align=ezdxf.enums.TextEntityAlignment.MIDDLE_CENTER)
         # Porta-etiqueta bajo el equipo con el nombre del circuito (igual que en el editor; un solo rótulo por equipo).
         name = device.get("circuit") or device["tag"]  # en el dibujo va el nombre del circuito; el QF queda como dato
-        lw, lh = min(max(width - 4, 14), 64), 12
-        lx, ly = x + (width - lw) / 2, y - 4 - lh
+        box = label_box[id(device)]
+        lw, lh = box["w"], LABEL_RULES["heightMm"]
+        lx, ly = fx + box["x"], y - LABEL_RULES["gapBelowMm"] - lh
         rect(lx, ly, lw, lh, "ABB_ETIQUETAS")
-        tag_h = round(min(8.5, lw / max(len(name), 1) / 0.75), 2)
+        tag_h = box["font"] * 0.716  # alto de mayúscula de la letra del editor (Arial)
         space.add_text(name, dxfattribs={"height": tag_h, "layer": "ABB_ETIQUETAS"}).set_placement(
             (lx + lw / 2, ly + lh / 2), align=ezdxf.enums.TextEntityAlignment.MIDDLE_CENTER)
     # Accesorios de normativa (bornes de tierra, peines): geometría esquemática marcada como provisoria.

@@ -123,7 +123,9 @@ def _describe(item, catalog):
         item.update(bomCategory="Señalización", orderCode=holder.get("orderCode"), quantity=item.get("count", 1),
                     description=f"Portafusible {holder.get('tipo', '')} 1P 10x38 (tabaquera) para los testigos de fase {phases} ({holder.get('marca', 'ABB')})",
                     bomExtra=[{"bomCategory": "Señalización", "orderCode": fuse.get("orderCode"), "quantity": item.get("count", 1),
-                               "description": f"Fusible {fuse.get('tipo', '10x38')} {fuse.get('descripcion', '')} para los testigos" + (f" · {fuse['status']}" if fuse.get("status") else "")}])
+                               "description": f"Fusible {fuse.get('tipo', '10x38')} {fuse.get('descripcion', '')} para los testigos" + (f" · {fuse['status']}" if fuse.get("status") else ""),
+                               **({"purchaseCheck": fuse["purchaseCheck"]} if fuse.get("purchaseCheck") else {})}],
+                    **({"purchaseCheck": holder["purchaseCheck"]} if holder.get("purchaseCheck") else {}))
     elif t == "pe_bar":
         item.update(quantity=1)
     elif t == "wiring_duct":

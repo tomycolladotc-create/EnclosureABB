@@ -41,7 +41,8 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 - Modelo de datos: **carcasa** (geometría CAD, `deviceShells`) ≠ **serie** (qué modelos la usan, `series`) ≠ **marcado** (lo impreso en el frente: `apariencias_abb.json -> marking`). Marcado frontal cargado para S200, S800, XT1, XT2 y logo visible de OT400; carcasas por polo (`poleModule`, S200): 2P-4P = polos repetidos.
 - **Plano GENERAL (24 tableros)**: todos los equipos de 2+ polos tienen carcasa CAD salvo S 293-C 80 (S290, sin CAD: va a la lista con aviso). Carcasas 2026-11-19: E2.2, XT3, XT1 3P, T4, T2, S803, OT63/80F.
 - Series sin confirmar con fuente (`verified: false`): XT1 y XT2 para todas las versiones de poder de corte.
-- Pruebas: 67, `python -m unittest discover tests`. Correrlas antes de cada push.
+- **Pintura de los frentes (2026-11-19)**: los colores se ponen sobre las superficies cerradas del CAD (semillas, `pintura.cad_regions`); el servidor resuelve todo (`pintura.resolve` → `/api/fronts`, `/api/appearances`) y la pantalla y el DXF dibujan lo mismo. Etiquetas con letra mínima (`etiquetas.label_boxes`, misma regla en el editor). Encuadre de exportación medido sobre lo dibujado.
+- Pruebas: 167 + 24 tableros de regresión (`python -m pytest -q`) y `python3 tests/e2e/prueba_interfaz.py` (122 controles). Correrlas antes de cada push. Las pruebas automáticas usan `ABB_PROJECTS_DIR`, nunca `datos/proyectos`.
 
 ## PRÓXIMA SESIÓN — empezar por acá (escrito por Claude, 2026-11-16 01:50)
 

@@ -3,6 +3,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 import json
+import threading
 import logging
 import os
 
@@ -22,6 +23,25 @@ ROOT = Path(__file__).resolve().parent
 CATALOG = ROOT / "datos" / "catalogo_abb.json"
 FRONTS = ROOT / "datos" / "frentes_cad.json"
 APPEARANCES = ROOT / "datos" / "apariencias_abb.json"
+_RESOLVED = {}
+_RESOLVE_LOCK = threading.Lock()
+
+
+def resolved_drawing_data():
+    """Frentes CAD y apariencias resueltos por pintura.resolve; se recalculan sólo si cambió algún archivo.
+    Con candado: dos pedidos a la vez (p. ej. al recargar la página) no lo calculan dos veces."""
+    from pintura import resolve
+    with _RESOLVE_LOCK:
+        return _resolved_locked(resolve)
+
+
+def _resolved_locked(resolve):
+    stamp = tuple(p.stat().st_mtime_ns for p in (FRONTS, APPEARANCES, CATALOG))
+    if _RESOLVED.get("stamp") != stamp:
+        _RESOLVED.update(stamp=stamp, data=resolve(json.loads(FRONTS.read_text(encoding="utf-8")),
+                                                  json.loads(APPEARANCES.read_text(encoding="utf-8")),
+                                                  json.loads(CATALOG.read_text(encoding="utf-8"))))
+    return _RESOLVED["data"]
 VALIDATION_RULES = ROOT / "datos" / "reglas_validacion.json"
 WEB = ROOT / "web" / "index.html"
 WEB_STYLES = ROOT / "web" / "styles.css"
@@ -63,14 +83,14 @@ class Handler(BaseHTTPRequestHandler):
             data = json.loads(CATALOG.read_text(encoding="utf-8"))
             from bom import load_order_codes
             data["orderCodes"] = load_order_codes()  # códigos verificados: el editor muestra cuál irá a la lista
+            data["layoutRules"] = {"labels": json.loads((ROOT / "datos" / "reglas_layout.json").read_text(encoding="utf-8"))["labels"]}
 
             return self.send_data(200, data)
         if route == "/api/ducts":  # secciones estándar de canaleta (catálogo ABB) para dibujarlas a mano
             return self.send_data(200, load_accessory_catalog().get("wiringDucts", {}))
-        if route == "/api/fronts":
-            return self.send_data(200, json.loads(FRONTS.read_text(encoding="utf-8")))
-        if route == "/api/appearances":
-            return self.send_data(200, json.loads(APPEARANCES.read_text(encoding="utf-8")))
+        if route in ("/api/fronts", "/api/appearances"):  # ya resueltos (pintura.resolve): pantalla y DXF usan lo mismo
+            fronts, appearances = resolved_drawing_data()
+            return self.send_data(200, fronts if route == "/api/fronts" else appearances)
         self.send_data(404, {"error": "Ruta inexistente"})
 
     def do_POST(self):
@@ -191,8 +211,7 @@ class Handler(BaseHTTPRequestHandler):
             try:
                 project = json.loads(blob)
                 catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
-                fronts = json.loads(FRONTS.read_text(encoding="utf-8"))
-                appearances = json.loads(APPEARANCES.read_text(encoding="utf-8"))
+                fronts, appearances = resolved_drawing_data()
                 return self.send_data(200, build_dxf(project, catalog, fronts, appearances), "application/dxf")
             except (ValueError, UnicodeDecodeError, KeyError) as exc:
                 return self.send_data(422, {"error": str(exc)})
@@ -215,4 +234,5 @@ class Handler(BaseHTTPRequestHandler):
 if __name__ == "__main__":
     port = int(os.environ.get("ABB_EDITOR_PORT", "8765"))
     print(f"Editor ABB: http://127.0.0.1:{port}", flush=True)
+    threading.Thread(target=resolved_drawing_data, daemon=True).start()  # pintura lista antes de que el navegador la pida
     ThreadingHTTPServer(("127.0.0.1", port), Handler).serve_forever()

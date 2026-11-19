@@ -3,7 +3,7 @@
   "enclosures": [
     {
       "id": "spep185-1000-2100-500",
-      "label": "ABB System pro E power 185 · 1000 × 2100 × 500",
+      "label": "ABB System pro E power 185 · alto 2100 × ancho 1000 × prof. 500 mm",
       "functional": {
         "width": 1000,
         "height": 2100,
@@ -128,11 +128,18 @@
       ],
       "line": "ABB System pro E power 185 mm Busbar System",
       "floorStanding": true,
-      "moldedCaseOnKits": true
+      "moldedCaseOnKits": true,
+      "labelPrefix": "ABB System pro E power 185",
+      "nominal": {
+        "height": 2100.0,
+        "width": 1000.0,
+        "depth": 500.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "spep185-1000-1800-500",
-      "label": "ABB System pro E power 185 · 1000 × 1800 × 500",
+      "label": "ABB System pro E power 185 · alto 1800 × ancho 1000 × prof. 500 mm",
       "functional": {
         "width": 1000,
         "height": 1800,
@@ -257,11 +264,18 @@
       ],
       "line": "ABB System pro E power 185 mm Busbar System",
       "floorStanding": true,
-      "moldedCaseOnKits": true
+      "moldedCaseOnKits": true,
+      "labelPrefix": "ABB System pro E power 185",
+      "nominal": {
+        "height": 1800.0,
+        "width": 1000.0,
+        "depth": 500.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "spep185-500-1800-500",
-      "label": "ABB System pro E power 185 · 500 × 1800 × 500",
+      "label": "ABB System pro E power 185 · alto 1800 × ancho 500 × prof. 500 mm",
       "functional": {
         "width": 500,
         "height": 1800,
@@ -381,11 +395,18 @@
       ],
       "line": "ABB System pro E power 185 mm Busbar System",
       "floorStanding": true,
-      "moldedCaseOnKits": true
+      "moldedCaseOnKits": true,
+      "labelPrefix": "ABB System pro E power 185",
+      "nominal": {
+        "height": 1800.0,
+        "width": 500.0,
+        "depth": 500.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "spep185-500-2100-500",
-      "label": "ABB System pro E power 185 · 500 × 2100 × 500",
+      "label": "ABB System pro E power 185 · alto 2100 × ancho 500 × prof. 500 mm",
       "functional": {
         "width": 500,
         "height": 2100,
@@ -505,11 +526,18 @@
       ],
       "line": "ABB System pro E power 185 mm Busbar System",
       "floorStanding": true,
-      "moldedCaseOnKits": true
+      "moldedCaseOnKits": true,
+      "labelPrefix": "ABB System pro E power 185",
+      "nominal": {
+        "height": 2100.0,
+        "width": 500.0,
+        "depth": 500.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "spep185-750-1800-500",
-      "label": "ABB System pro E power 185 · 750 × 1800 × 500",
+      "label": "ABB System pro E power 185 · alto 1800 × ancho 750 × prof. 500 mm",
       "functional": {
         "width": 750,
         "height": 1800,
@@ -629,11 +657,18 @@
       ],
       "line": "ABB System pro E power 185 mm Busbar System",
       "floorStanding": true,
-      "moldedCaseOnKits": true
+      "moldedCaseOnKits": true,
+      "labelPrefix": "ABB System pro E power 185",
+      "nominal": {
+        "height": 1800.0,
+        "width": 750.0,
+        "depth": 500.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "spep185-750-2100-500",
-      "label": "ABB System pro E power 185 · 750 × 2100 × 500",
+      "label": "ABB System pro E power 185 · alto 2100 × ancho 750 × prof. 500 mm",
       "functional": {
         "width": 750,
         "height": 2100,
@@ -753,11 +788,18 @@
       ],
       "line": "ABB System pro E power 185 mm Busbar System",
       "floorStanding": true,
-      "moldedCaseOnKits": true
+      "moldedCaseOnKits": true,
+      "labelPrefix": "ABB System pro E power 185",
+      "nominal": {
+        "height": 2100.0,
+        "width": 750.0,
+        "depth": 500.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "spep185-1250-1800-500",
-      "label": "ABB System pro E power 185 · 1250 × 1800 × 500",
+      "label": "ABB System pro E power 185 · alto 1800 × ancho 1250 × prof. 500 mm",
       "functional": {
         "width": 1250,
         "height": 1800,
@@ -878,11 +920,18 @@
       ],
       "line": "ABB System pro E power 185 mm Busbar System",
       "floorStanding": true,
-      "moldedCaseOnKits": true
+      "moldedCaseOnKits": true,
+      "labelPrefix": "ABB System pro E power 185",
+      "nominal": {
+        "height": 1800.0,
+        "width": 1250.0,
+        "depth": 500.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "spep185-1250-2100-500",
-      "label": "ABB System pro E power 185 · 1250 × 2100 × 500",
+      "label": "ABB System pro E power 185 · alto 2100 × ancho 1250 × prof. 500 mm",
       "functional": {
         "width": 1250,
         "height": 2100,
@@ -1003,12 +1052,19 @@
       ],
       "line": "ABB System pro E power 185 mm Busbar System",
       "floorStanding": true,
-      "moldedCaseOnKits": true
+      "moldedCaseOnKits": true,
+      "labelPrefix": "ABB System pro E power 185",
+      "nominal": {
+        "height": 2100.0,
+        "width": 1250.0,
+        "depth": 500.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "sr2-srn3215k",
       "family": "SR2",
-      "label": "ABB SR2 SRN3215K · 300 × 200 × 150 (placa 160 × 260)",
+      "label": "ABB SR2 SRN3215K · alto 300 × ancho 200 × prof. 150 mm · placa alto 260 × ancho 160 mm",
       "functional": {
         "width": 160,
         "height": 260,
@@ -1107,12 +1163,19 @@
       },
       "line": "ABB SR2 · gabinete monobloc IP65",
       "floorStanding": false,
-      "moldedCaseOnKits": false
+      "moldedCaseOnKits": false,
+      "labelPrefix": "ABB SR2 SRN3215K",
+      "nominal": {
+        "height": 300.0,
+        "width": 200.0,
+        "depth": 150.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "sr2-srn3315k",
       "family": "SR2",
-      "label": "ABB SR2 SRN3315K · 300 × 300 × 150 (placa 260 × 260)",
+      "label": "ABB SR2 SRN3315K · alto 300 × ancho 300 × prof. 150 mm · placa alto 260 × ancho 260 mm",
       "functional": {
         "width": 260,
         "height": 260,
@@ -1211,12 +1274,19 @@
       },
       "line": "ABB SR2 · gabinete monobloc IP65",
       "floorStanding": false,
-      "moldedCaseOnKits": false
+      "moldedCaseOnKits": false,
+      "labelPrefix": "ABB SR2 SRN3315K",
+      "nominal": {
+        "height": 300.0,
+        "width": 300.0,
+        "depth": 150.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "sr2-srn3415k",
       "family": "SR2",
-      "label": "ABB SR2 SRN3415K · 300 × 400 × 150 (placa 360 × 260)",
+      "label": "ABB SR2 SRN3415K · alto 300 × ancho 400 × prof. 150 mm · placa alto 260 × ancho 360 mm",
       "functional": {
         "width": 360,
         "height": 260,
@@ -1315,12 +1385,19 @@
       },
       "line": "ABB SR2 · gabinete monobloc IP65",
       "floorStanding": false,
-      "moldedCaseOnKits": false
+      "moldedCaseOnKits": false,
+      "labelPrefix": "ABB SR2 SRN3415K",
+      "nominal": {
+        "height": 300.0,
+        "width": 400.0,
+        "depth": 150.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "sr2-srn4315k",
       "family": "SR2",
-      "label": "ABB SR2 SRN4315K · 400 × 300 × 150 (placa 260 × 360)",
+      "label": "ABB SR2 SRN4315K · alto 400 × ancho 300 × prof. 150 mm · placa alto 360 × ancho 260 mm",
       "functional": {
         "width": 260,
         "height": 360,
@@ -1419,12 +1496,19 @@
       },
       "line": "ABB SR2 · gabinete monobloc IP65",
       "floorStanding": false,
-      "moldedCaseOnKits": false
+      "moldedCaseOnKits": false,
+      "labelPrefix": "ABB SR2 SRN4315K",
+      "nominal": {
+        "height": 400.0,
+        "width": 300.0,
+        "depth": 150.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "sr2-srn4320k",
       "family": "SR2",
-      "label": "ABB SR2 SRN4320K · 400 × 300 × 200 (placa 260 × 360)",
+      "label": "ABB SR2 SRN4320K · alto 400 × ancho 300 × prof. 200 mm · placa alto 360 × ancho 260 mm",
       "functional": {
         "width": 260,
         "height": 360,
@@ -1523,12 +1607,19 @@
       },
       "line": "ABB SR2 · gabinete monobloc IP65",
       "floorStanding": false,
-      "moldedCaseOnKits": false
+      "moldedCaseOnKits": false,
+      "labelPrefix": "ABB SR2 SRN4320K",
+      "nominal": {
+        "height": 400.0,
+        "width": 300.0,
+        "depth": 200.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "sr2-srn4420k",
       "family": "SR2",
-      "label": "ABB SR2 SRN4420K · 400 × 400 × 200 (placa 360 × 360)",
+      "label": "ABB SR2 SRN4420K · alto 400 × ancho 400 × prof. 200 mm · placa alto 360 × ancho 360 mm",
       "functional": {
         "width": 360,
         "height": 360,
@@ -1627,12 +1718,19 @@
       },
       "line": "ABB SR2 · gabinete monobloc IP65",
       "floorStanding": false,
-      "moldedCaseOnKits": false
+      "moldedCaseOnKits": false,
+      "labelPrefix": "ABB SR2 SRN4420K",
+      "nominal": {
+        "height": 400.0,
+        "width": 400.0,
+        "depth": 200.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "sr2-srn4620k",
       "family": "SR2",
-      "label": "ABB SR2 SRN4620K · 400 × 600 × 200 (placa 560 × 360)",
+      "label": "ABB SR2 SRN4620K · alto 400 × ancho 600 × prof. 200 mm · placa alto 360 × ancho 560 mm",
       "functional": {
         "width": 560,
         "height": 360,
@@ -1731,12 +1829,19 @@
       },
       "line": "ABB SR2 · gabinete monobloc IP65",
       "floorStanding": false,
-      "moldedCaseOnKits": false
+      "moldedCaseOnKits": false,
+      "labelPrefix": "ABB SR2 SRN4620K",
+      "nominal": {
+        "height": 400.0,
+        "width": 600.0,
+        "depth": 200.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "sr2-srn5320k",
       "family": "SR2",
-      "label": "ABB SR2 SRN5320K · 500 × 300 × 200 (placa 260 × 460)",
+      "label": "ABB SR2 SRN5320K · alto 500 × ancho 300 × prof. 200 mm · placa alto 460 × ancho 260 mm",
       "functional": {
         "width": 260,
         "height": 460,
@@ -1835,12 +1940,19 @@
       },
       "line": "ABB SR2 · gabinete monobloc IP65",
       "floorStanding": false,
-      "moldedCaseOnKits": false
+      "moldedCaseOnKits": false,
+      "labelPrefix": "ABB SR2 SRN5320K",
+      "nominal": {
+        "height": 500.0,
+        "width": 300.0,
+        "depth": 200.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "sr2-srn5420k",
       "family": "SR2",
-      "label": "ABB SR2 SRN5420K · 500 × 400 × 200 (placa 360 × 460)",
+      "label": "ABB SR2 SRN5420K · alto 500 × ancho 400 × prof. 200 mm · placa alto 460 × ancho 360 mm",
       "functional": {
         "width": 360,
         "height": 460,
@@ -1955,12 +2067,19 @@
         ]
       },
       "floorStanding": false,
-      "moldedCaseOnKits": false
+      "moldedCaseOnKits": false,
+      "labelPrefix": "ABB SR2 SRN5420K",
+      "nominal": {
+        "height": 500.0,
+        "width": 400.0,
+        "depth": 200.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "sr2-srn5425k",
       "family": "SR2",
-      "label": "ABB SR2 SRN5425K · 500 × 400 × 250 (placa 360 × 460)",
+      "label": "ABB SR2 SRN5425K · alto 500 × ancho 400 × prof. 250 mm · placa alto 460 × ancho 360 mm",
       "functional": {
         "width": 360,
         "height": 460,
@@ -2075,12 +2194,19 @@
         ]
       },
       "floorStanding": false,
-      "moldedCaseOnKits": false
+      "moldedCaseOnKits": false,
+      "labelPrefix": "ABB SR2 SRN5425K",
+      "nominal": {
+        "height": 500.0,
+        "width": 400.0,
+        "depth": 250.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "sr2-srn6420k",
       "family": "SR2",
-      "label": "ABB SR2 SRN6420K · 600 × 400 × 200 (placa 360 × 560)",
+      "label": "ABB SR2 SRN6420K · alto 600 × ancho 400 × prof. 200 mm · placa alto 560 × ancho 360 mm",
       "functional": {
         "width": 360,
         "height": 560,
@@ -2195,12 +2321,19 @@
         ]
       },
       "floorStanding": false,
-      "moldedCaseOnKits": false
+      "moldedCaseOnKits": false,
+      "labelPrefix": "ABB SR2 SRN6420K",
+      "nominal": {
+        "height": 600.0,
+        "width": 400.0,
+        "depth": 200.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "sr2-srn6425k",
       "family": "SR2",
-      "label": "ABB SR2 SRN6425K · 600 × 400 × 250 (placa 360 × 560)",
+      "label": "ABB SR2 SRN6425K · alto 600 × ancho 400 × prof. 250 mm · placa alto 560 × ancho 360 mm",
       "functional": {
         "width": 360,
         "height": 560,
@@ -2315,12 +2448,19 @@
         ]
       },
       "floorStanding": false,
-      "moldedCaseOnKits": false
+      "moldedCaseOnKits": false,
+      "labelPrefix": "ABB SR2 SRN6425K",
+      "nominal": {
+        "height": 600.0,
+        "width": 400.0,
+        "depth": 250.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "sr2-srn6625k",
       "family": "SR2",
-      "label": "ABB SR2 SRN6625K · 600 × 600 × 250 (placa 560 × 560)",
+      "label": "ABB SR2 SRN6625K · alto 600 × ancho 600 × prof. 250 mm · placa alto 560 × ancho 560 mm",
       "functional": {
         "width": 560,
         "height": 560,
@@ -2419,12 +2559,19 @@
       },
       "line": "ABB SR2 · gabinete monobloc IP65",
       "floorStanding": false,
-      "moldedCaseOnKits": false
+      "moldedCaseOnKits": false,
+      "labelPrefix": "ABB SR2 SRN6625K",
+      "nominal": {
+        "height": 600.0,
+        "width": 600.0,
+        "depth": 250.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "sr2-srn7520k",
       "family": "SR2",
-      "label": "ABB SR2 SRN7520K · 700 × 500 × 200 (placa 460 × 660)",
+      "label": "ABB SR2 SRN7520K · alto 700 × ancho 500 × prof. 200 mm · placa alto 660 × ancho 460 mm",
       "functional": {
         "width": 460,
         "height": 660,
@@ -2523,12 +2670,19 @@
       },
       "line": "ABB SR2 · gabinete monobloc IP65",
       "floorStanding": false,
-      "moldedCaseOnKits": false
+      "moldedCaseOnKits": false,
+      "labelPrefix": "ABB SR2 SRN7520K",
+      "nominal": {
+        "height": 700.0,
+        "width": 500.0,
+        "depth": 200.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "sr2-srn7525k",
       "family": "SR2",
-      "label": "ABB SR2 SRN7525K · 700 × 500 × 250 (placa 460 × 660)",
+      "label": "ABB SR2 SRN7525K · alto 700 × ancho 500 × prof. 250 mm · placa alto 660 × ancho 460 mm",
       "functional": {
         "width": 460,
         "height": 660,
@@ -2627,12 +2781,19 @@
       },
       "line": "ABB SR2 · gabinete monobloc IP65",
       "floorStanding": false,
-      "moldedCaseOnKits": false
+      "moldedCaseOnKits": false,
+      "labelPrefix": "ABB SR2 SRN7525K",
+      "nominal": {
+        "height": 700.0,
+        "width": 500.0,
+        "depth": 250.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "sr2-srn8625k",
       "family": "SR2",
-      "label": "ABB SR2 SRN8625K · 800 × 600 × 250 (placa 560 × 760)",
+      "label": "ABB SR2 SRN8625K · alto 800 × ancho 600 × prof. 250 mm · placa alto 760 × ancho 560 mm",
       "functional": {
         "width": 560,
         "height": 760,
@@ -2747,12 +2908,19 @@
         ]
       },
       "floorStanding": false,
-      "moldedCaseOnKits": false
+      "moldedCaseOnKits": false,
+      "labelPrefix": "ABB SR2 SRN8625K",
+      "nominal": {
+        "height": 800.0,
+        "width": 600.0,
+        "depth": 250.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "sr2-srn8630k",
       "family": "SR2",
-      "label": "ABB SR2 SRN8630K · 800 × 600 × 300 (placa 560 × 760)",
+      "label": "ABB SR2 SRN8630K · alto 800 × ancho 600 × prof. 300 mm · placa alto 760 × ancho 560 mm",
       "functional": {
         "width": 560,
         "height": 760,
@@ -2867,12 +3035,19 @@
         ]
       },
       "floorStanding": false,
-      "moldedCaseOnKits": false
+      "moldedCaseOnKits": false,
+      "labelPrefix": "ABB SR2 SRN8630K",
+      "nominal": {
+        "height": 800.0,
+        "width": 600.0,
+        "depth": 300.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "sr2-srn8830k",
       "family": "SR2",
-      "label": "ABB SR2 SRN8830K · 800 × 800 × 300 (placa 760 × 760)",
+      "label": "ABB SR2 SRN8830K · alto 800 × ancho 800 × prof. 300 mm · placa alto 760 × ancho 760 mm",
       "functional": {
         "width": 760,
         "height": 760,
@@ -2971,12 +3146,19 @@
       },
       "line": "ABB SR2 · gabinete monobloc IP65",
       "floorStanding": false,
-      "moldedCaseOnKits": false
+      "moldedCaseOnKits": false,
+      "labelPrefix": "ABB SR2 SRN8830K",
+      "nominal": {
+        "height": 800.0,
+        "width": 800.0,
+        "depth": 300.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "sr2-srn10625k",
       "family": "SR2",
-      "label": "ABB SR2 SRN10625K · 1000 × 600 × 250 (placa 560 × 960)",
+      "label": "ABB SR2 SRN10625K · alto 1000 × ancho 600 × prof. 250 mm · placa alto 960 × ancho 560 mm",
       "functional": {
         "width": 560,
         "height": 960,
@@ -3091,12 +3273,19 @@
         ]
       },
       "floorStanding": false,
-      "moldedCaseOnKits": false
+      "moldedCaseOnKits": false,
+      "labelPrefix": "ABB SR2 SRN10625K",
+      "nominal": {
+        "height": 1000.0,
+        "width": 600.0,
+        "depth": 250.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "sr2-srn10630k",
       "family": "SR2",
-      "label": "ABB SR2 SRN10630K · 1000 × 600 × 300 (placa 560 × 960)",
+      "label": "ABB SR2 SRN10630K · alto 1000 × ancho 600 × prof. 300 mm · placa alto 960 × ancho 560 mm",
       "functional": {
         "width": 560,
         "height": 960,
@@ -3211,12 +3400,19 @@
         ]
       },
       "floorStanding": false,
-      "moldedCaseOnKits": false
+      "moldedCaseOnKits": false,
+      "labelPrefix": "ABB SR2 SRN10630K",
+      "nominal": {
+        "height": 1000.0,
+        "width": 600.0,
+        "depth": 300.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "sr2-srn10830k",
       "family": "SR2",
-      "label": "ABB SR2 SRN10830K · 1000 × 800 × 300 (placa 760 × 960)",
+      "label": "ABB SR2 SRN10830K · alto 1000 × ancho 800 × prof. 300 mm · placa alto 960 × ancho 760 mm",
       "functional": {
         "width": 760,
         "height": 960,
@@ -3331,12 +3527,19 @@
         ]
       },
       "floorStanding": false,
-      "moldedCaseOnKits": false
+      "moldedCaseOnKits": false,
+      "labelPrefix": "ABB SR2 SRN10830K",
+      "nominal": {
+        "height": 1000.0,
+        "width": 800.0,
+        "depth": 300.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "sr2-srn12630k",
       "family": "SR2",
-      "label": "ABB SR2 SRN12630K · 1200 × 600 × 300 (placa 560 × 1160)",
+      "label": "ABB SR2 SRN12630K · alto 1200 × ancho 600 × prof. 300 mm · placa alto 1160 × ancho 560 mm",
       "functional": {
         "width": 560,
         "height": 1160,
@@ -3451,12 +3654,19 @@
         ]
       },
       "floorStanding": false,
-      "moldedCaseOnKits": false
+      "moldedCaseOnKits": false,
+      "labelPrefix": "ABB SR2 SRN12630K",
+      "nominal": {
+        "height": 1200.0,
+        "width": 600.0,
+        "depth": 300.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     },
     {
       "id": "sr2-srn12830k",
       "family": "SR2",
-      "label": "ABB SR2 SRN12830K · 1200 × 800 × 300 (placa 760 × 1160)",
+      "label": "ABB SR2 SRN12830K · alto 1200 × ancho 800 × prof. 300 mm · placa alto 1160 × ancho 760 mm",
       "functional": {
         "width": 760,
         "height": 1160,
@@ -3571,7 +3781,14 @@
         ]
       },
       "floorStanding": false,
-      "moldedCaseOnKits": false
+      "moldedCaseOnKits": false,
+      "labelPrefix": "ABB SR2 SRN12830K",
+      "nominal": {
+        "height": 1200.0,
+        "width": 800.0,
+        "depth": 300.0,
+        "_fuente": "medida comercial del código ABB (misma fuente que la ficha)"
+      }
     }
   ],
   "deviceShells": [

@@ -228,7 +228,13 @@ def audit(project, catalog, rules=None, board_title=None):
         out.append(_f("warning", "board_name_mismatch", f"El tablero se llama «{project.get('project')}» y el unifilar dice «{board_title}».", []))
 
     # A10 · etiquetas que se pisan (texto ilegible en el plano).
-    labels = [{"x": d["x"], "y": d["y"] - holder, "w": d["w"], "h": holder, "tag": d["tag"]} for d in devices]
+    from etiquetas import label_boxes
+    lr = _layout_rules()["labels"]
+    labels = [{"x": b["x"], "y": d["y"] - lr["gapBelowMm"] - lr["heightMm"], "w": b["w"], "h": lr["heightMm"], "tag": d["tag"], "font": b["font"]}
+              for d, b in zip(devices, label_boxes(devices, project["enclosure"]["functional"]["width"], lr))]
+    for a in labels:  # A15 · letra legible impresa (lección 28)
+        if a["font"] < lr["fontMinMm"] - 0.01:
+            out.append(_f("error", "label_too_small", f"El nombre de {a['tag']} no entra con letra de {lr['fontMinMm']:g} mm.", [a["tag"]]))
     for i, a in enumerate(labels):
         for b in labels[i + 1:]:
             if a["x"] < b["x"] + b["w"] - 0.5 and b["x"] < a["x"] + a["w"] - 0.5 and a["y"] < b["y"] + b["h"] and b["y"] < a["y"] + a["h"]:

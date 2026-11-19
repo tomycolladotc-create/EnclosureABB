@@ -13,5 +13,171 @@
     "#e00016",
     "#e31c23"
   ],
-  "_ayuda_auditoria": "Criterios de auditoria.py (propuesta de diseño 2026-11-19, ajustables; no son datos de ABB): hueco máximo entre filas, uso mínimo del alto de la placa para no avisar de gabinete grande (desde qué alto de placa se controla)."
+  "_ayuda_auditoria": "Criterios de auditoria.py (propuesta de diseño 2026-11-19, ajustables; no son datos de ABB): hueco máximo entre filas, uso mínimo del alto de la placa para no avisar de gabinete grande (desde qué alto de placa se controla).",
+  "freeRectNearMissKnown": {
+    "_ayuda": "Rectángulos libres de apariencias_abb.json cuyos bordes corren a 0,6–3 mm de una línea del CAD (puestos a ojo sobre fotos). Lista CONGELADA el 2026-11-19: el test falla si aparece uno nuevo; cada uno se corrige verificándolo con foto ABB (ajustar el borde a la línea o convertirlo en semilla) y se saca de la lista. Mover bordes automáticamente se probó y borró las franjas rojas del S800: no se hace.",
+    "items": {
+      "abb.tmax.xt1.4p.fixed.front": {
+        "3": [
+          "x0",
+          "y0"
+        ],
+        "6": [
+          "y1"
+        ]
+      },
+      "abb.tmax.xt2.4p.fixed.front": {
+        "1": [
+          "y1"
+        ],
+        "6": [
+          "x1",
+          "y1"
+        ]
+      },
+      "abb.s804n.4p.front": {
+        "0": [
+          "y0"
+        ],
+        "1": [
+          "y0"
+        ],
+        "2": [
+          "x0",
+          "x1",
+          "y1"
+        ],
+        "3": [
+          "x1",
+          "y0"
+        ],
+        "4": [
+          "y0",
+          "y1"
+        ]
+      },
+      "abb.s200m.1pn.front": {
+        "0": [
+          "y1"
+        ],
+        "1": [
+          "y0"
+        ],
+        "2": [
+          "x0",
+          "x1",
+          "y1"
+        ],
+        "3": [
+          "x1",
+          "y0",
+          "y1"
+        ],
+        "4": [
+          "y1"
+        ]
+      },
+      "abb.ot400e04.4p.front": {
+        "7": [
+          "y0"
+        ]
+      },
+      "abb.s200m.1p.front": {
+        "3": [
+          "x0",
+          "x1",
+          "y1"
+        ],
+        "4": [
+          "y1"
+        ]
+      },
+      "abb.ot100_125f4.4p.front": {
+        "1": [
+          "x1",
+          "y0"
+        ]
+      },
+      "abb.ot100_125f3.3p.front": {
+        "1": [
+          "y0"
+        ]
+      },
+      "abb.ot160_250e04.4p.front": {
+        "0": [
+          "x0",
+          "x1"
+        ],
+        "1": [
+          "x0",
+          "x1"
+        ],
+        "2": [
+          "x1"
+        ],
+        "3": [
+          "x0"
+        ],
+        "4": [
+          "x0",
+          "x1",
+          "y1"
+        ],
+        "5": [
+          "x0",
+          "x1",
+          "y1"
+        ],
+        "6": [
+          "x1",
+          "y1"
+        ],
+        "7": [
+          "x0",
+          "y1"
+        ],
+        "8": [
+          "y0"
+        ]
+      },
+      "abb.tmax.xt3.4p.fixed.front": {
+        "0": [
+          "y0"
+        ],
+        "1": [
+          "y1"
+        ]
+      },
+      "abb.tmax.t2.3p.fixed.front": {
+        "0": [
+          "y0"
+        ],
+        "1": [
+          "y1"
+        ]
+      },
+      "abb.s803.3p.front": {
+        "0": [
+          "y0"
+        ],
+        "1": [
+          "y0"
+        ],
+        "2": [
+          "x0",
+          "x1",
+          "y1"
+        ],
+        "3": [
+          "x0",
+          "x1",
+          "y0"
+        ],
+        "4": [
+          "y0",
+          "y1"
+        ]
+      }
+    }
+  }
 }

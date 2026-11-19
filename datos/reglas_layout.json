@@ -30,5 +30,17 @@
   "railTerminalBandMm": 22.25,
   "busbarMarginMm": 40,
   "combFaceFallbackMm": 18,
-  "_ayuda_constantes": "Antes estaban en el código (accesorios.py, normativa.py, colocar.py). contiguousGapMm: separación máxima para considerar dos equipos pegados (peine posible). railTerminalBandMm: mitad del alto de un borne de riel (44,5 mm), franja que ocupa alrededor del eje del riel. busbarMarginMm: separación de la barra al borde de la placa (criterio, no dato ABB). combFaceFallbackMm: alto esquemático del peine cuando el catálogo no lo trae (se marca provisorio). La separación entre equipos de distinta carcasa en el riel es colGap tanto en el armado automático como al ubicar a mano."
+  "_ayuda_constantes": "Antes estaban en el código (accesorios.py, normativa.py, colocar.py). contiguousGapMm: separación máxima para considerar dos equipos pegados (peine posible). railTerminalBandMm: mitad del alto de un borne de riel (44,5 mm), franja que ocupa alrededor del eje del riel. busbarMarginMm: separación de la barra al borde de la placa (criterio, no dato ABB). combFaceFallbackMm: alto esquemático del peine cuando el catálogo no lo trae (se marca provisorio). La separación entre equipos de distinta carcasa en el riel es colGap tanto en el armado automático como al ubicar a mano.",
+  "labels": {
+    "_ayuda": "Portaetiqueta bajo cada equipo (lección 28, 2026-11-19): en los equipos de 1 módulo el nombre salía con letra de 2–3 mm, ilegible impreso. La letra nunca baja de fontMinMm: si no entra en el ancho del equipo, la etiqueta se ensancha hacia el lugar libre de los costados y las de una misma fila se acomodan para no pisarse. Misma regla en etiquetas.py (DXF y auditoría) y web/index.html (labelBoxes), verificada igual por test.",
+    "heightMm": 12,
+    "gapBelowMm": 4,
+    "fontMaxMm": 8.5,
+    "fontMinMm": 5.0,
+    "charWidth": 0.62,
+    "padMm": 2,
+    "minWidthMm": 14,
+    "maxWidthMm": 64,
+    "betweenMm": 1
+  }
 }
