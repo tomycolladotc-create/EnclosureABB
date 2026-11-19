@@ -647,32 +647,267 @@
       "appearanceStatus": "color base de la familia System pro M (mismo que S200, calibrado con foto ABB); sin detalles de color ni inscripciones hasta medir una foto frontal"
     },
     "abb.ot100_125f4.4p.front": {
-      "source": "https://onninen.fi/en/abb-switch-disconnector-ot100f4n2/p/AEX828",
-      "lineColor": "#5f6a70",
-      "base": "#c4c9cc",
-      "parts": [],
-      "appearanceStatus": "gris de cuerpo tomado de foto de producto (distribuidor Onninen, imagen OT100F4N2); sin banda ABB ni inscripciones hasta medir una foto frontal ABB"
+      "source": "https://onninen-file-storage.imgix.net/pimimg/IMG_1752179.jpg (foto de familia OT de ABB publicada por Onninen: cuerpo gris oscuro, banda roja ABB, manija negra) + paleta del OT400E04 ya calibrada con imagen oficial ABB 9PAA00000422688",
+      "lineColor": "#aeb8bc",
+      "base": "#41494d",
+      "parts": [
+        [
+          0,
+          0.13,
+          0.735,
+          0.74,
+          "#4d565b"
+        ],
+        [
+          0,
+          0.74,
+          0.735,
+          0.045,
+          "#e00016"
+        ]
+      ],
+      "appearanceStatus": "colores de la foto de familia OT (gris oscuro + banda roja ABB), misma paleta que el OT400 calibrado con imagen ABB; posiciones de la banda tomadas de las aristas del CAD. Sin textos de corriente.",
+      "marking": {
+        "verifiedWith": "https://onninen-file-storage.imgix.net/pimimg/IMG_1752179.jpg (foto de familia OT de ABB publicada por Onninen: cuerpo gris oscuro, banda roja ABB, manija negra) + paleta del OT400E04 ya calibrada con imagen oficial ABB 9PAA00000422688",
+        "items": [
+          {
+            "text": "ABB",
+            "x": 2.5,
+            "y": 76.3,
+            "h": 3.0,
+            "w": 9.5,
+            "color": "#ffffff",
+            "bold": true
+          }
+        ]
+      }
     },
     "abb.ot100_125f3.3p.front": {
-      "source": "https://onninen.fi/en/abb-switch-disconnector-ot100f4n2/p/AEX828",
-      "lineColor": "#5f6a70",
-      "base": "#c4c9cc",
-      "parts": [],
-      "appearanceStatus": "gris de cuerpo tomado de foto de producto (distribuidor Onninen, imagen OT100F4N2); sin banda ABB ni inscripciones hasta medir una foto frontal ABB"
+      "source": "https://onninen-file-storage.imgix.net/pimimg/IMG_1752179.jpg (foto de familia OT de ABB publicada por Onninen: cuerpo gris oscuro, banda roja ABB, manija negra) + paleta del OT400E04 ya calibrada con imagen oficial ABB 9PAA00000422688",
+      "lineColor": "#aeb8bc",
+      "base": "#41494d",
+      "parts": [
+        [
+          0,
+          0.2,
+          1,
+          0.58,
+          "#4d565b"
+        ],
+        [
+          0,
+          0.73,
+          1,
+          0.045,
+          "#e00016"
+        ],
+        [
+          0.33,
+          0.43,
+          0.52,
+          0.15,
+          "#1c2023"
+        ]
+      ],
+      "appearanceStatus": "colores de la foto de familia OT (gris oscuro + banda roja ABB), misma paleta que el OT400 calibrado con imagen ABB; posiciones de la banda tomadas de las aristas del CAD. Sin textos de corriente.",
+      "marking": {
+        "verifiedWith": "https://onninen-file-storage.imgix.net/pimimg/IMG_1752179.jpg (foto de familia OT de ABB publicada por Onninen: cuerpo gris oscuro, banda roja ABB, manija negra) + paleta del OT400E04 ya calibrada con imagen oficial ABB 9PAA00000422688",
+        "items": [
+          {
+            "text": "ABB",
+            "x": 2.5,
+            "y": 75.3,
+            "h": 3.0,
+            "w": 9.5,
+            "color": "#ffffff",
+            "bold": true
+          }
+        ]
+      }
     },
     "abb.ot160_250e03.3p.front": {
-      "source": "https://onninen.fi/en/abb-switch-disconnector-ot100f4n2/p/AEX828",
-      "lineColor": "#5f6a70",
-      "base": "#c4c9cc",
-      "parts": [],
-      "appearanceStatus": "gris de cuerpo tomado de foto de producto (distribuidor Onninen, imagen OT100F4N2); sin banda ABB ni inscripciones hasta medir una foto frontal ABB"
+      "source": "https://onninen-file-storage.imgix.net/pimimg/IMG_1752179.jpg (foto de familia OT de ABB publicada por Onninen: cuerpo gris oscuro, banda roja ABB, manija negra) + paleta del OT400E04 ya calibrada con imagen oficial ABB 9PAA00000422688",
+      "lineColor": "#aeb8bc",
+      "base": "none",
+      "parts": [
+        [
+          0.332,
+          0.835,
+          0.122,
+          0.165,
+          "#b9bec1"
+        ],
+        [
+          0.546,
+          0.835,
+          0.122,
+          0.165,
+          "#b9bec1"
+        ],
+        [
+          0.757,
+          0.835,
+          0.11599999999999999,
+          0.165,
+          "#b9bec1"
+        ],
+        [
+          0.332,
+          0,
+          0.122,
+          0.165,
+          "#b9bec1"
+        ],
+        [
+          0.546,
+          0,
+          0.122,
+          0.165,
+          "#b9bec1"
+        ],
+        [
+          0.757,
+          0,
+          0.11599999999999999,
+          0.165,
+          "#b9bec1"
+        ],
+        [
+          0.08,
+          0.163,
+          0.84,
+          0.672,
+          "#41494d"
+        ],
+        [
+          0.12,
+          0.2,
+          0.78,
+          0.6,
+          "#4d565b"
+        ],
+        [
+          0.1,
+          0.72,
+          0.17,
+          0.05,
+          "#e00016"
+        ]
+      ],
+      "appearanceStatus": "colores de la foto de familia OT (gris oscuro + banda roja ABB), misma paleta que el OT400 calibrado con imagen ABB; posiciones de la banda tomadas de las aristas del CAD. Sin textos de corriente. Fondo transparente: terminales de estaño y cuerpo como partes, para que las orejas y el espacio entre terminales muestren la placa.",
+      "marking": {
+        "verifiedWith": "https://onninen-file-storage.imgix.net/pimimg/IMG_1752179.jpg (foto de familia OT de ABB publicada por Onninen: cuerpo gris oscuro, banda roja ABB, manija negra) + paleta del OT400E04 ya calibrada con imagen oficial ABB 9PAA00000422688",
+        "items": [
+          {
+            "text": "ABB",
+            "x": 18.2,
+            "y": 111.8,
+            "h": 4.5,
+            "w": 20,
+            "color": "#ffffff",
+            "bold": true
+          }
+        ]
+      }
     },
     "abb.ot160_250e04.4p.front": {
-      "source": "https://onninen.fi/en/abb-switch-disconnector-ot100f4n2/p/AEX828",
-      "lineColor": "#5f6a70",
-      "base": "#c4c9cc",
-      "parts": [],
-      "appearanceStatus": "gris de cuerpo tomado de foto de producto (distribuidor Onninen, imagen OT100F4N2); sin banda ABB ni inscripciones hasta medir una foto frontal ABB"
+      "source": "https://onninen-file-storage.imgix.net/pimimg/IMG_1752179.jpg (foto de familia OT de ABB publicada por Onninen: cuerpo gris oscuro, banda roja ABB, manija negra) + paleta del OT400E04 ya calibrada con imagen oficial ABB 9PAA00000422688",
+      "lineColor": "#aeb8bc",
+      "base": "none",
+      "parts": [
+        [
+          0.245,
+          0.835,
+          0.10999999999999999,
+          0.165,
+          "#b9bec1"
+        ],
+        [
+          0.435,
+          0.835,
+          0.11000000000000004,
+          0.165,
+          "#b9bec1"
+        ],
+        [
+          0.625,
+          0.835,
+          0.10999999999999999,
+          0.165,
+          "#b9bec1"
+        ],
+        [
+          0.82,
+          0.835,
+          0.1100000000000001,
+          0.165,
+          "#b9bec1"
+        ],
+        [
+          0.245,
+          0,
+          0.10999999999999999,
+          0.165,
+          "#b9bec1"
+        ],
+        [
+          0.435,
+          0,
+          0.11000000000000004,
+          0.165,
+          "#b9bec1"
+        ],
+        [
+          0.625,
+          0,
+          0.10999999999999999,
+          0.165,
+          "#b9bec1"
+        ],
+        [
+          0.82,
+          0,
+          0.1100000000000001,
+          0.165,
+          "#b9bec1"
+        ],
+        [
+          0.05,
+          0.163,
+          0.9,
+          0.672,
+          "#41494d"
+        ],
+        [
+          0.09,
+          0.2,
+          0.82,
+          0.6,
+          "#4d565b"
+        ],
+        [
+          0.07,
+          0.72,
+          0.17,
+          0.05,
+          "#e00016"
+        ]
+      ],
+      "appearanceStatus": "colores de la foto de familia OT (gris oscuro + banda roja ABB), misma paleta que el OT400 calibrado con imagen ABB; posiciones de la banda tomadas de las aristas del CAD. Sin textos de corriente. Fondo transparente: terminales de estaño y cuerpo como partes, para que las orejas y el espacio entre terminales muestren la placa.",
+      "marking": {
+        "verifiedWith": "https://onninen-file-storage.imgix.net/pimimg/IMG_1752179.jpg (foto de familia OT de ABB publicada por Onninen: cuerpo gris oscuro, banda roja ABB, manija negra) + paleta del OT400E04 ya calibrada con imagen oficial ABB 9PAA00000422688",
+        "items": [
+          {
+            "text": "ABB",
+            "x": 14.1,
+            "y": 111.8,
+            "h": 4.5,
+            "w": 20,
+            "color": "#ffffff",
+            "bold": true
+          }
+        ]
+      }
     }
   },
   "markingHelp": "marking: lo impreso en el frente del equipo REAL, medido en una foto frontal de ABB (fuente en verifiedWith). Medidas en mm: x desde el borde izquierdo, y (centro del texto) desde abajo, h = alto de las mayúsculas. Campos que salen del plano: {serie} {serieS} {curva} {In} {kA} {Icn} {sufijo} {sufijoGuion} {frame} {trip} {setting}. Si falta un campo, ese texto no se dibuja (no se inventa). when: condición sobre poles. box: recuadro [x0,y0,x1,y1] en mm. w: ancho a ocupar (logo). Carcasas sin 'marking' no llevan texto hasta medir su foto."

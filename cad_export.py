@@ -175,7 +175,8 @@ def build_dxf(project, catalog, fronts, appearances):
                           (ox + x * pole_w, (y + h) * height), (ox + (x + w) * pole_w, (y + h) * height)]
                 block.add_solid(points, dxfattribs={"layer": "ABB_CAD_COLORES", "true_color": _color(tint)})
             if palette:
-                fill_rect(0, 0, 1, 1, palette["base"])
+                if palette.get("base") not in (None, "none"):  # "none": sólo se pintan las partes (silueta con orejas/terminales al aire)
+                    fill_rect(0, 0, 1, 1, palette["base"])
                 for x, y, w, h, tint in palette["parts"]:
                     fill_rect(x, y, w, h, tint)
                 if "logo" in palette:

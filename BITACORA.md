@@ -7,6 +7,7 @@
 - 7 CAD públicos de ABB Library bajados con el navegador de la PC de Thomas (con su permiso) → cad/abb/{f200,sn201,ot100_125,ot160_250}; registrados con SHA-256 en fuentes_descargadas.json.
 - Frentes proyectados con work/proyectar_cad.py (opción rot90ccw para OT160…250E: mecanismo a la izquierda). Carcasas, series y apariencias nuevas en el catálogo. OT100/125F en riel DIN (ficha ABB); OT160…250E en placa. S200P mapeado a S200 como HIPÓTESIS (verified=false).
 - BOM: sin panel ciego PC del kit KD si hay un equipo en placa (el eje de la manija pasaría por el panel). DXF: cajetín mostraba la etiqueta de un equipo en vez del gabinete.
+- Colores OT (pedido de Thomas): gris oscuro + banda roja ABB según foto de familia OT de ABB y la paleta del OT400; OT160…250E con fondo transparente y terminales de estaño (base "none", soportado en editor y DXF).
 - Ojo: S 293 (S290) sin CAD en ABB (discontinuado); OT63F3/OT80F4 y cajas grandes del GENERAL siguen sin carcasa. Tests 118 OK; e2e 114/114.
 
 ## 2026-11-18 02:15 · Claude · Prueba como usuario final (ronda 1) + regla permanente
