@@ -731,6 +731,41 @@
       "base": "none",
       "parts": [
         [
+          0.0,
+          0.08,
+          0.161,
+          0.18,
+          "#8a949c"
+        ],
+        [
+          0.0,
+          0.74,
+          0.162,
+          0.18000000000000005,
+          "#8a949c"
+        ],
+        [
+          0.884,
+          0.082,
+          0.11599999999999999,
+          0.178,
+          "#8a949c"
+        ],
+        [
+          0.885,
+          0.74,
+          0.11499999999999999,
+          0.17700000000000005,
+          "#8a949c"
+        ],
+        [
+          0.915,
+          0.433,
+          0.03699999999999992,
+          0.13399999999999995,
+          "#8a949c"
+        ],
+        [
           0.332,
           0.835,
           0.122,
@@ -794,7 +829,7 @@
           "#e00016"
         ]
       ],
-      "appearanceStatus": "colores de la foto de familia OT (gris oscuro + banda roja ABB), misma paleta que el OT400 calibrado con imagen ABB; posiciones de la banda tomadas de las aristas del CAD. Sin textos de corriente. Fondo transparente: terminales de estaño y cuerpo como partes, para que las orejas y el espacio entre terminales muestren la placa.",
+      "appearanceStatus": "colores de la foto de familia OT (gris oscuro + banda roja ABB), misma paleta que el OT400 calibrado con imagen ABB; posiciones de la banda tomadas de las aristas del CAD. Sin textos de corriente. Fondo transparente: terminales de estaño y cuerpo como partes, para que las orejas y el espacio entre terminales muestren la placa. · 2026-11-19: orejas de fijación y traba lateral pintadas (antes quedaban como líneas sueltas)",
       "marking": {
         "verifiedWith": "https://onninen-file-storage.imgix.net/pimimg/IMG_1752179.jpg (foto de familia OT de ABB publicada por Onninen: cuerpo gris oscuro, banda roja ABB, manija negra) + paleta del OT400E04 ya calibrada con imagen oficial ABB 9PAA00000422688",
         "items": [
@@ -815,6 +850,55 @@
       "lineColor": "#aeb8bc",
       "base": "none",
       "parts": [
+        [
+          0.0,
+          0.08,
+          0.075,
+          0.09699999999999999,
+          "#8a949c"
+        ],
+        [
+          0.0,
+          0.823,
+          0.075,
+          0.09700000000000009,
+          "#8a949c"
+        ],
+        [
+          0.941,
+          0.08,
+          0.04200000000000004,
+          0.23099999999999998,
+          "#8a949c"
+        ],
+        [
+          0.941,
+          0.689,
+          0.04200000000000004,
+          0.2310000000000001,
+          "#8a949c"
+        ],
+        [
+          0.95,
+          0.435,
+          0.050000000000000044,
+          0.12999999999999995,
+          "#8a949c"
+        ],
+        [
+          0.0,
+          0.689,
+          0.05,
+          0.05400000000000005,
+          "#8a949c"
+        ],
+        [
+          0.0,
+          0.257,
+          0.05,
+          0.05399999999999999,
+          "#8a949c"
+        ],
         [
           0.245,
           0.835,
@@ -893,7 +977,7 @@
           "#e00016"
         ]
       ],
-      "appearanceStatus": "colores de la foto de familia OT (gris oscuro + banda roja ABB), misma paleta que el OT400 calibrado con imagen ABB; posiciones de la banda tomadas de las aristas del CAD. Sin textos de corriente. Fondo transparente: terminales de estaño y cuerpo como partes, para que las orejas y el espacio entre terminales muestren la placa.",
+      "appearanceStatus": "colores de la foto de familia OT (gris oscuro + banda roja ABB), misma paleta que el OT400 calibrado con imagen ABB; posiciones de la banda tomadas de las aristas del CAD. Sin textos de corriente. Fondo transparente: terminales de estaño y cuerpo como partes, para que las orejas y el espacio entre terminales muestren la placa. · 2026-11-19: orejas de fijación y traba lateral pintadas (antes quedaban como líneas sueltas)",
       "marking": {
         "verifiedWith": "https://onninen-file-storage.imgix.net/pimimg/IMG_1752179.jpg (foto de familia OT de ABB publicada por Onninen: cuerpo gris oscuro, banda roja ABB, manija negra) + paleta del OT400E04 ya calibrada con imagen oficial ABB 9PAA00000422688",
         "items": [

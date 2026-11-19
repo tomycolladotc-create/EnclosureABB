@@ -251,3 +251,24 @@ class TestigosDeFase(unittest.TestCase):
         texts = [e.dxf.text for e in doc.modelspace().query('TEXT[layer=="ABB_ETIQUETAS"]')]
         for phase in "RST":
             self.assertIn(phase, texts)
+
+
+class PinturaCompleta(unittest.TestCase):
+    """Lección 20 (2026-11-19): en el E2.2 el cuerpo del 4.º polo, los pies y las borneras quedaban como líneas grises sin pintar
+    y la revisión no lo vio. Toda línea del frente CAD tiene que caer sobre una zona pintada (fondo o pieza)."""
+
+    def test_todo_frente_cad_tiene_pintura(self):
+        looks, fronts = L("apariencias_abb.json")["items"], L("frentes_cad.json")["items"]
+        self.assertEqual([k for k in fronts if k not in looks], [])
+
+    def test_todas_las_lineas_del_cad_quedan_sobre_una_zona_pintada(self):
+        looks = L("apariencias_abb.json")["items"]
+        fronts = L("frentes_cad.json")["items"]
+        for shell, look in looks.items():
+            if shell not in fronts or look.get("base") not in (None, "none", ""):
+                continue  # con fondo pintado, todo el rectángulo del equipo ya tiene color
+            parts = [p[:4] for p in look.get("parts", [])]
+            pts = [p for path in fronts[shell]["paths"] for p in path]
+            fuera = [p for p in pts if not any(a - 0.01 <= p[0] <= a + w + 0.01 and b - 0.01 <= p[1] <= b + h + 0.01 for a, b, w, h in parts)]
+            with self.subTest(shell=shell):
+                self.assertLess(len(fuera) / len(pts), 0.03, f"{len(fuera)} de {len(pts)} puntos del CAD sin pintar, p. ej. {fuera[:3]}")

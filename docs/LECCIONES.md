@@ -28,6 +28,7 @@
 | 16 | E2.2: el relleno de color corrido y el resto del interruptor (cuerpo del 4.º polo, pies de fijación, borneras de auxiliares) quedaba como líneas grises sueltas | Paleta estimada a ojo sobre el dibujo | Rellenos medidos pieza por pieza sobre el STEP (`/tmp/cadx/solids.py`: cajas de cada sólido) | **regla: la paleta se mide sobre las piezas del CAD, no a ojo** · revisión visual |
 | 18 | TSMAQ1 y TS AUX 3 en 800×800 con una sola fila de riel (contenido al 15 % del alto) | Si el bloque de distribución no entraba en el riel, se agrandaba el gabinete | Se compara agrandar contra sumar una fila de riel libre y se elige el gabinete más chico | `board_oversized` · `test_bloque_que_no_entra_suma_una_fila_en_vez_de_agrandar` |
 | 19 | AA8010 (barra de **neutro o tierra** según el catálogo ABB) propuesta para repartir fases en TS1–TS5 y TA-1 | El catálogo de barras no distinguía el uso | Campo `uso` en `distributionBars`; sólo `fase` reparte fases; si no hay, «a dimensionar» | `neutral_bar_as_phase` · `test_barra_de_neutro_no_reparte_fases` |
+| 20 | E2.2 (y orejas de los OT160–250 E): partes del interruptor quedaban como líneas grises sueltas fuera de la pintura; **la revisión no lo detectó** | La pintura se ubicó a ojo y la revisión visual se hizo en miniaturas, donde no se distingue | Pintura medida sobre las piezas del CAD; test que exige que toda línea del frente caiga sobre una zona pintada | `test_todas_las_lineas_del_cad_quedan_sobre_una_zona_pintada` · **regla: la revisión visual se hace a tamaño real, equipo por equipo, no en miniatura** |
 | 17 | El catálogo de bloques tiene Schneider/Legrand/Steck como referencia; un empate de corriente podía elegir otra marca | Orden de la lista | Filtro `_abb()` al proponer | `test_bloques_de_otras_marcas_nunca_se_proponen` |
 
 ### Lo que la auditoría todavía NO ve (revisar a ojo)
@@ -38,5 +39,5 @@
 ## Cómo revisar un lote de tableros
 1. Importar cada PDF por la interfaz (armado automático).
 2. Correr `auditoria.audit(proyecto, catálogo, board_title=<rótulo>)` sobre cada proyecto: **0 errores y 0 avisos** (el aviso `board_oversized` sólo se acepta si el gabinete grande lo eligió el usuario).
-3. Mirar cada PNG: lo de «todavía no ve».
+3. Mirar cada PNG **a tamaño real** (recortes por zona, no la miniatura del tablero entero): lo de «todavía no ve».
 4. Revisar la lista: ningún renglón vacío, lo que falta va «FALTA CÓDIGO» con su motivo.
