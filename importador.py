@@ -132,6 +132,9 @@ def detect_devices(text, catalog):
         snippet = " ".join(block[:rules["evidenceChars"]].split())
         model = parse_model(snippet, rules)
         poles = _first_group(rules["polesPatterns"], block)
+        if poles is None:  # sin tabla (ej. interruptor general): fases del cable de salida, línea "RSTN"/"RST"/"RN"
+            phases = next((ln.strip() for ln in block.splitlines()[:8] if re.fullmatch(r"[RST]{1,3}N?", ln.strip())), None)
+            poles = len(phases) if phases else None
         serie, shell, reason = find_series(model, poles, catalog)
         hint = next((h for h in hints if re.search(h["modelRegex"], model, re.IGNORECASE)), None)
         min_poles = catalog.get("scope", {}).get("minPoles")

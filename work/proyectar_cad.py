@@ -43,6 +43,15 @@ SOURCES = [
     # OT160...250E: en el CAD el mecanismo queda arriba; montado va a la IZQUIERDA (tipo 03/04 = mecanismo en el extremo izquierdo), se rota 90°.
     ("abb.ot160_250e03.3p.front", "cad/abb/ot160_250/OT200-250E03.stp", "step", (0, 1, 0), (-1, 0, 0), "rot90ccw"),
     ("abb.ot160_250e04.4p.front", "cad/abb/ot160_250/OT200-250E04.stp", "step", (0, 0, 1), (1, 0, 0), "rot90ccw"),
+    # 2026-11-19: CAD del TGBT / tableros del plano GENERAL (ver datos/fuentes_descargadas.json).
+    ("abb.emax.e22.4p.fixed.front", "cad/abb/e2_2/1SDH001252R0123_1PA_001_01_E2.2_IV_F.stp", "step", (0, 1, 0), (-1, 0, 0)),
+    ("abb.tmax.xt3.4p.fixed.front", "cad/abb/xt3/1SDH001295R0483_XT3 4p FIXED F.stp", "step", (0, 1, 0), (-1, 0, 0)),
+    ("abb.tmax.xt1.3p.fixed.front", "cad/abb/xt1_3p/1SDH001295R0008_XT1 3p FIXED F.stp", "step", (0, 1, 0), (-1, 0, 0)),
+    ("abb.tmax.t4.4p.fixed.front", "cad/abb/t4/x/T4 4 poles Fixed.igs", "iges", (0, 1, 0), (-1, 0, 0)),
+    ("abb.tmax.t2.3p.fixed.front", "cad/abb/t2/x/T2_fixed_3poles_F.igs", "iges", (0, 1, 0), (-1, 0, 0)),
+    ("abb.s803.3p.front", "cad/abb/s800/x/2D S800 3pole drawing.DXF", "dxf", None, None),
+    ("abb.ot63_80f3.3p.front", "cad/abb/ot63_80/OT63-80F3.igs", "iges", (0, 1, 0), (-1, 0, 0), "rot90ccw"),
+    ("abb.ot63_80f4.4p.front", "cad/abb/ot63_80/ot63-80f4n2.stp", "step", (0, 1, 0), (-1, 0, 0), "rot90ccw"),
 ]
 
 

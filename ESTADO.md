@@ -1,6 +1,6 @@
 # ESTADO — Topográficos de tableros ABB
 > Foto actual del proyecto. Se reescribe (no se acumula). El historial va en BITACORA.md.
-> Actualizado: 2026-11-18 · Claude
+> Actualizado: 2026-11-19 · Claude
 
 ## Objetivo
 PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tablero con dispositivos y envolvente ABB reales → editar en interfaz → exportar DXF (AutoCAD, 1:1 mm, bloques y capas), PNG, SVG, PDF.
@@ -36,7 +36,7 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 - **Gabinetes en `datos/catalogo_abb.json -> enclosures`** (31): 8 de estructura System pro E power 185 (catálogo ABB 1STC803009D0103, `structure` con banda 50 mm, hojas de puerta, lista de partes con página) y 23 SR2 monobloc con puerta ciega (catálogo ABB 1STC804013D0201 de 2011; externo = nominal + 3 mm; placa interna = (ancho-40)×(alto-40); `railOptions` GD4006/6006/8006). Cada gabinete trae `functionalOffset` y `railOptions`. Colores RAL 7035 (gabinete) y RAL 7012 (zócalo, sólo System pro E); hex aproximados.
 - Los PDF de catálogo están en el repo: `docs/catalogos_abb/` (más el texto por página en `texto/`), registrados en `datos/fuentes_descargadas.json`. **Regla del usuario: todo lo que se descargue o actualice se sube al repo y se anota en ese registro.**
 - Modelo de datos: **carcasa** (geometría CAD, `deviceShells`) ≠ **serie** (qué modelos la usan, `series`) ≠ **marcado** (lo impreso en el frente: `apariencias_abb.json -> marking`). Marcado frontal cargado para S200, S800, XT1, XT2 y logo visible de OT400; carcasas por polo (`poleModule`, S200): 2P-4P = polos repetidos.
-- **Cubre 167 de 206 equipos** de los 6 unifilares. Faltan: S293, SN201L, XT3S, S251 (asignada por hipótesis a S201 NA), OT varios, T2S/T4S, E2.2N, S803S (ver `docs/cobertura_unifilares.md`).
+- **Plano GENERAL (24 tableros)**: todos los equipos de 2+ polos tienen carcasa CAD salvo S 293-C 80 (S290, sin CAD: va a la lista con aviso). Carcasas 2026-11-19: E2.2, XT3, XT1 3P, T4, T2, S803, OT63/80F.
 - Series sin confirmar con fuente (`verified: false`): XT1 y XT2 para todas las versiones de poder de corte.
 - Pruebas: 67, `python -m unittest discover tests`. Correrlas antes de cada push.
 

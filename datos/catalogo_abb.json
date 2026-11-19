@@ -3716,6 +3716,125 @@
       "appearance": "datos/apariencias_abb.json",
       "dimensionsNote": "Montaje en base (no riel); contorno frontal del CAD ABB con mecanismo y orejas. Manija y eje aparte.",
       "depthMm": 82.5
+    },
+    {
+      "id": "abb.emax.e22.4p.fixed.front",
+      "label": "Emax 2 E2.2 · 4P fijo",
+      "width": 422,
+      "height": 371,
+      "dimensionsNote": "Contorno frontal del CAD ABB 'E2.2 IV F' incluidas las escuadras laterales de fijación (422 mm); la caja sola es más angosta. Se monta sobre travesaños en gabinete de piso (System pro E power); el kit/travesaño de montaje no tiene código cargado (null): definir con ABB.",
+      "depthMm": 269.1,
+      "cadSource": "https://search.abb.com/library/Download.aspx?DocumentID=1SDH001252R0123&LanguageCode=en&DocumentPartId=&Action=Launch",
+      "cadStatus": "Vista 2D frontal proyectada (HLR) del CAD 3D oficial de ABB Library; inscripciones nominales pendientes de validar",
+      "cadFiles": [
+        "cad/abb/e2_2/1SDH001252R0123_1PA_001_01_E2.2_IV_F.stp"
+      ],
+      "frontGeometry": "datos/frentes_cad.json",
+      "appearance": "datos/apariencias_abb.json"
+    },
+    {
+      "id": "abb.tmax.xt3.4p.fixed.front",
+      "label": "Tmax XT3 · 4P fijo",
+      "width": 140,
+      "height": 150,
+      "depthMm": 97.5,
+      "dimensionsNote": "140 × 150 mm medidos en el CAD ABB 'XT3 4p FIXED F'. Kit de montaje sin código cargado (null).",
+      "cadSource": "https://search.abb.com/library/Download.aspx?DocumentID=1SDH001295R0483&LanguageCode=en&DocumentPartId=&Action=Launch",
+      "cadStatus": "Vista 2D frontal proyectada (HLR) del CAD 3D oficial de ABB Library; inscripciones nominales pendientes de validar",
+      "cadFiles": [
+        "cad/abb/xt3/1SDH001295R0483_XT3 4p FIXED F.stp"
+      ],
+      "frontGeometry": "datos/frentes_cad.json",
+      "appearance": "datos/apariencias_abb.json"
+    },
+    {
+      "id": "abb.tmax.xt1.3p.fixed.front",
+      "label": "Tmax XT1 · 3P fijo",
+      "width": 76.2,
+      "height": 130,
+      "depthMm": 96,
+      "dimensionsNote": "76,2 × 130 mm medidos en el CAD ABB 'XT1 3p FIXED F'. Kit de montaje 3P sin código cargado (null).",
+      "cadSource": "https://search.abb.com/library/Download.aspx?DocumentID=1SDH001295R0008&LanguageCode=en&DocumentPartId=&Action=Launch",
+      "cadStatus": "Vista 2D frontal proyectada (HLR) del CAD 3D oficial de ABB Library; inscripciones nominales pendientes de validar",
+      "cadFiles": [
+        "cad/abb/xt1_3p/1SDH001295R0008_XT1 3p FIXED F.stp"
+      ],
+      "frontGeometry": "datos/frentes_cad.json",
+      "appearance": "datos/apariencias_abb.json"
+    },
+    {
+      "id": "abb.tmax.t4.4p.fixed.front",
+      "label": "Tmax T4 · 4P fijo",
+      "width": 140,
+      "height": 205,
+      "depthMm": 139.1,
+      "dimensionsNote": "140 × 205 mm medidos en el IGS ABB 'T4 4 poles Fixed'. Tmax T es la generación anterior a Tmax XT: confirmar disponibilidad. Kit sin código (null).",
+      "cadSource": "https://library.abb.com (T4 4p F, archivo 0000018707.zip)",
+      "cadStatus": "Vista 2D frontal proyectada (HLR) del CAD 3D oficial de ABB Library; inscripciones nominales pendientes de validar",
+      "cadFiles": [
+        "cad/abb/t4/x/T4 4 poles Fixed.igs"
+      ],
+      "frontGeometry": "datos/frentes_cad.json",
+      "appearance": "datos/apariencias_abb.json"
+    },
+    {
+      "id": "abb.tmax.t2.3p.fixed.front",
+      "label": "Tmax T2 · 3P fijo",
+      "width": 90,
+      "height": 130,
+      "dimensionsNote": "90 × 130 mm medidos en el IGS ABB 'T2_fixed_3poles_F' (el IGS trae además cables de prueba que no forman parte del frente). Tmax T es la generación anterior a Tmax XT: confirmar disponibilidad. Kit sin código (null).",
+      "cadSource": "https://library.abb.com (T2 3p F, archivo 0000018689.zip)",
+      "cadStatus": "Vista 2D frontal proyectada (HLR) del CAD 3D oficial de ABB Library; inscripciones nominales pendientes de validar",
+      "cadFiles": [
+        "cad/abb/t2/x/T2_fixed_3poles_F.igs"
+      ],
+      "frontGeometry": "datos/frentes_cad.json",
+      "appearance": "datos/apariencias_abb.json"
+    },
+    {
+      "id": "abb.s803.3p.front",
+      "label": "S803 · 3P",
+      "width": 79.5,
+      "height": 95,
+      "mounting": "din",
+      "dimensionsNote": "Paso de polo S800 = 26,5 mm (S804N = 106 mm ya cargado) → 3P = 79,5 × 95 mm.",
+      "cadSource": "https://search.abb.com/library/Download.aspx?DocumentID=9AKK106930A3272&LanguageCode=en&DocumentPartId=&Action=Launch",
+      "cadStatus": "Vista 2D frontal del DXF ABB 'S800 3pole drawing'; inscripciones nominales pendientes de validar",
+      "cadFiles": [
+        "cad/abb/s800/x/2D S800 3pole drawing.DXF"
+      ],
+      "frontGeometry": "datos/frentes_cad.json",
+      "appearance": "datos/apariencias_abb.json"
+    },
+    {
+      "id": "abb.ot63_80f3.3p.front",
+      "label": "OT63…80F3 · 3P (riel DIN)",
+      "width": 52.5,
+      "height": 91,
+      "mounting": "din",
+      "dimensionsNote": "Frente del IGS ABB rotado 90° (bornes arriba/abajo): 52,5 mm = 3 módulos sobre el riel; 91 mm de alto incluye las orejas de fijación por tornillo.",
+      "cadSource": "https://library.abb.com (OT63-80F3.igs)",
+      "cadStatus": "Vista 2D frontal proyectada (HLR) del CAD 3D oficial de ABB Library; inscripciones nominales pendientes de validar; manija y eje aparte",
+      "cadFiles": [
+        "cad/abb/ot63_80/OT63-80F3.igs"
+      ],
+      "frontGeometry": "datos/frentes_cad.json",
+      "appearance": "datos/apariencias_abb.json"
+    },
+    {
+      "id": "abb.ot63_80f4.4p.front",
+      "label": "OT63…80F4 · 4P (riel DIN)",
+      "width": 70,
+      "height": 91.4,
+      "mounting": "din",
+      "dimensionsNote": "Frente del STEP ABB rotado 90° (bornes arriba/abajo): 70 mm = 4 módulos sobre el riel; 91,4 mm de alto incluye las orejas de fijación por tornillo.",
+      "cadSource": "https://library.abb.com (ot63-80f4n2.stp)",
+      "cadStatus": "Vista 2D frontal proyectada (HLR) del CAD 3D oficial de ABB Library; inscripciones nominales pendientes de validar; manija y eje aparte",
+      "cadFiles": [
+        "cad/abb/ot63_80/ot63-80f4n2.stp"
+      ],
+      "frontGeometry": "datos/frentes_cad.json",
+      "appearance": "datos/apariencias_abb.json"
     }
   ],
   "importRules": {
@@ -3728,7 +3847,8 @@
       "[234]x\\d+(?:,\\d+)?(?:\\+\\d+x\\d+(?:,\\d+)?)?\\+PE",
       "\\s-WC\\d+",
       "\\sSECCIONADOR",
-      "\\sDIFERENCIAL"
+      "\\sDIFERENCIAL",
+      "\\sINTERRUPTOR"
     ],
     "polesPatterns": [
       "\\b(\\d)x\\d+(?:,\\d+)?\\s*-\\s*\\d+(?:,\\d+)?\\s*kA",
@@ -3747,6 +3867,11 @@
       "modelRegex": "^S\\s?251\\b",
       "mounting": "din",
       "note": "S251 Na: modelo ABB histórico, sin CAD localizado"
+    },
+    {
+      "modelRegex": "^S\\s?29[1-4]\\b",
+      "mounting": "din",
+      "note": "S290 (S 293-C 80): no se encontró CAD ABB; no se dibuja (medidas reales no cargadas) pero queda en la lista de materiales"
     }
   ],
   "series": [
@@ -3916,6 +4041,86 @@
       "shell": "abb.ot160_250e04.4p.front",
       "verified": false,
       "basis": "CAD ABB 'OT200...250E04'. Para OT160EV04 se asume el mismo envolvente por analogía con el 3P (confirmar con la ficha)."
+    },
+    {
+      "id": "emax-e22-4p",
+      "modelRegex": "^E2\\.2[BNSH]\\b",
+      "poles": [
+        4
+      ],
+      "shell": "abb.emax.e22.4p.fixed.front",
+      "verified": true,
+      "basis": "CAD ABB 'E2.2 IV F' (1SDH001252R0123): interruptor Emax 2 E2.2 4P fijo; mismo marco para B/N/S/H."
+    },
+    {
+      "id": "tmax-xt3-4p",
+      "modelRegex": "^XT3[NS]\\b",
+      "poles": [
+        4
+      ],
+      "shell": "abb.tmax.xt3.4p.fixed.front",
+      "verified": true,
+      "basis": "CAD ABB 'XT3 4p FIXED F' (1SDH001295R0483); XT3 N y S comparten marco."
+    },
+    {
+      "id": "tmax-xt1-3p",
+      "modelRegex": "^XT1[BCNSHL]\\b",
+      "poles": [
+        3
+      ],
+      "shell": "abb.tmax.xt1.3p.fixed.front",
+      "verified": false,
+      "basis": "CAD ABB 'XT1 3p FIXED F' (1SDH001295R0008). Se asume el mismo marco para todas las versiones de poder de corte."
+    },
+    {
+      "id": "tmax-t4-4p",
+      "modelRegex": "^T4[NSHLV]\\b",
+      "poles": [
+        4
+      ],
+      "shell": "abb.tmax.t4.4p.fixed.front",
+      "verified": true,
+      "basis": "IGS ABB 'T4 4 poles Fixed'."
+    },
+    {
+      "id": "tmax-t2-3p",
+      "modelRegex": "^T2[NSHL]\\b",
+      "poles": [
+        3
+      ],
+      "shell": "abb.tmax.t2.3p.fixed.front",
+      "verified": true,
+      "basis": "IGS ABB 'T2_fixed_3poles_F'."
+    },
+    {
+      "id": "s800-3p",
+      "modelRegex": "^S\\s?80[1-4][BCNSUK]?\\b",
+      "poles": [
+        3
+      ],
+      "shell": "abb.s803.3p.front",
+      "verified": true,
+      "basis": "DXF ABB 'S800 3pole drawing' (9AKK106930A3272) para las variantes C/N/S/U."
+    },
+    {
+      "id": "ot63-80-f3",
+      "modelRegex": "^OT(63|80)F3",
+      "poles": [
+        3
+      ],
+      "shell": "abb.ot63_80f3.3p.front",
+      "verified": true,
+      "basis": "CAD ABB 'OT63-80F3' para OT63F3 y OT80F3."
+    },
+    {
+      "id": "ot63-80-f4",
+      "modelRegex": "^OT(63|80)F4",
+      "poles": [
+        4
+      ],
+      "shell": "abb.ot63_80f4.4p.front",
+      "verified": true,
+      "basis": "CAD ABB 'OT63-80F4N2' para OT63F4 y OT80F4."
     }
   ],
   "scope": {

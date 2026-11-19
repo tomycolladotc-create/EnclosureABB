@@ -117,6 +117,116 @@
    "bytes": 1755790,
    "sha256": "de24dd57c09873e0bcfebfa536dfe3df6ae8c4a6d61b45651d7c684c782fbd59",
    "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+  },
+  {
+   "archivo": "cad/abb/e2_2/1SDH001252R0123_1PA_001_01_E2.2_IV_F.stp",
+   "documento": "E2.2 IV F, 3D STEP",
+   "origen": "https://search.abb.com/library/Download.aspx?DocumentID=1SDH001252R0123&LanguageCode=en&DocumentPartId=&Action=Launch",
+   "buscado_en": "https://library.abb.com (búsqueda pública)",
+   "bajado": "2026-11-19",
+   "bytes": 1325441,
+   "sha256": "2d5c58c235fe746470564271e0c786b8bcc0f5153b13bf7ff4a48800dddc2aef",
+   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+  },
+  {
+   "archivo": "cad/abb/xt3/1SDH001295R0483_XT3 4p FIXED F.stp",
+   "documento": "XT3 4p FIXED F, 3D STEP",
+   "origen": "https://search.abb.com/library/Download.aspx?DocumentID=1SDH001295R0483&LanguageCode=en&DocumentPartId=&Action=Launch",
+   "buscado_en": "https://library.abb.com (búsqueda pública)",
+   "bajado": "2026-11-19",
+   "bytes": 23702284,
+   "sha256": "9d952cc13ec988b2e02a9fab787b8058d0151a511914591991a9f04dd31d2f44",
+   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+  },
+  {
+   "archivo": "cad/abb/xt1_3p/1SDH001295R0008_XT1 3p FIXED F.stp",
+   "documento": "XT1 3p FIXED F, 3D STEP",
+   "origen": "https://search.abb.com/library/Download.aspx?DocumentID=1SDH001295R0008&LanguageCode=en&DocumentPartId=&Action=Launch",
+   "buscado_en": "https://library.abb.com (búsqueda pública)",
+   "bajado": "2026-11-19",
+   "bytes": 18982346,
+   "sha256": "ae1820ece7f855032ecf3d6c9a773da75fce4343a1de982b160e67cec18cbb39",
+   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+  },
+  {
+   "archivo": "cad/abb/t4/0000018707.zip",
+   "documento": "T4 4 poles Fixed (IGS dentro del zip)",
+   "origen": "https://library.abb.com (resultado 'T4 4p F'; descarga 0000018707.zip)",
+   "buscado_en": "https://library.abb.com (búsqueda pública)",
+   "bajado": "2026-11-19",
+   "bytes": 95075,
+   "sha256": "e7cbd90d733f458a0e6e18b91ec9bcbbfbc850c00911fe6c0dc3bd59a8c21544",
+   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+  },
+  {
+   "archivo": "cad/abb/t4/x/T4 4 poles Fixed.igs",
+   "documento": "T4 4 poles Fixed, IGES (extraído del zip)",
+   "origen": "cad/abb/t4/0000018707.zip",
+   "buscado_en": "https://library.abb.com (búsqueda pública)",
+   "bajado": "2026-11-19",
+   "bytes": 902340,
+   "sha256": "8b04a924a0634b6d6d3015778cc59ec69757c6cdaa24bf3fce11000a6581d075",
+   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+  },
+  {
+   "archivo": "cad/abb/t2/0000018689.zip",
+   "documento": "T2 fixed 3 poles F (IGS dentro del zip)",
+   "origen": "https://library.abb.com (resultado 'T2 3p F'; descarga 0000018689.zip)",
+   "buscado_en": "https://library.abb.com (búsqueda pública)",
+   "bajado": "2026-11-19",
+   "bytes": 195737,
+   "sha256": "33f22aba7e34910e6a159403f24c4e731439451bf90e1ac9680996917ea0fbce",
+   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+  },
+  {
+   "archivo": "cad/abb/t2/x/T2_fixed_3poles_F.igs",
+   "documento": "T2 fixed 3 poles F, IGES (extraído del zip)",
+   "origen": "cad/abb/t2/0000018689.zip",
+   "buscado_en": "https://library.abb.com (búsqueda pública)",
+   "bajado": "2026-11-19",
+   "bytes": 1576908,
+   "sha256": "33c9b60fd6fc7b4bbb6a9c332e4ec49d108406508380f83ea018983bfb4bab61",
+   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+  },
+  {
+   "archivo": "cad/abb/s800/2D DXF S800 1-4 poles.zip",
+   "documento": "2D DXF S800 1-4 poles",
+   "origen": "https://search.abb.com/library/Download.aspx?DocumentID=9AKK106930A3272&LanguageCode=en&DocumentPartId=&Action=Launch",
+   "buscado_en": "https://library.abb.com (búsqueda pública)",
+   "bajado": "2026-11-19",
+   "bytes": 257096,
+   "sha256": "7bdcc7b9bd8d0eb0420f073dbe04ff8ed7d8acb1a75ea05c55118cfe24ba35cf",
+   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+  },
+  {
+   "archivo": "cad/abb/s800/x/2D S800 3pole drawing.DXF",
+   "documento": "S800 3 polos, DXF 2D (extraído del zip)",
+   "origen": "cad/abb/s800/2D DXF S800 1-4 poles.zip",
+   "buscado_en": "https://library.abb.com (búsqueda pública)",
+   "bajado": "2026-11-19",
+   "bytes": 646092,
+   "sha256": "5f43e79864619363c3a882bcd9b8fc08f99b884df0f9c4e53a9ed0901f0fc27e",
+   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+  },
+  {
+   "archivo": "cad/abb/ot63_80/OT63-80F3.igs",
+   "documento": "OT63-80F3, IGES",
+   "origen": "https://library.abb.com (búsqueda pública 'OT63F3')",
+   "buscado_en": "https://library.abb.com (búsqueda pública)",
+   "bajado": "2026-11-19",
+   "bytes": 1198266,
+   "sha256": "f90a2439decc25243a99f7cc0938df2b9df206e493be3780e0d3abd7991986cd",
+   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+  },
+  {
+   "archivo": "cad/abb/ot63_80/ot63-80f4n2.stp",
+   "documento": "OT63-80F4N2, STEP",
+   "origen": "https://library.abb.com (búsqueda pública 'OT63F4')",
+   "buscado_en": "https://library.abb.com (búsqueda pública)",
+   "bajado": "2026-11-19",
+   "bytes": 7641141,
+   "sha256": "bc18594195d3ea06cffc166c692f881e34abbca303529fcf12e7509b5838e51e",
+   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
   }
  ],
  "consultadas": [

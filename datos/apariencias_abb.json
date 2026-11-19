@@ -908,6 +908,287 @@
           }
         ]
       }
+    },
+    "abb.tmax.xt3.4p.fixed.front": {
+      "source": "paleta Tmax XT1 calibrada (docs/imagenes_abb/XT1C_1SDA067405R1_frontal.png)",
+      "lineColor": "#aeb8bf",
+      "base": "#30373d",
+      "parts": [
+        [
+          0,
+          0.84,
+          1,
+          0.16,
+          "#242b31"
+        ],
+        [
+          0,
+          0,
+          1,
+          0.14,
+          "#242b31"
+        ],
+        [
+          0.04,
+          0.25,
+          0.92,
+          0.52,
+          "#4a5259"
+        ]
+      ],
+      "appearanceStatus": "paleta genérica de la familia (colores de imágenes ABB ya calibradas); sin calibrar posiciones con foto frontal de esta referencia"
+    },
+    "abb.tmax.xt1.3p.fixed.front": {
+      "source": "paleta Tmax XT1 calibrada (docs/imagenes_abb/XT1C_1SDA067405R1_frontal.png)",
+      "lineColor": "#aeb8bf",
+      "base": "#30373d",
+      "parts": [
+        [
+          0,
+          0.84,
+          1,
+          0.16,
+          "#242b31"
+        ],
+        [
+          0,
+          0,
+          1,
+          0.14,
+          "#242b31"
+        ],
+        [
+          0.04,
+          0.25,
+          0.92,
+          0.52,
+          "#4a5259"
+        ]
+      ],
+      "appearanceStatus": "paleta genérica de la familia (colores de imágenes ABB ya calibradas); sin calibrar posiciones con foto frontal de esta referencia"
+    },
+    "abb.tmax.t4.4p.fixed.front": {
+      "source": "paleta Tmax XT1 calibrada (docs/imagenes_abb/XT1C_1SDA067405R1_frontal.png)",
+      "lineColor": "#aeb8bf",
+      "base": "#30373d",
+      "parts": [
+        [
+          0,
+          0.88,
+          1,
+          0.12,
+          "#242b31"
+        ],
+        [
+          0,
+          0,
+          1,
+          0.12,
+          "#242b31"
+        ],
+        [
+          0.25,
+          0.28,
+          0.73,
+          0.5,
+          "#4a5259"
+        ]
+      ],
+      "appearanceStatus": "paleta genérica de la familia (colores de imágenes ABB ya calibradas); sin calibrar posiciones con foto frontal de esta referencia"
+    },
+    "abb.tmax.t2.3p.fixed.front": {
+      "source": "paleta Tmax XT1 calibrada (docs/imagenes_abb/XT1C_1SDA067405R1_frontal.png)",
+      "lineColor": "#aeb8bf",
+      "base": "#30373d",
+      "parts": [
+        [
+          0,
+          0.88,
+          1,
+          0.12,
+          "#242b31"
+        ],
+        [
+          0,
+          0,
+          1,
+          0.12,
+          "#242b31"
+        ],
+        [
+          0.07,
+          0.3,
+          0.86,
+          0.36,
+          "#4a5259"
+        ]
+      ],
+      "appearanceStatus": "paleta genérica de la familia (colores de imágenes ABB ya calibradas); sin calibrar posiciones con foto frontal de esta referencia"
+    },
+    "abb.emax.e22.4p.fixed.front": {
+      "source": "paleta Tmax/Emax (gris oscuro ABB)",
+      "lineColor": "#aeb8bf",
+      "base": "none",
+      "parts": [
+        [
+          0.205,
+          0.03,
+          0.79,
+          0.62,
+          "#30373d"
+        ],
+        [
+          0.205,
+          0.65,
+          0.79,
+          0.12,
+          "#242b31"
+        ],
+        [
+          0.48,
+          0.06,
+          0.22,
+          0.6,
+          "#4a5259"
+        ]
+      ],
+      "appearanceStatus": "paleta genérica de la familia (colores de imágenes ABB ya calibradas); sin calibrar posiciones con foto frontal de esta referencia"
+    },
+    "abb.ot63_80f3.3p.front": {
+      "source": "paleta OT (foto de familia OT de ABB, ver abb.ot100_125f3.3p.front)",
+      "lineColor": "#aeb8bc",
+      "base": "#41494d",
+      "parts": [
+        [
+          0.15,
+          0.2,
+          0.7,
+          0.6,
+          "#4d565b"
+        ]
+      ],
+      "appearanceStatus": "paleta genérica de la familia (colores de imágenes ABB ya calibradas); sin calibrar posiciones con foto frontal de esta referencia"
+    },
+    "abb.ot63_80f4.4p.front": {
+      "source": "paleta OT (foto de familia OT de ABB, ver abb.ot100_125f3.3p.front)",
+      "lineColor": "#aeb8bc",
+      "base": "#41494d",
+      "parts": [
+        [
+          0.15,
+          0.2,
+          0.7,
+          0.6,
+          "#4d565b"
+        ]
+      ],
+      "appearanceStatus": "paleta genérica de la familia (colores de imágenes ABB ya calibradas); sin calibrar posiciones con foto frontal de esta referencia"
+    },
+    "abb.s803.3p.front": {
+      "source": "https://new.abb.com/products/2CCS894001R0404/s804n-c40",
+      "lineColor": "#536067",
+      "base": "#d3d8d8",
+      "parts": [
+        [
+          0,
+          0.78,
+          1,
+          0.22,
+          "#cbd0d0"
+        ],
+        [
+          0,
+          0,
+          1,
+          0.17,
+          "#cbd0d0"
+        ],
+        [
+          0.02,
+          0.22,
+          0.96,
+          0.55,
+          "#dce0df"
+        ],
+        [
+          0.04,
+          0.405,
+          0.92,
+          0.16,
+          "#282d31"
+        ],
+        [
+          0,
+          0.694,
+          1,
+          0.03,
+          "#e00016"
+        ],
+        [
+          0.002,
+          0.329,
+          0.124,
+          0.034,
+          "#008f76"
+        ],
+        [
+          0.335,
+          0.329,
+          0.124,
+          0.034,
+          "#008f76"
+        ],
+        [
+          0.668,
+          0.329,
+          0.124,
+          0.034,
+          "#008f76"
+        ]
+      ],
+      "marking": {
+        "verifiedWith": "Foto frontal ABB S801N-C40 (work/imagenes_ref/S804N.png de Codex). Calibrado con las aristas superior e inferior del CAD (92,4 y 4,5 mm); 24,7 px/mm.",
+        "items": [
+          {
+            "text": "ABB",
+            "x": 0.65,
+            "y": 67.4,
+            "h": 1.9,
+            "w": 3.6,
+            "color": "#ffffff",
+            "bold": true
+          },
+          {
+            "text": "{serie}",
+            "x": 0.8,
+            "y": 64.8,
+            "h": 1.82,
+            "color": "#1a1a1a"
+          },
+          {
+            "text": "{curva}{In}",
+            "x": 0.8,
+            "y": 62.8,
+            "h": 1.54,
+            "color": "#1a1a1a"
+          },
+          {
+            "text": "240/415V~{kA}kA",
+            "x": 0.8,
+            "y": 61.0,
+            "h": 1.46,
+            "color": "#1a1a1a"
+          },
+          {
+            "text": "In={In}A",
+            "x": 16.1,
+            "y": 29.9,
+            "h": 1.6,
+            "color": "#1a1a1a"
+          }
+        ]
+      },
+      "appearanceStatus": "paleta del S804N calibrado, indicadores reubicados a 3 polos"
     }
   },
   "markingHelp": "marking: lo impreso en el frente del equipo REAL, medido en una foto frontal de ABB (fuente en verifiedWith). Medidas en mm: x desde el borde izquierdo, y (centro del texto) desde abajo, h = alto de las mayúsculas. Campos que salen del plano: {serie} {serieS} {curva} {In} {kA} {Icn} {sufijo} {sufijoGuion} {frame} {trip} {setting}. Si falta un campo, ese texto no se dibuja (no se inventa). when: condición sobre poles. box: recuadro [x0,y0,x1,y1] en mm. w: ancho a ocupar (logo). Carcasas sin 'marking' no llevan texto hasta medir su foto."

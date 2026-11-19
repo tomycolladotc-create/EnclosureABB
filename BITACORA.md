@@ -3,6 +3,12 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-19 01:30 · Claude · Los 24 tableros del plano GENERAL armados y exportados
+- 8 CAD ABB nuevos (E2.2 IV F, XT3 4P, XT1 3P, T4 4P, T2 3P, DXF S800 3P, OT63-80F3/F4) bajados de ABB Library desde la PC de Thomas → cad/abb/{e2_2,xt3,xt1_3p,t4,t2,s800/x,ot63_80}; SHA-256 en fuentes_descargadas.json. Frentes proyectados, carcasas/series/apariencias (paleta genérica de familia) en el catálogo; OT63/80F rotados 90° (bornes arriba/abajo, en riel).
+- Los 24 tableros importados por la interfaz como usuario (armado automático) y exportados: DXF, PDF A3, PNG y lista CSV. Cruce automático equipo por equipo contra el texto de cada PDF: 0 faltantes, 0 cambios de modelo/polos, 0 carcasas de otra familia.
+- Corregido en la prueba: nombre del tablero "4 5 6" cuando el archivo termina en números (ahora "TS2-PORT 4-5-6") y `source` del proyecto heredaba el PDF del TS4 de plantilla.
+- Ojo: S 293-C 80 (TSB, TA-1, TA-2) sigue sin CAD: no se dibuja, va a la lista con aviso. Códigos de pedido de E2.2/XT3/T4/T2/XT1 3P/OT63-80 sin verificar (FALTA CÓDIGO). Tmax T2/T4 son generación anterior: confirmar disponibilidad.
+
 ## 2026-11-18 21:30 · Claude · Carcasas nuevas desde CAD ABB (OT, F200, SN201)
 - 7 CAD públicos de ABB Library bajados con el navegador de la PC de Thomas (con su permiso) → cad/abb/{f200,sn201,ot100_125,ot160_250}; registrados con SHA-256 en fuentes_descargadas.json.
 - Frentes proyectados con work/proyectar_cad.py (opción rot90ccw para OT160…250E: mecanismo a la izquierda). Carcasas, series y apariencias nuevas en el catálogo. OT100/125F en riel DIN (ficha ABB); OT160…250E en placa. S200P mapeado a S200 como HIPÓTESIS (verified=false).
