@@ -181,3 +181,23 @@ def ensure_marking(device, catalog):
     if "marking" not in device and device.get("model"):
         device["marking"] = marking_fields(device["model"], device.get("evidence", ""), catalog["importRules"])
     return device
+
+def detect_board(text):
+    """Rótulo del tablero en el unifilar e-Design: 1.ª línea = nombre, 2.ª = «DE <tablero> - -QFn <modelo>», 3.ª = cable de alimentación.
+    Devuelve {"title", "feeder": {...}} o None si el PDF no trae ese encabezado (no se adivina)."""
+    lines = [ln.strip() for ln in text.splitlines() if ln.strip()][:4]
+    if len(lines) < 2 or not lines[1].upper().startswith("DE "):
+        return None
+    feeder = {"from": None, "upstreamTag": None, "upstreamModel": None, "cable": None, "peMm2": None, "peParallel": None}
+    head = re.match(r"DE\s+(?P<src>.+?)\s+-\s+-?(?P<tag>Q[A-Z]\d+)\s+(?P<model>.+)$", lines[1])
+    if head:
+        feeder.update({"from": head.group("src"), "upstreamTag": head.group("tag"), "upstreamModel": head.group("model").strip()})
+    else:
+        feeder["from"] = lines[1][3:].strip(" -")
+    if len(lines) > 2 and re.match(r"-?WC\d+", lines[2]):
+        feeder["cable"] = lines[2].lstrip("-")
+        pe = re.search(r"(?:(\d+)x)?PE\s?(\d+(?:[.,]\d+)?)", lines[2])
+        if pe:
+            feeder["peParallel"] = int(pe.group(1) or 1)
+            feeder["peMm2"] = float(pe.group(2).replace(",", "."))
+    return {"title": lines[0], "feeder": feeder}

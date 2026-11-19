@@ -13,6 +13,9 @@
 - Antes de subir: `python -m unittest discover tests` tiene que pasar, y también la prueba de interfaz `python tests/e2e/prueba_interfaz.py`.
 - **Probar como usuario final, siempre** (pedido de Thomas, 2026-11-18): en cada sesión usar el programa como lo usaría un tablerista (importar un unifilar, revisar el tablero armado, corregir a mano, exportar DXF/PDF y la lista de materiales) y mirar las capturas. Cada error encontrado se arregla o se anota; cada mejora o agregado posible va a `docs/MEJORAS.md`. Objetivo: un producto fácil de usar, útil, confiable y que sirva de verdad.
 
+- **No repetir errores** (pedido de Thomas, 2026-11-19): leer `docs/LECCIONES.md` antes de tocar el armado, la lista de materiales o el catálogo. Todo tablero que se entregue tiene que pasar la auditoría (`auditoria.py`, corre dentro de la validación) con **0 errores**. Cada error nuevo que se encuentre revisando tableros se agrega a `docs/LECCIONES.md`, con su regla en `auditoria.py` y su test en `tests/test_auditoria.py`, así no vuelve.
+- Medidas de equipos: **de la ficha ABB o del CAD, nunca calculadas** (lección 12: el S803 se había calculado en 79,5 mm y mide 81).
+
 **Al terminar**
 1. Agregar una entrada **arriba de todo** en `BITACORA.md` (la más nueva primero; nunca al final) (máx. 6 líneas: Hecho / Archivos / Ojo / Siguiente).
 2. Reescribir `ESTADO.md` si cambió la foto (no acumular historial ahí).

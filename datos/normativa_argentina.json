@@ -88,6 +88,16 @@
       "clause": null,
       "status": "verificada",
       "source": "Control de layout del propio programa (no es una cláusula de norma): si un accesorio exigido no entra, el tablero no cumple lo que las reglas piden."
+    },
+    {
+      "id": "pieza-a-dimensionar",
+      "descripcion": "Pieza necesaria que el catálogo no tiene (barra de distribución por la corriente del general, barra de tierra para el PE de alimentación): va a la lista sin código y hay que dimensionarla.",
+      "check": "parts_to_size",
+      "severity": "warning",
+      "norma": null,
+      "clause": null,
+      "status": "verificada",
+      "source": "Control del propio programa (lección 2026-11-19, revisión de los 24 tableros del GENERAL): antes la pieza desaparecía de la lista."
     }
   ]
 }

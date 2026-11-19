@@ -21,15 +21,18 @@ def load_rules(path=RULES_FILE):
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
 
-def _classify(devices, catalog, rules):
+def _classify(devices, catalog, rules, main_tag=None):
+    """Separa el equipo de entrada (main), los de kit/placa y los de riel, CONSERVANDO el orden del unifilar
+    (lección 2026-11-19: ordenar por carcasa mezclaba los circuitos, p. ej. TSB-1.13 antes que TSB-1.1)."""
     shells = {s["id"]: s for s in catalog["deviceShells"]}
     din = {s["id"] for s in catalog["deviceShells"] if s.get("mounting") == "din"}
     main, kit, rail = [], [], []
     for d in devices:
         spec = shells.get(d.get("shell"), {})
+        is_main = d.get("tag") == main_tag if main_tag else str(d.get("tag", "")).startswith(rules["mainTagPrefix"])
         if d.get("shell") in din or d.get("mounting") == "din":
-            rail.append(d)
-        elif str(d.get("tag", "")).startswith(rules["mainTagPrefix"]):
+            (rail.insert(0, d) if is_main else rail.append(d))  # el general de riel va primero (arriba a la izquierda)
+        elif is_main:
             main.append(d)
         else:
             kit.append((d, spec))
@@ -81,20 +84,35 @@ def _place_row(row, rail, y_center, col_gap, placed):
         prev = d
 
 
-def _try(project, catalog, enc, rules, pe_reserve):
+def _try(project, catalog, enc, rules, pe_reserve, extra_rows=0):
     fw, fh = enc["functional"]["width"], enc["functional"]["height"]
     margin, row_gap, col_gap = rules["margin"], rules["rowGap"], rules["colGap"]
     usable_w, usable_h = fw - 2 * margin, fh - 2 * margin
-    main, kit, rail_devs = _classify(project["devices"], catalog, rules)
+    from auditoria import main_device
+    entry = main_device(project)
+    main, kit, rail_devs = _classify(project["devices"], catalog, rules, entry["tag"] if entry else None)
+    din_main = bool(entry) and bool(rail_devs) and rail_devs[0] is entry
+    # Lugar para canaleta arriba de la primera fila y entre filas de cajas moldeadas (lección 2026-11-19).
+    duct_band = rules.get("ductBandMm", 0)
+    holder = rules.get("labelHolderMm", 14)
     if (main or kit) and enc["functional"]["depth"] < rules.get("minDepthForKitDevicesMm", 0):
         return None
-    placed, rails, cursor = {}, [], 0.0  # cursor: distancia desde arriba del área funcional (sin margen)
+    shells_by_id = {s["id"]: s for s in catalog["deviceShells"]}
+    if any(shells_by_id.get(d.get("shell"), {}).get("floorStandingOnly") for d in project["devices"]) and "System pro E" not in str(enc.get("line", "")):
+        return None  # Emax y equipos de bastidor abierto: sólo gabinete de piso
+    placed, rails = {}, []
+    cursor = 0.0  # distancia desde arriba del área funcional (sin margen)
+    top_duct = max(0.0, rules.get("ductEdgeMm", 15) + duct_band - margin)  # canaleta sobre una primera fila de cajas (las de riel ya la traen en railRowGapMm)
+
+    gap_rows = max(row_gap, holder + duct_band)  # entre filas de cajas: portaetiqueta + canaleta
 
     def row_block(devs, heights, gap):
         nonlocal cursor
         rows = _wrap([d["w"] for d in devs], usable_w, gap)
         if rows is None:
             return False
+        if not placed:
+            cursor += top_duct
         for idx in rows:
             row_h = max(heights[i] for i in idx)
             row_w = sum(devs[i]["w"] for i in idx) + gap * (len(idx) - 1)
@@ -104,34 +122,53 @@ def _try(project, catalog, enc, rules, pe_reserve):
                 d = devs[i]
                 placed[d["tag"]] = (round(x, 2), round(fh - top - row_h + (row_h - d["h"]) / 2, 2))
                 x += d["w"] + gap
-            cursor += row_h + row_gap
+            cursor += row_h + gap_rows
         return True
 
-    if main and not row_block(main, [d["h"] for d in main], col_gap):
-        return None
-    if kit:
-        kit = sorted(kit, key=lambda t: t[0].get("shell") or "")
-        devs = [d for d, _ in kit]
-        heights = [max(s.get("kitHeight") or 0, d["h"]) if rules.get("kitModuleHeightFromShell") else d["h"] for d, s in kit]
-        if not row_block(devs, heights, col_gap):
-            return None
+    last_gap = row_gap  # separación ya sumada después de la última fila armada (el cursor la incluye)
+
+    def kit_rows():
+        nonlocal last_gap
+        if main and not row_block(main, [d["h"] for d in main], col_gap):
+            return False
+        if kit:
+            devs = [d for d, _ in kit]
+            # La altura de módulo del kit (p. ej. PHDX: 200 mm) sólo rige en System pro E; en un gabinete con placa la caja se atornilla
+            # a la placa y ocupa su propio alto (lección 2026-11-19: el TS4 salía de 1200 mm por usar 200 mm por fila).
+            spe = "System pro E" in str(enc.get("line", ""))
+            heights = [max(s.get("kitHeight") or 0, d["h"]) if rules.get("kitModuleHeightFromShell") and spe else d["h"] for d, s in kit]
+            if not row_block(devs, heights, col_gap):
+                return False
+        if main or kit:
+            last_gap = gap_rows
+        return True
+
     bottom_limit = margin  # borde inferior permitido para lo que se arma de arriba hacia abajo
     tail_gap = row_gap  # separación que queda después de la última fila armada de arriba hacia abajo
+    kd = enc.get("kdKit") if rail_devs else None
+    if din_main and (main or kit) and kd:
+        return None  # con kit KD las filas de riel quedan abajo: el general de riel no quedaría arriba
+    if not rail_devs or kd or not din_main:
+        if not kit_rows():
+            return None
     if rail_devs:
-        kd = enc.get("kdKit")
-        rail_devs = sorted(rail_devs, key=lambda d: d.get("shell") or "")
         if kd:
             # Kit KD del gabinete: filas de riel fijas (185 mm de paso, largo = módulos x 17,5 mm); no se inventa otra posición.
             length, pitch = kd["modulesPerRow"] * kd["moduleMm"], kd["rowPitchMm"]
             rows = _pack_rail_rows(rail_devs, length, col_gap, pe_reserve)
+            rows = rows + [[] for _ in range(extra_rows)] if rows is not None else None
             if rows is None or len(rows) > kd["rows"] or any(d["h"] > pitch for d in rail_devs) or length > fw:
                 return None
             stack = len(rows) * pitch
             if stack > fh:
                 return None
-            # Pila de filas contiguas apoyada abajo; si con el margen no entra, el kit ocupa la placa sin margen (los soportes del kit van de borde a borde).
-            base = margin if margin + stack <= fh else (fh - stack) / 2
-            bottom_limit = base + stack + (row_gap if base == margin else 0)
+            # Pila de filas contiguas apoyada abajo. Arriba y abajo de la pila tiene que quedar lugar para una canaleta (entrada de cables):
+            # lección 2026-11-19, el TSEP salía con 3 filas KD ocupando toda la placa, sin canaleta arriba ni abajo.
+            band = rules.get("ductEdgeMm", 15) + duct_band
+            base = max(margin, band)
+            if base + stack + band > fh:
+                return None
+            bottom_limit = base + stack + row_gap
             for n, row in enumerate(rows, 1):
                 y_center = base + (len(rows) - n) * pitch + pitch / 2
                 rail = {"id": f"DIN-{n}", "type": f"Fila {n} del kit {kd['kit']}", "orderCode": None, "kdKit": kd["kit"], "fixed": True, "height": 35,
@@ -153,17 +190,34 @@ def _try(project, catalog, enc, rules, pe_reserve):
             rows = _pack_rail_rows(rail_devs, length, col_gap, pe_reserve)
             if rows is None:
                 return None
+            rows += [[] for _ in range(extra_rows)]  # fila libre para un bloque de distribución que no entró (ver autolayout_conforme)
             # Entre filas de riel libre se deja lugar para peine, etiqueta y canaleta (criterio de diseño en reglas_layout.json: railRowGapMm).
             rail_gap = max(row_gap, rules.get("railRowGapMm", row_gap))
-            cursor += rail_gap - row_gap
-            tail_gap = rail_gap
-            for n, row in enumerate(rows, 1):
+
+            def rail_row(n, row):
+                nonlocal cursor, last_gap
+                cursor += rail_gap - last_gap
                 row_h = max([d["h"] for d in row], default=44.5)
                 y_center = fh - (margin + cursor) - row_h / 2
                 rail = {**template, "id": f"DIN-{n}", "x": round((fw - length) / 2, 2), "y": round(y_center, 2), "length": length}
                 rails.append(rail)
                 _place_row(row, rail, y_center, col_gap, placed)
                 cursor += row_h + rail_gap
+                last_gap = rail_gap
+
+            if din_main and (main or kit):
+                # El general es de riel y hay cajas moldeadas: su fila de riel va arriba de todo y las cajas debajo.
+                rail_row(1, rows[0])
+                if not kit_rows():
+                    return None
+                rows_left = list(enumerate(rows[1:], 2))
+            else:
+                rows_left = list(enumerate(rows, 1))
+            for n, row in rows_left:
+                rail_row(n, row)
+            tail_gap = last_gap
+    else:
+        tail_gap = last_gap
     if fh - (margin + cursor - tail_gap) < bottom_limit - 1e-6:  # lo de arriba no debe invadir el borde ni la pila de filas del kit
         return None
     if rails and not main and not kit and not enc.get("kdKit"):
@@ -188,7 +242,7 @@ def _free_rail_alternative(project, candidates, catalog, rules, pe_reserve, chos
     return None
 
 
-def autolayout(project, catalog, rules=None, free_rails=False, exclude=(), only=None):
+def autolayout(project, catalog, rules=None, free_rails=False, exclude=(), only=None, extra_rows=0):
     """Devuelve (proyecto_nuevo, resumen). El proyecto original no se modifica."""
     rules = rules or load_rules()
     try:
@@ -208,7 +262,7 @@ def autolayout(project, catalog, rules=None, free_rails=False, exclude=(), only=
             continue
         if free_rails and enc.get("kdKit"):  # opción del usuario: riel GD de posición libre en vez de las filas fijas del kit KD
             enc = {**enc, "kdKit": None, "railOptions": enc["kdKit"].get("freeRailOptions", [])}
-        result = _try(project, catalog, enc, rules, pe_reserve)
+        result = _try(project, catalog, enc, rules, pe_reserve, extra_rows)
         tried.append({"id": enc["id"], "entra": result is not None})
         if result is None:
             continue
@@ -220,8 +274,17 @@ def autolayout(project, catalog, rules=None, free_rails=False, exclude=(), only=
                             "id": enc["id"], "functionalAreaOffset": copy.deepcopy(enc.get("functionalOffset", {"x": 50, "y": plinth + 50})),
                             "mountingLayout": {**copy.deepcopy(enc["mountingLayout"]), "dinRails": rails},
                             "structuralComponentReferences": {"parts": enc["parts"] + ([enc["kdKit"]["kit"]] if enc.get("kdKit") else [])}, "sources": [enc["source"]]}
+        spe = "System pro E" in str(enc.get("line", ""))
+        shells = {s["id"]: s for s in catalog["deviceShells"]}
         for d in new["devices"]:
             d["x"], d["y"] = placed[d["tag"]]
+            spec = shells.get(d.get("shell"), {})
+            if spe and spec.get("mounting") != "din" and not d.get("mountingKit"):
+                # En System pro E cada caja moldeada va sobre su kit de montaje (lección 2026-11-19: el TGBT salía sin kits).
+                d["mountingKit"] = ({"type": spec["kit"], "orderCode": spec.get("kitOrderCode"), "moduleHeight": spec.get("kitHeight"), "auto": True} if spec.get("kit")
+                                    else {"type": f"System pro E para {spec.get('label', d.get('model'))} (código pendiente)", "orderCode": None, "auto": True})
+            elif not spe and (d.get("mountingKit") or {}).get("auto"):
+                d.pop("mountingKit")
             d.pop("unplaced", None)
             d.pop("placementNote", None)
         new["accessories"] = [a for a in new.get("accessories", []) if not a.get("auto")]
@@ -231,20 +294,37 @@ def autolayout(project, catalog, rules=None, free_rails=False, exclude=(), only=
     raise ValueError("Ningún gabinete del catálogo aloja este contenido con los criterios de datos/reglas_layout.json")
 
 
-def autolayout_conforme(project, catalog, rules=None, free_rails=False, only=None):
-    """Arma el tablero y completa los accesorios de normativa; si alguno no entra (p. ej. los bornes PE), prueba el gabinete siguiente."""
+def _conforme_loop(project, catalog, rules, free_rails, only, extra_rows):
     from accesorios import complete
     exclude, first = [], None
     while True:
         try:
-            new, summary = autolayout(project, catalog, rules, free_rails, exclude, only)
+            new, summary = autolayout(project, catalog, rules, free_rails, exclude, only, extra_rows)
         except ValueError:
             if first is None:
                 raise
-            return first
+            return first, False
         complete(new, auto_confirm=True)
         first = first or (new, summary)
-        if only or not any(a.get("placed") is False and a.get("type") in ("pe_terminal", "copper_busbar", "distribution_block") for a in new["accessories"]):
+        # Sólo se prueba un gabinete más grande si falta LUGAR; si el catálogo no tiene la pieza, agrandar no lo arregla.
+        if only or not any(a.get("placed") is False and a.get("catalogId") and a.get("type") in ("pe_terminal", "copper_busbar", "distribution_block") for a in new["accessories"]):
             summary["gabinetesDescartados"] = list(exclude)
-            return new, summary
+            return (new, summary), True
         exclude.append(summary["gabinete"])
+
+
+def autolayout_conforme(project, catalog, rules=None, free_rails=False, only=None):
+    """Arma el tablero y completa los accesorios de normativa. Si un accesorio no entra (bornes PE, bloque de distribución),
+    compara agrandar el gabinete contra agregar una fila de riel libre y se queda con el gabinete más chico
+    (lección 2026-11-19: TSMAQ1 y TS AUX 3 pasaban de 500×400 a 800×800 por un bloque que entraba en una fila más)."""
+    area = lambda r: r[0]["enclosure"]["externalBody"]["width"] * r[0]["enclosure"]["externalBody"]["height"]
+    best, ok = _conforme_loop(project, catalog, rules, free_rails, only, 0)
+    if best[1].get("gabinetesDescartados") or not ok:
+        try:
+            alt, ok2 = _conforme_loop(project, catalog, rules, free_rails, only, 1)
+            if ok2 and (not ok or area(alt) < area(best)):
+                alt[1]["filaExtraParaAccesorios"] = True
+                best = alt
+        except ValueError:
+            pass
+    return best

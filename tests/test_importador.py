@@ -62,7 +62,10 @@ class Catalogo(unittest.TestCase):
         for serie in SERIES.values():
             with self.subTest(serie=serie["id"]):
                 self.assertIn(serie["shell"], SHELLS)
-                self.assertIn(serie["shell"], FRONTS, "la carcasa no tiene frente 2D en frentes_cad.json")
+                if not SHELLS[serie["shell"]].get("outlineOnly"):  # sin CAD publicado: contorno con medidas de ficha (p. ej. S290)
+                    self.assertIn(serie["shell"], FRONTS, "la carcasa no tiene frente 2D en frentes_cad.json")
+                else:
+                    self.assertTrue(SHELLS[serie["shell"]].get("dimensionsSource"), "contorno sin CAD: las medidas tienen que salir de una ficha")
                 self.assertTrue(serie.get("basis"), "toda serie necesita su fuente")
 
     def test_ancho_por_polos(self):

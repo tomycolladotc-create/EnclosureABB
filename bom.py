@@ -190,6 +190,12 @@ def build_bom(project, catalog, accessory_catalog=None, order_codes=None):
     if fuses.get("count"):
         add("Señalización", None, f"Fusible {fuses.get('type', '')} {fuses.get('rating', '')} con su portafusible, para los testigos de fase (según unifilar)", int(fuses["count"]), "u")
 
+    # Seccionadores OT: se venden sin manija (y sin eje si se accionan desde la puerta); sin ellos no se pueden operar.
+    ot = [d for d in project.get("devices", []) + project.get("devicesNotDrawn", []) if re.match(r"^OT\s?\d", str(d.get("model", ""))) and not re.search(r"WP\b", str(d.get("model", "")))]
+    if ot:
+        add("Accionamiento OT", None, "Manija para el seccionador OT (directa sobre el equipo, o de puerta con su eje): elegir según la variante; "
+            "el OT se vende sin manija", len(ot), "u", [d.get("tag", "?") for d in ot], "falta código de pedido")
+
     kits = {}
     for device in project.get("devices", []):
         kit = device.get("mountingKit") or {}
@@ -198,7 +204,7 @@ def build_bom(project, catalog, accessory_catalog=None, order_codes=None):
             kits.setdefault((code, kit.get("type") or kit.get("kit") or "Kit de montaje"), []).append(device)
     for (code, kind), devices in kits.items():
         models = sorted({d.get("model", "") for d in devices})
-        add("Kit de montaje", code, f"Kit de montaje en placa {kind} para {', '.join(models)}", len(devices), "u",
+        add("Kit de montaje", code, f"Kit de montaje {kind} para {', '.join(models)}", len(devices), "u",
             [d.get("circuit") or d.get("tag", "?") for d in devices], "verificado" if code else "falta código")
 
     # 4) Accesorios. Canaletas: por código, en tiras con despiece de cortes.
@@ -206,8 +212,13 @@ def build_bom(project, catalog, accessory_catalog=None, order_codes=None):
     strip = duct_spec.get("lengthMm", 2000)
     ducts, grouped_acc = {}, {}
     for item in project.get("accessories", []):
-        if item.get("decision") == "discarded" or item.get("placed") is False:
+        if item.get("decision") == "discarded":
             continue
+        if item.get("placed") is False:
+            # Lo que no entró en el dibujo o no está en el catálogo igual hace falta comprarlo (lección 2026-11-19:
+            # la barra del TGBT desaparecía de la lista). Va con aviso y, si no hay pieza, sin código.
+            item = {**item, "description": (item.get("description") or item.get("label") or item.get("type")) + " · NO está en el dibujo: "
+                    + (item.get("note") or "sin lugar o sin pieza en el catálogo")}
         if item.get("type") == "wiring_duct":
             sec = item.get("sectionMm") or (item["w"] if item.get("orientation") == "v" else item["h"])
             ducts.setdefault((item.get("orderCode"), sec, item.get("depthMm"), item.get("slot")), []).append(round(item.get("lengthMm") or max(item["w"], item["h"])))

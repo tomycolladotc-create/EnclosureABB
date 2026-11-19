@@ -95,6 +95,10 @@ def validate(project, catalog, rules):
             text += f" El gabinete tiene {body_depth:g} mm y el criterio provisional es {provisional:g} mm."
         findings.append(_finding("warning", "depth_unknown", text, unknown_depth))
 
+    # Auditoría de armado (lecciones de la revisión de los 24 tableros del GENERAL, docs/LECCIONES.md).
+    from auditoria import audit
+    findings.extend(audit(project, catalog, rules))
+
     counts = {"errors": 0, "warnings": 0}
     for finding in findings:
         counts["errors" if finding["level"] == "error" else "warnings"] += 1

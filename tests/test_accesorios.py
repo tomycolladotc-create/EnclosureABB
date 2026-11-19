@@ -73,19 +73,20 @@ class Accesorios(unittest.TestCase):
         self.assertIn("manual", [a.get("label") for a in p["accessories"]])
 
 
-    def test_corriente_alta_propone_barra_de_cobre_y_espera_decision(self):
+    def test_corriente_alta_sin_barra_de_fase_queda_a_dimensionar(self):
+        """Lección 19 (2026-11-19): la AA8010 es barra de neutro o tierra; para 250 A de fase no hay barra en el catálogo."""
         p = complete(project([s200("QF1", 200, 3, "250")]))
-        bar = next(a for a in p["accessories"] if a["type"] == "copper_busbar")
-        self.assertTrue(bar["needsConfirmation"])
-        self.assertIsNone(bar["decision"])
-        self.assertEqual(bar["catalogId"], "abb-aa8010")
-        self.assertLessEqual(bar["x"] + bar["w"], 560)  # entra en la placa
+        self.assertFalse([a for a in p["accessories"] if a.get("catalogId") == "abb-aa8010"])
+        item = next(a for a in p["accessories"] if a["type"] == "distribution_block")
+        self.assertTrue(item["needsConfirmation"])
+        self.assertFalse(item["placed"])
+        self.assertIn("dimensionar", item["note"])
 
     def test_la_decision_del_usuario_se_conserva_al_recalcular(self):
-        p = complete(project([s200("QF1", 200, 3, "250")]))
-        next(a for a in p["accessories"] if a["type"] == "copper_busbar")["decision"] = "confirmed"
+        p = complete(project([s200("QF1", 200, 3, "100")]))  # 100 A: bloque BRT125A
+        next(a for a in p["accessories"] if a["type"] == "distribution_block")["decision"] = "confirmed"
         complete(p)
-        self.assertEqual(next(a for a in p["accessories"] if a["type"] == "copper_busbar")["decision"], "confirmed")
+        self.assertEqual(next(a for a in p["accessories"] if a["type"] == "distribution_block")["decision"], "confirmed")
 
     def test_corriente_mayor_que_toda_barra_del_catalogo_no_inventa_barra(self):
         p = complete(project([s200("QF1", 200, 3, "630")]))
@@ -112,14 +113,15 @@ class PolosYSolape(unittest.TestCase):
 
     def test_bloque_no_pisa_los_bornes_pe(self):
         import json
-        from layout_auto import autolayout
+        from layout_auto import autolayout_conforme
         L = lambda n: json.load(open(ROOT / "datos" / n, encoding="utf-8"))
         base = L("ts4_topografia.json")
         for d in base["devices"]:
             if d["tag"].startswith("QF8") and "xt" in d["shell"]:
                 d["marking"] = {**d.get("marking", {}), "In": "80"}  # corriente alta: obliga a proponer bloque de distribución
-        new, _ = autolayout(base, L("catalogo_abb.json"))
-        complete(new)
+            if d["tag"] == "QS1":
+                d["marking"] = {**d.get("marking", {}), "In": "100"}  # el bloque se dimensiona por la entrada: 100 A entra en el BRT125A
+        new, _ = autolayout_conforme(base, L("catalogo_abb.json"))  # si el bloque no entra en el riel, prueba el gabinete siguiente
         pe = next(a for a in new["accessories"] if a["type"] == "pe_terminal")
         blk = next(a for a in new["accessories"] if a["type"] == "distribution_block")
         self.assertTrue(pe.get("placed") and blk.get("placed"))

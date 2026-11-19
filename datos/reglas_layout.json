@@ -22,5 +22,8 @@
   "ductMinFreeBetweenMm": 50,
   "ductMinWidthMm": 25,
   "peTerminalId": "te-dbl125-pe",
-  "_ayuda_pe": "Bornera de tierra por defecto (id de datos/accesorios_abb.json → earthTerminals). Con 'repartidor' se usa un bloque por cada N salidas (N del catálogo) y un tope en cada punta. 'entrelec-m4-6p' vuelve a los bornes individuales."
+  "_ayuda_pe": "Bornera de tierra por defecto (id de datos/accesorios_abb.json → earthTerminals). Con 'repartidor' se usa un bloque por cada N salidas (N del catálogo) y un tope en cada punta. 'entrelec-m4-6p' vuelve a los bornes individuales.",
+  "ductBandMm": 50,
+  "labelHolderMm": 14,
+  "_ayuda_ductBandMm": "Lección 2026-11-19 (revisión de los 24 tableros del GENERAL): toda fila de equipos lleva canaleta arriba y abajo. Se reserva una franja de canaleta (40 mm + 2×5 de aire) sobre la primera fila y entre filas de cajas moldeadas (además del portaetiqueta, labelHolderMm). Antes, con 40 mm de margen/separación, no entraba ninguna canaleta y las cajas quedaban sin cablear."
 }

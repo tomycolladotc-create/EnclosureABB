@@ -3,6 +3,13 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-19 13:30 · Claude · Revisión de los 24 tableros del GENERAL: 19 errores corregidos y auditoría para que no vuelvan
+- Hecho: revisión tablero por tablero (a ojo + auditoría nueva `auditoria.py`, que corre dentro de la validación). Errores: restos del TS4 de plantilla en todos, nombres inventados, orden fuera de unifilar, general no arriba/compartiendo fila, filas sin canaleta, huecos y gabinetes de más, barras chicas o de neutro usadas para fases, PE grueso sin barra, S290 sin lugar, S803 mal medido, kits SPE y manijas OT fuera de la lista, Emax en caja mural, E2.2 mal pintado.
+- Archivos: auditoria.py (nuevo), layout_auto.py, accesorios.py, bom.py, importador.py (detect_board), proyectos.py, normativa.py, catálogos, docs/LECCIONES.md (nuevo), tests/test_auditoria.py (nuevo).
+- Resultado: los 24 tableros regenerados con 0 errores de auditoría y 0 equipos confundidos.
+- Ojo: barras de 400/2000 A y barras de tierra quedan «a dimensionar» (no hay pieza ABB en el catálogo); kits SPE de E2.2/XT3/T4/T2/XT1 3P sin código.
+- Siguiente: códigos de pedido faltantes; reservar lugar del bloque en el armado en vez de sumar fila.
+
 ## 2026-11-19 01:30 · Claude · Los 24 tableros del plano GENERAL armados y exportados
 - 8 CAD ABB nuevos (E2.2 IV F, XT3 4P, XT1 3P, T4 4P, T2 3P, DXF S800 3P, OT63-80F3/F4) bajados de ABB Library desde la PC de Thomas → cad/abb/{e2_2,xt3,xt1_3p,t4,t2,s800/x,ot63_80}; SHA-256 en fuentes_descargadas.json. Frentes proyectados, carcasas/series/apariencias (paleta genérica de familia) en el catálogo; OT63/80F rotados 90° (bornes arriba/abajo, en riel).
 - Los 24 tableros importados por la interfaz como usuario (armado automático) y exportados: DXF, PDF A3, PNG y lista CSV. Cruce automático equipo por equipo contra el texto de cada PDF: 0 faltantes, 0 cambios de modelo/polos, 0 carcasas de otra familia.

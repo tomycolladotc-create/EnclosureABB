@@ -12,12 +12,18 @@
 - Tableros más compactos (riel cortado a medida, kit KD sin margen, reserva PE real).
 - Fluidez: agregar/duplicar equipo con el siguiente circuito, reordenar en el riel arrastrando, Esc/Supr/Ctrl+Z, aviso si cambia el gabinete.
 
+## Revisión de errores (2026-11-19, tarde) → ver `docs/LECCIONES.md`
+- Corregidos los 19 errores de la revisión (tabla en LECCIONES). La auditoría los detecta en la interfaz.
+- Pendiente: barras de fase ABB de más de 125 A en el catálogo (hoy quedan «a dimensionar»); barra de tierra ABB para PE grueso.
+- Pendiente: códigos de los kits System pro E para E2.2, XT3, T4, T2 y XT1 3P.
+- Pendiente: con kit KD, ofrecer automáticamente riel libre si da un gabinete más chico (hoy es opción del usuario).
+
 ## Hallazgos de la prueba como usuario (2026-11-19, 24 tableros del GENERAL)
 - Corregido: nombre del tablero tomado de la cola numérica del archivo ("4 5 6") → nombre completo si la cola no tiene letras.
 - Corregido: el proyecto nuevo guardaba como `source` el PDF del TS4 de plantilla.
-- Pendiente: nombres por circuito quedan "TSB-1", "TSI1-1", "TA-1" (el prefijo común de los circuitos); leer el nombre del tablero del rótulo del unifilar.
-- Pendiente: TGBT con E2.2 — el general comparte fila con el T2; un armador lo pondría solo arriba (o en columna propia). Kit/travesaño de montaje del Emax y kits de XT3/T4/T2/XT1 3P sin código.
-- Pendiente: TS-6 y TA-1 quedan con mucho hueco (el gabinete lo fija el kit de cajas moldeadas); evaluar fila mixta caja moldeada + riel.
+- Corregido (tarde): el nombre sale del rótulo del unifilar.
+- Corregido (tarde): el general va solo arriba; los kits SPE van a la lista (sin código los que falten).
+- Corregido (tarde): TS-6 sin hueco (general de riel arriba) y gabinetes más chicos.
 - Pendiente: el botón PDF abre el diálogo de impresión del navegador; ofrecer descarga directa de PDF.
 
 ## Hallazgos de la prueba como usuario (2026-11-18, ronda 1) — corregidos

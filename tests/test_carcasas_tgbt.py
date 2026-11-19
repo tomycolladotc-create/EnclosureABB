@@ -43,12 +43,14 @@ class CarcasasTGBT(unittest.TestCase):
                 if shell in NUEVAS:
                     self.assertIn(f, SOURCES, f"{f} sin registrar en fuentes_descargadas.json")
             w, h = FRONTS[shell]["sourceProjectionExtent"]
-            self.assertLess(abs(w / h - spec["width"] / spec["height"]) / (w / h), 0.08, shell)
+            # Los DXF 2D de S800 están dibujados con otra proporción vertical que la ficha (S804N: 6 %, S803: 9 %).
+            tol = 0.10 if any(f.lower().endswith(".dxf") for f in spec.get("cadFiles", [])) else 0.08
+            self.assertLess(abs(w / h - spec["width"] / spec["height"]) / (w / h), tol, shell)
 
     def test_medidas_del_cad(self):
         self.assertEqual((SHELLS["abb.tmax.xt3.4p.fixed.front"]["width"], SHELLS["abb.tmax.xt3.4p.fixed.front"]["height"]), (140, 150))
         self.assertEqual((SHELLS["abb.tmax.t4.4p.fixed.front"]["width"], SHELLS["abb.tmax.t4.4p.fixed.front"]["height"]), (140, 205))
-        self.assertEqual(SHELLS["abb.s803.3p.front"]["width"], 79.5)  # 3 × 26,5 mm (S804N = 106)
+        self.assertEqual(SHELLS["abb.s803.3p.front"]["width"], 81)  # ficha S803S-C80: 81 mm (no 3 × 26,5: las medidas salen de la ficha)
 
     def test_montaje(self):
         for shell in ("abb.ot63_80f3.3p.front", "abb.ot63_80f4.4p.front", "abb.s803.3p.front"):
@@ -56,13 +58,12 @@ class CarcasasTGBT(unittest.TestCase):
         for shell in ("abb.emax.e22.4p.fixed.front", "abb.tmax.xt3.4p.fixed.front", "abb.tmax.t4.4p.fixed.front"):
             self.assertIsNone(SHELLS[shell].get("mounting"), shell)
 
-    def test_s290_sin_cad_no_se_dibuja_pero_se_avisa(self):
+    def test_s290_se_dibuja_con_el_contorno_de_la_ficha(self):
+        """Lección 2026-11-19: el S290 sin dibujar dejaba el gabinete sin su lugar. Ahora va con el contorno de ficha (78,8 × 90)."""
         text = "-QF58\nS 293-C 803x25+PE16 mm² Cu\nACU\nTSB-1.3\nRST\n0,00 (*)\n"
         d = next(x for x in detect_devices(text, CAT) if x["tag"] == "QF58")
-        self.assertIsNone(d["shell"])
-        self.assertEqual(d.get("mounting"), "din")
-        self.assertIn("lista de materiales", d["status"])
-
+        self.assertEqual(d["shell"], "abb.s290.3p.outline")
+        self.assertEqual((d["w"], d["h"]), (78.8, 90))
 
 if __name__ == "__main__":
     unittest.main()

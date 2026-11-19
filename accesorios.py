@@ -26,10 +26,24 @@ def load_accessory_catalog(path=CATALOG_FILE):
 
 
 def _in_amps(device):
+    """Corriente nominal: la del frente (marking.In) o, si falta, la del modelo (p. ej. E2.2N 2000, OT100F4, T4S 320 ... 320A)."""
     try:
         return float(str(device.get("marking", {}).get("In", "")).replace(",", "."))
     except ValueError:
-        return None
+        from auditoria import rated_current
+        return rated_current(device)
+
+
+def pe_input_max_mm2(terminal):
+    """Sección máxima de entrada de la bornera PE (de su ficha: «10…35 mm²»). None si la ficha no la trae."""
+    text = str(((terminal or {}).get("entradas") or {}).get("seccion") or "")
+    nums = [float(n.replace(",", ".")) for n in re.findall(r"\d+(?:[.,]\d+)?", text)]
+    return max(nums) if nums else None
+
+
+def _abb(item):
+    """Sólo productos ABB (o de la ex ABB Entrelec): el catálogo guarda otras marcas como referencia, nunca para proponer."""
+    return "ABB" in str(item.get("marca", "ABB"))
 
 
 def _poles(d):
@@ -79,10 +93,16 @@ def _describe(item, catalog):
                     description=f"Peine de conexión {comb.get('familia', '')}/{pins} ({pins} pines por pieza) para {item.get('poleCount', '?')} polos (paso {item.get('pitchMm', 17.5)} mm), equipos: {', '.join(item.get('devices', []))}".replace("  ", " "))
     elif t == "distribution_block":
         blk = by("distributionBlocks")
-        item.update(bomCategory="Bloque de distribución", quantity=1, orderCode=blk.get("orderCode"), description=f"Bloque de distribución {blk.get('tipo', '')} {blk.get('corrienteA', '')} A ({blk.get('marca', '')})".replace("  ", " "))
+        if blk:
+            item.update(bomCategory="Bloque de distribución", quantity=1, orderCode=blk.get("orderCode"), description=f"Bloque de distribución {blk.get('tipo', '')} {blk.get('corrienteA', '')} A ({blk.get('marca', '')})".replace("  ", " "))
+        else:  # sin pieza en el catálogo: igual se pide, con la corriente que tiene que soportar (no queda un renglón vacío)
+            item.update(bomCategory="Barra de distribución", quantity=1, orderCode=None,
+                        description=f"Barra/juego de barras de distribución de al menos {item.get('needA', 0):g} A (lo que entra por el general), a dimensionar")
     elif t == "copper_busbar":
         bar = by("distributionBars")
         item.update(bomCategory="Barra de cobre", quantity=1, orderCode=bar.get("orderCode"), description=f"Barra de distribución {bar.get('tipo', '')} {bar.get('corrienteA', '')} A; soportes {bar.get('soportes', {}).get('orderCode', 'por definir')} x{bar.get('soportes', {}).get('cantidad', '?')}")
+    elif t == "pe_bar":
+        item.update(quantity=1)
     elif t == "wiring_duct":
         item.update(bomCategory="Canaleta", quantity=1,
                     description=f"Canaleta ranurada {item.get('sectionMm', item['h']):g}x{item['depthMm']:g} mm, gris RAL 7035, ranura {item['slot']}; largo a cortar {item['lengthMm']:g} mm (tira de 2000 mm)")
@@ -226,6 +246,16 @@ def propose(project, catalog=None):
             item.update(placed=True, x=spot[0], y=spot[1]["y"] - height / 2)
         out.append(item)
 
+    # 1b) PE de alimentación más grueso que lo que admite la bornera: hace falta barra de tierra (lección 2026-11-19: TGBT con 6×PE150 y TS con PE70/95).
+    feeder = project.get("feeder") or {}
+    pe_max = pe_input_max_mm2(pe)
+    if circuits and feeder.get("peMm2") and pe_max and feeder["peMm2"] > pe_max:
+        n = feeder.get("peParallel") or 1
+        out.append({"type": "pe_bar", "auto": True, "provisional": True, "catalogId": None, "placed": False, "orderCode": None,
+                    "label": "Barra de tierra PE", "bomCategory": "Barra de tierra (PE)",
+                    "description": f"Barra de cobre de tierra (PE) para recibir el PE de alimentación {(str(n) + '×') if n > 1 else ''}{feeder['peMm2']:g} mm² y repartir a los circuitos",
+                    "note": f"la bornera {pe.get('tipo')} admite hasta {pe_max:g} mm² de entrada: dimensionar la barra según IEC 61439-1 / AEA 90364 (no hay barra de tierra en el catálogo)"})
+
     # 2) Cubrebornes transparentes (barrera aislante): uno general; sin geometría hasta tener el CAD.
     if devices:
         out.append({"type": "terminal_cover", "auto": True, "catalogId": None, "label": "Cubrebornes", "provisional": True})
@@ -260,15 +290,20 @@ def propose(project, catalog=None):
     comb_limit = max((c["corrienteA"] for c in catalog["combs"] if c.get("corrienteA") and "S200" in c.get("compatibleCon", [])), default=None)  # sólo peines de la línea S200: un peine de S800 (250 A) no sirve para S200
     amps = [(a, d["tag"]) for d in devices if (a := _in_amps(d)) is not None]
     heavy = [(a, tag) for a, tag in amps if comb_limit is not None and a > comb_limit]
+    from auditoria import main_device, rated_current
+    entry = main_device(project)
+    feed = rated_current(entry) if entry else None
     if heavy:
-        need = max(a for a, _ in heavy)
+        # La barra/bloque reparte lo que entra por el general: se dimensiona por la entrada, no por la salida más grande
+        # (lección 2026-11-19: en el TGBT de 2000 A se había propuesto una barra de 320 A).
+        need = max([a for a, _ in heavy] + ([feed] if feed else []))
         # sólo bloques con medidas de frente (se pueden dibujar y ubicar); si no hay, barra de cobre del catálogo
-        usable = sorted((b for b in catalog.get("distributionBlocks", []) if b.get("corrienteA") and b["corrienteA"] >= need and b.get("anchoMm") and b.get("alturaFrenteMm")),
+        usable = sorted((b for b in catalog.get("distributionBlocks", []) if _abb(b) and b.get("corrienteA") and b["corrienteA"] >= need and b.get("anchoMm") and b.get("alturaFrenteMm")),
                         key=lambda b: b["corrienteA"])
         item = {"type": "distribution_block", "auto": True, "provisional": True, "needsConfirmation": True, "decision": None, "devices": [tag for _, tag in heavy], "needA": need}
         if not usable:
             # Sin bloque que alcance: barra de cobre del catálogo (distributionBars) si su corriente alcanza; el usuario confirma o descarta.
-            bars = sorted((b for b in catalog.get("distributionBars", []) if b.get("corrienteA") and b["corrienteA"] >= need), key=lambda b: b["corrienteA"])
+            bars = sorted((b for b in catalog.get("distributionBars", []) if _abb(b) and b.get("uso", "fase") == "fase" and b.get("corrienteA") and b["corrienteA"] >= need), key=lambda b: b["corrienteA"])
             if not bars:
                 item.update(catalogId=None, label="Barra de distribución", placed=False,
                             note=f"el catálogo no tiene bloque ni barra de {need:g} A o más: dimensionar la barra según IEC 61439 o tabla del fabricante")

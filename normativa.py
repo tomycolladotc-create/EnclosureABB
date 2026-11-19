@@ -94,17 +94,23 @@ def accessories_placed(project, rule):
         if dev.get("unplaced"):
             out.append(f"{_nm(dev)}: sin ubicar ({dev.get('placementNote') or 'pendiente de ubicar'}).")
     for acc in project.get("accessories", []):
-        if acc.get("placed") is False:
+        if acc.get("placed") is False and acc.get("catalogId"):  # sin pieza en el catálogo no es un problema de lugar: ver parts_to_size
             detail = acc.get("note") or "no entra en el riel"
             out.append(f"{acc.get('label', acc.get('type'))}: no se pudo ubicar ({detail}).")
     return out
+
+
+def parts_to_size(project, rule):
+    """Piezas necesarias que el catálogo no tiene (barra de 2000 A, barra de tierra): van a la lista sin código y hay que dimensionarlas."""
+    return [f"{a.get('label', a.get('type'))}: {a.get('note') or 'a dimensionar'}." for a in project.get("accessories", [])
+            if a.get("placed") is False and not a.get("catalogId") and a.get("decision") != "discarded"]
 
 
 def masses_to_pe(project, rule):
     return ["Confirmar manualmente que las masas de instrumentos y relés van a la barra de tierra."]
 
 
-CHECKS = {f.__name__: f for f in (board_has_pe_bar, pe_terminals_enough, live_terminals_covered, comb_between_adjacent, comb_current_ok, accessories_placed, masses_to_pe)}
+CHECKS = {f.__name__: f for f in (board_has_pe_bar, pe_terminals_enough, live_terminals_covered, comb_between_adjacent, comb_current_ok, accessories_placed, parts_to_size, masses_to_pe)}
 MANUAL = {"masses_to_pe"}  # no se pueden comprobar desde el dibujo
 
 

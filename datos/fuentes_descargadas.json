@@ -277,6 +277,18 @@
     "https://www.electrisa.com/cdn/shop/files/14192448000.PDF"
    ],
    "nota": "sólo consulta web; datos volcados en datos/codigos_pedido_abb.json"
+  },
+  {
+   "fecha": "2026-11-19",
+   "tema": "Medidas S290 (S293, sin CAD) y S803 (lecciones 11 y 12 de docs/LECCIONES.md)",
+   "urls": [
+    "https://datasheet.octopart.com/S293-C100-ABB-Control-datasheet-62100593.pdf",
+    "https://manualmachine.com/abb/s292c80/16896891-data-sheet",
+    "https://files.kempstoncontrols.com/files/7bbef7da969ae43c8e0c7babd504edd4/2CCS863001R0804",
+    "https://www.farnell.com/datasheets/2912218.pdf"
+   ],
+   "resultado": "S293 (S290 3P): 78,8 × 90 × 70 mm; S292: 52,5 × 90 × 70; S803S/B/C-C80: 81 × 95 × 82,5 mm (4,5 módulos)",
+   "usado_en": "datos/catalogo_abb.json -> abb.s290.3p.outline, abb.s803.3p.front"
   }
  ]
 }

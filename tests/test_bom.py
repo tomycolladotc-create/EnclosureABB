@@ -76,9 +76,9 @@ class SinErroresDeCompra(unittest.TestCase):
 
     def test_kit_kd_con_paneles_y_sin_paneles_ciegos_sobre_cajas_moldeadas(self):
         cats = {r["code"]: r for r in self.rows}
-        self.assertIn("KD1280K", cats)
-        self.assertIn("PM1836K", cats)
-        self.assertNotIn("PC1806K", cats)  # las filas libres las ocupan las XT montadas en placa
+        self.assertTrue(any(c.startswith("KD") for c in cats), "falta el kit KD")
+        self.assertTrue(any(c.startswith("PM") for c in cats), "falta el panel modular con riel")
+        self.assertFalse(any(c.startswith("PC") for c in cats))  # las filas libres las ocupan las XT montadas en placa
 
     def test_equipos_no_dibujados_van_a_la_lista_y_se_avisan(self):
         p = dict(self.p)

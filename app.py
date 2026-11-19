@@ -8,7 +8,7 @@ import os
 
 from pypdf import PdfReader
 from cad_export import build_dxf
-from importador import detect_devices, detect_signals, ensure_marking, shell_size
+from importador import detect_board, detect_devices, detect_signals, ensure_marking, shell_size
 from accesorios import complete, load_accessory_catalog
 from colocar import place_din
 from layout_auto import autolayout, autolayout_conforme
@@ -86,7 +86,7 @@ class Handler(BaseHTTPRequestHandler):
                 reader = PdfReader(BytesIO(blob))
                 content = "\n".join(page.extract_text() or "" for page in reader.pages)
                 catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
-                return self.send_data(200, {"pages": len(reader.pages), "devices": detect_devices(content, catalog), "signals": detect_signals(content, catalog), "textAvailable": bool(content.strip())})
+                return self.send_data(200, {"pages": len(reader.pages), "devices": detect_devices(content, catalog), "signals": detect_signals(content, catalog), "board": detect_board(content), "textAvailable": bool(content.strip())})
             except Exception as exc:
                 return self.send_data(422, {"error": f"No se pudo leer el PDF: {exc}"})
         if route == "/api/save":

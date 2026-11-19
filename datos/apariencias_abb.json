@@ -1031,28 +1031,28 @@
       "base": "none",
       "parts": [
         [
-          0.205,
-          0.03,
-          0.79,
-          0.62,
+          0.234,
+          0.028,
+          0.701,
+          0.741,
           "#30373d"
         ],
         [
-          0.205,
-          0.65,
-          0.79,
-          0.12,
+          0.234,
+          0.687,
+          0.701,
+          0.082,
           "#242b31"
         ],
         [
-          0.48,
-          0.06,
-          0.22,
-          0.6,
+          0.455,
+          0.066,
+          0.23,
+          0.612,
           "#4a5259"
         ]
       ],
-      "appearanceStatus": "paleta genérica de la familia (colores de imágenes ABB ya calibradas); sin calibrar posiciones con foto frontal de esta referencia"
+      "appearanceStatus": "paleta genérica Emax; rellenos alineados con el contorno del frente del CAD (lección 2026-11-19: estaban corridos respecto del dibujo)"
     },
     "abb.ot63_80f3.3p.front": {
       "source": "paleta OT (foto de familia OT de ABB, ver abb.ot100_125f3.3p.front)",

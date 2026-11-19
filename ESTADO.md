@@ -6,6 +6,7 @@
 PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tablero con dispositivos y envolvente ABB reales → editar en interfaz → exportar DXF (AutoCAD, 1:1 mm, bloques y capas), PNG, SVG, PDF.
 
 ## Reglas del usuario (no romper)
+- **No repetir errores**: `docs/LECCIONES.md` + auditoría (`auditoria.py`) en 0 errores antes de entregar un tablero (2026-11-19).
 - Nada hardcodeado: lo específico va en `datos/*.json`; código en módulos con comentarios de ayuda.
 - Medidas de equipos fijas (no editables). Rieles DIN definidos por la envolvente elegida.
 - Solo ABB y solo lo que se vende en Argentina; si no está la variante exacta, la más común, y anotarlo.

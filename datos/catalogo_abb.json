@@ -3730,7 +3730,9 @@
         "cad/abb/e2_2/1SDH001252R0123_1PA_001_01_E2.2_IV_F.stp"
       ],
       "frontGeometry": "datos/frentes_cad.json",
-      "appearance": "datos/apariencias_abb.json"
+      "appearance": "datos/apariencias_abb.json",
+      "floorStandingOnly": true,
+      "floorStandingNote": "Interruptor de bastidor abierto (Emax 2): va en gabinete de piso (System pro E power), no en caja mural. Lección 2026-11-19."
     },
     {
       "id": "abb.tmax.xt3.4p.fixed.front",
@@ -3794,17 +3796,18 @@
     {
       "id": "abb.s803.3p.front",
       "label": "S803 · 3P",
-      "width": 79.5,
+      "width": 81,
       "height": 95,
       "mounting": "din",
-      "dimensionsNote": "Paso de polo S800 = 26,5 mm (S804N = 106 mm ya cargado) → 3P = 79,5 × 95 mm.",
+      "dimensionsNote": "Ficha ABB S803S-C80 (2CCS863001R0804) / S803B-C80 / S803C-C80: 81 × 95 × 82,5 mm (4,5 módulos). Lección 2026-11-19: antes se había calculado 79,5 mm (3 × 26,5): las medidas salen de la ficha, nunca de una cuenta.",
       "cadSource": "https://search.abb.com/library/Download.aspx?DocumentID=9AKK106930A3272&LanguageCode=en&DocumentPartId=&Action=Launch",
       "cadStatus": "Vista 2D frontal del DXF ABB 'S800 3pole drawing'; inscripciones nominales pendientes de validar",
       "cadFiles": [
         "cad/abb/s800/x/2D S800 3pole drawing.DXF"
       ],
       "frontGeometry": "datos/frentes_cad.json",
-      "appearance": "datos/apariencias_abb.json"
+      "appearance": "datos/apariencias_abb.json",
+      "dimensionsSource": "https://files.kempstoncontrols.com/files/7bbef7da969ae43c8e0c7babd504edd4/2CCS863001R0804 ; https://www.farnell.com/datasheets/2912218.pdf"
     },
     {
       "id": "abb.ot63_80f3.3p.front",
@@ -3835,6 +3838,20 @@
       ],
       "frontGeometry": "datos/frentes_cad.json",
       "appearance": "datos/apariencias_abb.json"
+    },
+    {
+      "id": "abb.s290.3p.outline",
+      "label": "S290 · 3P (contorno de ficha, sin CAD)",
+      "width": 78.8,
+      "height": 90,
+      "mounting": "din",
+      "cadSource": null,
+      "cadStatus": "sin CAD en ABB Library: se dibuja el contorno con las medidas de la ficha ABB (marcador, sin frente)",
+      "cadFiles": [],
+      "dimensionsNote": "Ficha ABB S293-C100 (S290, 3P): 78,8 × 90 × 70 mm (mismo bastidor que el S293-C80; la ficha S292-C80 da 52,5 × 90 × 70 para 2P).",
+      "dimensionsSource": "https://datasheet.octopart.com/S293-C100-ABB-Control-datasheet-62100593.pdf ; https://manualmachine.com/abb/s292c80/16896891-data-sheet",
+      "depthMm": 70,
+      "outlineOnly": true
     }
   ],
   "importRules": {
@@ -3867,11 +3884,6 @@
       "modelRegex": "^S\\s?251\\b",
       "mounting": "din",
       "note": "S251 Na: modelo ABB histórico, sin CAD localizado"
-    },
-    {
-      "modelRegex": "^S\\s?29[1-4]\\b",
-      "mounting": "din",
-      "note": "S290 (S 293-C 80): no se encontró CAD ABB; no se dibuja (medidas reales no cargadas) pero queda en la lista de materiales"
     }
   ],
   "series": [
@@ -4121,6 +4133,16 @@
       "shell": "abb.ot63_80f4.4p.front",
       "verified": true,
       "basis": "CAD ABB 'OT63-80F4N2' para OT63F4 y OT80F4."
+    },
+    {
+      "id": "s290-3p",
+      "modelRegex": "^S\\s?293\\b",
+      "poles": [
+        3
+      ],
+      "shell": "abb.s290.3p.outline",
+      "verified": true,
+      "basis": "Medidas de la ficha ABB S293-C100 (78,8 × 90 mm). Sin CAD: se dibuja el contorno para reservar el lugar (lección 2026-11-19: no dibujarlo dejaba el gabinete chico)."
     }
   ],
   "scope": {

@@ -77,12 +77,19 @@ def enclosure_from_catalog(spec):
     }
 
 
+TEMPLATE_CONTENT_KEYS = ("source", "conceptualAssembly", "notes", "devicesNotDrawn", "signals", "feeder", "revisions", "ductMode")
+
+
 def create(name, template, projects_dir=PROJECTS_DIR, enclosure=None):
     """Crea un proyecto vacío. La envolvente elegida siempre sale del catálogo."""
     pid = slug(name)
     if path_for(pid, projects_dir).exists():
         raise ValueError(f"Ya existe un proyecto con id '{pid}'")
     project = copy.deepcopy(template)
+    # Sólo se hereda la estructura (unidades, escala, gabinete): nada del contenido del tablero de plantilla
+    # (lección 2026-11-19: los 24 tableros del GENERAL arrastraban kits, notas y origen del TS4).
+    for key in TEMPLATE_CONTENT_KEYS:
+        project.pop(key, None)
     project.update(project=name, devices=[], accessories=[])
     if enclosure is not None:
         project["enclosure"] = enclosure_from_catalog(enclosure)

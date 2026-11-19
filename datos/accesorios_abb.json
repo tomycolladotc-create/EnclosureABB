@@ -342,7 +342,9 @@
    "acabado": "sin tratar",
    "availability": "por-confirmar",
    "source": "ficha ABB AA8010 reproducida por Sonepar (res.cloudinary.com/sonepar-fr .../472440_FT.pdf: 320 A, 20x5 mm); catálogo ABB 1STC804013D0201 pág. 2/9 (barras 20x5 con agujeros M6 a 25 mm, soportes AA8011; se montan sobre las placas de fondo)",
-   "status": "la ficha ABB da 320 A, pero el catálogo la describe como barra de neutro o tierra, no de fase; el catálogo no dice que se corte a medida; falta confirmar Argentina"
+   "status": "la ficha ABB da 320 A, pero el catálogo la describe como barra de neutro o tierra, no de fase; el catálogo no dice que se corte a medida; falta confirmar Argentina",
+   "uso": "neutro-tierra",
+   "usoNota": "Lección 2026-11-19: el catálogo ABB la describe como barra de neutro o tierra; no se propone para repartir fases."
   },
   {
    "id": "abb-pbfc2005",
@@ -355,7 +357,8 @@
    "largoMm": 1750,
    "availability": "por-confirmar",
    "source": "ficha ABB PBFC2005 (sacchi.it/static/pim/hlr-system/ABB/MD22_BMECAT_20240410/ELPBFC2005.pdf)",
-   "status": "código y medidas de la ficha; falta la corriente admisible y confirmar Argentina"
+   "status": "código y medidas de la ficha; falta la corriente admisible y confirmar Argentina",
+   "uso": "fase"
   }
  ],
  "distributionBlocks": [
