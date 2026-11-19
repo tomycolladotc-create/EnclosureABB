@@ -23,6 +23,15 @@ from OCP.TopAbs import TopAbs_EDGE
 from OCP.TopoDS import TopoDS
 from OCP.BRepAdaptor import BRepAdaptor_Curve
 from OCP.GCPnts import GCPnts_QuasiUniformDeflection
+from OCP.BRep import BRep_Tool
+from OCP.TopAbs import TopAbs_FACE
+from OCP.TopLoc import TopLoc_Location
+from OCP.gp import gp_Pnt2d
+import numpy as np
+import cv2
+
+SILHOUETTE_RES_MM = 0.25   # resolución del raster de la silueta (mm por píxel)
+SILHOUETTE_TOL_MM = 0.2    # tolerancia al simplificar el contorno (mm)
 
 ROOT = Path(__file__).resolve().parents[1]
 DEST = ROOT / "datos" / "frentes_cad.json"
@@ -56,6 +65,7 @@ SOURCES = [
 
 
 def from_step_or_iges(filename, kind, normal, xdir):
+    """Devuelve (trayectorias visibles HLR, triángulos proyectados de la malla). Los triángulos dan la silueta exacta del equipo."""
     reader = STEPControl_Reader() if kind == "step" else IGESControl_Reader()
     if reader.ReadFile(str(filename)) != 1:
         raise ValueError(f"No se pudo leer {filename}")
@@ -79,7 +89,56 @@ def from_step_or_iges(filename, kind, normal, xdir):
             pts = [[sample.Value(i).X(), sample.Value(i).Y()] for i in range(1, sample.NbPoints() + 1)]
             paths.append(pts)
         explorer.Next()
-    return paths
+    projector = HLRAlgo_Projector(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(*normal), gp_Dir(*xdir)))
+    triangles = []
+    faces = TopExp_Explorer(shape, TopAbs_FACE)
+    while faces.More():
+        face = TopoDS.Face_s(faces.Current())
+        loc = TopLoc_Location()
+        tri = BRep_Tool.Triangulation_s(face, loc)
+        if tri is not None:
+            trsf = loc.Transformation()
+            pts = []
+            for i in range(1, tri.NbNodes() + 1):
+                p3, p2 = tri.Node(i).Transformed(trsf), gp_Pnt2d()
+                projector.Project(p3, p2)
+                pts.append((p2.X(), p2.Y()))
+            for i in range(1, tri.NbTriangles() + 1):
+                a, b, c = tri.Triangle(i).Get()
+                triangles.append((pts[a - 1], pts[b - 1], pts[c - 1]))
+        faces.Next()
+    return paths, triangles
+
+
+def silhouette(paths, triangles, bbox):
+    """Silueta exacta del frente: une la proyección de todos los triángulos de la malla (o, en un DXF 2D, todo lo que
+    encierra el dibujo) y la vectoriza. Devuelve polígonos normalizados al mismo contorno que las trayectorias.
+    Así la pintura del equipo sale del CAD y no de rectángulos puestos a mano (lección 2026-11-19)."""
+    xmin, ymin, width, height = bbox
+    pad = 4
+    W, H = int(width / SILHOUETTE_RES_MM) + 2 * pad, int(height / SILHOUETTE_RES_MM) + 2 * pad
+    to_px = lambda x, y: (int(round((x - xmin) / SILHOUETTE_RES_MM)) + pad, int(round((ymin + height - y) / SILHOUETTE_RES_MM)) + pad)
+    mask = np.zeros((H, W), np.uint8)
+    if triangles:
+        # Un triángulo por vez: fillPoly con una lista aplica par-impar y los solapes quedarían como agujeros falsos.
+        for t in triangles:
+            cv2.fillConvexPoly(mask, np.array([to_px(*v) for v in t], np.int32), 255)
+    else:  # DXF 2D: se dibujan las líneas y se rellena todo lo que no se alcanza desde afuera
+        for p in paths:
+            cv2.polylines(mask, [np.array([to_px(*v) for v in p], np.int32)], False, 255, 2)
+        outside = mask.copy()
+        cv2.floodFill(outside, np.zeros((H + 2, W + 2), np.uint8), (0, 0), 128)
+        mask = np.where(outside == 128, 0, 255).astype(np.uint8)
+    mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, np.ones((3, 3), np.uint8))
+    contours, hierarchy = cv2.findContours(mask, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_NONE)
+    outer, holes = [], []
+    for c, h in zip(contours, hierarchy[0] if hierarchy is not None else []):
+        if cv2.contourArea(c) * SILHOUETTE_RES_MM ** 2 < 4:  # menos de 4 mm²: ruido de la malla
+            continue
+        c = cv2.approxPolyDP(c, SILHOUETTE_TOL_MM / SILHOUETTE_RES_MM, True)
+        ring = [[round(((px - pad) * SILHOUETTE_RES_MM) / width, 5), round(1 - ((py - pad) * SILHOUETTE_RES_MM) / height, 5)] for px, py in c[:, 0, :]]
+        (holes if h[3] >= 0 else outer).append(ring)  # con padre = agujero (p. ej. el ojal de una oreja de fijación)
+    return outer, holes
 
 
 def from_dxf(filename):
@@ -123,7 +182,7 @@ def normalize(paths):
             continue
         seen.add(key)
         result.append(compact)
-    return result, [round(width, 2), round(height, 2)]
+    return result, [round(width, 2), round(height, 2)], (xmin, ymin, width, height)
 
 
 def main():
@@ -133,13 +192,16 @@ def main():
             continue
         filename = ROOT / relative
         print(f"Proyectando {shell}: {filename.name}", flush=True)
-        paths = from_dxf(filename) if kind == "dxf" else from_step_or_iges(filename, kind, normal, xdir)
+        paths, triangles = (from_dxf(filename), []) if kind == "dxf" else from_step_or_iges(filename, kind, normal, xdir)
         if "rot90ccw" in opts:
             paths = [[[-y, x] for x, y in p] for p in paths]
-        normalized, source_size = normalize(paths)
+            triangles = [tuple((-y, x) for x, y in t) for t in triangles]
+        normalized, source_size, bbox = normalize(paths)
         fronts["items"][shell] = {
             "source": relative, "method": "ABB DXF 2D" if kind == "dxf" else f"proyección frontal HLR de ABB {kind.upper()} 3D",
             "sourceProjectionExtent": source_size, "paths": normalized,
+            **dict(zip(("silhouette", "silhouetteHoles"), silhouette(paths, triangles, bbox))),
+            "silhouetteMethod": "unión de la malla proyectada" if triangles else "relleno de lo encerrado por el dibujo 2D",
         }
         print(f"  {len(normalized)} trayectorias; extensión de origen {source_size}", flush=True)
         DEST.write_text(json.dumps(fronts, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")

@@ -488,20 +488,20 @@
           "#7b8588"
         ],
         [
-          0.004,
-          0.861,
-          0.23,
-          0.059,
+          0.09,
+          0.735,
+          0.17,
+          0.05,
           "#e00016"
         ]
       ],
       "marking": {
-        "verifiedWith": "docs/imagenes_abb/OT400E04P_1SCA022719R1810_frontal.jpg, imagen oficial ABB 9PAA00000422688 (400x400) de la referencia 1SCA022719R1810. Cuerpo frontal calibrado aproximadamente con x=60..338 px, y=75..313 px contra 235x185 mm. La foto no muestra modelo ni corriente impresos en el frente; solo se reproduce el logo visible.",
+        "verifiedWith": "docs/imagenes_abb/OT400E04P_1SCA022719R1810_frontal.jpg, imagen oficial ABB 9PAA00000422688 (400x400) de la referencia 1SCA022719R1810. Cuerpo frontal calibrado aproximadamente con x=60..338 px, y=75..313 px contra 235x185 mm. La foto no muestra modelo ni corriente impresos en el frente; solo se reproduce el logo visible. · 2026-11-19: el logo se centra en la etiqueta roja, que quedó sobre el cuerpo según la silueta del CAD (antes caía afuera).",
         "items": [
           {
             "text": "ABB",
-            "x": 2.5,
-            "y": 165.2,
+            "x": 34.2,
+            "y": 140.6,
             "h": 5.4,
             "w": 22.0,
             "color": "#ffffff",
@@ -728,43 +728,8 @@
     "abb.ot160_250e03.3p.front": {
       "source": "https://onninen-file-storage.imgix.net/pimimg/IMG_1752179.jpg (foto de familia OT de ABB publicada por Onninen: cuerpo gris oscuro, banda roja ABB, manija negra) + paleta del OT400E04 ya calibrada con imagen oficial ABB 9PAA00000422688",
       "lineColor": "#aeb8bc",
-      "base": "none",
+      "base": "#41494d",
       "parts": [
-        [
-          0.0,
-          0.08,
-          0.161,
-          0.18,
-          "#8a949c"
-        ],
-        [
-          0.0,
-          0.74,
-          0.162,
-          0.18000000000000005,
-          "#8a949c"
-        ],
-        [
-          0.884,
-          0.082,
-          0.11599999999999999,
-          0.178,
-          "#8a949c"
-        ],
-        [
-          0.885,
-          0.74,
-          0.11499999999999999,
-          0.17700000000000005,
-          "#8a949c"
-        ],
-        [
-          0.915,
-          0.433,
-          0.03699999999999992,
-          0.13399999999999995,
-          "#8a949c"
-        ],
         [
           0.332,
           0.835,
@@ -829,7 +794,7 @@
           "#e00016"
         ]
       ],
-      "appearanceStatus": "colores de la foto de familia OT (gris oscuro + banda roja ABB), misma paleta que el OT400 calibrado con imagen ABB; posiciones de la banda tomadas de las aristas del CAD. Sin textos de corriente. Fondo transparente: terminales de estaño y cuerpo como partes, para que las orejas y el espacio entre terminales muestren la placa. · 2026-11-19: orejas de fijación y traba lateral pintadas (antes quedaban como líneas sueltas)",
+      "appearanceStatus": "colores de la foto de familia OT (gris oscuro + banda roja ABB), misma paleta que el OT400 calibrado con imagen ABB; posiciones de la banda tomadas de las aristas del CAD. Sin textos de corriente. Fondo transparente: terminales de estaño y cuerpo como partes, para que las orejas y el espacio entre terminales muestren la placa. · 2026-11-19: el fondo se pinta sobre la silueta exacta del CAD (frentes_cad.json → silhouette); los detalles se recortan a la silueta",
       "marking": {
         "verifiedWith": "https://onninen-file-storage.imgix.net/pimimg/IMG_1752179.jpg (foto de familia OT de ABB publicada por Onninen: cuerpo gris oscuro, banda roja ABB, manija negra) + paleta del OT400E04 ya calibrada con imagen oficial ABB 9PAA00000422688",
         "items": [
@@ -848,57 +813,8 @@
     "abb.ot160_250e04.4p.front": {
       "source": "https://onninen-file-storage.imgix.net/pimimg/IMG_1752179.jpg (foto de familia OT de ABB publicada por Onninen: cuerpo gris oscuro, banda roja ABB, manija negra) + paleta del OT400E04 ya calibrada con imagen oficial ABB 9PAA00000422688",
       "lineColor": "#aeb8bc",
-      "base": "none",
+      "base": "#41494d",
       "parts": [
-        [
-          0.0,
-          0.08,
-          0.075,
-          0.09699999999999999,
-          "#8a949c"
-        ],
-        [
-          0.0,
-          0.823,
-          0.075,
-          0.09700000000000009,
-          "#8a949c"
-        ],
-        [
-          0.941,
-          0.08,
-          0.04200000000000004,
-          0.23099999999999998,
-          "#8a949c"
-        ],
-        [
-          0.941,
-          0.689,
-          0.04200000000000004,
-          0.2310000000000001,
-          "#8a949c"
-        ],
-        [
-          0.95,
-          0.435,
-          0.050000000000000044,
-          0.12999999999999995,
-          "#8a949c"
-        ],
-        [
-          0.0,
-          0.689,
-          0.05,
-          0.05400000000000005,
-          "#8a949c"
-        ],
-        [
-          0.0,
-          0.257,
-          0.05,
-          0.05399999999999999,
-          "#8a949c"
-        ],
         [
           0.245,
           0.835,
@@ -977,7 +893,7 @@
           "#e00016"
         ]
       ],
-      "appearanceStatus": "colores de la foto de familia OT (gris oscuro + banda roja ABB), misma paleta que el OT400 calibrado con imagen ABB; posiciones de la banda tomadas de las aristas del CAD. Sin textos de corriente. Fondo transparente: terminales de estaño y cuerpo como partes, para que las orejas y el espacio entre terminales muestren la placa. · 2026-11-19: orejas de fijación y traba lateral pintadas (antes quedaban como líneas sueltas)",
+      "appearanceStatus": "colores de la foto de familia OT (gris oscuro + banda roja ABB), misma paleta que el OT400 calibrado con imagen ABB; posiciones de la banda tomadas de las aristas del CAD. Sin textos de corriente. Fondo transparente: terminales de estaño y cuerpo como partes, para que las orejas y el espacio entre terminales muestren la placa. · 2026-11-19: el fondo se pinta sobre la silueta exacta del CAD (frentes_cad.json → silhouette); los detalles se recortan a la silueta",
       "marking": {
         "verifiedWith": "https://onninen-file-storage.imgix.net/pimimg/IMG_1752179.jpg (foto de familia OT de ABB publicada por Onninen: cuerpo gris oscuro, banda roja ABB, manija negra) + paleta del OT400E04 ya calibrada con imagen oficial ABB 9PAA00000422688",
         "items": [
@@ -1112,15 +1028,8 @@
     "abb.emax.e22.4p.fixed.front": {
       "source": "paleta Tmax/Emax (gris oscuro ABB)",
       "lineColor": "#aeb8bf",
-      "base": "none",
+      "base": "#30373d",
       "parts": [
-        [
-          0.0664,
-          0.0162,
-          0.8672,
-          0.876,
-          "#30373d"
-        ],
         [
           0.2796,
           0.0162,
@@ -1171,7 +1080,7 @@
           "#5b636a"
         ]
       ],
-      "appearanceStatus": "rellenos medidos sobre las piezas del STEP ABB 'E2.2 IV F' (cuerpo 4P 366 × 325 mm, frente con mecanismo 276 mm, pies de fijación 28 × 40 mm a cada lado, borneras de auxiliares 40 mm arriba); colores genéricos Emax. Lección 2026-11-19: antes sólo se pintaba el frente y el resto del cuerpo quedaba como líneas grises"
+      "appearanceStatus": "rellenos medidos sobre las piezas del STEP ABB 'E2.2 IV F' (cuerpo 4P 366 × 325 mm, frente con mecanismo 276 mm, pies de fijación 28 × 40 mm a cada lado, borneras de auxiliares 40 mm arriba); colores genéricos Emax. Lección 2026-11-19: antes sólo se pintaba el frente y el resto del cuerpo quedaba como líneas grises · 2026-11-19: el fondo se pinta sobre la silueta exacta del CAD (frentes_cad.json → silhouette); los detalles se recortan a la silueta"
     },
     "abb.ot63_80f3.3p.front": {
       "source": "paleta OT (foto de familia OT de ABB, ver abb.ot100_125f3.3p.front)",

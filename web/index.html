@@ -80,16 +80,21 @@ const isDin=d=>shell(d.shell)?.mounting==='din'||d.mounting==='din'||(catalog.mo
 function alignDin(d){const rs=rails();if(!rs.length||!isDin(d))return;const cy=d.y+d.h/2,rail=rs.reduce((b,r)=>Math.abs(r.y-cy)<Math.abs(b.y-cy)?r:b,rs[0]);d.y=rail.y-d.h/2;d.x=Math.max(rail.x,Math.min(rail.x+rail.length-d.w,d.x))}
 function frontDefs(){
  return `<defs><pattern id="gPE" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="9" height="9" fill="#2a9a48"/><rect width="4.5" height="9" fill="#f1d21a"/></pattern><radialGradient id="gBrass" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#f6e2a0"/><stop offset=".55" stop-color="#cfa548"/><stop offset="1" stop-color="#8a6a24"/></radialGradient>${Object.entries(fronts.items).map(([id,front],i)=>{
-  const paint=appearances.items[id],blocks=paint?`<g transform="translate(0 1) scale(1 -1)"><rect x="0" y="0" width="1" height="1" style="fill:${paint.base};stroke:none"/>${paint.parts.map(([x,y,w,h,c])=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" style="fill:${c};stroke:none"/>`).join('')}</g>`:'';
+  // Pintura calculada (ver pintura.py): fondo sobre la silueta exacta del CAD, agujeros un tono más oscuro y detalles recortados a la silueta.
+  const paint=appearances.items[id],rings=r=>r.map(q=>'M'+q.map(p=>p.join(' ')).join('L')+'Z').join(''),sil=front.silhouette||[[[0,0],[1,0],[1,1],[0,1]]],holes=front.silhouetteHoles||[];
+  const blocks=paint?`<g transform="translate(0 1) scale(1 -1)"><clipPath id="sil-${i}"><path d="${rings(sil)}"/></clipPath><path d="${rings(sil)}" style="fill:${paint.base};stroke:none"/>${holes.length?`<path d="${rings(holes)}" style="fill:${paint.holeColor||shadeHex(paint.base,.55)};stroke:none"/>`:''}<g clip-path="url(#sil-${i})">${paint.parts.map(([x,y,w,h,c])=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" style="fill:${c};stroke:none"/>`).join('')}</g></g>`:'';
   const logo=paint?.logo?`<text x="${paint.logo[0]}" y="${1-paint.logo[1]}" fill="white" font-size="0.035" font-weight="bold" font-family="Arial">${esc(paint.logo[2])}</text>`:'';
   return `<symbol id="abb-front-${i}" viewBox="0 0 1 1" overflow="visible">${blocks}${logo}<g transform="translate(0 1) scale(1 -1)" fill="none" stroke="${paint?.lineColor||'#263744'}" stroke-width="0.004" stroke-linecap="round" stroke-linejoin="round">${front.paths.map(path=>`<path d="M${path.map(p=>p.join(' ')).join('L')}"/>`).join('')}</g></symbol>`;
  }).join('')}</defs>`;
 }
+function shadeHex(c,f){c=String(c||'#888888').replace('#','');return '#'+[0,2,4].map(i=>Math.max(0,Math.min(255,Math.round(parseInt(c.slice(i,i+2),16)*f))).toString(16).padStart(2,'0')).join('')}
 function frontSvg(d,x,y){
  const i=Object.keys(fronts.items).indexOf(d.shell),w=d.w,h=d.h;
  if(i<0)return `<g><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#fff3dd" stroke="#b57918" stroke-width="2" stroke-dasharray="4 3"/><text x="${x+w/2}" y="${y+h/2}" text-anchor="middle" font-size="8" fill="#7c4c05">SIN CAD</text></g>`;
  const s=shell(d.shell),tiles=s?.poleModule&&d.poles?d.poles:1,pw=w/tiles;
- let out='';for(let t=0;t<tiles;t++)out+=`<svg x="${x+t*pw}" y="${y}" width="${pw}" height="${h}" viewBox="0 0 1 1" preserveAspectRatio="none" overflow="hidden"><use href="#abb-front-${i}"/></svg>`;
+ // Sin deformar (pintura.fit): escala única que entra en el rectángulo del equipo, centrada.
+ const [cw,ch]=fronts.items[d.shell].sourceProjectionExtent||[pw,h],k=Math.min(pw/cw,h/ch),dw=cw*k,dh=ch*k,ox=(pw-dw)/2,oy=(h-dh)/2;
+ let out='';for(let t=0;t<tiles;t++)out+=`<svg x="${x+t*pw+ox}" y="${y+oy}" width="${dw}" height="${dh}" viewBox="0 0 1 1" preserveAspectRatio="none" overflow="hidden"><use href="#abb-front-${i}"/></svg>`;
  return out+tieBarSvg(d,x,y,tiles)+markingSvg(d,x,y);
 }
 // Marcado impreso del equipo real (apariencias_abb.json -> marking, en mm). Misma lógica que marcado.resolve (Python):
@@ -447,12 +452,10 @@ const importPdf=async(file,fresh)=>{if(!file)return;notice('Leyendo PDF…');
     if(fresh){await fetch('/api/project?id='+encodeURIComponent(projectId),{method:'DELETE'});sessionStorage.setItem('abb-notice',msg);window.history.replaceState(null,'','?id=ts4#projects');location.reload();return}render();return notice(msg)}
    showScreen('editor');notice(auto.ok?`Tablero armado en ${auto.gabinete} con ${add.length} equipo(s).`+(nd.length?` Sin dibujar (no están en el catálogo, pero van a la lista de materiales): ${nd.map(d=>(d.circuit||d.tag)+' '+(d.model||'')).join(', ')}.`:''):`No se pudo armar solo: ${auto.error}`)};
   $('pdf').onchange=async e=>{await importPdf(e.target.files[0],false);e.target.value=''};$('pdfNew').onchange=async e=>{await importPdf(e.target.files[0],true);e.target.value=''};$('importMore').onclick=()=>{$('moreMenu').hidden=true;$('pdf').click()};
-  const mainDevice=()=>project.devices.find(d=>/^QS/.test(d.tag||''))||project.devices.find(d=>/PRINCIPAL|GENERAL|SECCIONADOR/i.test(d.evidence||''))||(project.devices.filter(d=>!d.circuit).length===1?project.devices.find(d=>!d.circuit):null);
   const syncSignalsToggle=()=>{$('signalsToggle').checked=!!(project.signals?.pilotLights||[]).length};
-  $('signalsToggle').onchange=async e=>{$('moreMenu').hidden=true;snapshot();
-   if(e.target.checked){const m=mainDevice(),poles=m?.poles||(m?.shell||'').match(/\.(\d)p/)?.[1]||3,phases=+poles>=3?['R','S','T']:['R'],def=catalog.signalDefaults||{};
-    project.signals={pilotLights:phases.map(p=>({label:p,function:'presencia de tensión',voltage:def.voltage||'220 Vca'})),fuses:{count:phases.length,type:'tabaquera',rating:`${def.fuseA||1} A`},origin:'agregado en el editor'}}
-   else project.signals=null;
+  $('signalsToggle').onchange=async e=>{$('moreMenu').hidden=true;
+   if(e.target.checked){const r=await fetch('/api/signals-default',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(project)});const sig=await r.json();if(!r.ok){syncSignalsToggle();return notice(sig.error)}snapshot();project.signals=sig}
+   else{snapshot();project.signals=null}
    const auto=await runAuto(false,project.enclosure.id);if(!auto.ok){const auto2=await runAuto(false);if(!auto2.ok)return}
    syncSignalsToggle();notice(e.target.checked?`Testigos ${project.signals.pilotLights.map(l=>l.label).join('-')} en la puerta y sus fusibles en el riel.`:'Testigos y fusibles quitados.')};
   const dz=$('dropPdf');dz.ondragover=e=>{e.preventDefault();dz.classList.add('over')};dz.ondragleave=()=>dz.classList.remove('over');dz.ondrop=async e=>{e.preventDefault();dz.classList.remove('over');await importPdf(e.dataTransfer.files[0],true)};

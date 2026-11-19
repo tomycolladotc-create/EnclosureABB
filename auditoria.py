@@ -17,8 +17,15 @@ def _f(level, code, message, tags=()):
     return {"level": level, "code": code, "message": message, "tags": list(tags), "origen": "auditoria"}
 
 
-def rated_current(device):
-    """Corriente nominal en A leída del frente/modelo/plano. None si no se puede leer sin adivinar."""
+def _import_rules():
+    import json
+    from pathlib import Path
+    return json.loads((Path(__file__).resolve().parent / "datos" / "catalogo_abb.json").read_text(encoding="utf-8"))["importRules"]
+
+
+def rated_current(device, rules=None):
+    """Corriente nominal en A: la del frente (marking.In) o la del modelo según importRules.ratedCurrentPatterns del catálogo.
+    None si no se puede leer sin adivinar."""
     marking = device.get("marking") or {}
     raw = marking.get("In")
     if raw:
@@ -26,30 +33,29 @@ def rated_current(device):
             return float(str(raw).replace(",", "."))
         except ValueError:
             pass
+    rules = rules or _import_rules()
     model = str(device.get("model") or "")
-    patterns = (
-        r"^E\d\.\d[A-Z]\s+(\d+)",            # Emax 2: E2.2N 2000
-        r"\b(\d+)\s*A\s*$",                  # Tmax T con relé electrónico: ... 320A
-        r"^XT\d[A-Z]?\s+\d+\s+TM[A-Z]+\s+(\d+)",  # Tmax XT: XT1S 160 TMD 125-1250 -> 125
-        r"^OT\s?(\d+)",                      # OT100F4
-        r"-\s?[BCDKZ]\s?(\d+(?:[.,]\d+)?)\b",  # S804S-C100, S 293-C 80
-    )
-    for pattern in patterns:
+    for pattern in rules["ratedCurrentPatterns"]:
         found = re.search(pattern, model, re.IGNORECASE)
         if found:
             return float(found.group(1).replace(",", "."))
-    found = re.search(r"\b\dx(\d+)\s*-\s*\d", str(device.get("evidence") or ""))  # columna "I Nom - Icc": 3x80 - 10kA
+    found = re.search(rules["ratedCurrentEvidencePattern"], str(device.get("evidence") or ""))  # columna "I Nom - Icc": 3x80 - 10kA
     return float(found.group(1)) if found else None
 
 
-def main_device(project):
-    """El interruptor/seccionador de entrada: QS*, o el que el plano llama PRINCIPAL/GENERAL, o el único sin circuito."""
+def main_device(project, rules=None):
+    """El interruptor/seccionador de entrada: etiqueta con mainTagPrefix (reglas_layout.json), o el que el plano nombra con
+    importRules.mainDeviceKeywords, o el único sin circuito. Única fuente: la usan el armado, los accesorios, la auditoría y la interfaz."""
+    import json
+    from pathlib import Path
     devices = project.get("devices", [])
+    prefix = json.loads((Path(__file__).resolve().parent / "datos" / "reglas_layout.json").read_text(encoding="utf-8"))["mainTagPrefix"]
     for d in devices:
-        if str(d.get("tag", "")).startswith("QS"):
+        if str(d.get("tag", "")).startswith(prefix):
             return d
+    words = (rules or _import_rules())["mainDeviceKeywords"]
     for d in devices:
-        if re.search(r"\b(PRINCIPAL|GENERAL|SECCIONADOR)\b", str(d.get("evidence") or ""), re.IGNORECASE):
+        if re.search(r"\b(" + "|".join(map(re.escape, words)) + r")\b", str(d.get("evidence") or ""), re.IGNORECASE):
             return d
     sin_circuito = [d for d in devices if not d.get("circuit")]
     return sin_circuito[0] if len(sin_circuito) == 1 else None
@@ -73,8 +79,22 @@ def _natural(text):
     return [int(t) if t.isdigit() else t for t in re.split(r"(\d+)", str(text or ""))]
 
 
+def _validation_rules():
+    import json
+    from pathlib import Path
+    return json.loads((Path(__file__).resolve().parent / "datos" / "reglas_validacion.json").read_text(encoding="utf-8"))
+
+
+def _layout_rules():
+    import json
+    from pathlib import Path
+    return json.loads((Path(__file__).resolve().parent / "datos" / "reglas_layout.json").read_text(encoding="utf-8"))
+
+
 def audit(project, catalog, rules=None, board_title=None):
-    rules = rules or {}
+    """Hallazgos de armado. Los criterios salen de datos/reglas_validacion.json (y el portaetiqueta de reglas_layout.json)."""
+    rules = {**_validation_rules(), **(rules or {})}
+    holder = _layout_rules()["labelHolderMm"]
     out = []
     devices = [d for d in project.get("devices", []) if d.get("x") is not None]
     accessories = [a for a in project.get("accessories", []) if a.get("placed", True) and a.get("x") is not None and a.get("w")]
@@ -127,7 +147,7 @@ def audit(project, catalog, rules=None, board_title=None):
     # A4 · hueco muerto entre filas (el gabinete quedó grande o la fila se armó lejos).
     boxes = devices + [a for a in accessories if a.get("type") not in ("wiring_duct", "copper_busbar", "pe_bar")]  # las barras van al borde a propósito
     rows = _rows([{**b} for b in boxes])
-    limit = rules.get("maxGapBetweenRowsMm", 200)
+    limit = rules["maxGapBetweenRowsMm"]
     for upper, lower in zip(rows, rows[1:]):
         gap = upper["bottom"] - lower["top"]
         if gap > limit:
@@ -136,8 +156,8 @@ def audit(project, catalog, rules=None, board_title=None):
     # A12 · gabinete sobredimensionado: el contenido ocupa menos de la mitad de la placa en altura
     # (lección 2026-11-19: TSMAQ1 y TS AUX 3 en 800×800 con una sola fila de riel).
     content = [b for b in boxes]
-    min_ratio = rules.get("minHeightUseRatio", 0.40)
-    if content and fh > rules.get("oversizeCheckFromMm", 400):
+    min_ratio = rules["minHeightUseRatio"]
+    if content and fh > rules["oversizeCheckFromMm"]:
         span = max(b["y"] + b["h"] for b in content) - min(b["y"] for b in content)
         if span / fh < min_ratio:
             # Aviso (no error): el usuario puede elegir a propósito un gabinete más grande (reserva, obra futura).
@@ -150,8 +170,12 @@ def audit(project, catalog, rules=None, board_title=None):
             out.append(_f("error", "busbar_undersized", f"{a.get('label')} ({a['corrienteA']:g} A) distribuye lo que entra por {main['tag']} ({feed:g} A).", [main["tag"]]))
 
     # A13 · una barra de neutro/tierra no reparte fases (lección 19: AA8010 propuesta como barra de distribución).
-    if any(a.get("type") == "copper_busbar" and a.get("catalogId") == "abb-aa8010" and a.get("devices") for a in project.get("accessories", [])):
-        out.append(_f("error", "neutral_bar_as_phase", "Se propuso la AA8010 (barra de neutro o tierra) para repartir fases.", []))
+    from accesorios import load_accessory_catalog
+    bars = {b["id"]: b for b in load_accessory_catalog().get("distributionBars", [])}
+    for a in project.get("accessories", []):
+        bar = bars.get(a.get("catalogId"))
+        if a.get("type") == "copper_busbar" and a.get("devices") and bar and bar.get("uso", "fase") != "fase":
+            out.append(_f("error", "neutral_bar_as_phase", f"Se propuso {bar.get('orderCode')} (barra de {bar['uso']}) para repartir fases.", []))
 
     # A6 · bornera PE: entrada que admita el PE de alimentación y una salida por circuito.
     pe_items = [a for a in project.get("accessories", []) if a.get("type") == "pe_terminal"]
@@ -184,10 +208,10 @@ def audit(project, catalog, rules=None, board_title=None):
             break
 
     # A11 · en System pro E cada caja moldeada necesita su kit de montaje (si no, la lista queda incompleta).
-    if "System pro E" in str(enclosure.get("line", "")):
+    if enclosure.get("moldedCaseOnKits"):
         sin_kit = [d["tag"] for d in devices if shells.get(d.get("shell"), {}).get("mounting") != "din" and not d.get("mountingKit")]
         if sin_kit:
-            out.append(_f("error", "spe_kit_missing", f"En System pro E falta el kit de montaje de {', '.join(sin_kit)}.", sin_kit))
+            out.append(_f("error", "spe_kit_missing", f"En {enclosure.get('line', 'este gabinete')} falta el kit de montaje de {', '.join(sin_kit)}.", sin_kit))
 
     # A14 · cada testigo de fase de la puerta lleva su fusible, ubicado en el riel (pedido de Thomas 2026-11-19).
     lights = (project.get("signals") or {}).get("pilotLights") or []
@@ -204,7 +228,7 @@ def audit(project, catalog, rules=None, board_title=None):
         out.append(_f("warning", "board_name_mismatch", f"El tablero se llama «{project.get('project')}» y el unifilar dice «{board_title}».", []))
 
     # A10 · etiquetas que se pisan (texto ilegible en el plano).
-    labels = [{"x": d["x"], "y": d["y"] - 14, "w": d["w"], "h": 14, "tag": d["tag"]} for d in devices]
+    labels = [{"x": d["x"], "y": d["y"] - holder, "w": d["w"], "h": holder, "tag": d["tag"]} for d in devices]
     for i, a in enumerate(labels):
         for b in labels[i + 1:]:
             if a["x"] < b["x"] + b["w"] - 0.5 and b["x"] < a["x"] + a["w"] - 0.5 and a["y"] < b["y"] + b["h"] and b["y"] < a["y"] + a["h"]:

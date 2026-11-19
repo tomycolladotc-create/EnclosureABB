@@ -5,5 +5,13 @@
   "depthSafetyClearanceMm": 0,
   "fallbackMinDepthForKitDevicesMm": 200,
   "autosaveDebounceMs": 1500,
-  "note": "Las tolerancias cero evitan inventar separaciones normativas. La profundidad mínima de 200 mm es el mismo criterio provisional documentado en reglas_layout.json; se informa como advertencia, no como validación ABB."
+  "note": "Las tolerancias cero evitan inventar separaciones normativas. La profundidad mínima de 200 mm es el mismo criterio provisional documentado en reglas_layout.json; se informa como advertencia, no como validación ABB.",
+  "maxGapBetweenRowsMm": 200,
+  "minHeightUseRatio": 0.4,
+  "oversizeCheckFromMm": 400,
+  "brandLabelColors": [
+    "#e00016",
+    "#e31c23"
+  ],
+  "_ayuda_auditoria": "Criterios de auditoria.py (propuesta de diseño 2026-11-19, ajustables; no son datos de ABB): hueco máximo entre filas, uso mínimo del alto de la placa para no avisar de gabinete grande (desde qué alto de placa se controla)."
 }

@@ -4,8 +4,13 @@ Los rieles (posición y largo) los define el gabinete en datos/catalogo_abb.json
 Si un equipo no entra, queda marcado `unplaced` y el control de normativa lo avisa.
 Solo se ubican equipos de riel DIN; los de kit (XT, OT) siguen ubicándose a mano.
 """
-GAP_OTHER_SERIES_MM = 4.0  # separación entre equipos de distinta carcasa (criterio de layout, ajustable acá)
-GAP_SAME_SERIES_MM = 0.0   # equipos de la misma carcasa van pegados, así el peine los puede unir
+import json
+from pathlib import Path
+
+# La misma regla que el armado automático (layout_auto.py): distinta carcasa → colGap; misma carcasa → pegados (peine).
+# Antes acá había 4 mm fijos y el armado usaba 25 mm: ubicar a mano y armar solo daban resultados distintos (2026-11-19).
+GAP_OTHER_SERIES_MM = float(json.loads((Path(__file__).resolve().parent / "datos" / "reglas_layout.json").read_text(encoding="utf-8"))["colGap"])
+GAP_SAME_SERIES_MM = 0.0
 
 
 def _gap(a_shell, b_shell):

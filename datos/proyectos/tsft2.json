@@ -1,0 +1,248 @@
+{
+  "schemaVersion": 1,
+  "project": "TSFT2",
+  "units": "mm",
+  "view": "interior-frontal",
+  "scaleOnSheet": "1:10",
+  "enclosure": {
+    "id": "sr2-srn3415k",
+    "line": "ABB SR2 · gabinete monobloc IP65",
+    "functional": {
+      "width": 360,
+      "height": 260,
+      "depth": 150
+    },
+    "externalBody": {
+      "width": 403,
+      "height": 303,
+      "depth": 150
+    },
+    "plinthHeight": 0,
+    "overallHeightWithPlinth": 303,
+    "functionalAreaOffset": {
+      "x": 21.5,
+      "y": 21.5
+    },
+    "mountingLayout": {
+      "status": "placa interna ciega PF3040; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
+      "dinRails": [
+        {
+          "type": "GD4006",
+          "orderCode": "GD4006",
+          "length": 280,
+          "height": 35,
+          "cutFromMm": 400,
+          "id": "DIN-1",
+          "x": 40,
+          "y": 110
+        }
+      ]
+    },
+    "structuralComponentReferences": {
+      "parts": [
+        "SRN3415K",
+        "PF3040"
+      ]
+    },
+    "sources": [
+      "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)"
+    ],
+    "floorStanding": false,
+    "moldedCaseOnKits": false
+  },
+  "devices": [
+    {
+      "tag": "QD140",
+      "circuit": null,
+      "evidence": "F204 AC-40/0,03 DIFERENCIAL DE CABECERA RSTN BARRA DE DISTRIBUCIÓN B9 - U = 372,2 V -",
+      "shell": "abb.f204.4p.front",
+      "series": "f204-4p",
+      "model": "F204 AC-40/0,03",
+      "poles": 4,
+      "marking": {},
+      "w": 70,
+      "h": 90.4,
+      "status": "detectado; revisar modelo y polos",
+      "upstream": false,
+      "x": 40,
+      "y": 64.8
+    },
+    {
+      "tag": "QF53",
+      "circuit": "TSFT2-1",
+      "evidence": "S204L-C324x6+PE6 mm² Cu ACU TSFT2-1 RSTN 14,69 26,8 Food truck 2 ABB 4x32 - 6kA IRAM 2178",
+      "shell": "abb.s200m.1p.front",
+      "series": "s200-polos",
+      "model": "S204L-C32",
+      "poles": 4,
+      "marking": {
+        "serie": "S204L",
+        "serieS": "S 204L",
+        "curva": "C",
+        "In": "32",
+        "sufijoGuion": "",
+        "kA": "6",
+        "Icn": "6000"
+      },
+      "w": 70.0,
+      "h": 88,
+      "status": "detectado; revisar modelo y polos",
+      "upstream": false,
+      "x": 135,
+      "y": 66
+    }
+  ],
+  "accessories": [
+    {
+      "type": "pe_terminal",
+      "style": "repartidor",
+      "auto": true,
+      "catalogId": "te-dbl125-pe",
+      "count": 7,
+      "blocks": 1,
+      "blockW": 28.2,
+      "stopW": 10,
+      "outputs": 7,
+      "inputs": 1,
+      "w": 48.2,
+      "h": 75,
+      "label": "Bornera PE DBL125 x1",
+      "provisional": true,
+      "placed": true,
+      "x": 271.8,
+      "y": 72.5,
+      "bomCategory": "Bornera de tierra (PE)",
+      "orderCode": "1SNL312510R0000",
+      "quantity": 1,
+      "description": "Repartidor unipolar DBL125 125 A como bornera equipotencial PE: 1 entrada 10…35 mm² + 7 salidas 2,5…16 mm², marcador PE (TE Connectivity ENTRELEC (ex ABB Entrelec))",
+      "bomExtra": [
+        {
+          "bomCategory": "Bornera de tierra (PE)",
+          "orderCode": "1SNK900001R0000",
+          "quantity": 2,
+          "description": "Tope de fin de bornera BAM4 (10 mm), uno en cada punta"
+        }
+      ]
+    },
+    {
+      "type": "signal_fuses",
+      "auto": true,
+      "catalogId": "abb-e91-32",
+      "fuseCatalogId": "abb-e9f10-gg1",
+      "count": 3,
+      "poleW": 18,
+      "phases": [
+        "R",
+        "S",
+        "T"
+      ],
+      "w": 54,
+      "h": 85,
+      "label": "Fusibles testigos x3",
+      "provisional": false,
+      "placed": true,
+      "x": 217.8,
+      "y": 67.5,
+      "bomCategory": "Señalización",
+      "orderCode": "2CSM200923R1801",
+      "quantity": 3,
+      "description": "Portafusible E 91/32 1P 10x38 (tabaquera) para los testigos de fase R-S-T (ABB)",
+      "bomExtra": [
+        {
+          "bomCategory": "Señalización",
+          "orderCode": "2CSM277113R1801",
+          "quantity": 3,
+          "description": "Fusible E 9F10 GG1 Fusible cilíndrico 10x38 gG 1 A para los testigos · código de distribuidor (no de la ficha ABB): confirmar antes de comprar"
+        }
+      ]
+    },
+    {
+      "type": "terminal_cover",
+      "auto": true,
+      "catalogId": null,
+      "label": "Cubrebornes",
+      "provisional": true,
+      "bomCategory": "Cubrebornes",
+      "orderCode": null,
+      "quantity": 1,
+      "description": "Cubrebornes transparente (barrera aislante); código por definir"
+    },
+    {
+      "type": "wiring_duct",
+      "auto": true,
+      "provisional": true,
+      "catalogId": "wiringDucts",
+      "orderCode": "1SL9043A00",
+      "orientation": "h",
+      "label": "Canaleta 25x40 1SL9043A00",
+      "x": 15,
+      "y": 20.8,
+      "w": 330,
+      "h": 25,
+      "sectionMm": 25,
+      "depthMm": 40,
+      "slot": "8x12",
+      "lengthMm": 330,
+      "note": "canaleta propuesta; sección no dimensionada por llenado de cables",
+      "bomCategory": "Canaleta",
+      "quantity": 1,
+      "description": "Canaleta ranurada 25x40 mm, gris RAL 7035, ranura 8x12; largo a cortar 330 mm (tira de 2000 mm)"
+    },
+    {
+      "type": "wiring_duct",
+      "auto": true,
+      "provisional": true,
+      "catalogId": "wiringDucts",
+      "orderCode": "1SL9047A00",
+      "orientation": "h",
+      "label": "Canaleta 60x40 1SL9047A00",
+      "x": 15,
+      "y": 160.2,
+      "w": 330,
+      "h": 60,
+      "sectionMm": 60,
+      "depthMm": 40,
+      "slot": "8x12",
+      "lengthMm": 330,
+      "note": "canaleta propuesta; sección no dimensionada por llenado de cables",
+      "bomCategory": "Canaleta",
+      "quantity": 1,
+      "description": "Canaleta ranurada 60x40 mm, gris RAL 7035, ranura 8x12; largo a cortar 330 mm (tira de 2000 mm)"
+    }
+  ],
+  "devicesNotDrawn": [],
+  "signals": {
+    "pilotLights": [
+      {
+        "label": "R",
+        "function": "presencia de tensión",
+        "voltage": "220 Vca"
+      },
+      {
+        "label": "S",
+        "function": "presencia de tensión",
+        "voltage": "220 Vca"
+      },
+      {
+        "label": "T",
+        "function": "presencia de tensión",
+        "voltage": "220 Vca"
+      }
+    ],
+    "fuses": {
+      "count": 3,
+      "type": "tabaquera",
+      "rating": "1 A"
+    },
+    "evidence": "Presencia de Tensión RST N (x3) (x3) Fusible tabaquera 1 A Testigo de fase 220 Vca"
+  },
+  "source": "TSFT2.pdf",
+  "feeder": {
+    "from": "TGBT",
+    "upstreamTag": "QF16",
+    "upstreamModel": "S804S-C32",
+    "cable": "WC15 - 4x10+PE10 mm² Cu PVC - L = 74 m",
+    "peMm2": 10,
+    "peParallel": 1
+  }
+}

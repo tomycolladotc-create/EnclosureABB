@@ -25,5 +25,10 @@
   "_ayuda_pe": "Bornera de tierra por defecto (id de datos/accesorios_abb.json → earthTerminals). Con 'repartidor' se usa un bloque por cada N salidas (N del catálogo) y un tope en cada punta. 'entrelec-m4-6p' vuelve a los bornes individuales.",
   "ductBandMm": 50,
   "labelHolderMm": 14,
-  "_ayuda_ductBandMm": "Lección 2026-11-19 (revisión de los 24 tableros del GENERAL): toda fila de equipos lleva canaleta arriba y abajo. Se reserva una franja de canaleta (40 mm + 2×5 de aire) sobre la primera fila y entre filas de cajas moldeadas (además del portaetiqueta, labelHolderMm). Antes, con 40 mm de margen/separación, no entraba ninguna canaleta y las cajas quedaban sin cablear."
+  "_ayuda_ductBandMm": "Lección 2026-11-19 (revisión de los 24 tableros del GENERAL): toda fila de equipos lleva canaleta arriba y abajo. Se reserva una franja de canaleta (40 mm + 2×5 de aire) sobre la primera fila y entre filas de cajas moldeadas (además del portaetiqueta, labelHolderMm). Antes, con 40 mm de margen/separación, no entraba ninguna canaleta y las cajas quedaban sin cablear.",
+  "contiguousGapMm": 1.0,
+  "railTerminalBandMm": 22.25,
+  "busbarMarginMm": 40,
+  "combFaceFallbackMm": 18,
+  "_ayuda_constantes": "Antes estaban en el código (accesorios.py, normativa.py, colocar.py). contiguousGapMm: separación máxima para considerar dos equipos pegados (peine posible). railTerminalBandMm: mitad del alto de un borne de riel (44,5 mm), franja que ocupa alrededor del eje del riel. busbarMarginMm: separación de la barra al borde de la placa (criterio, no dato ABB). combFaceFallbackMm: alto esquemático del peine cuando el catálogo no lo trae (se marca provisorio). La separación entre equipos de distinta carcasa en el riel es colGap tanto en el armado automático como al ubicar a mano."
 }

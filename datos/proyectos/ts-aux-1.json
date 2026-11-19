@@ -1,0 +1,389 @@
+{
+  "schemaVersion": 1,
+  "project": "TS AUX 1",
+  "units": "mm",
+  "view": "interior-frontal",
+  "scaleOnSheet": "1:10",
+  "enclosure": {
+    "id": "sr2-srn7520k",
+    "line": "ABB SR2 · gabinete monobloc IP65",
+    "functional": {
+      "width": 460,
+      "height": 660,
+      "depth": 200
+    },
+    "externalBody": {
+      "width": 503,
+      "height": 703,
+      "depth": 200
+    },
+    "plinthHeight": 0,
+    "overallHeightWithPlinth": 703,
+    "functionalAreaOffset": {
+      "x": 21.5,
+      "y": 21.5
+    },
+    "mountingLayout": {
+      "status": "placa interna ciega PF7050; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
+      "dinRails": [
+        {
+          "type": "GD4006",
+          "orderCode": "GD4006",
+          "length": 380,
+          "height": 35,
+          "cutFromMm": 400,
+          "id": "DIN-1",
+          "x": 40,
+          "y": 320
+        }
+      ]
+    },
+    "structuralComponentReferences": {
+      "parts": [
+        "SRN7520K",
+        "PF7050"
+      ]
+    },
+    "sources": [
+      "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)"
+    ],
+    "floorStanding": false,
+    "moldedCaseOnKits": false
+  },
+  "devices": [
+    {
+      "tag": "QS1",
+      "circuit": null,
+      "evidence": "OT160EV03 SECCIONADOR BAJO CARGA 160 A - 3P RST BARRA DE DISTRIBUCIÓN B4 - U = 369,4 V",
+      "shell": "abb.ot160_250e03.3p.front",
+      "series": "ot160-250-e03",
+      "model": "OT160EV03",
+      "poles": 3,
+      "marking": {
+        "serie": "OT160EV03",
+        "serieS": "OT 160EV03",
+        "sufijoGuion": ""
+      },
+      "w": 166.9,
+      "h": 150,
+      "status": "detectado; revisar modelo y polos",
+      "upstream": false,
+      "x": 146.55,
+      "y": 445
+    },
+    {
+      "tag": "QF36",
+      "circuit": "TA-1.1",
+      "evidence": "S 293-C 803x25+PE16 mm² Cu ACU TA-1.1 RST 32,63 60,0 Rooftop York D2CG300 ABB 3x80 - 10kA",
+      "shell": "abb.s290.3p.outline",
+      "series": "s290-3p",
+      "model": "S 293-C 80",
+      "poles": 3,
+      "marking": {
+        "serie": "S293",
+        "serieS": "S 293",
+        "curva": "C",
+        "In": "80",
+        "sufijoGuion": "",
+        "kA": "10",
+        "Icn": "10000"
+      },
+      "w": 78.8,
+      "h": 90,
+      "status": "detectado; revisar modelo y polos",
+      "upstream": false,
+      "x": 40,
+      "y": 275
+    },
+    {
+      "tag": "QF37",
+      "circuit": "TA-1.2",
+      "evidence": "S203-C503x16+PE16 mm² Cu ACU TA-1.2 RST 26,10 48,0 Equipo rooftop ABB 3x50 - 6kA IRAM 217",
+      "shell": "abb.s200m.1p.front",
+      "series": "s200-polos",
+      "model": "S203-C50",
+      "poles": 3,
+      "marking": {
+        "serie": "S203",
+        "serieS": "S 203",
+        "curva": "C",
+        "In": "50",
+        "sufijoGuion": "",
+        "kA": "6",
+        "Icn": "6000"
+      },
+      "w": 52.5,
+      "h": 88,
+      "status": "detectado; revisar modelo y polos",
+      "upstream": false,
+      "x": 143.8,
+      "y": 276
+    },
+    {
+      "tag": "QF38",
+      "circuit": "TA-1.3",
+      "evidence": "S203-C253x4+PE4 mm² Cu ACU TA-1.3 RST 13,05 24,0 Equipo rooftop ABB 3x25 - 6kA IRAM 2178",
+      "shell": "abb.s200m.1p.front",
+      "series": "s200-polos",
+      "model": "S203-C25",
+      "poles": 3,
+      "marking": {
+        "serie": "S203",
+        "serieS": "S 203",
+        "curva": "C",
+        "In": "25",
+        "sufijoGuion": "",
+        "kA": "6",
+        "Icn": "6000"
+      },
+      "w": 52.5,
+      "h": 88,
+      "status": "detectado; revisar modelo y polos",
+      "upstream": false,
+      "x": 196.3,
+      "y": 276
+    },
+    {
+      "tag": "QF39",
+      "circuit": "TA-1.4",
+      "evidence": "S203-C403x10+PE10 mm² Cu ACU TA-1.4 RST 19,58 36,0 Rooftop York D2CG300 ABB 3x40 - 6kA IR",
+      "shell": "abb.s200m.1p.front",
+      "series": "s200-polos",
+      "model": "S203-C40",
+      "poles": 3,
+      "marking": {
+        "serie": "S203",
+        "serieS": "S 203",
+        "curva": "C",
+        "In": "40",
+        "sufijoGuion": "",
+        "kA": "6",
+        "Icn": "6000"
+      },
+      "w": 52.5,
+      "h": 88,
+      "status": "detectado; revisar modelo y polos",
+      "upstream": false,
+      "x": 248.8,
+      "y": 276
+    }
+  ],
+  "accessories": [
+    {
+      "type": "pe_terminal",
+      "style": "repartidor",
+      "auto": true,
+      "catalogId": "te-dbl125-pe",
+      "count": 7,
+      "blocks": 1,
+      "blockW": 28.2,
+      "stopW": 10,
+      "outputs": 7,
+      "inputs": 1,
+      "w": 48.2,
+      "h": 75,
+      "label": "Bornera PE DBL125 x1",
+      "provisional": true,
+      "placed": true,
+      "x": 371.8,
+      "y": 282.5,
+      "bomCategory": "Bornera de tierra (PE)",
+      "orderCode": "1SNL312510R0000",
+      "quantity": 1,
+      "description": "Repartidor unipolar DBL125 125 A como bornera equipotencial PE: 1 entrada 10…35 mm² + 7 salidas 2,5…16 mm², marcador PE (TE Connectivity ENTRELEC (ex ABB Entrelec))",
+      "bomExtra": [
+        {
+          "bomCategory": "Bornera de tierra (PE)",
+          "orderCode": "1SNK900001R0000",
+          "quantity": 2,
+          "description": "Tope de fin de bornera BAM4 (10 mm), uno en cada punta"
+        }
+      ]
+    },
+    {
+      "type": "signal_fuses",
+      "auto": true,
+      "catalogId": "abb-e91-32",
+      "fuseCatalogId": "abb-e9f10-gg1",
+      "count": 3,
+      "poleW": 18,
+      "phases": [
+        "R",
+        "S",
+        "T"
+      ],
+      "w": 54,
+      "h": 85,
+      "label": "Fusibles testigos x3",
+      "provisional": false,
+      "placed": true,
+      "x": 317.8,
+      "y": 277.5,
+      "bomCategory": "Señalización",
+      "orderCode": "2CSM200923R1801",
+      "quantity": 3,
+      "description": "Portafusible E 91/32 1P 10x38 (tabaquera) para los testigos de fase R-S-T (ABB)",
+      "bomExtra": [
+        {
+          "bomCategory": "Señalización",
+          "orderCode": "2CSM277113R1801",
+          "quantity": 3,
+          "description": "Fusible E 9F10 GG1 Fusible cilíndrico 10x38 gG 1 A para los testigos · código de distribuidor (no de la ficha ABB): confirmar antes de comprar"
+        }
+      ]
+    },
+    {
+      "type": "terminal_cover",
+      "auto": true,
+      "catalogId": null,
+      "label": "Cubrebornes",
+      "provisional": true,
+      "bomCategory": "Cubrebornes",
+      "orderCode": null,
+      "quantity": 1,
+      "description": "Cubrebornes transparente (barrera aislante); código por definir"
+    },
+    {
+      "type": "comb",
+      "auto": true,
+      "catalogId": "abb-ps3-12",
+      "corrienteA": 63,
+      "orderCode": "2CDL230001R1012",
+      "devices": [
+        "QF37",
+        "QF38",
+        "QF39"
+      ],
+      "x": 143.8,
+      "y": 364,
+      "w": 157.5,
+      "h": 18,
+      "pitchMm": 17.5,
+      "poleCount": 9,
+      "label": "Peine 2CDL230001R1012",
+      "provisional": true,
+      "note": null,
+      "bomCategory": "Peine",
+      "quantity": 1,
+      "description": "Peine de conexión PS3/12 (12 pines por pieza) para 9 polos (paso 17.5 mm), equipos: QF37, QF38, QF39"
+    },
+    {
+      "type": "distribution_block",
+      "auto": true,
+      "provisional": true,
+      "needsConfirmation": true,
+      "decision": "confirmed",
+      "devices": [
+        "QS1",
+        "QF36"
+      ],
+      "needA": 160,
+      "catalogId": null,
+      "label": "Barra de distribución",
+      "placed": false,
+      "note": "el catálogo no tiene bloque ni barra de 160 A o más: dimensionar la barra según IEC 61439 o tabla del fabricante",
+      "bomCategory": "Barra de distribución",
+      "quantity": 1,
+      "orderCode": null,
+      "description": "Barra/juego de barras de distribución de al menos 160 A (lo que entra por el general), a dimensionar"
+    },
+    {
+      "type": "wiring_duct",
+      "auto": true,
+      "provisional": true,
+      "catalogId": "wiringDucts",
+      "orderCode": "1SL9049A00",
+      "orientation": "h",
+      "label": "Canaleta 80x40 1SL9049A00",
+      "x": 15,
+      "y": 176,
+      "w": 430,
+      "h": 80,
+      "sectionMm": 80,
+      "depthMm": 40,
+      "slot": "8x12",
+      "lengthMm": 430,
+      "note": "canaleta propuesta; sección no dimensionada por llenado de cables",
+      "bomCategory": "Canaleta",
+      "quantity": 1,
+      "description": "Canaleta ranurada 80x40 mm, gris RAL 7035, ranura 8x12; largo a cortar 430 mm (tira de 2000 mm)"
+    },
+    {
+      "type": "wiring_duct",
+      "auto": true,
+      "provisional": true,
+      "catalogId": "wiringDucts",
+      "orderCode": "1SL9043A00",
+      "orientation": "h",
+      "label": "Canaleta 25x40 1SL9043A00",
+      "x": 15,
+      "y": 394,
+      "w": 430,
+      "h": 25,
+      "sectionMm": 25,
+      "depthMm": 40,
+      "slot": "8x12",
+      "lengthMm": 430,
+      "note": "canaleta propuesta; sección no dimensionada por llenado de cables",
+      "bomCategory": "Canaleta",
+      "quantity": 1,
+      "description": "Canaleta ranurada 25x40 mm, gris RAL 7035, ranura 8x12; largo a cortar 430 mm (tira de 2000 mm)"
+    },
+    {
+      "type": "wiring_duct",
+      "auto": true,
+      "provisional": true,
+      "catalogId": "wiringDucts",
+      "orderCode": "1SL9045A00",
+      "orientation": "h",
+      "label": "Canaleta 40x40 1SL9045A00",
+      "x": 15,
+      "y": 600,
+      "w": 430,
+      "h": 40,
+      "sectionMm": 40,
+      "depthMm": 40,
+      "slot": "8x12",
+      "lengthMm": 430,
+      "note": "canaleta propuesta; sección no dimensionada por llenado de cables",
+      "bomCategory": "Canaleta",
+      "quantity": 1,
+      "description": "Canaleta ranurada 40x40 mm, gris RAL 7035, ranura 8x12; largo a cortar 430 mm (tira de 2000 mm)"
+    }
+  ],
+  "devicesNotDrawn": [],
+  "signals": {
+    "pilotLights": [
+      {
+        "label": "R",
+        "function": "presencia de tensión",
+        "voltage": "220 Vca"
+      },
+      {
+        "label": "S",
+        "function": "presencia de tensión",
+        "voltage": "220 Vca"
+      },
+      {
+        "label": "T",
+        "function": "presencia de tensión",
+        "voltage": "220 Vca"
+      }
+    ],
+    "fuses": {
+      "count": 3,
+      "type": "tabaquera",
+      "rating": "1 A"
+    },
+    "evidence": "Presencia de Tensión RST N (x3) (x3) Fusible tabaquera 1 A Testigo de fase 220 Vca"
+  },
+  "source": "TS_AUX_1.pdf",
+  "feeder": {
+    "from": "TGBT",
+    "upstreamTag": "QF10",
+    "upstreamModel": "T2S 160 PR221DS-LS 160A",
+    "cable": "WC9 - 3x50+PE25 mm² Cu PVC - L = 94 m",
+    "peMm2": 25,
+    "peParallel": 1
+  }
+}

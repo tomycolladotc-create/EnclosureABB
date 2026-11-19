@@ -76,7 +76,16 @@
         "moduleHeight": 200,
         "quantity": 1
       },
-      "circuit": "TS-4.2"
+      "circuit": "TS-4.2",
+      "marking": {
+        "serie": "XT1C",
+        "serieS": "XT 1C",
+        "sufijoGuion": "",
+        "frame": "160",
+        "trip": "TMD",
+        "In": "80",
+        "setting": "800"
+      }
     },
     {
       "tag": "QF83",
@@ -94,7 +103,16 @@
         "moduleHeight": 200,
         "quantity": 1
       },
-      "circuit": "TS-4.3"
+      "circuit": "TS-4.3",
+      "marking": {
+        "serie": "XT1C",
+        "serieS": "XT 1C",
+        "sufijoGuion": "",
+        "frame": "160",
+        "trip": "TMD",
+        "In": "80",
+        "setting": "800"
+      }
     },
     {
       "tag": "QF84",
@@ -112,7 +130,16 @@
         "moduleHeight": 200,
         "quantity": 1
       },
-      "circuit": "TS-4.4"
+      "circuit": "TS-4.4",
+      "marking": {
+        "serie": "XT1C",
+        "serieS": "XT 1C",
+        "sufijoGuion": "",
+        "frame": "160",
+        "trip": "TMD",
+        "In": "80",
+        "setting": "800"
+      }
     },
     {
       "tag": "QF88",
@@ -130,7 +157,16 @@
         "moduleHeight": 200,
         "quantity": 1
       },
-      "circuit": "TS-4.11"
+      "circuit": "TS-4.11",
+      "marking": {
+        "serie": "XT2N",
+        "serieS": "XT 2N",
+        "sufijoGuion": "",
+        "frame": "160",
+        "trip": "TMG",
+        "In": "80",
+        "setting": "240"
+      }
     },
     {
       "tag": "QF86",
@@ -148,7 +184,16 @@
         "moduleHeight": 200,
         "quantity": 1
       },
-      "circuit": "TS-4.9"
+      "circuit": "TS-4.9",
+      "marking": {
+        "serie": "XT1C",
+        "serieS": "XT 1C",
+        "sufijoGuion": "",
+        "frame": "160",
+        "trip": "TMD",
+        "In": "80",
+        "setting": "800"
+      }
     },
     {
       "tag": "QF87",
@@ -166,7 +211,16 @@
         "moduleHeight": 200,
         "quantity": 1
       },
-      "circuit": "TS-4.10"
+      "circuit": "TS-4.10",
+      "marking": {
+        "serie": "XT1C",
+        "serieS": "XT 1C",
+        "sufijoGuion": "",
+        "frame": "160",
+        "trip": "TMD",
+        "In": "80",
+        "setting": "800"
+      }
     },
     {
       "tag": "QF163",
@@ -184,7 +238,16 @@
         "moduleHeight": 200,
         "quantity": 1
       },
-      "circuit": "TSMAQ2"
+      "circuit": "TSMAQ2",
+      "marking": {
+        "serie": "XT1C",
+        "serieS": "XT 1C",
+        "sufijoGuion": "",
+        "frame": "160",
+        "trip": "TMD",
+        "In": "80",
+        "setting": "800"
+      }
     },
     {
       "tag": "QF81",
@@ -195,7 +258,14 @@
       "h": 95,
       "status": "manufacturer dimensions; exact CAD front pending",
       "shell": "abb.s804n.4p.front",
-      "circuit": "TS-4.1"
+      "circuit": "TS-4.1",
+      "marking": {
+        "serie": "S804N",
+        "serieS": "S 804N",
+        "curva": "C",
+        "In": "32",
+        "sufijoGuion": ""
+      }
     },
     {
       "tag": "QF85",
@@ -206,42 +276,64 @@
       "h": 95,
       "status": "manufacturer dimensions; exact CAD front pending",
       "shell": "abb.s804n.4p.front",
-      "circuit": "TS-4.8"
+      "circuit": "TS-4.8",
+      "marking": {
+        "serie": "S804N",
+        "serieS": "S 804N",
+        "curva": "C",
+        "In": "32",
+        "sufijoGuion": ""
+      }
     },
     {
       "tag": "QF89",
       "model": "S251 Na C10 1P+N 6kA",
       "x": 630,
-      "y": 761.0,
+      "y": 761,
       "w": 35,
       "h": 88,
       "status": "detectado; carcasa compartida sin confirmar (S251 Na tratado como S201 NA)",
       "shell": "abb.s200m.1pn.front",
       "abbHistoricCode": "16060722 / EF0722",
       "poles": 2,
-      "circuit": "TSI-6"
+      "circuit": "TSI-6",
+      "marking": {
+        "serie": "S251",
+        "serieS": "S 251",
+        "sufijo": "NA",
+        "sufijoGuion": "-NA"
+      }
     },
     {
       "tag": "QF90",
       "model": "S201M-C10NA 1P+N 10kA",
       "x": 750,
-      "y": 761.0,
+      "y": 761,
       "w": 35,
       "h": 88,
       "status": "carcasa ABB 1P+N; inscripción C10 pendiente de integrar",
       "shell": "abb.s200m.1pn.front",
       "abbOrderCode": "2CDS271103R0104",
-      "circuit": "TSI-7"
+      "circuit": "TSI-7",
+      "marking": {
+        "serie": "S201M",
+        "serieS": "S 201M",
+        "curva": "C",
+        "In": "10",
+        "sufijo": "NA",
+        "sufijoGuion": "-NA"
+      }
     },
     {
       "tag": "QS1",
       "model": "OT400E04P 4P 400A",
       "x": 145,
       "y": 1570,
-      "w": 235,
+      "w": 258.0,
       "h": 185,
       "status": "variante P ofrecida en Argentina; validar montaje de manija y eje antes de fabricación",
-      "shell": "abb.ot400e04.4p.front"
+      "shell": "abb.ot400e04.4p.front",
+      "marking": {}
     }
   ],
   "conceptualAssembly": {
@@ -272,5 +364,222 @@
     "Outer dimensions are ABB System pro E power 185 mm catalogue 2024 dimensions for functional H=2100, W=1000, D=500. The 100 mm plinth is shown as a separate optional base and is included in overall height.",
     "ABB internal kits PHDX1401 (6x XT1, 3/4P fixed, H=200) and PHDX2401 (1x XT2, 3/4P fixed, H=200) are identified from ABB catalog. This is not yet a complete manufacturer-approved assembly BOM.",
     "Nombres de circuito (campo circuit) tomados de la columna 'Circuito' del unifilar BAF-E-EL-PL-104-0 Unifilares-25_GENERAL.pdf, 2026-11-16."
+  ],
+  "accessories": [
+    {
+      "type": "pe_terminal",
+      "style": "repartidor",
+      "auto": true,
+      "catalogId": "te-dbl125-pe",
+      "count": 14,
+      "blocks": 2,
+      "blockW": 28.2,
+      "stopW": 10,
+      "outputs": 7,
+      "inputs": 1,
+      "w": 76.4,
+      "h": 75,
+      "label": "Bornera PE DBL125 x2",
+      "provisional": true,
+      "placed": true,
+      "x": 673.6,
+      "y": 767.5,
+      "bomCategory": "Bornera de tierra (PE)",
+      "orderCode": "1SNL312510R0000",
+      "quantity": 2,
+      "description": "Repartidor unipolar DBL125 125 A como bornera equipotencial PE: 1 entrada 10…35 mm² + 7 salidas 2,5…16 mm², marcador PE (TE Connectivity ENTRELEC (ex ABB Entrelec))",
+      "bomExtra": [
+        {
+          "bomCategory": "Bornera de tierra (PE)",
+          "orderCode": "1SNK900001R0000",
+          "quantity": 2,
+          "description": "Tope de fin de bornera BAM4 (10 mm), uno en cada punta"
+        }
+      ]
+    },
+    {
+      "type": "terminal_cover",
+      "auto": true,
+      "catalogId": null,
+      "label": "Cubrebornes",
+      "provisional": true,
+      "bomCategory": "Cubrebornes",
+      "orderCode": null,
+      "quantity": 1,
+      "description": "Cubrebornes transparente (barrera aislante); código por definir"
+    },
+    {
+      "type": "distribution_block",
+      "auto": true,
+      "provisional": true,
+      "needsConfirmation": true,
+      "decision": "confirmed",
+      "devices": [
+        "QF82",
+        "QF83",
+        "QF84",
+        "QF88",
+        "QF86",
+        "QF87",
+        "QF163",
+        "QS1"
+      ],
+      "needA": 400,
+      "catalogId": null,
+      "label": "Barra de distribución",
+      "placed": false,
+      "note": "el catálogo no tiene bloque ni barra de 400 A o más: dimensionar la barra según IEC 61439 o tabla del fabricante",
+      "bomCategory": "Barra de distribución",
+      "quantity": 1,
+      "orderCode": null,
+      "description": "Barra/juego de barras de distribución de al menos 400 A (lo que entra por el general), a dimensionar"
+    },
+    {
+      "type": "wiring_duct",
+      "auto": true,
+      "provisional": true,
+      "catalogId": "wiringDucts",
+      "orderCode": "1SL9047A00",
+      "orientation": "v",
+      "label": "Canaleta 60x40 1SL9047A00",
+      "x": 15,
+      "y": 15,
+      "w": 60,
+      "h": 2070,
+      "sectionMm": 60,
+      "depthMm": 40,
+      "slot": "8x12",
+      "lengthMm": 2070,
+      "note": "canaleta propuesta; sección no dimensionada por llenado de cables",
+      "bomCategory": "Canaleta",
+      "quantity": 1,
+      "description": "Canaleta ranurada 60x40 mm, gris RAL 7035, ranura 8x12; largo a cortar 2070 mm (tira de 2000 mm)"
+    },
+    {
+      "type": "wiring_duct",
+      "auto": true,
+      "provisional": true,
+      "catalogId": "wiringDucts",
+      "orderCode": "1SL9047A00",
+      "orientation": "v",
+      "label": "Canaleta 60x40 1SL9047A00",
+      "x": 925,
+      "y": 15,
+      "w": 60,
+      "h": 2070,
+      "sectionMm": 60,
+      "depthMm": 40,
+      "slot": "8x12",
+      "lengthMm": 2070,
+      "note": "canaleta propuesta; sección no dimensionada por llenado de cables",
+      "bomCategory": "Canaleta",
+      "quantity": 1,
+      "description": "Canaleta ranurada 60x40 mm, gris RAL 7035, ranura 8x12; largo a cortar 2070 mm (tira de 2000 mm)"
+    },
+    {
+      "type": "wiring_duct",
+      "auto": true,
+      "provisional": true,
+      "catalogId": "wiringDucts",
+      "orderCode": "1SL9049A00",
+      "orientation": "h",
+      "label": "Canaleta 80x40 1SL9049A00",
+      "x": 75,
+      "y": 658.5,
+      "w": 850,
+      "h": 80,
+      "sectionMm": 80,
+      "depthMm": 40,
+      "slot": "8x12",
+      "lengthMm": 850,
+      "note": "canaleta propuesta; sección no dimensionada por llenado de cables",
+      "bomCategory": "Canaleta",
+      "quantity": 1,
+      "description": "Canaleta ranurada 80x40 mm, gris RAL 7035, ranura 8x12; largo a cortar 850 mm (tira de 2000 mm)"
+    },
+    {
+      "type": "wiring_duct",
+      "auto": true,
+      "provisional": true,
+      "catalogId": "wiringDucts",
+      "orderCode": "1SL9049A00",
+      "orientation": "h",
+      "label": "Canaleta 80x40 1SL9049A00",
+      "x": 75,
+      "y": 899.25,
+      "w": 850,
+      "h": 80,
+      "sectionMm": 80,
+      "depthMm": 40,
+      "slot": "8x12",
+      "lengthMm": 850,
+      "note": "canaleta propuesta; sección no dimensionada por llenado de cables",
+      "bomCategory": "Canaleta",
+      "quantity": 1,
+      "description": "Canaleta ranurada 80x40 mm, gris RAL 7035, ranura 8x12; largo a cortar 850 mm (tira de 2000 mm)"
+    },
+    {
+      "type": "wiring_duct",
+      "auto": true,
+      "provisional": true,
+      "catalogId": "wiringDucts",
+      "orderCode": "1SL9049A00",
+      "orientation": "h",
+      "label": "Canaleta 80x40 1SL9049A00",
+      "x": 75,
+      "y": 1178,
+      "w": 850,
+      "h": 80,
+      "sectionMm": 80,
+      "depthMm": 40,
+      "slot": "8x12",
+      "lengthMm": 850,
+      "note": "canaleta propuesta; sección no dimensionada por llenado de cables",
+      "bomCategory": "Canaleta",
+      "quantity": 1,
+      "description": "Canaleta ranurada 80x40 mm, gris RAL 7035, ranura 8x12; largo a cortar 850 mm (tira de 2000 mm)"
+    },
+    {
+      "type": "wiring_duct",
+      "auto": true,
+      "provisional": true,
+      "catalogId": "wiringDucts",
+      "orderCode": "1SL9049A00",
+      "orientation": "h",
+      "label": "Canaleta 80x40 1SL9049A00",
+      "x": 75,
+      "y": 1443,
+      "w": 850,
+      "h": 80,
+      "sectionMm": 80,
+      "depthMm": 40,
+      "slot": "8x12",
+      "lengthMm": 850,
+      "note": "canaleta propuesta; sección no dimensionada por llenado de cables",
+      "bomCategory": "Canaleta",
+      "quantity": 1,
+      "description": "Canaleta ranurada 80x40 mm, gris RAL 7035, ranura 8x12; largo a cortar 850 mm (tira de 2000 mm)"
+    },
+    {
+      "type": "wiring_duct",
+      "auto": true,
+      "provisional": true,
+      "catalogId": "wiringDucts",
+      "orderCode": "1SL9049A00",
+      "orientation": "h",
+      "label": "Canaleta 80x40 1SL9049A00",
+      "x": 75,
+      "y": 1760,
+      "w": 850,
+      "h": 80,
+      "sectionMm": 80,
+      "depthMm": 40,
+      "slot": "8x12",
+      "lengthMm": 850,
+      "note": "canaleta propuesta; sección no dimensionada por llenado de cables",
+      "bomCategory": "Canaleta",
+      "quantity": 1,
+      "description": "Canaleta ranurada 80x40 mm, gris RAL 7035, ranura 8x12; largo a cortar 850 mm (tira de 2000 mm)"
+    }
   ]
 }

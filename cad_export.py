@@ -7,6 +7,7 @@ work/proyectar_cad.py desde CAD ABB. El JSON del proyecto sólo guarda instancia
 from io import StringIO
 
 import ezdxf
+from pintura import fit as paint_fit, regions as paint_regions
 from ezdxf.colors import rgb2int
 
 from importador import shell_size
@@ -165,28 +166,24 @@ def build_dxf(project, catalog, fronts, appearances):
         pole_w = width / tiles
         palette = palettes.get(shell_id, {})
         front = fronts["items"][shell_id]
+        fx0, fy0, fw_, fh_ = paint_fit(front.get("sourceProjectionExtent"), pole_w, height)  # sin deformar el CAD
         for t in range(tiles):
-            ox = t * pole_w
+            ox = t * pole_w + fx0
 
-            def fill_rect(x, y, w, h, tint):
-                # SOLID de DXF usa orden en "Z" (0-1-3-2): si se pasa el rectángulo en orden
-                # perimetral, AutoCAD lo dibuja como dos triángulos cruzados ("moño").
-                points = [(ox + x * pole_w, y * height), (ox + (x + w) * pole_w, y * height),
-                          (ox + x * pole_w, (y + h) * height), (ox + (x + w) * pole_w, (y + h) * height)]
-                block.add_solid(points, dxfattribs={"layer": "ABB_CAD_COLORES", "true_color": _color(tint)})
             if palette:
-                if palette.get("base") not in (None, "none"):  # "none": sólo se pintan las partes (silueta con orejas/terminales al aire)
-                    fill_rect(0, 0, 1, 1, palette["base"])
-                for x, y, w, h, tint in palette["parts"]:
-                    fill_rect(x, y, w, h, tint)
+                # Pintura calculada (pintura.py): silueta exacta del CAD, agujeros y detalles recortados a la silueta.
+                for rings, tint, _kind in paint_regions(front, palette):
+                    hatch = block.add_hatch(dxfattribs={"layer": "ABB_CAD_COLORES", "true_color": _color(tint)})
+                    for ring in rings:
+                        hatch.paths.add_polyline_path([(round(ox + x * fw_, 4), round(fy0 + y * fh_, 4)) for x, y in ring], is_closed=True)
                 if "logo" in palette:
                     lx, ly, word = palette["logo"]
                     block.add_text(word, dxfattribs={"layer": "ABB_CAD_COLORES", "true_color": _color("#ffffff"),
-                                                        "height": height * .035, "insert": (ox + lx * pole_w, ly * height)})
+                                                        "height": height * .035, "insert": (ox + lx * fw_, fy0 + ly * fh_)})
             for path in front["paths"]:
                 if len(path) >= 2:
                     block.add_lwpolyline(
-                        [(round(ox + x * pole_w, 4), round(y * height, 4)) for x, y in path],
+                        [(round(ox + x * fw_, 4), round(fy0 + y * fh_, 4)) for x, y in path],
                         dxfattribs={"layer": "ABB_CAD_FRENTE", "true_color": _color(palette.get("lineColor", "#273746"))},
                     )
         bar = palette.get("tieBar")
@@ -297,8 +294,8 @@ def build_dxf(project, catalog, fronts, appearances):
                         space.add_text(_ascii(str(phase)), dxfattribs={"height": min(5, pw * 0.35), "layer": "ABB_ETIQUETAS"}).set_placement(
                             (bx + pw / 2, fy + acc["y"] + acc["h"] * 0.3), align=ezdxf.enums.TextEntityAlignment.MIDDLE_CENTER)
             if acc["type"] == "copper_busbar":  # agujeros M6 cada 25 mm
-                pitch = acc.get("holePitchMm", 25)
-                for k in range(int((acc["w"] - pitch / 2) // pitch)):
+                pitch = acc.get("holePitchMm")  # del catálogo de la barra; sin dato, la barra va sin agujeros dibujados
+                for k in range(int((acc["w"] - pitch / 2) // pitch) if pitch else 0):
                     space.add_circle((fx + acc["x"] + pitch / 2 + k * pitch, fy + acc["y"] + acc["h"] / 2), 3.2, dxfattribs={"layer": layer})
             if acc["type"] == "comb":  # una clavija por polo
                 n = acc.get("poleCount") or max(1, round(acc["w"] / (acc.get("pitchMm") or 17.5)))

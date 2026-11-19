@@ -3,6 +3,17 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-19 18:00 · Claude · Frentes del CAD sin deformar y medidas verificadas contra el CAD
+- Hecho: el frente se dibuja con escala uniforme y centrado (pintura.fit, web y DXF); OT400 4P pasa a 258 mm (contorno real del CAD con orejas) y su logo ABB queda dentro de la etiqueta roja; las diferencias catálogo/CAD que quedan (S800 DXF, SN201) están explicadas en cadAspectNote. Tests nuevos: medida = CAD (≤2 %) o nota; textos impresos dentro del equipo.
+- Resultado: 160 tests, regresión de 24 tableros igual (ningún tablero del GENERAL usa OT400), 118/118 de interfaz, auditoría 0 en los 24 rearmados.
+- Ojo: S800 sigue con DXF 2D de otra proporción → pendiente el STEP 3D de ABB Library (no se alcanza desde el espacio de trabajo).
+
+## 2026-11-19 16:30 · Claude · Sin parches: pintura calculada del CAD, reglas en un solo lugar y regresión con 24 tableros
+- Hecho: silueta exacta de cada frente (malla STEP/IGES proyectada o relleno del DXF) + agujeros; pintura = fondo sobre la silueta y detalles recortados (pintura.py, clipPath). Reglas sueltas en el código pasadas a reglas_layout/reglas_validacion/importRules; colocar.py usaba 4 mm y el armado 25 mm (unificado); testigos propuestos por el backend. Regresión: los 24 tableros reales en cada test, con huella aceptada.
+- Archivos: work/proyectar_cad.py, datos/frentes_cad.json (silhouette), pintura.py, web/index.html, cad_export.py, auditoria.py, accesorios.py, normativa.py, colocar.py, layout_auto.py, app.py, datos/reglas_*.json, catalogo_abb.json, tests/regresion_general.py, tests/test_regresion_general.py, tests/unifilares/general/.
+- Resultado: misma huella en los 24 tableros antes y después del cambio (el refactor no movió nada); 158 tests y 118/118 de interfaz.
+- Ojo: OT160–250 4P: la etiqueta roja no coincide exacto con las letras ABB del CAD (detalle visual). Siguiente: ubicar la etiqueta por las letras del CAD.
+
 ## 2026-11-19 15:00 · Claude · Testigos de fase en la puerta con sus fusibles ubicados en el riel
 - Hecho: opción en ⋯ «Testigos de fase en la puerta (con fusibles)»: agrega/quita las luces (una por fase según el general) y un portafusible ABB E 91/32 (2CSM200923R1801, 18 × 85 mm, ficha ABB) por luz, dibujado y ubicado en el riel (web y DXF, con la fase R/S/T). Los del unifilar se cargan solos al importar. El armado reserva su lugar; si no hay riel, crea uno.
 - Lista: portafusibles E 91/32 + fusibles E 9F10 GG1 (2CSM277113R1801, código de distribuidor: confirmar) + luces CL2-523R. Auditoría `signal_fuses_missing/unplaced`.

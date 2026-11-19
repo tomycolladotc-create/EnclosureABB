@@ -768,6 +768,21 @@
  "signalDefaults": {
   "voltage": "220 Vca",
   "fuseA": 1,
-  "_ayuda": "Valores propuestos cuando el usuario agrega testigos y el unifilar no los trae (Argentina 3×380/220 V): luz a 220 Vca fase-neutro y fusible de 1 A como en los unifilares del proyecto. Confirmar."
+  "_ayuda": "Valores propuestos cuando el usuario agrega testigos y el unifilar no los trae (Argentina 3×380/220 V): luz a 220 Vca fase-neutro y fusible de 1 A como en los unifilares del proyecto. Confirmar. phasesByPoles: fases según los polos del equipo de entrada (2P = fase + neutro: una luz).",
+  "phasesByPoles": {
+   "2": [
+    "R"
+   ],
+   "3": [
+    "R",
+    "S",
+    "T"
+   ],
+   "4": [
+    "R",
+    "S",
+    "T"
+   ]
+  }
  }
 }

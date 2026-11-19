@@ -1,0 +1,411 @@
+{
+  "schemaVersion": 1,
+  "project": "TS6-PORT 18-19-20",
+  "units": "mm",
+  "view": "interior-frontal",
+  "scaleOnSheet": "1:10",
+  "enclosure": {
+    "id": "sr2-srn7520k",
+    "line": "ABB SR2 · gabinete monobloc IP65",
+    "functional": {
+      "width": 460,
+      "height": 660,
+      "depth": 200
+    },
+    "externalBody": {
+      "width": 503,
+      "height": 703,
+      "depth": 200
+    },
+    "plinthHeight": 0,
+    "overallHeightWithPlinth": 703,
+    "functionalAreaOffset": {
+      "x": 21.5,
+      "y": 21.5
+    },
+    "mountingLayout": {
+      "status": "placa interna ciega PF7050; los rieles GD (400/600/800 mm) los coloca layout_auto.py. Placa centrada en el gabinete: SUPUESTO, el catálogo no da su posición",
+      "dinRails": [
+        {
+          "type": "GD4006",
+          "orderCode": "GD4006",
+          "length": 380,
+          "height": 35,
+          "cutFromMm": 400,
+          "id": "DIN-1",
+          "x": 40,
+          "y": 530
+        },
+        {
+          "type": "GD4006",
+          "orderCode": "GD4006",
+          "length": 380,
+          "height": 35,
+          "cutFromMm": 400,
+          "id": "DIN-2",
+          "x": 40,
+          "y": 167.75
+        }
+      ]
+    },
+    "structuralComponentReferences": {
+      "parts": [
+        "SRN7520K",
+        "PF7050"
+      ]
+    },
+    "sources": [
+      "ABB 1STC804013D0201 (catálogo general de gabinetes para automatización, 02.2011)"
+    ],
+    "floorStanding": false,
+    "moldedCaseOnKits": false
+  },
+  "devices": [
+    {
+      "tag": "QS1",
+      "circuit": null,
+      "evidence": "OT125F4 SECCIONADOR BAJO CARGA 125 A - 4P RSTN BARRA DE DISTRIBUCIÓN B13 - U = 377,4 V",
+      "shell": "abb.ot100_125f4.4p.front",
+      "series": "ot100-125-f4",
+      "model": "OT125F4",
+      "poles": 4,
+      "marking": {
+        "serie": "OT125F4",
+        "serieS": "OT 125F4",
+        "sufijoGuion": ""
+      },
+      "w": 96.5,
+      "h": 100,
+      "status": "detectado; revisar modelo y polos",
+      "upstream": false,
+      "x": 40,
+      "y": 480
+    },
+    {
+      "tag": "QF66",
+      "circuit": "TS-6.1",
+      "evidence": "S804N-C324x10+PE10 mm² Cu TUE TS-6.1 RSTN 17,78 32,0 Bajada 32A ABB 4x32 - 36kA IRAM 2178",
+      "shell": "abb.s804n.4p.front",
+      "series": "s800-4p",
+      "model": "S804N-C32",
+      "poles": 4,
+      "marking": {
+        "serie": "S804N",
+        "serieS": "S 804N",
+        "curva": "C",
+        "In": "32",
+        "sufijoGuion": "",
+        "kA": "36",
+        "Icn": "36000"
+      },
+      "w": 106,
+      "h": 95,
+      "status": "detectado; revisar modelo y polos",
+      "upstream": false,
+      "x": 161.5,
+      "y": 482.5
+    },
+    {
+      "tag": "QF67",
+      "circuit": "TS-6.2",
+      "evidence": "XT1N 160 TMD 80-8003x25+1x16+PE16 mm² Cu OCE TS-6.2 RSTN 35,01 63,0 Bajada 63A ABB 4x80 -",
+      "shell": "abb.tmax.xt1.4p.fixed.front",
+      "series": "tmax-xt1-4p",
+      "model": "XT1N 160 TMD 80-800",
+      "poles": 4,
+      "marking": {
+        "serie": "XT1N",
+        "serieS": "XT 1N",
+        "sufijoGuion": "",
+        "frame": "160",
+        "trip": "TMD",
+        "In": "80",
+        "setting": "800",
+        "kA": "36",
+        "Icn": "36000"
+      },
+      "w": 101.6,
+      "h": 130,
+      "status": "detectado; carcasa compartida sin confirmar",
+      "upstream": false,
+      "x": 52.6,
+      "y": 270
+    },
+    {
+      "tag": "QF68",
+      "circuit": "TS-6.3",
+      "evidence": "XT1N 160 TMD 80-8003x25+1x16+PE16 mm² Cu OCE TS-6.3 RSTN 35,01 63,0 Bajada 63A ABB 4x80 -",
+      "shell": "abb.tmax.xt1.4p.fixed.front",
+      "series": "tmax-xt1-4p",
+      "model": "XT1N 160 TMD 80-800",
+      "poles": 4,
+      "marking": {
+        "serie": "XT1N",
+        "serieS": "XT 1N",
+        "sufijoGuion": "",
+        "frame": "160",
+        "trip": "TMD",
+        "In": "80",
+        "setting": "800",
+        "kA": "36",
+        "Icn": "36000"
+      },
+      "w": 101.6,
+      "h": 130,
+      "status": "detectado; carcasa compartida sin confirmar",
+      "upstream": false,
+      "x": 179.2,
+      "y": 270
+    },
+    {
+      "tag": "QF69",
+      "circuit": "TS-6.4",
+      "evidence": "XT1N 160 TMD 80-8003x25+1x16+PE16 mm² Cu OCE TS-6.4 RSTN 35,01 63,0 Bajada 63A ABB 4x80 -",
+      "shell": "abb.tmax.xt1.4p.fixed.front",
+      "series": "tmax-xt1-4p",
+      "model": "XT1N 160 TMD 80-800",
+      "poles": 4,
+      "marking": {
+        "serie": "XT1N",
+        "serieS": "XT 1N",
+        "sufijoGuion": "",
+        "frame": "160",
+        "trip": "TMD",
+        "In": "80",
+        "setting": "800",
+        "kA": "36",
+        "Icn": "36000"
+      },
+      "w": 101.6,
+      "h": 130,
+      "status": "detectado; carcasa compartida sin confirmar",
+      "upstream": false,
+      "x": 305.8,
+      "y": 270
+    }
+  ],
+  "accessories": [
+    {
+      "type": "pe_terminal",
+      "style": "repartidor",
+      "auto": true,
+      "catalogId": "te-dbl125-pe",
+      "count": 7,
+      "blocks": 1,
+      "blockW": 28.2,
+      "stopW": 10,
+      "outputs": 7,
+      "inputs": 1,
+      "w": 48.2,
+      "h": 75,
+      "label": "Bornera PE DBL125 x1",
+      "provisional": true,
+      "placed": true,
+      "x": 371.8,
+      "y": 492.5,
+      "bomCategory": "Bornera de tierra (PE)",
+      "orderCode": "1SNL312510R0000",
+      "quantity": 1,
+      "description": "Repartidor unipolar DBL125 125 A como bornera equipotencial PE: 1 entrada 10…35 mm² + 7 salidas 2,5…16 mm², marcador PE (TE Connectivity ENTRELEC (ex ABB Entrelec))",
+      "bomExtra": [
+        {
+          "bomCategory": "Bornera de tierra (PE)",
+          "orderCode": "1SNK900001R0000",
+          "quantity": 2,
+          "description": "Tope de fin de bornera BAM4 (10 mm), uno en cada punta"
+        }
+      ]
+    },
+    {
+      "type": "signal_fuses",
+      "auto": true,
+      "catalogId": "abb-e91-32",
+      "fuseCatalogId": "abb-e9f10-gg1",
+      "count": 3,
+      "poleW": 18,
+      "phases": [
+        "R",
+        "S",
+        "T"
+      ],
+      "w": 54,
+      "h": 85,
+      "label": "Fusibles testigos x3",
+      "provisional": false,
+      "placed": true,
+      "x": 317.8,
+      "y": 487.5,
+      "bomCategory": "Señalización",
+      "orderCode": "2CSM200923R1801",
+      "quantity": 3,
+      "description": "Portafusible E 91/32 1P 10x38 (tabaquera) para los testigos de fase R-S-T (ABB)",
+      "bomExtra": [
+        {
+          "bomCategory": "Señalización",
+          "orderCode": "2CSM277113R1801",
+          "quantity": 3,
+          "description": "Fusible E 9F10 GG1 Fusible cilíndrico 10x38 gG 1 A para los testigos · código de distribuidor (no de la ficha ABB): confirmar antes de comprar"
+        }
+      ]
+    },
+    {
+      "type": "terminal_cover",
+      "auto": true,
+      "catalogId": null,
+      "label": "Cubrebornes",
+      "provisional": true,
+      "bomCategory": "Cubrebornes",
+      "orderCode": null,
+      "quantity": 1,
+      "description": "Cubrebornes transparente (barrera aislante); código por definir"
+    },
+    {
+      "type": "distribution_block",
+      "auto": true,
+      "provisional": true,
+      "needsConfirmation": true,
+      "decision": "confirmed",
+      "devices": [
+        "QS1",
+        "QF67",
+        "QF68",
+        "QF69"
+      ],
+      "needA": 125,
+      "catalogId": "abb-brt125a",
+      "corrienteA": 125,
+      "label": "BRT125A 125 A",
+      "poles": 4,
+      "inputsPerPole": 1,
+      "outputsPerPole": 11,
+      "placed": true,
+      "x": 292,
+      "y": 125.25,
+      "w": 128,
+      "h": 85,
+      "bomCategory": "Bloque de distribución",
+      "quantity": 1,
+      "orderCode": "1SNA179535R2300",
+      "description": "Bloque de distribución BRT125A 125 A (ABB)"
+    },
+    {
+      "type": "wiring_duct",
+      "auto": true,
+      "provisional": true,
+      "catalogId": "wiringDucts",
+      "orderCode": "1SL9049A00",
+      "orientation": "h",
+      "label": "Canaleta 80x40 1SL9049A00",
+      "x": 15,
+      "y": 40.25,
+      "w": 430,
+      "h": 80,
+      "sectionMm": 80,
+      "depthMm": 40,
+      "slot": "8x12",
+      "lengthMm": 430,
+      "note": "canaleta propuesta; sección no dimensionada por llenado de cables",
+      "bomCategory": "Canaleta",
+      "quantity": 1,
+      "description": "Canaleta ranurada 80x40 mm, gris RAL 7035, ranura 8x12; largo a cortar 430 mm (tira de 2000 mm)"
+    },
+    {
+      "type": "wiring_duct",
+      "auto": true,
+      "provisional": true,
+      "catalogId": "wiringDucts",
+      "orderCode": "1SL9043A00",
+      "orientation": "h",
+      "label": "Canaleta 25x40 1SL9043A00",
+      "x": 15,
+      "y": 220.62,
+      "w": 430,
+      "h": 25,
+      "sectionMm": 25,
+      "depthMm": 40,
+      "slot": "8x12",
+      "lengthMm": 430,
+      "note": "canaleta propuesta; sección no dimensionada por llenado de cables",
+      "bomCategory": "Canaleta",
+      "quantity": 1,
+      "description": "Canaleta ranurada 25x40 mm, gris RAL 7035, ranura 8x12; largo a cortar 430 mm (tira de 2000 mm)"
+    },
+    {
+      "type": "wiring_duct",
+      "auto": true,
+      "provisional": true,
+      "catalogId": "wiringDucts",
+      "orderCode": "1SL9045A00",
+      "orientation": "h",
+      "label": "Canaleta 40x40 1SL9045A00",
+      "x": 15,
+      "y": 413,
+      "w": 430,
+      "h": 40,
+      "sectionMm": 40,
+      "depthMm": 40,
+      "slot": "8x12",
+      "lengthMm": 430,
+      "note": "canaleta propuesta; sección no dimensionada por llenado de cables",
+      "bomCategory": "Canaleta",
+      "quantity": 1,
+      "description": "Canaleta ranurada 40x40 mm, gris RAL 7035, ranura 8x12; largo a cortar 430 mm (tira de 2000 mm)"
+    },
+    {
+      "type": "wiring_duct",
+      "auto": true,
+      "provisional": true,
+      "catalogId": "wiringDucts",
+      "orderCode": "1SL9045A00",
+      "orientation": "h",
+      "label": "Canaleta 40x40 1SL9045A00",
+      "x": 15,
+      "y": 585,
+      "w": 430,
+      "h": 40,
+      "sectionMm": 40,
+      "depthMm": 40,
+      "slot": "8x12",
+      "lengthMm": 430,
+      "note": "canaleta propuesta; sección no dimensionada por llenado de cables",
+      "bomCategory": "Canaleta",
+      "quantity": 1,
+      "description": "Canaleta ranurada 40x40 mm, gris RAL 7035, ranura 8x12; largo a cortar 430 mm (tira de 2000 mm)"
+    }
+  ],
+  "devicesNotDrawn": [],
+  "signals": {
+    "pilotLights": [
+      {
+        "label": "R",
+        "function": "presencia de tensión",
+        "voltage": "220 Vca"
+      },
+      {
+        "label": "S",
+        "function": "presencia de tensión",
+        "voltage": "220 Vca"
+      },
+      {
+        "label": "T",
+        "function": "presencia de tensión",
+        "voltage": "220 Vca"
+      }
+    ],
+    "fuses": {
+      "count": 3,
+      "type": "tabaquera",
+      "rating": "1 A"
+    },
+    "evidence": "Presencia de Tensión RST N (x3) (x3) Fusible tabaquera 1 A Testigo de fase 220 Vca"
+  },
+  "source": "TS6-PORT_18-19-20.pdf",
+  "feeder": {
+    "from": "TGBT",
+    "upstreamTag": "QF9",
+    "upstreamModel": "XT1S 160 TMD 125-1250 N=50%",
+    "cable": "WC8 - 3x70+1x35+PE35 mm² Cu PVC - L = 8 m",
+    "peMm2": 35,
+    "peParallel": 1
+  }
+}

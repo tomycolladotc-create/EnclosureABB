@@ -63,7 +63,7 @@ class Handler(BaseHTTPRequestHandler):
             data = json.loads(CATALOG.read_text(encoding="utf-8"))
             from bom import load_order_codes
             data["orderCodes"] = load_order_codes()  # códigos verificados: el editor muestra cuál irá a la lista
-            data["signalDefaults"] = load_accessory_catalog().get("signalDefaults", {})  # testigos de fase agregados a mano
+
             return self.send_data(200, data)
         if route == "/api/ducts":  # secciones estándar de canaleta (catálogo ABB) para dibujarlas a mano
             return self.send_data(200, load_accessory_catalog().get("wiringDucts", {}))
@@ -90,6 +90,12 @@ class Handler(BaseHTTPRequestHandler):
                 return self.send_data(200, {"pages": len(reader.pages), "devices": detect_devices(content, catalog), "signals": detect_signals(content, catalog), "board": detect_board(content), "textAvailable": bool(content.strip())})
             except Exception as exc:
                 return self.send_data(422, {"error": f"No se pudo leer el PDF: {exc}"})
+        if route == "/api/signals-default":  # testigos de fase propuestos (regla única en accesorios.default_signals)
+            try:
+                from accesorios import default_signals
+                return self.send_data(200, default_signals(json.loads(blob)))
+            except ValueError as exc:
+                return self.send_data(422, {"error": str(exc)})
         if route == "/api/save":
             try:
                 project = json.loads(blob)

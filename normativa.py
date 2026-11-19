@@ -12,7 +12,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 RULES_FILE = ROOT / "datos" / "normativa_argentina.json"
-GAP_MM = 1.0  # separación máxima para considerar dos equipos contiguos (peine posible)
+def _contiguous_gap():
+    """Separación máxima para considerar dos equipos pegados (peine posible): datos/reglas_layout.json → contiguousGapMm."""
+    import json
+    from pathlib import Path
+    return json.loads((Path(__file__).resolve().parent / "datos" / "reglas_layout.json").read_text(encoding="utf-8"))["contiguousGapMm"]
 
 
 def load_rules(path=RULES_FILE):
@@ -53,7 +57,7 @@ def comb_between_adjacent(project, rule):
             if a["shell"] != b["shell"] or abs(a["y"] - b["y"]) > 0.5:
                 continue
             left, right = (a, b) if a["x"] <= b["x"] else (b, a)
-            if 0 <= right["x"] - (left["x"] + left["w"]) <= GAP_MM:
+            if 0 <= right["x"] - (left["x"] + left["w"]) <= _contiguous_gap():
                 covered = any(left["tag"] in c.get("devices", []) and right["tag"] in c.get("devices", []) for c in combs)
                 if not covered:
                     out.append(f"{_nm(left)} y {_nm(right)} están juntos sin peine.")

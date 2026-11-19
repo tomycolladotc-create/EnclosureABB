@@ -10,15 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 CATALOG_FILE = ROOT / "datos" / "accesorios_abb.json"
-GAP_MM = 1.0           # separación máxima para considerar dos equipos contiguos
-RAIL_BAND_MM = 22.25   # franja vertical (mitad de 44,5 mm) que ocupa un borne de riel alrededor del eje del riel
-
-
-BAR_MARGIN_MM = 40.0  # criterio de diseño propuesto (no dato ABB): separación de la barra al borde de la placa
-HOLDER_ZONE_MM = 14.0  # portaetiqueta bajo cada equipo
-TAG_ZONE_MM = 30.0  # franja libre sobre los equipos para el texto de la etiqueta (criterio de dibujo)
-COMB_FACE_FALLBACK_MM = 18.0  # sin altura en el catálogo: valor esquemático, marcado en el dibujo como provisorio
-BAR_FACE_MM = 20.0  # cara de la barra AA8010 (20x5 mm)
+# Criterios de armado: datos/reglas_layout.json (contiguousGapMm, railTerminalBandMm, busbarMarginMm, combFaceFallbackMm, labelHolderMm).
 
 
 def load_accessory_catalog(path=CATALOG_FILE):
@@ -41,6 +33,29 @@ def pe_input_max_mm2(terminal):
     return max(nums) if nums else None
 
 
+def default_signals(project, catalog=None):
+    """Testigos de fase que se proponen cuando el usuario los agrega a mano: una luz por fase del equipo de entrada
+    (3 o 4 polos → R-S-T; 2 polos → una luz en la fase). Tensión y fusible de signalDefaults (accesorios_abb.json).
+    Única fuente de esta regla (la interfaz la pide a /api/signals-default). Error si no se sabe cuántos polos tiene la entrada."""
+    from auditoria import main_device
+    catalog = catalog or load_accessory_catalog()
+    defaults = catalog.get("signalDefaults", {})
+    main = main_device(project)
+    if not main:
+        raise ValueError("No se encontró el equipo de entrada del tablero: no se puede saber cuántas fases tiene")
+    poles = main.get("poles")
+    if not poles:
+        found = re.search(r"\.(\d)p", str(main.get("shell", "")))
+        poles = int(found.group(1)) if found else None
+    if not poles:
+        raise ValueError(f"No se sabe cuántos polos tiene {main.get('tag')}: cargalos para proponer los testigos")
+    phases = defaults.get("phasesByPoles", {}).get(str(min(int(poles), 4)))
+    if not phases:
+        raise ValueError(f"signalDefaults.phasesByPoles no define {poles} polos")
+    return {"pilotLights": [{"label": p, "function": "presencia de tensión", "voltage": defaults["voltage"]} for p in phases],
+            "fuses": {"count": len(phases), "type": "tabaquera", "rating": f"{defaults['fuseA']:g} A"}, "origin": "agregado en el editor"}
+
+
 def _abb(item):
     """Sólo productos ABB (o de la ex ABB Entrelec): el catálogo guarda otras marcas como referencia, nunca para proponer."""
     return "ABB" in str(item.get("marca", "ABB"))
@@ -56,7 +71,7 @@ def _poles(d):
 
 def _free_x(devices, rail, width, height=None):
     """Primer hueco libre de `width` mm sobre el riel, buscando desde el extremo derecho. None si no entra."""
-    band = max(RAIL_BAND_MM, (height or 0) / 2)
+    band = max(_load_rules()["railTerminalBandMm"], (height or 0) / 2)
     lo, hi = rail["y"] - band, rail["y"] + band
     busy = sorted((d["x"], d["x"] + d["w"]) for d in devices if d["y"] < hi and d["y"] + d["h"] > lo)
     cursor = rail["x"] + rail["length"]
@@ -161,7 +176,8 @@ def _propose_ducts(project, catalog, rails, devices, placed_acc):
     side_max = rules.get("ductSideMaxWidthMm", max_w)
     slot = rules.get("ductSlot", "8x12")
     fw, fh = project["enclosure"]["functional"]["width"], project["enclosure"]["functional"]["height"]
-    boxes = [{"x": d["x"], "y": d["y"] - HOLDER_ZONE_MM, "w": d["w"], "h": d["h"] + HOLDER_ZONE_MM} for d in devices]  # bajo cada equipo va su portaetiqueta
+    holder = rules["labelHolderMm"]  # portaetiqueta bajo cada equipo (la misma regla que usan el armado y la auditoría)
+    boxes = [{"x": d["x"], "y": d["y"] - holder, "w": d["w"], "h": d["h"] + holder} for d in devices]
     boxes += [{"x": a["x"], "y": a["y"], "w": a["w"], "h": a["h"]} for a in placed_acc
               if a.get("placed", True) and a.get("x") is not None and a.get("w") and a.get("h")]
     if not boxes:
@@ -225,6 +241,7 @@ def _propose_ducts(project, catalog, rails, devices, placed_acc):
 def propose(project, catalog=None):
     """Devuelve la lista completa de accesorios propuestos para `project`."""
     catalog = catalog or load_accessory_catalog()
+    rules = _load_rules()
     devices = [d for d in project.get("devices", []) if d.get("shell")]
     rails = project.get("enclosure", {}).get("mountingLayout", {}).get("dinRails", [])
     out = []
@@ -291,7 +308,7 @@ def propose(project, catalog=None):
     group = []
     groups = []
     for d in s200:
-        if group and abs(group[-1]["y"] - d["y"]) <= 0.5 and 0 <= d["x"] - (group[-1]["x"] + group[-1]["w"]) <= GAP_MM and _poles(d) == _poles(group[-1]):  # un peine sólo une equipos con los mismos polos
+        if group and abs(group[-1]["y"] - d["y"]) <= 0.5 and 0 <= d["x"] - (group[-1]["x"] + group[-1]["w"]) <= rules["contiguousGapMm"] and _poles(d) == _poles(group[-1]):  # un peine sólo une equipos con los mismos polos
             group.append(d)
         else:
             if len(group) > 1:
@@ -303,7 +320,7 @@ def propose(project, catalog=None):
         poles = {_poles(d) for d in g}
         comb = combs["abb-ps3-12"] if poles == {3} else combs["abb-ps2"] if poles == {2} else combs["abb-ps4"] if poles == {4} else None
         # El peine se apoya sobre la cara superior de los equipos; la altura visible sale del catálogo (alturaMm, o ancho si falta): la cara de frente no está cotada.
-        face = (comb.get("alturaMm") or comb.get("anchoMm") or COMB_FACE_FALLBACK_MM) if comb else COMB_FACE_FALLBACK_MM
+        face = (comb.get("alturaMm") or comb.get("anchoMm") or rules["combFaceFallbackMm"]) if comb else rules["combFaceFallbackMm"]
         span = g[-1]["x"] + g[-1]["w"] - g[0]["x"]
         out.append({"type": "comb", "auto": True, "catalogId": comb["id"] if comb else None, "corrienteA": comb.get("corrienteA") if comb else None,
                     "orderCode": comb.get("orderCode") if comb else None,
@@ -335,11 +352,14 @@ def propose(project, catalog=None):
             else:
                 bar = bars[0]
                 fw, fh = project["enclosure"]["functional"]["width"], project["enclosure"]["functional"]["height"]
-                width, height = min(bar["largoMm"], fw - 2 * BAR_MARGIN_MM), BAR_FACE_MM
-                y = BAR_MARGIN_MM
-                if any(d["y"] < y + height + 10 and d["x"] < BAR_MARGIN_MM + width and BAR_MARGIN_MM < d["x"] + d["w"] for d in devices):
-                    y = fh - BAR_MARGIN_MM - height  # el borde inferior está ocupado: va arriba
-                item.update(type="copper_busbar", catalogId=bar["id"], corrienteA=bar["corrienteA"], holePitchMm=25, supports=(bar.get("soportes") or {}).get("cantidad"), label=f"{bar['orderCode']} {bar['corrienteA']:g} A", x=BAR_MARGIN_MM, y=y, w=width, h=height, placed=True,
+                margin = rules["busbarMarginMm"]
+                face = float(re.match(r"(\d+(?:[.,]\d+)?)", str(bar.get("seccion", ""))).group(1).replace(",", "."))  # cara de la barra: «20x5 mm» → 20
+                width, height = min(bar["largoMm"], fw - 2 * margin), face
+                y = margin
+                if any(d["y"] < y + height + 10 and d["x"] < margin + width and margin < d["x"] + d["w"] for d in devices):
+                    y = fh - margin - height  # el borde inferior está ocupado: va arriba
+                pitch = re.search(r"cada (\d+) mm", str(bar.get("paso", "")))
+                item.update(type="copper_busbar", catalogId=bar["id"], corrienteA=bar["corrienteA"], holePitchMm=float(pitch.group(1)) if pitch else None, supports=(bar.get("soportes") or {}).get("cantidad"), label=f"{bar['orderCode']} {bar['corrienteA']:g} A", x=margin, y=y, w=width, h=height, placed=True,
                             note=("barra de cobre propuesta: confirmar o descartar. " + ("Se acortó a la placa; el catálogo no dice que se corte a medida. " if width < bar["largoMm"] else "")
                                   + bar.get("status", "")))
         else:

@@ -40,6 +40,7 @@
 - Peines: tramos iguales se suman ("2×14, 2×14" → "4×14"). Favicon (error 404 en consola).
 
 ## Por hacer (prioridad)
+- Bajar el STEP 3D de S800 (S803/S804N) de ABB Library y reemplazar el DXF 2D (hoy el frente se dibuja centrado con margen porque su proporción difiere de la ficha).
 1. ~~Cargar las carcasas que faltan~~ **Hecho 2026-11-18** con CAD ABB: OT100/125F4, OT125F3, OT160EV03/OT200-250E03, OT160EV04/OT200-250E04, F204, F202, SN201 (+ S200P como hipótesis). **2026-11-19:** cargados E2.2 4P, XT3 4P, XT1 3P, T4 4P, T2 3P, S803, OT63/80F3/F4. **Queda sin dibujar:** S 293-C 80 (S290, sin CAD en ABB Library: decidir reemplazo). Colores e inscripciones de las carcasas nuevas: medir con foto frontal ABB.
 2. **Códigos sin verificar** (quedan "FALTA CÓDIGO"): variante del OT100F4 (N2 seccionador / C conmutador), S 293-C 80, SN201L B16, F204-SX AC-40/0,3 (¿AC o A selectivo?). Fusible tabaquera y portafusible de los testigos; cubrebornes.
 3. **Accesorios del OT**: manija y eje (OT160EV03 no los trae; OT400E04P tampoco cargados).

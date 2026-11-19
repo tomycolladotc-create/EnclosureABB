@@ -14,7 +14,6 @@ from accesorios import load_accessory_catalog
 
 ROOT = Path(__file__).resolve().parent
 RULES_FILE = ROOT / "datos" / "reglas_layout.json"
-PE_RESERVE_FALLBACK_MM = 6.0
 
 
 def load_rules(path=RULES_FILE):
@@ -98,7 +97,7 @@ def _try(project, catalog, enc, rules, pe_reserve, extra_rows=0):
     if (main or kit) and enc["functional"]["depth"] < rules.get("minDepthForKitDevicesMm", 0):
         return None
     shells_by_id = {s["id"]: s for s in catalog["deviceShells"]}
-    if any(shells_by_id.get(d.get("shell"), {}).get("floorStandingOnly") for d in project["devices"]) and "System pro E" not in str(enc.get("line", "")):
+    if any(shells_by_id.get(d.get("shell"), {}).get("floorStandingOnly") for d in project["devices"]) and not enc.get("floorStanding"):
         return None  # Emax y equipos de bastidor abierto: sólo gabinete de piso
     placed, rails = {}, []
     cursor = 0.0  # distancia desde arriba del área funcional (sin margen)
@@ -135,7 +134,7 @@ def _try(project, catalog, enc, rules, pe_reserve, extra_rows=0):
             devs = [d for d, _ in kit]
             # La altura de módulo del kit (p. ej. PHDX: 200 mm) sólo rige en System pro E; en un gabinete con placa la caja se atornilla
             # a la placa y ocupa su propio alto (lección 2026-11-19: el TS4 salía de 1200 mm por usar 200 mm por fila).
-            spe = "System pro E" in str(enc.get("line", ""))
+            spe = bool(enc.get("moldedCaseOnKits"))
             heights = [max(s.get("kitHeight") or 0, d["h"]) if rules.get("kitModuleHeightFromShell") and spe else d["h"] for d, s in kit]
             if not row_block(devs, heights, col_gap):
                 return False
@@ -276,12 +275,13 @@ def autolayout(project, catalog, rules=None, free_rails=False, exclude=(), only=
         placed, rails = result
         new = copy.deepcopy(project)
         plinth = enc["plinthHeight"]
-        new["enclosure"] = {**new["enclosure"], "line": enc.get("line", new["enclosure"].get("line")), "functional": copy.deepcopy(enc["functional"]), "externalBody": copy.deepcopy(enc["externalBody"]),
+        new["enclosure"] = {**new["enclosure"], "line": enc.get("line", new["enclosure"].get("line")),
+                            "floorStanding": bool(enc.get("floorStanding")), "moldedCaseOnKits": bool(enc.get("moldedCaseOnKits")), "functional": copy.deepcopy(enc["functional"]), "externalBody": copy.deepcopy(enc["externalBody"]),
                             "plinthHeight": plinth, "overallHeightWithPlinth": enc["externalBody"]["height"] + plinth,
                             "id": enc["id"], "functionalAreaOffset": copy.deepcopy(enc.get("functionalOffset", {"x": 50, "y": plinth + 50})),
                             "mountingLayout": {**copy.deepcopy(enc["mountingLayout"]), "dinRails": rails},
                             "structuralComponentReferences": {"parts": enc["parts"] + ([enc["kdKit"]["kit"]] if enc.get("kdKit") else [])}, "sources": [enc["source"]]}
-        spe = "System pro E" in str(enc.get("line", ""))
+        spe = bool(enc.get("moldedCaseOnKits"))  # gabinete de estructura: cada caja moldeada va sobre su kit
         shells = {s["id"]: s for s in catalog["deviceShells"]}
         for d in new["devices"]:
             d["x"], d["y"] = placed[d["tag"]]
@@ -289,7 +289,7 @@ def autolayout(project, catalog, rules=None, free_rails=False, exclude=(), only=
             if spe and spec.get("mounting") != "din" and not d.get("mountingKit"):
                 # En System pro E cada caja moldeada va sobre su kit de montaje (lección 2026-11-19: el TGBT salía sin kits).
                 d["mountingKit"] = ({"type": spec["kit"], "orderCode": spec.get("kitOrderCode"), "moduleHeight": spec.get("kitHeight"), "auto": True} if spec.get("kit")
-                                    else {"type": f"System pro E para {spec.get('label', d.get('model'))} (código pendiente)", "orderCode": None, "auto": True})
+                                    else {"type": f"{enc.get('line', 'del gabinete')} para {spec.get('label', d.get('model'))} (código pendiente)", "orderCode": None, "auto": True})
             elif not spe and (d.get("mountingKit") or {}).get("auto"):
                 d.pop("mountingKit")
             d.pop("unplaced", None)

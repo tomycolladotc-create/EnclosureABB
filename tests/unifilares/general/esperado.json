@@ -1,0 +1,350 @@
+{
+ "TGBT": {
+  "gabinete": "spep185-750-1800-500",
+  "equipos": 16,
+  "noDibujados": 0,
+  "rieles": 2,
+  "accesorios": {
+   "distribution_block": 1,
+   "pe_bar": 1,
+   "pe_terminal": 1,
+   "signal_fuses": 1,
+   "terminal_cover": 1,
+   "wiring_duct": 8
+  },
+  "renglonesLista": 40
+ },
+ "TS1-PORT_1-2-3": {
+  "gabinete": "sr2-srn10625k",
+  "equipos": 13,
+  "noDibujados": 0,
+  "rieles": 2,
+  "accesorios": {
+   "comb": 2,
+   "distribution_block": 1,
+   "pe_bar": 1,
+   "pe_terminal": 1,
+   "signal_fuses": 1,
+   "terminal_cover": 1,
+   "wiring_duct": 7
+  },
+  "renglonesLista": 23
+ },
+ "TS2-PORT_4-5-6": {
+  "gabinete": "sr2-srn10625k",
+  "equipos": 9,
+  "noDibujados": 0,
+  "rieles": 1,
+  "accesorios": {
+   "comb": 1,
+   "distribution_block": 1,
+   "pe_bar": 1,
+   "pe_terminal": 1,
+   "signal_fuses": 1,
+   "terminal_cover": 1,
+   "wiring_duct": 7
+  },
+  "renglonesLista": 22
+ },
+ "TS3-PORT_7-8-9-10": {
+  "gabinete": "sr2-srn10625k",
+  "equipos": 11,
+  "noDibujados": 0,
+  "rieles": 1,
+  "accesorios": {
+   "comb": 1,
+   "distribution_block": 1,
+   "pe_bar": 1,
+   "pe_terminal": 1,
+   "signal_fuses": 1,
+   "terminal_cover": 1,
+   "wiring_duct": 7
+  },
+  "renglonesLista": 21
+ },
+ "TS4-PORT_11-12-13-14": {
+  "gabinete": "sr2-srn12630k",
+  "equipos": 12,
+  "noDibujados": 0,
+  "rieles": 1,
+  "accesorios": {
+   "comb": 1,
+   "distribution_block": 1,
+   "pe_bar": 1,
+   "pe_terminal": 1,
+   "signal_fuses": 1,
+   "terminal_cover": 1,
+   "wiring_duct": 8
+  },
+  "renglonesLista": 21
+ },
+ "TS5-PORT_15-16-17": {
+  "gabinete": "sr2-srn10625k",
+  "equipos": 8,
+  "noDibujados": 0,
+  "rieles": 2,
+  "accesorios": {
+   "distribution_block": 1,
+   "pe_terminal": 1,
+   "signal_fuses": 1,
+   "terminal_cover": 1,
+   "wiring_duct": 7
+  },
+  "renglonesLista": 20
+ },
+ "TS6-PORT_18-19-20": {
+  "gabinete": "sr2-srn7520k",
+  "equipos": 5,
+  "noDibujados": 0,
+  "rieles": 2,
+  "accesorios": {
+   "distribution_block": 1,
+   "pe_terminal": 1,
+   "signal_fuses": 1,
+   "terminal_cover": 1,
+   "wiring_duct": 4
+  },
+  "renglonesLista": 16
+ },
+ "TSAA": {
+  "gabinete": "sr2-srn3415k",
+  "equipos": 3,
+  "noDibujados": 0,
+  "rieles": 1,
+  "accesorios": {
+   "comb": 1,
+   "pe_terminal": 1,
+   "signal_fuses": 1,
+   "terminal_cover": 1,
+   "wiring_duct": 2
+  },
+  "renglonesLista": 13
+ },
+ "TSB": {
+  "gabinete": "sr2-srn8625k",
+  "equipos": 18,
+  "noDibujados": 1,
+  "rieles": 3,
+  "accesorios": {
+   "comb": 2,
+   "distribution_block": 1,
+   "pe_terminal": 1,
+   "signal_fuses": 1,
+   "terminal_cover": 1,
+   "wiring_duct": 6
+  },
+  "renglonesLista": 26
+ },
+ "TSEP": {
+  "gabinete": "sr2-srn7520k",
+  "equipos": 16,
+  "noDibujados": 0,
+  "rieles": 3,
+  "accesorios": {
+   "comb": 2,
+   "pe_terminal": 1,
+   "signal_fuses": 1,
+   "terminal_cover": 1,
+   "wiring_duct": 4
+  },
+  "renglonesLista": 16
+ },
+ "TSFT1": {
+  "gabinete": "sr2-srn3415k",
+  "equipos": 2,
+  "noDibujados": 0,
+  "rieles": 1,
+  "accesorios": {
+   "pe_terminal": 1,
+   "signal_fuses": 1,
+   "terminal_cover": 1,
+   "wiring_duct": 2
+  },
+  "renglonesLista": 12
+ },
+ "TSFT2": {
+  "gabinete": "sr2-srn3415k",
+  "equipos": 2,
+  "noDibujados": 0,
+  "rieles": 1,
+  "accesorios": {
+   "pe_terminal": 1,
+   "signal_fuses": 1,
+   "terminal_cover": 1,
+   "wiring_duct": 2
+  },
+  "renglonesLista": 12
+ },
+ "TSFT3": {
+  "gabinete": "sr2-srn3415k",
+  "equipos": 2,
+  "noDibujados": 0,
+  "rieles": 1,
+  "accesorios": {
+   "pe_terminal": 1,
+   "signal_fuses": 1,
+   "terminal_cover": 1,
+   "wiring_duct": 2
+  },
+  "renglonesLista": 12
+ },
+ "TSI1": {
+  "gabinete": "sr2-srn4620k",
+  "equipos": 8,
+  "noDibujados": 0,
+  "rieles": 1,
+  "accesorios": {
+   "comb": 1,
+   "pe_terminal": 1,
+   "signal_fuses": 1,
+   "terminal_cover": 1,
+   "wiring_duct": 4
+  },
+  "renglonesLista": 15
+ },
+ "TSI2": {
+  "gabinete": "sr2-srn3415k",
+  "equipos": 5,
+  "noDibujados": 0,
+  "rieles": 1,
+  "accesorios": {
+   "comb": 1,
+   "pe_terminal": 1,
+   "signal_fuses": 1,
+   "terminal_cover": 1,
+   "wiring_duct": 2
+  },
+  "renglonesLista": 14
+ },
+ "TSIE": {
+  "gabinete": "sr2-srn4620k",
+  "equipos": 6,
+  "noDibujados": 0,
+  "rieles": 2,
+  "accesorios": {
+   "comb": 1,
+   "pe_terminal": 1,
+   "signal_fuses": 1,
+   "terminal_cover": 1,
+   "wiring_duct": 4
+  },
+  "renglonesLista": 14
+ },
+ "TSL1": {
+  "gabinete": "sr2-srn5320k",
+  "equipos": 4,
+  "noDibujados": 0,
+  "rieles": 2,
+  "accesorios": {
+   "comb": 1,
+   "pe_terminal": 1,
+   "signal_fuses": 1,
+   "terminal_cover": 1,
+   "wiring_duct": 3
+  },
+  "renglonesLista": 15
+ },
+ "TSMAQ1": {
+  "gabinete": "sr2-srn4620k",
+  "equipos": 4,
+  "noDibujados": 0,
+  "rieles": 2,
+  "accesorios": {
+   "comb": 1,
+   "distribution_block": 1,
+   "pe_terminal": 1,
+   "signal_fuses": 1,
+   "terminal_cover": 1,
+   "wiring_duct": 4
+  },
+  "renglonesLista": 16
+ },
+ "TSMAQ2": {
+  "gabinete": "sr2-srn4620k",
+  "equipos": 4,
+  "noDibujados": 0,
+  "rieles": 2,
+  "accesorios": {
+   "comb": 1,
+   "distribution_block": 1,
+   "pe_terminal": 1,
+   "signal_fuses": 1,
+   "terminal_cover": 1,
+   "wiring_duct": 4
+  },
+  "renglonesLista": 16
+ },
+ "TS_AUX_1": {
+  "gabinete": "sr2-srn7520k",
+  "equipos": 5,
+  "noDibujados": 0,
+  "rieles": 1,
+  "accesorios": {
+   "comb": 1,
+   "distribution_block": 1,
+   "pe_terminal": 1,
+   "signal_fuses": 1,
+   "terminal_cover": 1,
+   "wiring_duct": 3
+  },
+  "renglonesLista": 19
+ },
+ "TS_AUX_2": {
+  "gabinete": "sr2-srn4620k",
+  "equipos": 5,
+  "noDibujados": 0,
+  "rieles": 2,
+  "accesorios": {
+   "comb": 1,
+   "distribution_block": 1,
+   "pe_terminal": 1,
+   "signal_fuses": 1,
+   "terminal_cover": 1,
+   "wiring_duct": 4
+  },
+  "renglonesLista": 17
+ },
+ "TS_AUX_3": {
+  "gabinete": "sr2-srn4620k",
+  "equipos": 5,
+  "noDibujados": 0,
+  "rieles": 2,
+  "accesorios": {
+   "comb": 1,
+   "distribution_block": 1,
+   "pe_terminal": 1,
+   "signal_fuses": 1,
+   "terminal_cover": 1,
+   "wiring_duct": 4
+  },
+  "renglonesLista": 17
+ },
+ "TS_AUX_4": {
+  "gabinete": "sr2-srn4620k",
+  "equipos": 5,
+  "noDibujados": 0,
+  "rieles": 1,
+  "accesorios": {
+   "comb": 1,
+   "pe_terminal": 1,
+   "signal_fuses": 1,
+   "terminal_cover": 1,
+   "wiring_duct": 4
+  },
+  "renglonesLista": 16
+ },
+ "T_AUX_Locales_2": {
+  "gabinete": "sr2-srn5320k",
+  "equipos": 4,
+  "noDibujados": 0,
+  "rieles": 2,
+  "accesorios": {
+   "comb": 1,
+   "pe_terminal": 1,
+   "signal_fuses": 1,
+   "terminal_cover": 1,
+   "wiring_duct": 3
+  },
+  "renglonesLista": 15
+ }
+}

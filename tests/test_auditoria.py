@@ -241,6 +241,15 @@ class TestigosDeFase(unittest.TestCase):
         p = project([], signals=copy.deepcopy(self.SIG))
         self.assertIn("signal_fuses_missing", codes(p))
 
+    def test_testigos_propuestos_segun_los_polos_de_la_entrada(self):
+        from accesorios import default_signals
+        p4 = project([dev("QS1", "OT80F4", "abb.ot63_80f4.4p.front", evidence="SECCIONADOR", poles=4)])
+        self.assertEqual([l["label"] for l in default_signals(p4)["pilotLights"]], ["R", "S", "T"])
+        p2 = project([dev("QF1", "S202-C20", "abb.s200m.1p.front", evidence="INTERRUPTOR PRINCIPAL", poles=2)])
+        self.assertEqual([l["label"] for l in default_signals(p2)["pilotLights"]], ["R"])
+        with self.assertRaises(ValueError):
+            default_signals(project([dev("QF1", "S202-C20", "abb.s200m.1p.front", "A-1", poles=2), dev("QF2", "S202-C20", "abb.s200m.1p.front", "A-2", poles=2)]))
+
     def test_dxf_dibuja_los_fusibles(self):
         from cad_export import build_dxf
         p = self.armar([dev("QS1", "OT80F4", "abb.ot63_80f4.4p.front", evidence="SECCIONADOR")])
@@ -254,21 +263,93 @@ class TestigosDeFase(unittest.TestCase):
 
 
 class PinturaCompleta(unittest.TestCase):
-    """Lección 20 (2026-11-19): en el E2.2 el cuerpo del 4.º polo, los pies y las borneras quedaban como líneas grises sin pintar
-    y la revisión no lo vio. Toda línea del frente CAD tiene que caer sobre una zona pintada (fondo o pieza)."""
+    """Lecciones 20 y 21 (2026-11-19): la pintura se ponía con rectángulos a mano y quedaban partes del E2.2 y de los OT
+    sin pintar. Ahora el fondo se pinta sobre la silueta exacta calculada del CAD (work/proyectar_cad.py) y los detalles
+    se recortan a la silueta (pintura.py, web/index.html). Estos tests fijan esa construcción."""
 
-    def test_todo_frente_cad_tiene_pintura(self):
+    def test_todo_frente_tiene_silueta_y_pintura_con_fondo(self):
         looks, fronts = L("apariencias_abb.json")["items"], L("frentes_cad.json")["items"]
-        self.assertEqual([k for k in fronts if k not in looks], [])
-
-    def test_todas_las_lineas_del_cad_quedan_sobre_una_zona_pintada(self):
-        looks = L("apariencias_abb.json")["items"]
-        fronts = L("frentes_cad.json")["items"]
-        for shell, look in looks.items():
-            if shell not in fronts or look.get("base") not in (None, "none", ""):
-                continue  # con fondo pintado, todo el rectángulo del equipo ya tiene color
-            parts = [p[:4] for p in look.get("parts", [])]
-            pts = [p for path in fronts[shell]["paths"] for p in path]
-            fuera = [p for p in pts if not any(a - 0.01 <= p[0] <= a + w + 0.01 and b - 0.01 <= p[1] <= b + h + 0.01 for a, b, w, h in parts)]
+        for shell, front in fronts.items():
             with self.subTest(shell=shell):
-                self.assertLess(len(fuera) / len(pts), 0.03, f"{len(fuera)} de {len(pts)} puntos del CAD sin pintar, p. ej. {fuera[:3]}")
+                self.assertTrue(front.get("silhouette"), "falta la silueta calculada: correr work/proyectar_cad.py")
+                self.assertIn(shell, looks)
+                self.assertRegex(str(looks[shell].get("base")), r"^#[0-9a-fA-F]{6}$", "el fondo tiene que ser un color: se aplica a la silueta")
+
+    def test_toda_linea_del_cad_cae_dentro_de_la_silueta(self):
+        from pintura import point_in_silhouette
+        for shell, front in L("frentes_cad.json")["items"].items():
+            w, h = front["sourceProjectionExtent"]
+            tol = 1.0 / max(w, h)  # 1 mm de tolerancia sobre el borde
+            pts = [p for path in front["paths"] for p in path[:: max(1, len(path) // 6)]]
+            fuera = [p for p in pts if not point_in_silhouette(p[0], p[1], front["silhouette"], tol)]
+            with self.subTest(shell=shell):
+                self.assertLess(len(fuera) / len(pts), 0.01, f"{len(fuera)} de {len(pts)} puntos fuera de la silueta, p. ej. {fuera[:3]}")
+
+    def test_los_detalles_nunca_salen_de_la_silueta(self):
+        from pintura import point_in_silhouette, regions
+        looks, fronts = L("apariencias_abb.json")["items"], L("frentes_cad.json")["items"]
+        for shell, front in fronts.items():
+            holes = front.get("silhouetteHoles") or []
+            for rings, _, kind in regions(front, looks[shell]):
+                if kind != "detalle":
+                    continue
+                for q in rings:  # los vértices caen sobre el borde: se controla el interior de cada trapecio
+                    cx, cy = sum(p[0] for p in q) / len(q), sum(p[1] for p in q) / len(q)
+                    self.assertTrue(point_in_silhouette(cx, cy, front["silhouette"] + holes), f"{shell}: detalle fuera del equipo en {(cx, cy)}")
+
+    def test_la_etiqueta_roja_abb_queda_entera_sobre_el_equipo(self):
+        """Un detalle grande (franja, borne) recortado está bien: el recorte le da la forma real. La etiqueta roja ABB no:
+        si se recorta, está mal ubicada (pasó en el OT400: quedaba afuera, arriba a la izquierda)."""
+        from pintura import clip_rect
+        area = lambda q: abs(sum(q[i - 1][0] * p[1] - p[0] * q[i - 1][1] for i, p in enumerate(q)) / 2)
+        looks, fronts = L("apariencias_abb.json")["items"], L("frentes_cad.json")["items"]
+        for shell, front in fronts.items():
+            rings = front["silhouette"] + (front.get("silhouetteHoles") or [])
+            for x, y, w, h, color in looks[shell]["parts"]:
+                if color.lower() in [c.lower() for c in json.loads((ROOT / "datos" / "reglas_validacion.json").read_text(encoding="utf-8"))["brandLabelColors"]]:
+                    kept = sum(area(q) for q in clip_rect(rings, x, y, x + w, y + h)) / (w * h)
+                    with self.subTest(shell=shell):
+                        self.assertGreater(kept, 0.95, f"la etiqueta ABB queda {kept:.0%} sobre el equipo")
+
+    def test_medida_del_catalogo_igual_al_cad_o_explicada(self):
+        """Lección 24: el OT400 estaba cargado con 235 mm y su CAD mide 258 (orejas): el frente salía deformado 9 % y el armado
+        no reservaba el lugar de las orejas. El frente se dibuja sin deformar (pintura.fit) y la medida tiene que coincidir con
+        el CAD; si no coincide (DXF de otra proporción, salientes de 1 mm), la diferencia queda explicada en cadAspectNote."""
+        shells = {s["id"]: s for s in CAT["deviceShells"]}
+        for shell, front in L("frentes_cad.json")["items"].items():
+            spec = shells[shell]
+            w = (spec.get("poleModule") or {}).get("width") or spec["width"]
+            cw, ch = front["sourceProjectionExtent"]
+            diff = abs(cw / ch - w / spec["height"]) / (cw / ch)
+            with self.subTest(shell=shell):
+                if diff > 0.02:
+                    self.assertTrue(spec.get("cadAspectNote"), f"catálogo {w}×{spec['height']} y CAD {cw}×{ch} ({diff:.1%}) sin explicación")
+
+    def test_textos_impresos_caen_sobre_el_equipo(self):
+        from pintura import fit, point_in_silhouette
+        shells = {s["id"]: s for s in CAT["deviceShells"]}
+        looks, fronts = L("apariencias_abb.json")["items"], L("frentes_cad.json")["items"]
+        for shell, look in looks.items():
+            if shell not in fronts:
+                continue
+            spec = shells[shell]
+            W = (spec.get("poleModule") or {}).get("width") or spec["width"]
+            H = spec["height"]
+            dx, dy, dw, dh = fit(fronts[shell]["sourceProjectionExtent"], W, H)
+            for it in (look.get("marking") or {}).get("items", []):
+                if it.get("tilesAcrossPoles"):
+                    continue
+                w = it.get("w") or len(it["text"].replace("{", "").replace("}", "")) * it["h"] * 0.5
+                cx = it["x"] if it.get("align") == "center" else it["x"] + min(w, W - it["x"]) / 2
+                with self.subTest(shell=shell, texto=it["text"]):
+                    self.assertTrue(point_in_silhouette((cx - dx) / dw, (it["y"] - dy) / dh, fronts[shell]["silhouette"], 0.02), "texto fuera del equipo")
+
+    def test_recorte_de_un_rectangulo_contra_una_silueta_en_l(self):
+        from pintura import clip_rect
+        area = lambda q: abs(sum(q[i - 1][0] * p[1] - p[0] * q[i - 1][1] for i, p in enumerate(q)) / 2)
+        L_shape = [(0, 0), (1, 0), (1, 0.5), (0.5, 0.5), (0.5, 1), (0, 1)]
+        self.assertAlmostEqual(sum(area(q) for q in clip_rect([L_shape], 0.25, 0.25, 0.75, 0.75)), 0.25 - 0.0625, places=9)
+        hole = [(0.4, 0.1), (0.45, 0.1), (0.45, 0.2), (0.4, 0.2)]  # agujero dentro del recorte: queda sin pintar
+        self.assertAlmostEqual(sum(area(q) for q in clip_rect([L_shape, hole], 0.25, 0.0, 0.75, 0.5)), 0.25 - 0.005, places=9)
+        tri = [(0, 0), (1, 0), (0, 1)]  # borde inclinado que cruza el recorte
+        self.assertAlmostEqual(sum(area(q) for q in clip_rect([tri], 0.0, 0.0, 1.0, 0.5)), 0.375, places=9)
