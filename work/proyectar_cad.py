@@ -34,6 +34,15 @@ SOURCES = [
     ("abb.s200m.1p.front", "cad/abb/s201m/S200M_1P_3D_9AKK106930A4834.stp", "step", (0, 1, 0), (0, 0, 1)),
     ("abb.s200m.1pn.front", "cad/abb/s201m_na/S200M_1PN_2P_3D_9AKK106930A4835.stp", "step", (0, 1, 0), (0, 0, 1)),
     ("abb.ot400e04.4p.front", "cad/abb/ot400/OT315_400E04.igs", "iges", (0, 0, 1), (0, -1, 0)),
+    # 2026-11-18: CAD públicos de ABB Library (ver datos/fuentes_descargadas.json). Vista elegida comparando las 6 proyecciones.
+    ("abb.f204.4p.front", "cad/abb/f200/F204_3D_9AKK106354A0756_B.stp", "step", (0, 0, 1), (1, 0, 0)),
+    ("abb.f202.2p.front", "cad/abb/f200/F202_3D_9AKK106354A0757_A.stp", "step", (0, 0, 1), (1, 0, 0)),
+    ("abb.sn201.1pn.front", "cad/abb/sn201/SN201_3D_9AKK106930A4363.stp", "step", (0, 1, 0), (-1, 0, 0)),
+    ("abb.ot100_125f4.4p.front", "cad/abb/ot100_125/OT100-125F4N2.stp", "step", (0, 0, 1), (1, 0, 0)),
+    ("abb.ot100_125f3.3p.front", "cad/abb/ot100_125/OT100-125F3.stp", "step", (0, 0, 1), (1, 0, 0)),
+    # OT160...250E: en el CAD el mecanismo queda arriba; montado va a la IZQUIERDA (tipo 03/04 = mecanismo en el extremo izquierdo), se rota 90°.
+    ("abb.ot160_250e03.3p.front", "cad/abb/ot160_250/OT200-250E03.stp", "step", (0, 1, 0), (-1, 0, 0), "rot90ccw"),
+    ("abb.ot160_250e04.4p.front", "cad/abb/ot160_250/OT200-250E04.stp", "step", (0, 0, 1), (1, 0, 0), "rot90ccw"),
 ]
 
 
@@ -110,12 +119,14 @@ def normalize(paths):
 
 def main():
     fronts = json.loads(DEST.read_text(encoding="utf-8")) if DEST.exists() else {"schemaVersion": 1, "coordinateSystem": "normalized 0..1, origin lower left", "items": {}}
-    for shell, relative, kind, normal, xdir in SOURCES:
+    for shell, relative, kind, normal, xdir, *opts in SOURCES:
         if len(sys.argv) > 1 and shell not in sys.argv[1:]:
             continue
         filename = ROOT / relative
         print(f"Proyectando {shell}: {filename.name}", flush=True)
         paths = from_dxf(filename) if kind == "dxf" else from_step_or_iges(filename, kind, normal, xdir)
+        if "rot90ccw" in opts:
+            paths = [[[-y, x] for x, y in p] for p in paths]
         normalized, source_size = normalize(paths)
         fronts["items"][shell] = {
             "source": relative, "method": "ABB DXF 2D" if kind == "dxf" else f"proyección frontal HLR de ABB {kind.upper()} 3D",

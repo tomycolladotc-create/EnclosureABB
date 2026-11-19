@@ -22,7 +22,7 @@
 - Peines: tramos iguales se suman ("2×14, 2×14" → "4×14"). Favicon (error 404 en consola).
 
 ## Por hacer (prioridad)
-1. **Cargar las carcasas que faltan** para que se dibujen (hoy van sólo a la lista): OT100F4, OT160EV03, S 293-C 80, SN201L B16, F204 — con medidas ABB y fuente. Sin esto, algunos tableros quedan sin su interruptor general en el dibujo.
+1. ~~Cargar las carcasas que faltan~~ **Hecho 2026-11-18** con CAD ABB: OT100/125F4, OT125F3, OT160EV03/OT200-250E03, OT160EV04/OT200-250E04, F204, F202, SN201 (+ S200P como hipótesis). **Quedan sin dibujar:** S 293-C 80 (S290 discontinuado, sin CAD en ABB Library: decidir reemplazo), OT63F3 y OT80F4 (otro tamaño de OT), S803S 3P, XT1 3P, XT3, T2S/T4S, E2.2 (tablero GENERAL). Colores e inscripciones de las carcasas nuevas: medir con foto frontal ABB.
 2. **Códigos sin verificar** (quedan "FALTA CÓDIGO"): variante del OT100F4 (N2 seccionador / C conmutador), S 293-C 80, SN201L B16, F204-SX AC-40/0,3 (¿AC o A selectivo?). Fusible tabaquera y portafusible de los testigos; cubrebornes.
 3. **Accesorios del OT**: manija y eje (OT160EV03 no los trae; OT400E04P tampoco cargados).
 4. **Color de los pilotos**: el unifilar no lo indica; hoy se propone rojo (a confirmar). Permitir elegir color/función por piloto en el editor.

@@ -3,6 +3,12 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-18 21:30 · Claude · Carcasas nuevas desde CAD ABB (OT, F200, SN201)
+- 7 CAD públicos de ABB Library bajados con el navegador de la PC de Thomas (con su permiso) → cad/abb/{f200,sn201,ot100_125,ot160_250}; registrados con SHA-256 en fuentes_descargadas.json.
+- Frentes proyectados con work/proyectar_cad.py (opción rot90ccw para OT160…250E: mecanismo a la izquierda). Carcasas, series y apariencias nuevas en el catálogo. OT100/125F en riel DIN (ficha ABB); OT160…250E en placa. S200P mapeado a S200 como HIPÓTESIS (verified=false).
+- BOM: sin panel ciego PC del kit KD si hay un equipo en placa (el eje de la manija pasaría por el panel). DXF: cajetín mostraba la etiqueta de un equipo en vez del gabinete.
+- Ojo: S 293 (S290) sin CAD en ABB (discontinuado); OT63F3/OT80F4 y cajas grandes del GENERAL siguen sin carcasa. Tests 118 OK; e2e 114/114.
+
 ## 2026-11-18 02:15 · Claude · Prueba como usuario final (ronda 1) + regla permanente
 - Thomas pide probar siempre como consumidor final. Regla agregada en AGENTS.md y ESTADO.md; BITACORA reordenada (más nueva arriba, como dice AGENTS).
 - Ronda: importar los 5 unifilares, puerta, lista, agregar 6 equipos, borrar/deshacer. Corregido: cartel fuera de la puerta en gabinetes de 300 mm (editor y DXF), título/selector superpuestos, cotas de rieles pisadas, cotas de interior en la puerta, "Agregar" repetía un circuito no dibujado y usaba un modelo genérico sin código, tarjeta sin el código que va a la lista, tramos de peine repetidos, favicon 404.

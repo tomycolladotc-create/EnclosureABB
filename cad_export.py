@@ -129,7 +129,7 @@ def build_dxf(project, catalog, fronts, appearances):
     rect(0, plinth, body["width"], body["height"], "ABB_ENVOLVENTE")
     rect(0, 0, body["width"], plinth, "ABB_ENVOLVENTE")
     # Estructura real (catalogo_abb.json -> enclosures[].structure): banda de montantes/travesaños y hojas de puerta.
-    spec = next((e for e in catalog["enclosures"] if e["id"] == cabinet.get("id")), None) or next(
+    enclosure_spec = spec = next((e for e in catalog["enclosures"] if e["id"] == cabinet.get("id")), None) or next(
         (e for e in catalog["enclosures"] if e["functional"] == cabinet["functional"]), None)
     structure = (spec or {}).get("structure")
     if structure:
@@ -305,7 +305,7 @@ def build_dxf(project, catalog, fronts, appearances):
     # que el plano no contradiga la compra: sin menús de opciones ni la placa que ya viene con el gabinete.
     y = -60
     if structure:
-        space.add_text(_ascii("PARTES DEL GABINETE (" + spec["label"] + ")"), dxfattribs={"height": 14, "layer": "ABB_CAJETIN", "insert": (0, y)})
+        space.add_text(_ascii("PARTES DEL GABINETE (" + (enclosure_spec or {}).get("label", cabinet.get("line", "ABB")) + ")"), dxfattribs={"height": 14, "layer": "ABB_CAJETIN", "insert": (0, y)})
         plate_included = str(structure["bom"][0].get("codigo", "")).startswith("SRN") if structure["bom"] else False
         for n, part in enumerate(structure["bom"]):
             code = str(part.get("codigo", ""))

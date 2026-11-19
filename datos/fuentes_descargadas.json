@@ -47,6 +47,76 @@
    "bytes": 8361,
    "sha256": "81242e314bb7038556501e46b330b92c78f6bc702d6504c528097c81fad368c0",
    "usado_en": "datos/apariencias_abb.json -> abb.ot400e04.4p.front.marking"
+  },
+  {
+   "archivo": "cad/abb/f200/F204_3D_9AKK106354A0756_B.stp",
+   "documento": "F204 - 3D Product skin (9AKK106354A0756 rev B)",
+   "origen": "https://search.abb.com/library/Download.aspx?DocumentID=9AKK106354A0756&LanguageCode=en&DocumentPartId=&Action=Launch",
+   "buscado_en": "https://library.abb.com (búsqueda pública)",
+   "bajado": "2026-11-18",
+   "bytes": 13565884,
+   "sha256": "d8e7d63d75b0492dca65dd603243a27eca567cb6c2845b57b0a6e3799773681a",
+   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+  },
+  {
+   "archivo": "cad/abb/f200/F202_3D_9AKK106354A0757_A.stp",
+   "documento": "F202 - 3D Product skin (9AKK106354A0757 rev A)",
+   "origen": "https://search.abb.com/library/Download.aspx?DocumentID=9AKK106354A0757&LanguageCode=en&DocumentPartId=&Action=Launch",
+   "buscado_en": "https://library.abb.com (búsqueda pública)",
+   "bajado": "2026-11-18",
+   "bytes": 8799141,
+   "sha256": "3fd1379385467db25a497e68f5808a1252bb594bfc4fdc866b24370c28b27113",
+   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+  },
+  {
+   "archivo": "cad/abb/sn201/SN201_3D_9AKK106930A4363.stp",
+   "documento": "3D SN201 (9AKK106930A4363)",
+   "origen": "https://search.abb.com/library/Download.aspx?DocumentID=9AKK106930A4363&LanguageCode=en&DocumentPartId=&Action=Launch",
+   "buscado_en": "https://library.abb.com (búsqueda pública)",
+   "bajado": "2026-11-18",
+   "bytes": 12403626,
+   "sha256": "cb88503925776ca3cd704fd747f99c7c00b6e0cbea320ea446b398cc1c639c02",
+   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+  },
+  {
+   "archivo": "cad/abb/ot100_125/OT100-125F4N2.stp",
+   "documento": "OT100…OT125F4N2, stp-file (rev A)",
+   "origen": "https://search.abb.com/library/Download.aspx?DocumentID=OT100-125F4N2.STP&LanguageCode=en&DocumentPartId=&Action=Launch",
+   "buscado_en": "https://library.abb.com (búsqueda pública)",
+   "bajado": "2026-11-18",
+   "bytes": 2031614,
+   "sha256": "8661b6179b2875a5b6a0937e20bf6a34fefd38a1138fec5e415d58a59b96c63e",
+   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+  },
+  {
+   "archivo": "cad/abb/ot100_125/OT100-125F3.stp",
+   "documento": "OT100-125F3 (biblioteca lo lista como igs-file; el archivo bajado es STEP)",
+   "origen": "https://search.abb.com/library/Download.aspx?DocumentID=OT100-125F3.IGS&LanguageCode=en&DocumentPartId=&Action=Launch",
+   "buscado_en": "https://library.abb.com (búsqueda pública)",
+   "bajado": "2026-11-18",
+   "bytes": 7287631,
+   "sha256": "600c7b4ceda0e3ed0ceba3c5ea29032c44c7cff025d771f0804594303286a596",
+   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+  },
+  {
+   "archivo": "cad/abb/ot160_250/OT200-250E03.stp",
+   "documento": "OT200…OT250E03, stp-file (rev B); la ficha del OT160EV03P remite a este dibujo",
+   "origen": "https://search.abb.com/library/Download.aspx?DocumentID=OT200-250E03.STP&LanguageCode=en&DocumentPartId=&Action=Launch",
+   "buscado_en": "https://library.abb.com (búsqueda pública)",
+   "bajado": "2026-11-18",
+   "bytes": 615393,
+   "sha256": "952604f0c0da2eef8e7859a393435da339f6949a759053db9872571d16b5cf3f",
+   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+  },
+  {
+   "archivo": "cad/abb/ot160_250/OT200-250E04.stp",
+   "documento": "OT200…250E04, stp-file (rev A)",
+   "origen": "https://search.abb.com/library/Download.aspx?DocumentID=OT200...250E04.STP&LanguageCode=en&DocumentPartId=&Action=Launch",
+   "buscado_en": "https://library.abb.com (búsqueda pública)",
+   "bajado": "2026-11-18",
+   "bytes": 1755790,
+   "sha256": "de24dd57c09873e0bcfebfa536dfe3df6ae8c4a6d61b45651d7c684c782fbd59",
+   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
   }
  ],
  "consultadas": [

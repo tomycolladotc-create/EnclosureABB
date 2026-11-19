@@ -3613,6 +3613,109 @@
       "frontGeometry": "datos/frentes_cad.json",
       "appearance": "datos/apariencias_abb.json",
       "appearanceStatus": "paleta vectorial contrastada con imagen de producto ABB; no es una textura CAD fotorealista"
+    },
+    {
+      "id": "abb.f204.4p.front",
+      "label": "F204 · diferencial 4P",
+      "width": 70,
+      "height": 90.4,
+      "mounting": "din",
+      "cadSource": "https://search.abb.com/library/Download.aspx?DocumentID=9AKK106354A0756&LanguageCode=en&DocumentPartId=&Action=Launch",
+      "cadStatus": "Vista 2D frontal proyectada (HLR) del STEP 3D oficial de ABB Library; inscripciones no cargadas (sin foto frontal medida)",
+      "cadFiles": [
+        "cad/abb/f200/F204_3D_9AKK106354A0756_B.stp"
+      ],
+      "frontGeometry": "datos/frentes_cad.json",
+      "appearance": "datos/apariencias_abb.json",
+      "dimensionsNote": "Ancho 4 módulos (70 mm, ficha ABB/RS: 70 × 85 mm); alto = contorno frontal del CAD con clips (90,4 mm)."
+    },
+    {
+      "id": "abb.f202.2p.front",
+      "label": "F202 · diferencial 2P",
+      "width": 35,
+      "height": 88,
+      "mounting": "din",
+      "cadSource": "https://search.abb.com/library/Download.aspx?DocumentID=9AKK106354A0757&LanguageCode=en&DocumentPartId=&Action=Launch",
+      "cadStatus": "Vista 2D frontal proyectada (HLR) del STEP 3D oficial de ABB Library; inscripciones no cargadas (sin foto frontal medida)",
+      "cadFiles": [
+        "cad/abb/f200/F202_3D_9AKK106354A0757_A.stp"
+      ],
+      "frontGeometry": "datos/frentes_cad.json",
+      "appearance": "datos/apariencias_abb.json"
+    },
+    {
+      "id": "abb.sn201.1pn.front",
+      "label": "SN201 · 1P+N en 1 módulo",
+      "width": 17.6,
+      "height": 91.8,
+      "mounting": "din",
+      "cadSource": "https://search.abb.com/library/Download.aspx?DocumentID=9AKK106930A4363&LanguageCode=en&DocumentPartId=&Action=Launch",
+      "cadStatus": "Vista 2D frontal proyectada (HLR) del STEP 3D oficial de ABB Library; inscripciones no cargadas (sin foto frontal medida)",
+      "cadFiles": [
+        "cad/abb/sn201/SN201_3D_9AKK106930A4363.stp"
+      ],
+      "frontGeometry": "datos/frentes_cad.json",
+      "appearance": "datos/apariencias_abb.json",
+      "dimensionsNote": "Ficha ABB SN201 L: 85 × 68,9 × 17,6 mm por polo; el alto del dibujo es el contorno frontal del CAD con clips (91,8 mm)."
+    },
+    {
+      "id": "abb.ot100_125f4.4p.front",
+      "label": "OT100…125F4 · 4P (frente, sin manija)",
+      "width": 96.5,
+      "height": 100,
+      "mounting": "din",
+      "cadSource": "https://search.abb.com/library/Download.aspx?DocumentID=OT100-125F4N2.STP&LanguageCode=en&DocumentPartId=&Action=Launch",
+      "cadStatus": "Vista 2D frontal proyectada (HLR) del STEP 3D oficial de ABB Library; inscripciones no cargadas (sin foto frontal medida)",
+      "cadFiles": [
+        "cad/abb/ot100_125/OT100-125F4N2.stp"
+      ],
+      "frontGeometry": "datos/frentes_cad.json",
+      "appearance": "datos/apariencias_abb.json",
+      "dimensionsNote": "Ficha ABB OT100F4N2 (1SCA105018R1001): 100 × 96,5 × 74 mm; montaje en base o riel DIN; manija y eje no incluidos."
+    },
+    {
+      "id": "abb.ot100_125f3.3p.front",
+      "label": "OT100…125F3 · 3P",
+      "width": 70,
+      "height": 100,
+      "mounting": "din",
+      "cadSource": "https://search.abb.com/library/Download.aspx?DocumentID=OT100-125F3.IGS&LanguageCode=en&DocumentPartId=&Action=Launch",
+      "cadStatus": "Vista 2D frontal proyectada (HLR) del STEP 3D oficial de ABB Library; inscripciones no cargadas (sin foto frontal medida)",
+      "cadFiles": [
+        "cad/abb/ot100_125/OT100-125F3.stp"
+      ],
+      "frontGeometry": "datos/frentes_cad.json",
+      "appearance": "datos/apariencias_abb.json"
+    },
+    {
+      "id": "abb.ot160_250e03.3p.front",
+      "label": "OT160…250E03 · 3P (mecanismo a la izquierda)",
+      "width": 166.9,
+      "height": 150,
+      "cadSource": "https://search.abb.com/library/Download.aspx?DocumentID=OT200-250E03.STP&LanguageCode=en&DocumentPartId=&Action=Launch",
+      "cadStatus": "Vista 2D frontal proyectada (HLR) del STEP 3D oficial de ABB Library; inscripciones no cargadas (sin foto frontal medida)",
+      "cadFiles": [
+        "cad/abb/ot160_250/OT200-250E03.stp"
+      ],
+      "frontGeometry": "datos/frentes_cad.json",
+      "appearance": "datos/apariencias_abb.json",
+      "dimensionsNote": "Montaje en base (no riel). Ficha ABB OT160EV03P: 150 × 145,5 × 82,5 mm; el ancho del dibujo incluye el mecanismo y las orejas de fijación del CAD (166,9 mm). Manija y eje aparte.",
+      "depthMm": 82.5
+    },
+    {
+      "id": "abb.ot160_250e04.4p.front",
+      "label": "OT160…250E04 · 4P (mecanismo a la izquierda)",
+      "width": 180.5,
+      "height": 150,
+      "cadSource": "https://search.abb.com/library/Download.aspx?DocumentID=OT200...250E04.STP&LanguageCode=en&DocumentPartId=&Action=Launch",
+      "cadStatus": "Vista 2D frontal proyectada (HLR) del STEP 3D oficial de ABB Library; inscripciones no cargadas (sin foto frontal medida)",
+      "cadFiles": [
+        "cad/abb/ot160_250/OT200-250E04.stp"
+      ],
+      "frontGeometry": "datos/frentes_cad.json",
+      "appearance": "datos/apariencias_abb.json",
+      "dimensionsNote": "Montaje en base (no riel); contorno frontal del CAD ABB con mecanismo y orejas. Manija y eje aparte.",
+      "depthMm": 82.5
     }
   ],
   "importRules": {
@@ -3691,6 +3794,28 @@
       "basis": "HIPOTESIS A CONFIRMAR: 'S 251 Na C 10' del plano e-Design no es un código vigente de ABB; el equivalente probable es el S201-C NA (1P+N, 2 módulos, 35 x 88 x 69 mm, dibujo 2CDC022007F0010), mismo envolvente que S201M NA. Apoyo: el plano da 2x10 A, 6 kA, igual al S201 (el S201M daría 10 kA). El marcado impreso NO está validado para esta designación."
     },
     {
+      "id": "s200p-1pn",
+      "modelRegex": "^S\\s?201P\\b.*\\bNA\\b",
+      "poles": [
+        2
+      ],
+      "shell": "abb.s200m.1pn.front",
+      "verified": false,
+      "basis": "HIPÓTESIS A CONFIRMAR: S200P es de la misma familia System pro M compact que S200/S200M (polo de 17,5 mm); se usa el envolvente 1P+N de 35 × 88 mm. No se encontró ficha del S201P NA con medidas."
+    },
+    {
+      "id": "s200p-polos",
+      "modelRegex": "^S\\s?20[2-4]P\\b",
+      "poles": [
+        2,
+        3,
+        4
+      ],
+      "shell": "abb.s200m.1p.front",
+      "verified": false,
+      "basis": "HIPÓTESIS A CONFIRMAR: S200P de la familia System pro M compact, mismo polo que S200 (88 × 69 × 17,5 mm según fichas S204/S204M). Confirmar con la ficha del S204P."
+    },
+    {
       "id": "s200-1pn",
       "modelRegex": "^S\\s?201[LM]?\\b.*\\bNA\\b",
       "poles": [
@@ -3721,6 +3846,76 @@
       "shell": "abb.ot400e04.4p.front",
       "verified": true,
       "basis": "CAD ABB familia OT315-OT400E04."
+    },
+    {
+      "id": "f204-4p",
+      "modelRegex": "^F204\\b",
+      "poles": [
+        4
+      ],
+      "shell": "abb.f204.4p.front",
+      "verified": true,
+      "basis": "CAD ABB 'F204 - 3D Product skin' (9AKK106354A0756) para toda la serie F204 de 4 módulos. Las variantes selectivas ('-S'/'SX') se asumen del mismo envolvente: confirmar."
+    },
+    {
+      "id": "f202-2p",
+      "modelRegex": "^F202\\b",
+      "poles": [
+        2
+      ],
+      "shell": "abb.f202.2p.front",
+      "verified": true,
+      "basis": "CAD ABB 'F202 - 3D Product skin' (9AKK106354A0757)."
+    },
+    {
+      "id": "sn201",
+      "modelRegex": "^SN\\s?201",
+      "poles": [
+        2
+      ],
+      "shell": "abb.sn201.1pn.front",
+      "verified": true,
+      "basis": "CAD ABB '3D SN201' (9AKK106930A4363); la ficha del SN201 L da las mismas medidas por polo (85 × 68,9 × 17,6 mm)."
+    },
+    {
+      "id": "ot100-125-f4",
+      "modelRegex": "^OT1(00|25)F4",
+      "poles": [
+        4
+      ],
+      "shell": "abb.ot100_125f4.4p.front",
+      "verified": true,
+      "basis": "CAD ABB 'OT100…OT125F4N2' (OT100-125F4N2.STP) para OT100F4 y OT125F4."
+    },
+    {
+      "id": "ot100-125-f3",
+      "modelRegex": "^OT1(00|25)F3",
+      "poles": [
+        3
+      ],
+      "shell": "abb.ot100_125f3.3p.front",
+      "verified": true,
+      "basis": "CAD ABB 'OT100-125F3' para OT100F3 y OT125F3."
+    },
+    {
+      "id": "ot160-250-e03",
+      "modelRegex": "^OT(160EV|200E|250E)03",
+      "poles": [
+        3
+      ],
+      "shell": "abb.ot160_250e03.3p.front",
+      "verified": true,
+      "basis": "La ficha ABB del OT160EV03P (1SCA120514R1001) remite al dibujo OT200-250E03.stp: mismo envolvente para OT160EV03, OT200E03 y OT250E03."
+    },
+    {
+      "id": "ot160-250-e04",
+      "modelRegex": "^OT(160EV|200E|250E)04",
+      "poles": [
+        4
+      ],
+      "shell": "abb.ot160_250e04.4p.front",
+      "verified": false,
+      "basis": "CAD ABB 'OT200...250E04'. Para OT160EV04 se asume el mismo envolvente por analogía con el 3P (confirmar con la ficha)."
     }
   ],
   "scope": {

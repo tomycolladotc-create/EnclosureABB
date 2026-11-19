@@ -128,8 +128,10 @@ def build_bom(project, catalog, accessory_catalog=None, order_codes=None):
         add("Montaje DIN", by.get("pm"), f"{panels.get('pmDescripcion', 'Panel modular + riel DIN')} · {kd.get('modulesPerRow')} módulos", used, "u",
             [r["id"] for r in kd_rails], source=panels.get("source", ""))
         free_rows = max(0, int(kd.get("rows", used)) - used)
-        all_din = all((shells.get(d.get("shell"), {}).get("mount") or "").startswith("din") or not d.get("mountingKit") for d in project.get("devices", [])) \
-            and not any(d.get("mountingKit") for d in project.get("devices", []))
+        # Panel ciego sólo si TODOS los equipos van en riel: un equipo en placa (caja moldeada, OT de base) ocupa esas
+        # filas y su eje de manija pasaría por el panel ciego.
+        all_din = all(shells.get(d.get("shell"), {}).get("mounting") == "din" or d.get("mounting") == "din"
+                      for d in project.get("devices", []))
         if free_rows and all_din:  # con cajas moldeadas en placa, las filas "libres" las ocupan esos equipos: no se pide panel ciego
             add("Montaje DIN", by.get("pc"), f"{panels.get('pcDescripcion', 'Panel modular ciego')} para las filas sin equipos", free_rows, source=panels.get("source", ""))
     options = sorted(spec.get("railOptions") or (kd.get("freeRailOptions") or []), key=lambda o: o["length"])

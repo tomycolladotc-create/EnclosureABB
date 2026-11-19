@@ -61,12 +61,51 @@
       "marking": {
         "verifiedWith": "docs/imagenes_abb/XT1C_1SDA067405R1_frontal.png, imagen oficial ABB 9IBA255342 (400x400) de la referencia 1SDA067405R1. Frente calibrado con bbox transparente x=77..315 px, y=46..354 px contra 101,6x130 mm; la foto de catálogo usa una etiqueta genérica, por eso serie, bastidor, disparador e In salen del unifilar.",
         "items": [
-          {"text": "ABB", "x": 42.3, "y": 76.0, "h": 3.0, "w": 11.0, "color": "#ffffff", "bold": true},
-          {"text": "SACE Tmax", "x": 70.0, "y": 76.0, "h": 2.4, "color": "#ffffff", "bold": true},
-          {"text": "{serie}", "x": 89.2, "y": 69.6, "h": 2.5, "color": "#d7dbdc"},
-          {"text": "{frame}", "x": 91.0, "y": 63.7, "h": 2.3, "color": "#d7dbdc"},
-          {"text": "In={In}A", "x": 53.0, "y": 32.3, "h": 2.0, "color": "#d7dbdc"},
-          {"text": "{trip}", "x": 88.8, "y": 31.2, "h": 2.1, "color": "#d7dbdc"}
+          {
+            "text": "ABB",
+            "x": 42.3,
+            "y": 76.0,
+            "h": 3.0,
+            "w": 11.0,
+            "color": "#ffffff",
+            "bold": true
+          },
+          {
+            "text": "SACE Tmax",
+            "x": 70.0,
+            "y": 76.0,
+            "h": 2.4,
+            "color": "#ffffff",
+            "bold": true
+          },
+          {
+            "text": "{serie}",
+            "x": 89.2,
+            "y": 69.6,
+            "h": 2.5,
+            "color": "#d7dbdc"
+          },
+          {
+            "text": "{frame}",
+            "x": 91.0,
+            "y": 63.7,
+            "h": 2.3,
+            "color": "#d7dbdc"
+          },
+          {
+            "text": "In={In}A",
+            "x": 53.0,
+            "y": 32.3,
+            "h": 2.0,
+            "color": "#d7dbdc"
+          },
+          {
+            "text": "{trip}",
+            "x": 88.8,
+            "y": 31.2,
+            "h": 2.1,
+            "color": "#d7dbdc"
+          }
         ]
       }
     },
@@ -128,12 +167,51 @@
       "marking": {
         "verifiedWith": "docs/imagenes_abb/XT2N_1SDX176607R1_frontal.png, imagen oficial ABB 9IBA255267 (400x400) de la referencia 1SDX176607R1. Frente calibrado con bbox transparente x=60..338 px, y=46..354 px contra 120x130 mm; serie, bastidor, disparador e In se completan desde el unifilar.",
         "items": [
-          {"text": "ABB", "x": 52.2, "y": 76.0, "h": 3.0, "w": 11.0, "color": "#ffffff", "bold": true},
-          {"text": "SACE Tmax", "x": 79.8, "y": 76.0, "h": 2.4, "color": "#ffffff", "bold": true},
-          {"text": "{serie}", "x": 103.6, "y": 69.6, "h": 2.5, "color": "#d7dbdc"},
-          {"text": "{frame}", "x": 105.2, "y": 63.7, "h": 2.3, "color": "#d7dbdc"},
-          {"text": "In={In}A", "x": 68.2, "y": 32.3, "h": 2.0, "color": "#d7dbdc"},
-          {"text": "{trip}", "x": 103.0, "y": 31.2, "h": 2.1, "color": "#d7dbdc"}
+          {
+            "text": "ABB",
+            "x": 52.2,
+            "y": 76.0,
+            "h": 3.0,
+            "w": 11.0,
+            "color": "#ffffff",
+            "bold": true
+          },
+          {
+            "text": "SACE Tmax",
+            "x": 79.8,
+            "y": 76.0,
+            "h": 2.4,
+            "color": "#ffffff",
+            "bold": true
+          },
+          {
+            "text": "{serie}",
+            "x": 103.6,
+            "y": 69.6,
+            "h": 2.5,
+            "color": "#d7dbdc"
+          },
+          {
+            "text": "{frame}",
+            "x": 105.2,
+            "y": 63.7,
+            "h": 2.3,
+            "color": "#d7dbdc"
+          },
+          {
+            "text": "In={In}A",
+            "x": 68.2,
+            "y": 32.3,
+            "h": 2.0,
+            "color": "#d7dbdc"
+          },
+          {
+            "text": "{trip}",
+            "x": 103.0,
+            "y": 31.2,
+            "h": 2.1,
+            "color": "#d7dbdc"
+          }
         ]
       }
     },
@@ -420,7 +498,15 @@
       "marking": {
         "verifiedWith": "docs/imagenes_abb/OT400E04P_1SCA022719R1810_frontal.jpg, imagen oficial ABB 9PAA00000422688 (400x400) de la referencia 1SCA022719R1810. Cuerpo frontal calibrado aproximadamente con x=60..338 px, y=75..313 px contra 235x185 mm. La foto no muestra modelo ni corriente impresos en el frente; solo se reproduce el logo visible.",
         "items": [
-          {"text": "ABB", "x": 2.5, "y": 165.2, "h": 5.4, "w": 22.0, "color": "#ffffff", "bold": true}
+          {
+            "text": "ABB",
+            "x": 2.5,
+            "y": 165.2,
+            "h": 5.4,
+            "w": 22.0,
+            "color": "#ffffff",
+            "bold": true
+          }
         ]
       }
     },
@@ -538,6 +624,55 @@
         "minPoles": 2,
         "_ayuda": "Barra negra que une las palancas en 2P-4P (foto S203-C16). mm: x0 desde la izquierda, x1End desde la derecha, y desde abajo."
       }
+    },
+    "abb.f204.4p.front": {
+      "source": "https://new.abb.com/products/2CSF204001R1400/f204-ac-40-0-03",
+      "lineColor": "#5a6469",
+      "base": "#e0e3e1",
+      "parts": [],
+      "appearanceStatus": "color base de la familia System pro M (mismo que S200, calibrado con foto ABB); sin detalles de color ni inscripciones hasta medir una foto frontal"
+    },
+    "abb.f202.2p.front": {
+      "source": "https://new.abb.com/products/2CSF202001R1250",
+      "lineColor": "#5a6469",
+      "base": "#e0e3e1",
+      "parts": [],
+      "appearanceStatus": "color base de la familia System pro M (mismo que S200, calibrado con foto ABB); sin detalles de color ni inscripciones hasta medir una foto frontal"
+    },
+    "abb.sn201.1pn.front": {
+      "source": "https://www.abb.com/global/en/areas/electrification/low-voltage/din-rail-devices/miniature-circuit-breakers/sn201",
+      "lineColor": "#5a6469",
+      "base": "#e0e3e1",
+      "parts": [],
+      "appearanceStatus": "color base de la familia System pro M (mismo que S200, calibrado con foto ABB); sin detalles de color ni inscripciones hasta medir una foto frontal"
+    },
+    "abb.ot100_125f4.4p.front": {
+      "source": "https://onninen.fi/en/abb-switch-disconnector-ot100f4n2/p/AEX828",
+      "lineColor": "#5f6a70",
+      "base": "#c4c9cc",
+      "parts": [],
+      "appearanceStatus": "gris de cuerpo tomado de foto de producto (distribuidor Onninen, imagen OT100F4N2); sin banda ABB ni inscripciones hasta medir una foto frontal ABB"
+    },
+    "abb.ot100_125f3.3p.front": {
+      "source": "https://onninen.fi/en/abb-switch-disconnector-ot100f4n2/p/AEX828",
+      "lineColor": "#5f6a70",
+      "base": "#c4c9cc",
+      "parts": [],
+      "appearanceStatus": "gris de cuerpo tomado de foto de producto (distribuidor Onninen, imagen OT100F4N2); sin banda ABB ni inscripciones hasta medir una foto frontal ABB"
+    },
+    "abb.ot160_250e03.3p.front": {
+      "source": "https://onninen.fi/en/abb-switch-disconnector-ot100f4n2/p/AEX828",
+      "lineColor": "#5f6a70",
+      "base": "#c4c9cc",
+      "parts": [],
+      "appearanceStatus": "gris de cuerpo tomado de foto de producto (distribuidor Onninen, imagen OT100F4N2); sin banda ABB ni inscripciones hasta medir una foto frontal ABB"
+    },
+    "abb.ot160_250e04.4p.front": {
+      "source": "https://onninen.fi/en/abb-switch-disconnector-ot100f4n2/p/AEX828",
+      "lineColor": "#5f6a70",
+      "base": "#c4c9cc",
+      "parts": [],
+      "appearanceStatus": "gris de cuerpo tomado de foto de producto (distribuidor Onninen, imagen OT100F4N2); sin banda ABB ni inscripciones hasta medir una foto frontal ABB"
     }
   },
   "markingHelp": "marking: lo impreso en el frente del equipo REAL, medido en una foto frontal de ABB (fuente en verifiedWith). Medidas en mm: x desde el borde izquierdo, y (centro del texto) desde abajo, h = alto de las mayúsculas. Campos que salen del plano: {serie} {serieS} {curva} {In} {kA} {Icn} {sufijo} {sufijoGuion} {frame} {trip} {setting}. Si falta un campo, ese texto no se dibuja (no se inventa). when: condición sobre poles. box: recuadro [x0,y0,x1,y1] en mm. w: ancho a ocupar (logo). Carcasas sin 'marking' no llevan texto hasta medir su foto."
