@@ -1,195 +1,204 @@
 {
- "_ayuda": "Códigos de pedido ABB por modelo (clave = modelo sin espacios, coma decimal → punto, mayúsculas) y cantidad de polos. Sólo códigos verificados en una ficha o distribuidor que muestra el código ABB; lo que no se pudo verificar queda en 'sinVerificar' y la lista de materiales lo marca FALTA CÓDIGO.",
- "items": [
-  {
-   "model": "S201L-C10NA",
-   "poles": 2,
-   "orderCode": "2CDS241801R0104",
-   "descripcion": "S200L 1P+N C 10 A",
-   "source": "https://plc-direct.com/products/2cds241801r0104",
-   "status": "verificado (ficha/distribuidor con el código ABB)",
-   "note": null
-  },
-  {
-   "model": "S201L-C16NA",
-   "poles": 2,
-   "orderCode": "2CDS241801R0164",
-   "descripcion": "S200L 1P+N C 16 A",
-   "source": "https://plc-direct.com/products/2cds241801r0164",
-   "status": "verificado (ficha/distribuidor con el código ABB)",
-   "note": null
-  },
-  {
-   "model": "S201L-C20NA",
-   "poles": 2,
-   "orderCode": "2CDS241801R0204",
-   "descripcion": "S200L 1P+N C 20 A",
-   "source": "https://automation-warehouse.com/products/2cds241801r0204",
-   "status": "verificado (ficha/distribuidor con el código ABB)",
-   "note": null
-  },
-  {
-   "model": "S202-C10",
-   "poles": 2,
-   "orderCode": "2CDS252001R0104",
-   "descripcion": "S200 2P C 10 A",
-   "source": "https://no.rs-online.com/web/p/mcbs/7467719",
-   "status": "verificado (ficha/distribuidor con el código ABB)",
-   "note": null
-  },
-  {
-   "model": "S203-C10",
-   "poles": 3,
-   "orderCode": "2CDS253001R0104",
-   "descripcion": "S200 3P C 10 A",
-   "source": "https://ie.rs-online.com/web/p/mcbs/7467769",
-   "status": "verificado (ficha/distribuidor con el código ABB)",
-   "note": null
-  },
-  {
-   "model": "S203-C16",
-   "poles": 3,
-   "orderCode": "2CDS253001R0164",
-   "descripcion": "S200 3P C 16 A",
-   "source": "https://uk.rs-online.com/web/p/mcbs/7467766",
-   "status": "verificado (ficha/distribuidor con el código ABB)",
-   "note": null
-  },
-  {
-   "model": "S203-C25",
-   "poles": 3,
-   "orderCode": "2CDS253001R0254",
-   "descripcion": "S200 3P C 25 A",
-   "source": "https://uk.rs-online.com/web/p/mcbs/7467778",
-   "status": "verificado (ficha/distribuidor con el código ABB)",
-   "note": null
-  },
-  {
-   "model": "S203-C40",
-   "poles": 3,
-   "orderCode": "2CDS253001R0404",
-   "descripcion": "S200 3P C 40 A",
-   "source": "https://www.electrisa.com/cdn/shop/files/14192448000.PDF",
-   "status": "verificado (ficha/distribuidor con el código ABB)",
-   "note": null
-  },
-  {
-   "model": "S203-C50",
-   "poles": 3,
-   "orderCode": "2CDS253001R0504",
-   "descripcion": "S200 3P C 50 A",
-   "source": "https://uk.rs-online.com/web/p/mcbs/7467784",
-   "status": "verificado (ficha/distribuidor con el código ABB)",
-   "note": null
-  },
-  {
-   "model": "S204L-C32",
-   "poles": 4,
-   "orderCode": "2CDS244701R0324",
-   "descripcion": "S200L 4P C 32 A",
-   "source": "https://uk.rs-online.com/web/p/mcbs/1833669",
-   "status": "verificado (ficha/distribuidor con el código ABB)",
-   "note": null
-  },
-  {
-   "model": "S204M-C40",
-   "poles": 4,
-   "orderCode": "2CDS274001R0404",
-   "descripcion": "S200M 4P C 40 A",
-   "source": "https://onninen.pl/en/product/ABB-Overcurrent-circuit-breaker-4P-C-characteristic-40A-10kA-AC-S204M-C40-2CDS274001R0404-560664",
-   "status": "verificado (ficha/distribuidor con el código ABB)",
-   "note": null
-  },
-  {
-   "model": "S201M-B16",
-   "poles": 1,
-   "orderCode": "2CDS271001R0165",
-   "descripcion": "S200M 1P B 16 A",
-   "source": "https://se.rs-online.com/web/p/mcbs/5355995",
-   "status": "verificado (ficha/distribuidor con el código ABB)",
-   "note": null
-  },
-  {
-   "model": "S804S-C32",
-   "poles": 4,
-   "orderCode": "2CCS864001R0324",
-   "descripcion": "S800S 4P C 32 A (50 kA)",
-   "source": "https://empower.abb.com/ecatalog/ec/EN_NA/p/2CCS864001R0324",
-   "status": "verificado (ficha/distribuidor con el código ABB)",
-   "note": null
-  },
-  {
-   "model": "S804S-C100",
-   "poles": 4,
-   "orderCode": "2CCS864001R0824",
-   "descripcion": "S800S 4P C 100 A (50 kA)",
-   "source": "https://plc-direct.com/products/2ccs864001r0824",
-   "status": "verificado (ficha/distribuidor con el código ABB)",
-   "note": null
-  },
-  {
-   "model": "S804N-C20",
-   "poles": 4,
-   "orderCode": "2CCS894001R0204",
-   "descripcion": "S800N 4P C 20 A (36 kA)",
-   "source": "https://plc-direct.com/products/s804n-c20",
-   "status": "verificado (ficha/distribuidor con el código ABB)",
-   "note": null
-  },
-  {
-   "model": "F204AC-25/0.03",
-   "poles": 4,
-   "orderCode": "2CSF204001R1250",
-   "descripcion": "Diferencial 4P tipo AC 25 A 30 mA",
-   "source": "https://cdn.erply.com/files/396198/2CSF204001R1250.pdf",
-   "status": "verificado (ficha/distribuidor con el código ABB)",
-   "note": null
-  },
-  {
-   "model": "F204AC-40/0.03",
-   "poles": 4,
-   "orderCode": "2CSF204001R1400",
-   "descripcion": "Diferencial 4P tipo AC 40 A 30 mA",
-   "source": "https://elettroclimashop.com/cdn/4225250.pdf",
-   "status": "verificado (ficha/distribuidor con el código ABB)",
-   "note": null
-  },
-  {
-   "model": "T2S160PR221DS-LS160A",
-   "poles": 4,
-   "orderCode": "1SDA051142R1",
-   "descripcion": "Tmax T2S 160 PR221DS-LS In=160 A 4p F F (terminales delanteros)",
-   "source": "https://www.electricautomationnetwork.com/en/abb/t2s-160-pr221ds-ls-in160a-4p-f-f-abb-t2s160-1sda051142r1",
-   "status": "verificado (ficha/distribuidor con el código ABB)",
-   "note": "Código para 4 polos fijo con terminales F; si el unifilar pide 3 polos u otros terminales, cambia el código."
-  },
-  {
-   "model": "OT160EV03",
-   "poles": 3,
-   "orderCode": "1SCA120509R1001",
-   "descripcion": "Seccionador OT160EV03 3P 160 A",
-   "source": "https://docs.rs-online.com/5e74/A700000015162099.pdf",
-   "status": "verificado (ficha/distribuidor con el código ABB)",
-   "note": "No incluye manija ni eje (la variante OT160EV03WP sí los trae): pedirlos aparte."
-  }
- ],
- "sinVerificar": [
-  {
-   "model": "OT100F4",
-   "motivo": "el unifilar no indica la variante (OT100F4N2 1SCA105018R1001 seccionador / OT100F4C 1SCA105019R1001 conmutador): definir antes de comprar; manija y eje no incluidos en el OT100F4N2 (pedirlos aparte)"
-  },
-  {
-   "model": "S293-C80",
-   "motivo": "no se encontró ficha con el código de pedido"
-  },
-  {
-   "model": "SN201L-B16",
-   "motivo": "no se encontró ficha con el código de pedido"
-  },
-  {
-   "model": "F204-SXAC-40/0.3",
-   "motivo": "designación ambigua en el unifilar ('SX'): F204 AC-40/0.3 es 2CSF204001R3400 y F204 A S-40/0.3 (selectivo) es 2CSF204201R3400; confirmar cuál"
-  }
- ],
- "fuente": "consulta web 2026-11-18 (ver datos/fuentes_descargadas.json)"
+  "_ayuda": "Códigos de pedido ABB por modelo (clave = modelo sin espacios, coma decimal → punto, mayúsculas) y cantidad de polos. Sólo códigos verificados en una ficha o distribuidor que muestra el código ABB; lo que no se pudo verificar queda en 'sinVerificar' y la lista de materiales lo marca FALTA CÓDIGO.",
+  "items": [
+    {
+      "model": "S201L-C10NA",
+      "poles": 2,
+      "orderCode": "2CDS241801R0104",
+      "descripcion": "S200L 1P+N C 10 A",
+      "source": "https://plc-direct.com/products/2cds241801r0104",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S201L-C16NA",
+      "poles": 2,
+      "orderCode": "2CDS241801R0164",
+      "descripcion": "S200L 1P+N C 16 A",
+      "source": "https://plc-direct.com/products/2cds241801r0164",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S201L-C20NA",
+      "poles": 2,
+      "orderCode": "2CDS241801R0204",
+      "descripcion": "S200L 1P+N C 20 A",
+      "source": "https://automation-warehouse.com/products/2cds241801r0204",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S202-C10",
+      "poles": 2,
+      "orderCode": "2CDS252001R0104",
+      "descripcion": "S200 2P C 10 A",
+      "source": "https://no.rs-online.com/web/p/mcbs/7467719",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S203-C10",
+      "poles": 3,
+      "orderCode": "2CDS253001R0104",
+      "descripcion": "S200 3P C 10 A",
+      "source": "https://ie.rs-online.com/web/p/mcbs/7467769",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S203-C16",
+      "poles": 3,
+      "orderCode": "2CDS253001R0164",
+      "descripcion": "S200 3P C 16 A",
+      "source": "https://uk.rs-online.com/web/p/mcbs/7467766",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S203-C25",
+      "poles": 3,
+      "orderCode": "2CDS253001R0254",
+      "descripcion": "S200 3P C 25 A",
+      "source": "https://uk.rs-online.com/web/p/mcbs/7467778",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S203-C40",
+      "poles": 3,
+      "orderCode": "2CDS253001R0404",
+      "descripcion": "S200 3P C 40 A",
+      "source": "https://www.electrisa.com/cdn/shop/files/14192448000.PDF",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S203-C50",
+      "poles": 3,
+      "orderCode": "2CDS253001R0504",
+      "descripcion": "S200 3P C 50 A",
+      "source": "https://uk.rs-online.com/web/p/mcbs/7467784",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S204L-C32",
+      "poles": 4,
+      "orderCode": "2CDS244701R0324",
+      "descripcion": "S200L 4P C 32 A",
+      "source": "https://uk.rs-online.com/web/p/mcbs/1833669",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S204M-C40",
+      "poles": 4,
+      "orderCode": "2CDS274001R0404",
+      "descripcion": "S200M 4P C 40 A",
+      "source": "https://onninen.pl/en/product/ABB-Overcurrent-circuit-breaker-4P-C-characteristic-40A-10kA-AC-S204M-C40-2CDS274001R0404-560664",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S201M-B16",
+      "poles": 1,
+      "orderCode": "2CDS271001R0165",
+      "descripcion": "S200M 1P B 16 A",
+      "source": "https://se.rs-online.com/web/p/mcbs/5355995",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S804S-C32",
+      "poles": 4,
+      "orderCode": "2CCS864001R0324",
+      "descripcion": "S800S 4P C 32 A (50 kA)",
+      "source": "https://empower.abb.com/ecatalog/ec/EN_NA/p/2CCS864001R0324",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S804S-C100",
+      "poles": 4,
+      "orderCode": "2CCS864001R0824",
+      "descripcion": "S800S 4P C 100 A (50 kA)",
+      "source": "https://plc-direct.com/products/2ccs864001r0824",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S804N-C20",
+      "poles": 4,
+      "orderCode": "2CCS894001R0204",
+      "descripcion": "S800N 4P C 20 A (36 kA)",
+      "source": "https://plc-direct.com/products/s804n-c20",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "F204AC-25/0.03",
+      "poles": 4,
+      "orderCode": "2CSF204001R1250",
+      "descripcion": "Diferencial 4P tipo AC 25 A 30 mA",
+      "source": "https://cdn.erply.com/files/396198/2CSF204001R1250.pdf",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "F204AC-40/0.03",
+      "poles": 4,
+      "orderCode": "2CSF204001R1400",
+      "descripcion": "Diferencial 4P tipo AC 40 A 30 mA",
+      "source": "https://elettroclimashop.com/cdn/4225250.pdf",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "T2S160PR221DS-LS160A",
+      "poles": 4,
+      "orderCode": "1SDA051142R1",
+      "descripcion": "Tmax T2S 160 PR221DS-LS In=160 A 4p F F (terminales delanteros)",
+      "source": "https://www.electricautomationnetwork.com/en/abb/t2s-160-pr221ds-ls-in160a-4p-f-f-abb-t2s160-1sda051142r1",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": "Código para 4 polos fijo con terminales F; si el unifilar pide 3 polos u otros terminales, cambia el código."
+    },
+    {
+      "model": "OT160EV03",
+      "poles": 3,
+      "orderCode": "1SCA120509R1001",
+      "descripcion": "Seccionador OT160EV03 3P 160 A",
+      "source": "https://docs.rs-online.com/5e74/A700000015162099.pdf",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": "No incluye manija ni eje (la variante OT160EV03WP sí los trae): pedirlos aparte."
+    },
+    {
+      "model": "S293-C80",
+      "poles": 3,
+      "orderCode": "GHS2932001R0804",
+      "descripcion": "S290 3P C 80 A",
+      "source": "https://search.abb.com/library/Download.aspx?DocumentID=ABB%2FNN31%2F05_04&LanguageCode=cs&DocumentPartId=&Action=Launch",
+      "status": "verificado (tabla de pedido del catálogo ABB NN31/05_04, pág. 3/9)",
+      "note": null
+    }
+  ],
+  "sinVerificar": [
+    {
+      "model": "OT100F4",
+      "motivo": "el unifilar no indica la variante (OT100F4N2 1SCA105018R1001 seccionador / OT100F4C 1SCA105019R1001 conmutador): definir antes de comprar; manija y eje no incluidos en el OT100F4N2 (pedirlos aparte)"
+    },
+    {
+      "model": "S293-C80",
+      "motivo": "no se encontró ficha con el código de pedido"
+    },
+    {
+      "model": "SN201L-B16",
+      "motivo": "no se encontró ficha con el código de pedido"
+    },
+    {
+      "model": "F204-SXAC-40/0.3",
+      "motivo": "designación ambigua en el unifilar ('SX'): F204 AC-40/0.3 es 2CSF204001R3400 y F204 A S-40/0.3 (selectivo) es 2CSF204201R3400; confirmar cuál"
+    }
+  ],
+  "fuente": "consulta web 2026-11-18 (ver datos/fuentes_descargadas.json)"
 }

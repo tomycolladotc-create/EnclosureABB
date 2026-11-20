@@ -85,6 +85,19 @@ class Regresion24Tableros(unittest.TestCase):
                     for k in ("x", "w", "font"):
                         self.assertAlmostEqual(a[k], b[k], places=2)
 
+    def test_todos_los_equipos_dibujados_con_su_frente(self):
+        """Lección 31: los S293-C80 de TSB, TS AUX 1 y TS AUX 2 salían como un recuadro «sin CAD». Todo equipo dibujado
+        tiene que tener frente (CAD, DXF o dibujo vectorial de catálogo ABB); los monopolares quedan fuera por regla."""
+        from pathlib import Path
+        fronts = json.loads((Path(__file__).resolve().parents[1] / "datos" / "frentes_cad.json").read_text(encoding="utf-8"))["items"]
+        for pdf in BOARDS:
+            p = result(pdf)["project"]
+            with self.subTest(tablero=pdf.stem):
+                sin_frente = [f"{d['tag']} {d.get('model')}" for d in p["devices"] if d.get("shell") not in fronts]
+                self.assertFalse(sin_frente, f"equipos sin frente: {sin_frente}")
+                fuera = [d for d in p.get("devicesNotDrawn", []) if int(d.get("poles") or 0) >= 2]
+                self.assertFalse(fuera, f"equipos de 2+ polos sin dibujar: {fuera}")
+
     def test_letra_de_las_etiquetas_legible(self):
         rules = json.loads((EXPECTED.parents[2].parent / "datos" / "reglas_layout.json").read_text(encoding="utf-8"))["labels"]
         from etiquetas import label_boxes

@@ -4123,18 +4123,20 @@
       "appearance": "datos/apariencias_abb.json"
     },
     {
-      "id": "abb.s290.3p.outline",
-      "label": "S290 · 3P (contorno de ficha, sin CAD)",
+      "id": "abb.s290.3p.front",
+      "label": "S290 · 3P",
       "width": 78.8,
       "height": 90,
       "mounting": "din",
-      "cadSource": null,
-      "cadStatus": "sin CAD en ABB Library: se dibuja el contorno con las medidas de la ficha ABB (marcador, sin frente)",
-      "cadFiles": [],
+      "cadSource": "Catálogo ABB NN31/05_04 «Jističe a chrániče pro M compact», pág. 6/4 (Celkové rozměry S 280, S 290): dibujo vectorial de medidas, vista frontal 3P",
+      "cadStatus": "sin CAD 2D/3D en ABB Library: frente tomado del dibujo vectorial de medidas del catálogo ABB (work/proyectar_cad.py, tipo pdf)",
+      "cadFiles": [
+        "cad/abb/s290/ABB_NN31_05_04_p6-4_rozmery_S280_S290.pdf"
+      ],
       "dimensionsNote": "Ficha ABB S293-C100 (S290, 3P): 78,8 × 90 × 70 mm (mismo bastidor que el S293-C80; la ficha S292-C80 da 52,5 × 90 × 70 para 2P).",
       "dimensionsSource": "https://datasheet.octopart.com/S293-C100-ABB-Control-datasheet-62100593.pdf ; https://manualmachine.com/abb/s292c80/16896891-data-sheet",
       "depthMm": 70,
-      "outlineOnly": true
+      "cadAspectNote": "El dibujo del catálogo no está a escala en alto: con la cota de ancho de ABB (78,75 mm) mide 94,3 mm de alto y la ficha da 90. El armado usa la ficha (78,8 × 90) y el frente se dibuja sin deformar, centrado."
     }
   ],
   "importRules": {
@@ -4438,9 +4440,9 @@
       "poles": [
         3
       ],
-      "shell": "abb.s290.3p.outline",
+      "shell": "abb.s290.3p.front",
       "verified": true,
-      "basis": "Medidas de la ficha ABB S293-C100 (78,8 × 90 mm). Sin CAD: se dibuja el contorno para reservar el lugar (lección 2026-11-19: no dibujarlo dejaba el gabinete chico)."
+      "basis": "Medidas de la ficha ABB S293-C100 (78,8 × 90 mm). Frente del dibujo vectorial de medidas del catálogo ABB NN31/05_04 (lección 2026-11-19: no dibujarlo dejaba el gabinete chico)."
     }
   ],
   "scope": {

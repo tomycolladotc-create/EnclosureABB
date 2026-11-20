@@ -131,7 +131,7 @@ class OrdenYLugar(unittest.TestCase):
     def test_riel_en_orden_de_unifilar(self):
         """TSB: se ordenaba por carcasa y quedaba TSB-1.13 antes que TSB-1.1."""
         devs = [dev("QS1", "OT100F4", "abb.ot100_125f4.4p.front", evidence="SECCIONADOR")]
-        models = [("S201L-C16 NA", "abb.s200m.1pn.front", 2), ("S203-C10", "abb.s200m.1p.front", 3), ("S 293-C 80", "abb.s290.3p.outline", 3),
+        models = [("S201L-C16 NA", "abb.s200m.1pn.front", 2), ("S203-C10", "abb.s200m.1p.front", 3), ("S 293-C 80", "abb.s290.3p.front", 3),
                   ("S203-C16", "abb.s200m.1p.front", 3), ("S201L-C16 NA", "abb.s200m.1pn.front", 2)]
         for n, (model, shell, poles) in enumerate(models, 1):
             devs.append(dev(f"QF{55 + n}", model, shell, f"TSB-1.{n}", poles=poles))

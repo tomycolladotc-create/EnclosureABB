@@ -227,6 +227,17 @@
    "bytes": 7641141,
    "sha256": "bc18594195d3ea06cffc166c692f881e34abbca303529fcf12e7509b5838e51e",
    "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+  },
+  {
+   "fecha": "2026-11-20",
+   "tema": "Frente del S290 (S293-C80) desde el catálogo ABB",
+   "urls": [
+    "https://library.abb.com/r?q=GHS2932001R0804",
+    "https://search.abb.com/library/Download.aspx?DocumentID=ABB%2FNN31%2F05_04&LanguageCode=cs&DocumentPartId=&Action=Launch"
+   ],
+   "archivo": "cad/abb/s290/ABB_NN31_05_04_p6-4_rozmery_S280_S290.pdf (página 6/4 del catálogo ABB NN31/05_04, 346 págs., 6,9 MB, descargado con el navegador de la PC del usuario porque ABB Library no se alcanza desde el espacio de trabajo)",
+   "resultado": "S290 no tiene CAD 2D/3D en ABB Library; el catálogo trae el dibujo vectorial de medidas (1P 26,25 / 2P 52,5 / 3P 78,75 / 4P 105 × 90 mm). Código de pedido del S293-C80 confirmado en ABB Library: GHS2932001R0804. El catálogo actual 2CSC400002D0913 (IT, 2025) ya no incluye el S290.",
+   "usado_en": "work/proyectar_cad.py (tipo pdf) → datos/frentes_cad.json abb.s290.3p.front; datos/apariencias_abb.json"
   }
  ],
  "consultadas": [
@@ -288,7 +299,7 @@
     "https://www.farnell.com/datasheets/2912218.pdf"
    ],
    "resultado": "S293 (S290 3P): 78,8 × 90 × 70 mm; S292: 52,5 × 90 × 70; S803S/B/C-C80: 81 × 95 × 82,5 mm (4,5 módulos)",
-   "usado_en": "datos/catalogo_abb.json -> abb.s290.3p.outline, abb.s803.3p.front"
+   "usado_en": "datos/catalogo_abb.json -> abb.s290.3p.front, abb.s803.3p.front"
   }
  ]
 }

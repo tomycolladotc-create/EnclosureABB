@@ -61,6 +61,10 @@ SOURCES = [
     ("abb.s803.3p.front", "cad/abb/s800/x/2D S800 3pole drawing.DXF", "dxf", None, None),
     ("abb.ot63_80f3.3p.front", "cad/abb/ot63_80/OT63-80F3.igs", "iges", (0, 1, 0), (-1, 0, 0), "rot90ccw"),
     ("abb.ot63_80f4.4p.front", "cad/abb/ot63_80/ot63-80f4n2.stp", "step", (0, 1, 0), (-1, 0, 0), "rot90ccw"),
+    # 2026-11-20: S290 sin CAD en ABB Library; se usa el dibujo vectorial de medidas del catálogo ABB NN31/05_04 (pág. 6/4,
+    # «Celkové rozměry S 280, S 290»), vista frontal 3P. Escala por la cota de ABB: 78,75 mm de ancho.
+    ("abb.s290.3p.front", "cad/abb/s290/ABB_NN31_05_04_p6-4_rozmery_S280_S290.pdf", "pdf", None, None,
+     {"page": 0, "rect": (261.5, 343.0, 329.5, 424.5), "widthMm": 78.75}),
 ]
 
 
@@ -155,6 +159,47 @@ def from_dxf(filename):
     return paths
 
 
+def from_pdf_vector(filename, page, rect, width_mm):
+    """Trayectorias del dibujo vectorial de un catálogo ABB dentro de `rect` (pt): todo lo trazado y el contorno de los
+    rellenos de color (franja roja, palanca); los rellenos blancos son letras o tapas y no son aristas. Escala uniforme
+    tomada de la cota de ancho de ABB (pt → mm); y hacia arriba como en los CAD."""
+    import pymupdf
+    pg = pymupdf.open(filename)[page]
+    box = pymupdf.Rect(*rect)
+    drawings = [d for d in pg.get_drawings() if box.contains(d["rect"])]
+    body = pymupdf.Rect(min(d["rect"].x0 for d in drawings), min(d["rect"].y0 for d in drawings),
+                        max(d["rect"].x1 for d in drawings), max(d["rect"].y1 for d in drawings))
+    k = width_mm / body.width
+    to_mm = lambda q: [round((q.x - body.x0) * k, 4), round((body.y1 - q.y) * k, 4)]
+    paths = []
+    for d in drawings:
+        white_fill = d.get("fill") and min(d["fill"]) > 0.95 and not d.get("color")
+        if white_fill:
+            continue
+        if d.get("fill") and d["items"]:  # un relleno se cierra solo: se agrega el lado que cierra su contorno
+            first, last = d["items"][0], d["items"][-1]
+            if first[0] in ("l", "c") and last[0] in ("l", "c"):
+                paths.append([to_mm(last[-1]), to_mm(first[1])])
+        for it in d["items"]:
+            if it[0] == "l":
+                paths.append([to_mm(it[1]), to_mm(it[2])])
+            elif it[0] == "re":
+                r = it[1]
+                paths.append([to_mm(r.tl), to_mm(r.tr), to_mm(r.br), to_mm(r.bl), to_mm(r.tl)])
+            elif it[0] == "qu":
+                q = it[1]
+                paths.append([to_mm(q.ul), to_mm(q.ur), to_mm(q.lr), to_mm(q.ll), to_mm(q.ul)])
+            elif it[0] == "c":
+                p0, c1, c2, p3 = it[1:5]
+                pts = []
+                for i in range(9):
+                    t = i / 8
+                    pts.append(pymupdf.Point((1 - t) ** 3 * p0.x + 3 * (1 - t) ** 2 * t * c1.x + 3 * (1 - t) * t ** 2 * c2.x + t ** 3 * p3.x,
+                                             (1 - t) ** 3 * p0.y + 3 * (1 - t) ** 2 * t * c1.y + 3 * (1 - t) * t ** 2 * c2.y + t ** 3 * p3.y))
+                paths.append([to_mm(q) for q in pts])
+    return paths
+
+
 def normalize(paths):
     paths = [p for p in paths if len(p) >= 2]
     xmin = min(v[0] for p in paths for v in p)
@@ -192,13 +237,17 @@ def main():
             continue
         filename = ROOT / relative
         print(f"Proyectando {shell}: {filename.name}", flush=True)
-        paths, triangles = (from_dxf(filename), []) if kind == "dxf" else from_step_or_iges(filename, kind, normal, xdir)
-        if "rot90ccw" in opts:
+        if kind == "pdf":
+            o = opts[0]
+            paths, triangles = from_pdf_vector(filename, o["page"], o["rect"], o["widthMm"]), []
+        else:
+            paths, triangles = (from_dxf(filename), []) if kind == "dxf" else from_step_or_iges(filename, kind, normal, xdir)
+        if "rot90ccw" in [o for o in opts if isinstance(o, str)]:
             paths = [[[-y, x] for x, y in p] for p in paths]
             triangles = [tuple((-y, x) for x, y in t) for t in triangles]
         normalized, source_size, bbox = normalize(paths)
         fronts["items"][shell] = {
-            "source": relative, "method": "ABB DXF 2D" if kind == "dxf" else f"proyección frontal HLR de ABB {kind.upper()} 3D",
+            "source": relative, "method": {"dxf": "ABB DXF 2D", "pdf": "dibujo vectorial de medidas del catálogo ABB"}.get(kind, f"proyección frontal HLR de ABB {kind.upper()} 3D"),
             "sourceProjectionExtent": source_size, "paths": normalized,
             **dict(zip(("silhouette", "silhouetteHoles"), silhouette(paths, triangles, bbox))),
             "silhouetteMethod": "unión de la malla proyectada" if triangles else "relleno de lo encerrado por el dibujo 2D",

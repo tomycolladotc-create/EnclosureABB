@@ -1213,6 +1213,98 @@
         ]
       },
       "appearanceStatus": "paleta del S804N calibrado, indicadores reubicados a 3 polos"
+    },
+    "abb.s290.3p.front": {
+      "source": "cad/abb/s290/ABB_NN31_05_04_p6-4_rozmery_S280_S290.pdf (colores del propio dibujo ABB: franja roja, palanca negra) + paleta S200 calibrada",
+      "lineColor": "#5a6469",
+      "base": "#e0e3e1",
+      "parts": [
+        {
+          "seed": [
+            0.16,
+            0.717
+          ],
+          "color": "#e00016"
+        },
+        {
+          "seed": [
+            0.308,
+            0.717
+          ],
+          "color": "#e00016"
+        },
+        {
+          "seed": [
+            0.5,
+            0.717
+          ],
+          "color": "#e00016"
+        },
+        {
+          "seed": [
+            0.833,
+            0.717
+          ],
+          "color": "#e00016"
+        },
+        {
+          "seed": [
+            0.16,
+            0.29
+          ],
+          "color": "#282d31"
+        },
+        {
+          "seed": [
+            0.16,
+            0.39
+          ],
+          "color": "#282d31"
+        },
+        {
+          "seed": [
+            0.493,
+            0.29
+          ],
+          "color": "#282d31"
+        },
+        {
+          "seed": [
+            0.493,
+            0.39
+          ],
+          "color": "#282d31"
+        },
+        {
+          "seed": [
+            0.827,
+            0.29
+          ],
+          "color": "#282d31"
+        },
+        {
+          "seed": [
+            0.827,
+            0.39
+          ],
+          "color": "#282d31"
+        }
+      ],
+      "marking": {
+        "verifiedWith": "Letras ABB blancas del mismo dibujo vectorial del catálogo (pág. 6/4): posición y alto calculados de sus coordenadas, llevados a la medida del equipo con pintura.fit.",
+        "items": [
+          {
+            "text": "ABB",
+            "x": 5.07,
+            "y": 64.44,
+            "h": 3.14,
+            "w": 7.98,
+            "color": "#ffffff",
+            "bold": true
+          }
+        ]
+      },
+      "appearanceStatus": "colores del dibujo de catálogo ABB (franja y palanca); sin foto ABB del S290 en la Library"
     }
   },
   "markingHelp": "marking: lo impreso en el frente del equipo REAL, medido en una foto frontal de ABB (fuente en verifiedWith). Medidas en mm: x desde el borde izquierdo, y (centro del texto) desde abajo, h = alto de las mayúsculas. Campos que salen del plano: {serie} {serieS} {curva} {In} {kA} {Icn} {sufijo} {sufijoGuion} {frame} {trip} {setting}. Si falta un campo, ese texto no se dibuja (no se inventa). when: condición sobre poles. box: recuadro [x0,y0,x1,y1] en mm. w: ancho a ocupar (logo). Carcasas sin 'marking' no llevan texto hasta medir su foto.",

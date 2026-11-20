@@ -3,6 +3,11 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-20 16:30 · Claude · S290 (S293-C80) dibujado con su frente
+- Hecho: buscados los equipos sin dibujar en los 24 tableros: sólo los S293-C80 (TSB ×2, TS AUX 1, TS AUX 2) salían como recuadro; el monopolar QF62 de TSB queda fuera por regla. Frente del S290 desde el dibujo vectorial del catálogo ABB NN31/05_04 (bajado con el navegador de la PC del usuario; ABB Library no se alcanza desde el espacio de trabajo). Código GHS2932001R0804 verificado en la tabla de pedido del catálogo.
+- Resultado: 168 tests, regresión igual, auditoría 0; test nuevo: ningún equipo de 2+ polos sin frente en los 24 tableros.
+- Ojo: el dibujo de catálogo no está a escala en alto (94,3 vs 90 mm): se dibuja centrado sin deformar (cadAspectNote).
+
 ## 2026-11-19 21:30 · Claude · 2.ª revisión de los 24 tableros: pintura por superficies del CAD, encuadre, etiquetas, lista
 - Hecho: revisados los 24 a tamaño completo + puertas + listas. Corregido en origen: colores sobre superficies del CAD (semillas) y logos calculados; pantalla y DXF dibujan la misma pintura (pintura.resolve en el servidor, con candado y precálculo); encuadre de exportación medido (cotas cortadas, PNG estirado); subtítulo alto×ancho; etiquetas con letra mínima y misma regla en Python y JS (verificado con node); «a confirmar» en la lista; pruebas fuera de datos/proyectos (los 24 subidos por error se sacaron del repo).
 - Resultado: 167 tests, 122/122 interfaz, regresión igual, auditoría 0 en los 24.

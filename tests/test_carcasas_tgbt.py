@@ -62,7 +62,7 @@ class CarcasasTGBT(unittest.TestCase):
         """Lección 2026-11-19: el S290 sin dibujar dejaba el gabinete sin su lugar. Ahora va con el contorno de ficha (78,8 × 90)."""
         text = "-QF58\nS 293-C 803x25+PE16 mm² Cu\nACU\nTSB-1.3\nRST\n0,00 (*)\n"
         d = next(x for x in detect_devices(text, CAT) if x["tag"] == "QF58")
-        self.assertEqual(d["shell"], "abb.s290.3p.outline")
+        self.assertEqual(d["shell"], "abb.s290.3p.front")
         self.assertEqual((d["w"], d["h"]), (78.8, 90))
 
 if __name__ == "__main__":
