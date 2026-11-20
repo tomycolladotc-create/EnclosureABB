@@ -212,7 +212,9 @@ def main():
             pg.select_option("#ductSec", str(pg.evaluate("ducts.sections.findIndex(x=>x.widthMm===25&&x.heightMm===40)"))); wait_idle(pg, 400)
             check("canaleta: cambiar sección", pg.evaluate("(a=>[a.w,a.sectionMm,a.depthMm])(ductById(selDuct))") == [25, 25, 40])
             id_ = pg.evaluate("selDuct")
-            box = pg.locator(f"#board .duct[data-duct='{id_}']").bounding_box()
+            duct = pg.locator(f"#board .duct[data-duct='{id_}']")
+            duct.wait_for(state="visible", timeout=10000)  # tras cambiar la sección el tablero se vuelve a dibujar
+            box = duct.bounding_box()
             y0 = pg.evaluate("ductById(selDuct).y")
             pg.mouse.move(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
             pg.mouse.down(); pg.mouse.move(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2 - 20, steps=5); pg.mouse.up(); wait_idle(pg, 500)
