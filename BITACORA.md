@@ -3,6 +3,10 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-20 18:30 · Claude · Verificación contra unifilares + Excel de equipamiento eléctrico
+- Hecho: los 173 interruptores/seccionadores/diferenciales de los 24 tableros releídos con otro lector (PyMuPDF) y comparados: modelo, circuito, polos y calibre iguales al unifilar (única diferencia, a propósito: QF62 de TSB). Test permanente nuevo. Excel del equipamiento eléctrico (sin canalizaciones ni montaje): 85 renglones con código, cantidad (SUMIFS del detalle), circuitos y tableros; hojas de detalle por tablero y de verificación.
+- Ojo: 57 de 85 renglones siguen sin código de pedido (XT, E2.2, OT, S800, varios S200, manijas OT, barras a dimensionar).
+
 ## 2026-11-20 17:30 · Claude · QF62 de TSB cambiado a 1P+N por pedido del usuario
 - Hecho: el unifilar de TSB trae un monopolar (QF62 S201M B16, TSB-1.7 «Bombeo pluvial», fase S + neutro). A pedido del usuario se dibuja como S201M-B16 NA (1P+N, mismo bastidor y curva; código 2CDS271103R0165). Mecanismo nuevo y único: datos/correcciones_unifilar.json, aplicado por importador.apply_corrections al importar (editor y regresión); sólo vale si coinciden tablero + etiqueta + modelo del PDF; si el unifilar cambia, no se aplica y la interfaz avisa. La lista dice «CAMBIADO por pedido del usuario: el unifilar dice S201M B16 (1P)».
 - Resultado: 172 tests; huella aceptada a propósito (sólo TSB: 19 equipos dibujados, 0 sin dibujar, mismo gabinete).
