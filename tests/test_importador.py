@@ -147,3 +147,33 @@ class UnifilaresReales(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class CorreccionesDelUsuario(unittest.TestCase):
+    """2026-11-20: el usuario pidió cambiar el monopolar QF62 de TSB (S201M B16) por un 1P+N (S201M-B16 NA)."""
+
+    def setUp(self):
+        from importador import apply_corrections, detect_board
+        self.apply, self.detect_board = apply_corrections, detect_board
+        self.text = pdf_text(ROOT / "tests" / "unifilares" / "general" / "TSB.pdf")
+
+    def test_qf62_de_tsb_se_dibuja_como_1p_n(self):
+        devices = detect_devices(self.text, CATALOG)
+        unused = self.apply(devices, self.detect_board(self.text), CATALOG)
+        qf62 = {d["tag"]: d for d in devices}["QF62"]
+        self.assertEqual(unused, [])
+        self.assertEqual((qf62["model"], qf62["poles"], qf62["shell"]), ("S201M-B16 NA", 2, "abb.s200m.1pn.front"))
+        self.assertEqual(qf62["correctedFrom"]["model"], "S201M B16")
+
+    def test_no_se_aplica_si_el_unifilar_cambio(self):
+        devices = detect_devices(self.text, CATALOG)
+        fix = [{"board": "TSB", "tag": "QF62", "fromModel": "S201M C20", "model": "S201M-C20 NA", "poles": 2, "reason": "x", "date": "x"}]
+        unused = self.apply(devices, self.detect_board(self.text), CATALOG, fix)
+        self.assertEqual(len(unused), 1)
+        self.assertEqual({d["tag"]: d for d in devices}["QF62"]["poles"], 1)
+
+    def test_no_se_aplica_a_otro_tablero(self):
+        devices = detect_devices(self.text, CATALOG)
+        fix = [{"board": "TSL1", "tag": "QF62", "fromModel": "S201M B16", "model": "S201M-B16 NA", "poles": 2, "reason": "x", "date": "x"}]
+        self.assertEqual(self.apply(devices, self.detect_board(self.text), CATALOG, fix), [])
+        self.assertNotIn("correctedFrom", {d["tag"]: d for d in devices}["QF62"])

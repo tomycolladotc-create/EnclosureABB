@@ -1,0 +1,15 @@
+{
+  "_ayuda": "Cambios de equipo pedidos por el usuario sobre un unifilar puntual (el PDF de e-Design no se toca). Se aplican al importar (importador.apply_corrections) sólo si el tablero, la etiqueta Y el modelo del PDF coinciden; si el PDF cambia, la corrección deja de aplicarse y la auditoría lo avisa. El equipo queda marcado (correctedFrom) y la lista de materiales lo dice.",
+  "items": [
+    {
+      "board": "TSB",
+      "tag": "QF62",
+      "fromModel": "S201M B16",
+      "model": "S201M-B16 NA",
+      "poles": 2,
+      "date": "2026-11-20",
+      "requestedBy": "usuario (chat 2026-11-20: «dibujá uno de 2 polos como el resto y ponele ese modelo»)",
+      "reason": "El unifilar pone un monopolar (1x16 A) en un circuito monofásico con neutro (TSB-1.7 «Bombeo pluvial», 2x2,5+PE); los circuitos vecinos usan 1P+N. Se cambia por el 1P+N del mismo bastidor y curva (S201M-B16 NA, 10 kA)."
+    }
+  ]
+}

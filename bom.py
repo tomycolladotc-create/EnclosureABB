@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import csv
 import io
+import json
 import re
 
 MISSING = "FALTA CÓDIGO"
@@ -154,8 +155,8 @@ def build_bom(project, catalog, accessory_catalog=None, order_codes=None):
     # 3) Equipos: los dibujados y los del unifilar que no se dibujan.
     grouped = {}
     for device in project.get("devices", []):
-        grouped.setdefault((device.get("model", ""), device.get("shell", ""), device.get("poles")), []).append(device)
-    for (model, shell_id, poles), devices in grouped.items():
+        grouped.setdefault((device.get("model", ""), device.get("shell", ""), device.get("poles"), json.dumps(device.get("correctedFrom"), sort_keys=True)), []).append(device)
+    for (model, shell_id, poles, _corr), devices in grouped.items():
         shell = shells.get(shell_id, {})
         code = next((d.get("orderCode") for d in devices if d.get("orderCode")), None)
         known = None if code else lookup_order_code(model, poles, codes)
@@ -163,6 +164,9 @@ def build_bom(project, catalog, accessory_catalog=None, order_codes=None):
         tags = [(f"{d['circuit']} ({d.get('tag', '?')})" if d.get("circuit") else d.get("tag", "?")) for d in devices]
         extra = (f" · {known['descripcion']}" if known else "") + (f" · {known['note']}" if known and known.get("note") else "")
         hint = None if (code or known) else unverified_note(model, codes)
+        corr = devices[0].get("correctedFrom")
+        if corr:  # cambio pedido por el usuario: la lista lo dice para que nadie compre lo que figura en el unifilar
+            extra += f" · CAMBIADO por pedido del usuario: el unifilar dice {corr['model']} ({corr['poles']}P)"
         add("Equipo", code or (known or {}).get("orderCode"), f"{ref}" + (f" · {poles} polos" if poles and str(poles) not in ref else "") + extra + (f" · {hint}" if hint else ""),
             len(devices), "u", tags, "código cargado por el usuario" if code else ("verificado" if known else "falta código de pedido"),
             (known or {}).get("source") or shell.get("cadSource", ""))

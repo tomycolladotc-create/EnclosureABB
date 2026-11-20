@@ -180,6 +180,15 @@
       "source": "https://search.abb.com/library/Download.aspx?DocumentID=ABB%2FNN31%2F05_04&LanguageCode=cs&DocumentPartId=&Action=Launch",
       "status": "verificado (tabla de pedido del catálogo ABB NN31/05_04, pág. 3/9)",
       "note": null
+    },
+    {
+      "model": "S201M-B16NA",
+      "poles": 2,
+      "orderCode": "2CDS271103R0165",
+      "descripcion": "S200M 1P+N B 16 A",
+      "source": "https://www.onninen.no/en/abb-automat-s201m-b-16-na-2cds271103r0165/p/GAG364",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
     }
   ],
   "sinVerificar": [

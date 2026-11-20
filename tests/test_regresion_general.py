@@ -98,6 +98,16 @@ class Regresion24Tableros(unittest.TestCase):
                 fuera = [d for d in p.get("devicesNotDrawn", []) if int(d.get("poles") or 0) >= 2]
                 self.assertFalse(fuera, f"equipos de 2+ polos sin dibujar: {fuera}")
 
+    def test_correcciones_del_usuario_aplicadas_y_avisadas_en_la_lista(self):
+        for pdf in BOARDS:
+            r = result(pdf)
+            with self.subTest(tablero=pdf.stem):
+                self.assertEqual(r["correctionsNotApplied"], [], "corrección pedida que ya no coincide con el unifilar")
+                for d in r["project"]["devices"]:
+                    if d.get("correctedFrom"):
+                        row = next(x for x in r["bom"] if x["category"] == "Equipo" and x["description"].startswith(d["model"] + " "))
+                        self.assertIn("CAMBIADO por pedido del usuario", row["description"])
+
     def test_letra_de_las_etiquetas_legible(self):
         rules = json.loads((EXPECTED.parents[2].parent / "datos" / "reglas_layout.json").read_text(encoding="utf-8"))["labels"]
         from etiquetas import label_boxes

@@ -17,7 +17,7 @@ from pypdf import PdfReader  # noqa: E402
 
 from auditoria import audit  # noqa: E402
 from bom import bom_issues, build_bom  # noqa: E402
-from importador import detect_board, detect_devices, detect_signals  # noqa: E402
+from importador import apply_corrections, detect_board, detect_devices, detect_signals  # noqa: E402
 from layout_auto import autolayout_conforme  # noqa: E402
 from proyectos import TEMPLATE_CONTENT_KEYS  # noqa: E402
 
@@ -31,6 +31,7 @@ def build(pdf, catalog=None):
     text = "\n".join(p.extract_text() or "" for p in PdfReader(str(pdf)).pages)
     detected = detect_devices(text, catalog)
     board = detect_board(text)
+    unused = apply_corrections(detected, board, catalog)
     template = L("ts4_topografia.json")
     project = {k: copy.deepcopy(v) for k, v in template.items() if k not in TEMPLATE_CONTENT_KEYS}
     project.update(project=(board or {}).get("title") or pdf.stem, devices=[], accessories=[], source=pdf.name)
@@ -44,7 +45,8 @@ def build(pdf, catalog=None):
     new, summary = autolayout_conforme(project, catalog)
     findings = audit(new, catalog, board_title=(board or {}).get("title"))
     rows = build_bom(new, catalog)
-    return {"project": new, "summary": summary, "findings": findings, "bom": rows, "issues": bom_issues(rows, new), "detected": detected}
+    return {"project": new, "summary": summary, "findings": findings, "bom": rows, "issues": bom_issues(rows, new), "detected": detected,
+            "correctionsNotApplied": unused}
 
 
 def fingerprint(result):

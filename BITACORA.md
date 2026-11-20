@@ -3,6 +3,10 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-20 17:30 · Claude · QF62 de TSB cambiado a 1P+N por pedido del usuario
+- Hecho: el unifilar de TSB trae un monopolar (QF62 S201M B16, TSB-1.7 «Bombeo pluvial», fase S + neutro). A pedido del usuario se dibuja como S201M-B16 NA (1P+N, mismo bastidor y curva; código 2CDS271103R0165). Mecanismo nuevo y único: datos/correcciones_unifilar.json, aplicado por importador.apply_corrections al importar (editor y regresión); sólo vale si coinciden tablero + etiqueta + modelo del PDF; si el unifilar cambia, no se aplica y la interfaz avisa. La lista dice «CAMBIADO por pedido del usuario: el unifilar dice S201M B16 (1P)».
+- Resultado: 172 tests; huella aceptada a propósito (sólo TSB: 19 equipos dibujados, 0 sin dibujar, mismo gabinete).
+
 ## 2026-11-20 16:30 · Claude · S290 (S293-C80) dibujado con su frente
 - Hecho: buscados los equipos sin dibujar en los 24 tableros: sólo los S293-C80 (TSB ×2, TS AUX 1, TS AUX 2) salían como recuadro; el monopolar QF62 de TSB queda fuera por regla. Frente del S290 desde el dibujo vectorial del catálogo ABB NN31/05_04 (bajado con el navegador de la PC del usuario; ABB Library no se alcanza desde el espacio de trabajo). Código GHS2932001R0804 verificado en la tabla de pedido del catálogo.
 - Resultado: 168 tests, regresión igual, auditoría 0; test nuevo: ningún equipo de 2+ polos sin frente en los 24 tableros.

@@ -122,8 +122,8 @@
  },
  "TSB": {
   "gabinete": "sr2-srn8625k",
-  "equipos": 18,
-  "noDibujados": 1,
+  "equipos": 19,
+  "noDibujados": 0,
   "rieles": 3,
   "accesorios": {
    "comb": 2,

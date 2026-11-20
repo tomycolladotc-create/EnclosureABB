@@ -8,7 +8,9 @@ corresponde a qué carcasa ABB) vive en datos/catalogo_abb.json:
   - modelHints: modelos conocidos sin carcasa CAD (p. ej. montaje en riel).
 Para que reconozca un equipo nuevo se edita el catálogo, no este archivo.
 """
+import json
 import re
+from pathlib import Path
 
 
 def _first_group(patterns, text):
@@ -181,6 +183,41 @@ def ensure_marking(device, catalog):
     if "marking" not in device and device.get("model"):
         device["marking"] = marking_fields(device["model"], device.get("evidence", ""), catalog["importRules"])
     return device
+
+CORRECTIONS_FILE = Path(__file__).resolve().parent / "datos" / "correcciones_unifilar.json"
+
+
+def _model_key(model):
+    return re.sub(r"[\s\-]+", "", str(model or "")).upper()
+
+
+def apply_corrections(devices, board, catalog, corrections=None):
+    """Cambios de equipo pedidos por el usuario para un tablero puntual (datos/correcciones_unifilar.json).
+    Se aplica sólo si coinciden tablero, etiqueta y modelo del PDF; el equipo se vuelve a buscar en el catálogo con el
+    modelo nuevo (carcasa, medidas, marcado) y queda marcado con correctedFrom. Devuelve las correcciones de este
+    tablero que no encontraron su equipo (el PDF cambió): las avisa la auditoría."""
+    if corrections is None:
+        try:
+            corrections = json.loads(CORRECTIONS_FILE.read_text(encoding="utf-8")).get("items", [])
+        except (OSError, ValueError):
+            corrections = []
+    title = (board or {}).get("title")
+    mine = [c for c in corrections if title and c["board"] == title]
+    unused = []
+    for c in mine:
+        d = next((d for d in devices if d["tag"] == c["tag"] and _model_key(d.get("model")) == _model_key(c["fromModel"])), None)
+        if d is None:
+            unused.append(c)
+            continue
+        serie, shell, reason = find_series(c["model"], c["poles"], catalog)
+        d["correctedFrom"] = {"model": d.get("model"), "poles": d.get("poles"), "reason": c["reason"], "date": c["date"]}
+        d.update(model=c["model"], poles=c["poles"], shell=shell and shell["id"], series=serie and serie["id"],
+                 marking=marking_fields(c["model"], d.get("evidence", ""), catalog["importRules"]))
+        d["w"], d["h"] = shell_size(shell, c["poles"]) if shell else (80, 100)
+        d["status"] = (f"modelo cambiado por pedido del usuario: el unifilar dice {d['correctedFrom']['model']} ({d['correctedFrom']['poles']}P)"
+                       if shell else f"corrección sin carcasa: {reason}")
+    return unused
+
 
 def detect_board(text):
     """Rótulo del tablero en el unifilar e-Design: 1.ª línea = nombre, 2.ª = «DE <tablero> - -QFn <modelo>», 3.ª = cable de alimentación.
