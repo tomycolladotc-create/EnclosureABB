@@ -73,7 +73,7 @@ def _door_view(space, ox, project, structure, body, plinth):
     pw = min(w * 0.62, 280)
     phh = max(26, min(56, hb * 0.07))
     px, py = (w - pw) / 2, max(40, hb * 0.09)
-    fs = min(phh * 0.55, pw * 0.88 / max(len(name), 1) / 0.62)
+    fs = min(phh * 0.55, pw * 0.88 / max(len(name), 1) / 0.75)  # Arial Bold en mayúsculas: ~0,75 del alto por letra (con 0,62 los nombres largos salían de la placa)
     box(px, py, pw, phh, "ABB_PUERTA_GRABADO")
     box(px + 3, py + 3, pw - 6, phh - 6, "ABB_PUERTA_GRABADO")
     text(name, w / 2, py + phh / 2, fs, "ABB_PUERTA_GRABADO")

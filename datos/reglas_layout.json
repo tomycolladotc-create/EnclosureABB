@@ -42,5 +42,55 @@
     "minWidthMm": 14,
     "maxWidthMm": 64,
     "betweenMm": 1
+  },
+  "planoUnifilar": {
+    "_ayuda": "Hoja de fabricación (plano_unifilar.py): unifilar del usuario + topográfico de la aplicación en el formato de ploteo del usuario. Nombres de bloques del formato, escalas normalizadas y separaciones.",
+    "frameBlock": "A2 594x420",
+    "titleBlock": "Rotulo_BA_ferial",
+    "sheetScale": 1.4142135623730951,
+    "paperSize": "ISO_full_bleed_A1_(841.00_x_594.00_MM)",
+    "paperWidthMm": 841.0,
+    "paperHeightMm": 594.0,
+    "titleAttributes": {
+      "TITLE_2OF3": "UNIFILAR Y TOPOGRAFICO",
+      "TITULO2": "UNIFILAR Y TOPOGRAFICO"
+    },
+    "scales": [
+      2,
+      2.5,
+      5,
+      7.5,
+      10,
+      12.5,
+      15,
+      20,
+      25,
+      30,
+      40,
+      50
+    ],
+    "gapMm": 8,
+    "viewTitleBandMm": 14,
+    "titleTextMm": 3.5,
+    "viewMarginMm": 30,
+    "modelGapMm": 3000,
+    "modelPitchMm": 4500,
+    "doorGapMm": 150,
+    "dropLayers": [
+      "ABB_BOM",
+      "ABB_NOTAS",
+      "ABB_CAJETIN"
+    ],
+    "doorLayers": [
+      "ABB_PUERTA_CERRADA",
+      "ABB_PUERTA_GRABADO",
+      "ABB_PUERTA_SENIALIZACION",
+      "ABB_PUERTA_CARTEL"
+    ],
+    "frontTitle": "PUERTA ABIERTA",
+    "doorTitle": "PUERTA CERRADA",
+    "viewportLayer": "TOPO-VENTANAS",
+    "textLayer": "TOPO-TEXTO",
+    "textWidthFactor": 0.62
   }
 }

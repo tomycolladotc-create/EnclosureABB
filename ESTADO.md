@@ -42,6 +42,7 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 - **Plano GENERAL (24 tableros)**: todos los equipos de 2+ polos tienen frente; el S 293-C 80 (S290, sin CAD en ABB Library) usa el dibujo vectorial del catálogo ABB NN31/05_04. Carcasas 2026-11-19: E2.2, XT3, XT1 3P, T4, T2, S803, OT63/80F.
 - Series sin confirmar con fuente (`verified: false`): XT1 y XT2 para todas las versiones de poder de corte.
 - **Pintura de los frentes (2026-11-19)**: los colores se ponen sobre las superficies cerradas del CAD (semillas, `pintura.cad_regions`); el servidor resuelve todo (`pintura.resolve` → `/api/fronts`, `/api/appearances`) y la pantalla y el DXF dibujan lo mismo. Etiquetas con letra mínima (`etiquetas.label_boxes`, misma regla en el editor). Encuadre de exportación medido sobre lo dibujado.
+- **Plano de fabricación** (2026-11-22): `python3 plano_unifilar.py formato.dxf carpeta_proyectos salida.dxf [tableros]` → unifilar del usuario + topográfico (puerta abierta/cerrada) en su formato. Todavía no tiene botón en el editor.
 - Pruebas: 167 + 24 tableros de regresión (`python -m pytest -q`) y `python3 tests/e2e/prueba_interfaz.py` (122 controles). Correrlas antes de cada push. Las pruebas automáticas usan `ABB_PROJECTS_DIR`, nunca `datos/proyectos`.
 
 ## PRÓXIMA SESIÓN — empezar por acá (escrito por Claude, 2026-11-16 01:50)

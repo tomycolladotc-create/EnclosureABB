@@ -1,0 +1,221 @@
+"""Plano de fabricación por tablero: el UNIFILAR del usuario y, al lado, el TOPOGRÁFICO armado por la aplicación
+(vista con la puerta abierta y con la puerta cerrada), dentro del formato de ploteo del usuario.
+
+Entrada: el DXF de formato del usuario (guardado desde su DWG, p. ej. BAF-E-EL-PL-104-0 Unifilares) con una
+presentación (layout) por tablero que ya muestra su unifilar en el espacio modelo, el marco «A2 594x420» y el
+rótulo «Rotulo_BA_ferial». Salida: el mismo DXF, con cada presentación de tablero convertida en una hoja A1 a
+escala 1:1 que contiene:
+  - el unifilar del usuario, tal cual (misma ventana, escala 1:1, arriba a la izquierda);
+  - el topográfico de la aplicación (cad_export.build_dxf, sin la lista ni las notas), dibujado 1:1 en el espacio
+    modelo lejos de los unifilares y mostrado con dos ventanas a la misma escala normalizada: puerta abierta y
+    puerta cerrada, con su título y escala;
+  - el rótulo del usuario con «UNIFILAR Y TOPOGRÁFICO» en el título; el resto de sus datos no se toca.
+Todas las medidas de la hoja salen del marco y del rótulo del propio formato (nada fijo para una sola obra).
+"""
+from __future__ import annotations
+
+import io
+import json
+import math
+import sys
+from pathlib import Path
+
+import ezdxf
+from ezdxf import bbox
+from ezdxf.addons.importer import Importer
+
+from cad_export import build_dxf
+
+ROOT = Path(__file__).resolve().parent
+RULES = json.loads((ROOT / "datos" / "reglas_layout.json").read_text(encoding="utf-8"))["planoUnifilar"]
+
+
+def _block_size(doc, name):
+    e = bbox.extents(doc.blocks.get(name))
+    return e.extmin, e.extmax
+
+
+def _sheet_inserts(layout, rules):
+    frame = next((i for i in layout.query("INSERT") if i.dxf.name == rules["frameBlock"]), None)
+    title = next((i for i in layout.query("INSERT") if i.dxf.name == rules["titleBlock"]), None)
+    return frame, title
+
+
+def _unifilar_viewport(layout):
+    """La ventana grande del unifilar (la de mayor área que no sea la ventana general de la presentación)."""
+    vps = [v for v in layout.query("VIEWPORT") if v.dxf.get("id", 2) != 1]
+    vps = [v for v in vps if v.dxf.width * v.dxf.height > 1000]
+    general = max(vps, key=lambda v: v.dxf.width * v.dxf.height) if vps else None
+    rest = [v for v in vps if v is not general]
+    # la ventana general de la presentación cubre todo el papel y mira al propio papel; la del unifilar mira al modelo
+    return max(rest, key=lambda v: v.dxf.width * v.dxf.height) if rest else general
+
+
+def board_views(project, catalog, fronts, appearances):
+    """Topográfico de la aplicación sin lista, notas ni cajetín propio: (doc, caja_frente, caja_puerta) en mm 1:1."""
+    doc = ezdxf.read(io.StringIO(build_dxf(project, catalog, fronts, appearances).decode("utf-8")))
+    msp = doc.modelspace()
+    for e in list(msp):
+        if e.dxf.layer in RULES["dropLayers"]:
+            msp.delete_entity(e)
+    for dim in list(msp.query("DIMENSION")):  # el importador no copia el bloque anónimo de la cota: se explota en líneas y textos
+        dim.explode()
+    door_layers = set(RULES["doorLayers"])
+    body_w = project["enclosure"]["externalBody"]["width"]
+    door_x = body_w + RULES["doorGapMm"]  # misma separación que usa cad_export entre frente y puerta
+    front, door = [], []
+    for e in msp:
+        try:
+            b = bbox.extents([e], fast=True)
+        except Exception:  # noqa: BLE001
+            continue
+        if not b.has_data:
+            continue
+        (door if (e.dxf.layer in door_layers or b.extmin.x >= door_x - 1) else front).append(e)
+    return doc, bbox.extents(front, fast=True), bbox.extents(door, fast=True)
+
+
+def _fit_scale(views, region_w, region_h, gap, scales):
+    """Mayor escala normalizada (1:N) con la que entran las dos vistas, lado a lado o una arriba de la otra."""
+    best = None
+    for n in scales:
+        ws = [(v.extmax.x - v.extmin.x) / n for v in views]
+        hs = [(v.extmax.y - v.extmin.y) / n for v in views]
+        tw = [len(t) * RULES["titleTextMm"] * RULES["textWidthFactor"] for t in (RULES["frontTitle"], RULES["doorTitle"])]
+        side = (sum(max(w, t) for w, t in zip(ws, tw)) + gap, max(hs))
+        stack = (max(ws), sum(hs) + gap + RULES["viewTitleBandMm"])
+        for mode, (w, h) in (("lado", side), ("arriba", stack)):
+            if w <= region_w and h + RULES["viewTitleBandMm"] <= region_h:
+                return n, mode
+        best = n
+    return best, "lado"
+
+
+def compose(template_path, projects, catalog, fronts, appearances, layouts=None):
+    """Devuelve (texto DXF, informe). `projects`: {nombre de presentación: proyecto}."""
+    doc = ezdxf.readfile(template_path)
+    msp = doc.modelspace()
+    k = RULES["sheetScale"]  # marco A2 → A1
+    report = []
+    ext = bbox.extents(msp, fast=True)
+    base_x = ext.extmin.x
+    base_y = ext.extmin.y - RULES["modelGapMm"]
+    names = [n for n in (layouts or projects) if n in projects]
+    for i, name in enumerate(names):
+        layout = doc.layouts.get(name) if name in doc.layouts else None
+        if layout is None:
+            report.append(f"{name}: el formato no tiene una presentación con ese nombre (no se agregó)")
+            continue
+        frame, title = _sheet_inserts(layout, RULES)
+        uvp = _unifilar_viewport(layout)
+        if not (frame and title and uvp):
+            report.append(f"{name}: falta el marco, el rótulo o la ventana del unifilar en la presentación")
+            continue
+        # 1) Hoja A1: el marco se agranda desde su esquina; el rótulo va a la nueva esquina inferior derecha,
+        #    con la misma separación al marco que tenía.
+        (fx0, fy0, _), (fx1, fy1, _) = _block_size(doc, frame.dxf.name)
+        fw, fh = (fx1 - fx0) * frame.dxf.xscale, (fy1 - fy0) * frame.dxf.yscale
+        ox, oy = frame.dxf.insert.x, frame.dxf.insert.y
+        t_dx = (ox + fw) - title.dxf.insert.x
+        t_dy = title.dxf.insert.y - oy
+        frame.dxf.xscale *= k
+        frame.dxf.yscale *= k
+        W, H = fw * k, fh * k
+        new_t = (ox + W - t_dx, oy + t_dy)
+        title.translate(new_t[0] - title.dxf.insert.x, new_t[1] - title.dxf.insert.y, 0)  # mueve también sus atributos
+        (tx0, ty0, _), (tx1, ty1, _) = _block_size(doc, title.dxf.name)
+        title_w, title_h = (tx1 - tx0) * title.dxf.xscale, (ty1 - ty0) * title.dxf.yscale
+        for a in title.attribs:
+            if a.dxf.tag in RULES["titleAttributes"]:
+                a.dxf.text = RULES["titleAttributes"][a.dxf.tag]
+        # 2) Unifilar: misma ventana y escala, arriba a la izquierda, con los márgenes del formato agrandados.
+        left = uvp.dxf.center.x - uvp.dxf.width / 2 - ox
+        top = (oy + fh) - (uvp.dxf.center.y + uvp.dxf.height / 2)
+        ml, mt = left * k, top * k
+        uvp.dxf.center = (ox + ml + uvp.dxf.width / 2, oy + H - mt - uvp.dxf.height / 2)
+        u_right = ox + ml + uvp.dxf.width
+        u_bottom = oy + H - mt - uvp.dxf.height
+        # 3) Topográfico 1:1 en el modelo, lejos de los unifilares.
+        src, front_box, door_box = board_views(projects[name], catalog, fronts, appearances)
+        dx = base_x + i * RULES["modelPitchMm"]
+        dy = base_y - (front_box.extmax.y if front_box.has_data else 0)
+        for e in src.modelspace():
+            e.translate(dx, dy, 0)
+        imp = Importer(src, doc)
+        imp.import_modelspace(msp)
+        imp.finalize()
+        views = []
+        for label, box in ((RULES["frontTitle"], front_box), (RULES["doorTitle"], door_box)):
+            if box.has_data:
+                m = RULES["viewMarginMm"]
+                b = bbox.BoundingBox([(box.extmin.x + dx - m, box.extmin.y + dy - m), (box.extmax.x + dx + m, box.extmax.y + dy + m)])
+                views.append((label, b))
+        # 4) Lugar para las vistas: a la derecha del unifilar (hasta el rótulo) o abajo (a la izquierda del rótulo).
+        g = RULES["gapMm"]
+        inner_right = ox + W - t_dx
+        inner_bottom = oy + t_dy
+        regions = {
+            "derecha": (u_right + g, inner_bottom + title_h + g, inner_right - (u_right + g), (oy + H - mt) - (inner_bottom + title_h + g)),
+            "abajo": (ox + ml, inner_bottom, (inner_right - title_w - g) - (ox + ml), (u_bottom - g) - inner_bottom),
+        }
+        choice = None
+        for rname, (rx, ry, rw, rh) in regions.items():
+            n, mode = _fit_scale([b for _, b in views], rw, rh, g, RULES["scales"])
+            if choice is None or n < choice[1]:
+                choice = (rname, n, mode, rx, ry, rw, rh)
+        rname, n, mode, rx, ry, rw, rh = choice
+        # 5) Ventanas a escala 1:n; debajo de cada una su título (dos renglones) y la escala. En la disposición lado a
+        #    lado cada vista ocupa el ancho mayor entre la vista y su título (los títulos nunca se pisan) y todos los
+        #    títulos van en la misma línea.
+        cur_x, cur_y = rx, ry + rh
+        band, th = RULES["viewTitleBandMm"], RULES["titleTextMm"]
+        sized = [(label, b, (b.extmax.x - b.extmin.x) / n, (b.extmax.y - b.extmin.y) / n) for label, b in views]
+        title_w = lambda label: len(label) * th * RULES["textWidthFactor"]
+        baseline = cur_y - max(vh for _, _, _, vh in sized) - band * 0.35
+        for label, b, vw, vh in sized:
+            slot = max(vw, title_w(label)) if mode == "lado" else vw
+            cx, cy = cur_x + slot / 2, cur_y - vh / 2
+            vp = layout.add_viewport(center=(cx, cy), size=(vw, vh),
+                                     view_center_point=((b.extmin.x + b.extmax.x) / 2, (b.extmin.y + b.extmax.y) / 2), view_height=vh * n)
+            vp.dxf.layer = RULES["viewportLayer"]
+            vp.dxf.status = 1
+            y_title = baseline if mode == "lado" else cy - vh / 2 - band * 0.35
+            for text, dy_t in ((label, 0.0), (f"ESC. 1:{n:g}", th * 1.5)):
+                layout.add_text(text, dxfattribs={"layer": RULES["textLayer"], "height": th, "style": "Standard"}).set_placement(
+                    (cx, y_title - dy_t), align=ezdxf.enums.TextEntityAlignment.MIDDLE_CENTER)
+            if mode == "lado":
+                cur_x += slot + g
+            else:
+                cur_y -= vh + g + band
+        # 6) Ploteo: A1 a escala 1:1 sobre el marco.
+        lay = layout.dxf_layout.dxf
+        lay.scale_numerator, lay.scale_denominator, lay.unit_factor = 1.0, 1.0, 1.0
+        lay.plot_window_x1, lay.plot_window_y1, lay.plot_window_x2, lay.plot_window_y2 = ox, oy, ox + W, oy + H
+        lay.limmin, lay.limmax = (ox, oy, 0), (ox + W, oy + H, 0)
+        if RULES.get("paperSize"):
+            lay.paper_size = RULES["paperSize"]
+            lay.paper_width, lay.paper_height = RULES["paperWidthMm"], RULES["paperHeightMm"]
+        report.append(f"{name}: unifilar + topográfico ({len(views)} vistas, {mode}, ESC. 1:{n:g}, zona {rname})")
+    for vp_layer, color in ((RULES["viewportLayer"], 8), (RULES["textLayer"], 7)):
+        if vp_layer not in doc.layers:
+            doc.layers.add(vp_layer, color=color)
+    doc.layers.get(RULES["viewportLayer"]).dxf.plot = 0  # el borde de las ventanas no se plotea
+    out = io.StringIO()
+    doc.write(out)
+    return out.getvalue(), report
+
+
+if __name__ == "__main__":  # python plano_unifilar.py formato.dxf carpeta_con_proyectos_json salida.dxf
+    template, folder, output = sys.argv[1], Path(sys.argv[2]), sys.argv[3]
+    cat = json.loads((ROOT / "datos" / "catalogo_abb.json").read_text(encoding="utf-8"))
+    fr = json.loads((ROOT / "datos" / "frentes_cad.json").read_text(encoding="utf-8"))
+    ap = json.loads((ROOT / "datos" / "apariencias_abb.json").read_text(encoding="utf-8"))
+    projs = {}
+    for f in sorted(folder.glob("*.json")):
+        p = json.loads(f.read_text(encoding="utf-8"))
+        if isinstance(p, dict) and p.get("devices") is not None and p.get("project"):
+            projs[p["project"]] = p
+    only = sys.argv[4].split(",") if len(sys.argv) > 4 else None
+    text, rep = compose(template, projs, cat, fr, ap, only)
+    Path(output).write_text(text, encoding="utf-8")
+    print("\n".join(rep))

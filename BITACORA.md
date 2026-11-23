@@ -3,6 +3,11 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-22 21:15 · Claude · Plano de fabricación: unifilar del usuario + topográfico en su formato
+- Hecho: plano_unifilar.py toma el DXF de formato del usuario (BAF-E-EL-PL-104-0 Unifilares, una presentación por tablero con marco A2 y rótulo Rotulo_BA_ferial) y en cada hoja deja su unifilar tal cual (misma ventana 1:1) y agrega el topográfico de la aplicación con puerta abierta y cerrada, a escala normalizada (1:2 a 1:10 según el tablero), en A1 1:1; rótulo con «UNIFILAR Y TOPOGRAFICO» (resto de los datos sin tocar). Reglas en reglas_layout.json → planoUnifilar. Las cotas se explotan antes de importar (el importador no copia el bloque de la cota). Placa grabada de la puerta: factor de ancho 0,75 (los nombres largos salían de la placa).
+- Resultado: 24 hojas, auditoría ezdxf 0 errores/0 arreglos; 174 tests; 124/124 interfaz.
+- Ojo: el DWG del usuario (AC1032) no se puede leer acá: se trabaja con el DXF que él guarda desde AutoCAD; la salida es DXF (AutoCAD la guarda como DWG).
+
 ## 2026-11-20 18:30 · Claude · Verificación contra unifilares + Excel de equipamiento eléctrico
 - Hecho: los 173 interruptores/seccionadores/diferenciales de los 24 tableros releídos con otro lector (PyMuPDF) y comparados: modelo, circuito, polos y calibre iguales al unifilar (única diferencia, a propósito: QF62 de TSB). Test permanente nuevo. Excel del equipamiento eléctrico (sin canalizaciones ni montaje): 85 renglones con código, cantidad (SUMIFS del detalle), circuitos y tableros; hojas de detalle por tablero y de verificación.
 - Ojo: 57 de 85 renglones siguen sin código de pedido (XT, E2.2, OT, S800, varios S200, manijas OT, barras a dimensionar).

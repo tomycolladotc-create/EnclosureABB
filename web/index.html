@@ -315,7 +315,7 @@ const screw=(x,y,r=6)=>`<g style="pointer-events:none"><circle cx="${x}" cy="${y
 // luces testigo del unifilar (agujero 22 mm, frente 30 mm del catálogo) con su letra grabada y cartel de riesgo eléctrico.
 let doorView=false;
 function doorSvg(w,h){const st=encSpec()?.structure,col=st?.colors?.enclosure?.hex||'#cbd0cc',L=st?.locks,locks=!L?[h/2]:L.count===1?[h/2]:[L.F,h-L.F],ph=project.enclosure.plinthHeight||0,H=h-ph;
- const name=(project.project||'TABLERO').toUpperCase(),pw=Math.min(w*0.62,280),phh=Math.max(26,Math.min(56,H*0.07)),px=(w-pw)/2,py=Math.max(40,H*0.09),fs=Math.min(phh*0.55,pw*0.88/Math.max(name.length,1)/0.62);
+ const name=(project.project||'TABLERO').toUpperCase(),pw=Math.min(w*0.62,280),phh=Math.max(26,Math.min(56,H*0.07)),px=(w-pw)/2,py=Math.max(40,H*0.09),fs=Math.min(phh*0.55,pw*0.88/Math.max(name.length,1)/0.75); /* Arial Bold mayúsculas ~0,75 (igual que cad_export) */
  const lights=(project.signals?.pilotLights)||[],pitch=48,ly=py+phh+Math.max(55,H*0.07),lx0=w/2-(lights.length-1)*pitch/2;
  const lens={rojo:['#ff6b5e','#c0170c'],verde:['#7fe08a','#1d8a35'],amarillo:['#ffe36b','#c99a00']},lc=lens.rojo;
  const lightSvg=lights.map((l,i)=>{const cx=lx0+i*pitch;return `<circle cx="${cx}" cy="${ly}" r="16.5" fill="#000" opacity=".18" transform="translate(1.5 2)"/><circle cx="${cx}" cy="${ly}" r="15" fill="#3a4046" stroke="#22272b" stroke-width="1"/><circle cx="${cx}" cy="${ly}" r="11.5" fill="url(#gLens)"/><ellipse cx="${cx-3.5}" cy="${ly-4}" rx="4.5" ry="3" fill="#fff" opacity=".55"/><text x="${cx}" y="${ly+31}" text-anchor="middle" font-size="12" font-weight="700" font-family="Arial" fill="#2a3036">${esc(l.label)}</text>`}).join('');
