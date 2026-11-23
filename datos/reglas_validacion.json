@@ -15,26 +15,8 @@
   ],
   "_ayuda_auditoria": "Criterios de auditoria.py (propuesta de diseño 2026-11-19, ajustables; no son datos de ABB): hueco máximo entre filas, uso mínimo del alto de la placa para no avisar de gabinete grande (desde qué alto de placa se controla).",
   "freeRectNearMissKnown": {
-    "_ayuda": "Rectángulos libres de apariencias_abb.json cuyos bordes corren a 0,6–3 mm de una línea del CAD (puestos a ojo sobre fotos). Lista CONGELADA el 2026-11-19: el test falla si aparece uno nuevo; cada uno se corrige verificándolo con foto ABB (ajustar el borde a la línea o convertirlo en semilla) y se saca de la lista. Mover bordes automáticamente se probó y borró las franjas rojas del S800: no se hace.",
+    "_ayuda": "Rectángulos libres de apariencias_abb.json cuyos bordes corren a 0,6–3 mm de una línea del CAD (puestos a ojo sobre fotos). Lista CONGELADA el 2026-11-19: el test falla si aparece uno nuevo; cada uno se corrige verificándolo con foto ABB (ajustar el borde a la línea o convertirlo en semilla) y se saca de la lista. Mover bordes automáticamente se probó y borró las franjas rojas del S800: no se hace. 2026-11-23: XT1, XT2 y OT400 revisados con foto ABB (3 bordes ajustados al CAD, 1 a la foto, 3 confirmados → freeRectPhotoVerified).",
     "items": {
-      "abb.tmax.xt1.4p.fixed.front": {
-        "3": [
-          "x0",
-          "y0"
-        ],
-        "6": [
-          "y1"
-        ]
-      },
-      "abb.tmax.xt2.4p.fixed.front": {
-        "1": [
-          "y1"
-        ],
-        "6": [
-          "x1",
-          "y1"
-        ]
-      },
       "abb.s804n.4p.front": {
         "0": [
           "y0"
@@ -75,11 +57,6 @@
         ],
         "4": [
           "y1"
-        ]
-      },
-      "abb.ot400e04.4p.front": {
-        "7": [
-          "y0"
         ]
       },
       "abb.s200m.1p.front": {
@@ -187,5 +164,34 @@
       "Señalización",
       "Bloque de distribución"
     ]
+  },
+  "freeRectPhotoVerified": {
+    "_ayuda": "Bordes de rectángulos libres verificados con foto oficial ABB (2026-11-23): la foto confirma la posición actual y la línea del CAD cercana es otro detalle. No se mueven. Medición: perfil de color perpendicular al borde sobre la foto calibrada (docs/imagenes_abb).",
+    "items": {
+      "abb.tmax.xt1.4p.fixed.front": {
+        "3": {
+          "edges": [
+            "y0"
+          ],
+          "foto": "XT1C_1SDA067405R1_frontal.png: el color cambia a −0,6 mm del borde (CAD a +2,5 mm)"
+        }
+      },
+      "abb.tmax.xt2.4p.fixed.front": {
+        "1": {
+          "edges": [
+            "y1"
+          ],
+          "foto": "XT2N_1SDX176607R1_frontal.png: el color cambia a −0,4 mm del borde (CAD a −2,0 mm)"
+        }
+      },
+      "abb.ot400e04.4p.front": {
+        "7": {
+          "edges": [
+            "y0"
+          ],
+          "foto": "OT400E04P_1SCA022719R1810_frontal.jpg: el color cambia a −1,1 mm del borde, dentro de la calibración aproximada de la foto (CAD a +0,75 mm)"
+        }
+      }
+    }
   }
 }

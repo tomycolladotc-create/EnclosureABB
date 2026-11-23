@@ -3,6 +3,11 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-23 09:30 · Claude · Colores a ojo verificados con foto ABB
+- Hecho: medidos con perfil de color sobre las fotos ABB del repo los 7 bordes congelados de XT1C, XT2N y OT400E04P: 3 pegados a la línea del CAD (la foto coincide), 1 corregido a la foto (XT1 palanca, 1,4 mm), 3 confirmados como están → reglas_validacion.json → freeRectPhotoVerified (con la medición). El test acepta congelados ∪ verificados.
+- Quedan congelados 32 rectángulos de 9 carcasas sin foto frontal ABB en el repo (lección 38, MEJORAS).
+- Resultado: 193 tests; 131/131 interfaz; regresión OK.
+
 ## 2026-11-23 08:30 · Claude · Reserva de espacio por tablero
 - Hecho: menú ⋯ → «Reserva libre en rieles (%)» (project.reservePercent, 0 por defecto: los 24 tableros no cambian). El armado llena cada fila de riel hasta (100 − reserva) % (layout_auto._pack_rail_rows) y elige gabinete en consecuencia; validacion.rail_reserve informa el libre real (equipos DIN + accesorios de riel; peines no) y avisa «reserve_below» si queda por debajo. Se ve en el menú y en la hoja de taller del PDF.
 - Hoy, sin reserva: libre entre 5,7 % (TS3/TS4) y 56 % (TS5). Con 20 % pedido, TS3 pasa a SRN12630K (52,9 %).

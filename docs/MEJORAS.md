@@ -41,7 +41,7 @@
 
 ## Por hacer (prioridad)
 - Códigos de pedido de los equipos: 63 renglones de interruptores/seccionadores sin código (XT, S200, S800, OT…): cargarlos desde las tablas de pedido de los catálogos ABB (no deducirlos del modelo).
-- Verificar con fotos ABB los 37 rectángulos de color de la lista congelada (reglas_validacion.json → freeRectNearMissKnown) y pasarlos a semillas o ajustarlos.
+- Colores a ojo: **2026-11-23** revisados con foto ABB XT1, XT2 y OT400 (3 bordes pegados al CAD, 1 corregido a la foto, 3 confirmados → freeRectPhotoVerified). Quedan 32 rectángulos de 9 carcasas sin foto frontal ABB en docs/imagenes_abb (S804N, S200M 1P/1P+N, OT100/125F3/F4, OT160–250E04, XT3, T2, S803): conseguir la foto y medir con el mismo método.
 - S290: hoy el frente sale del dibujo vectorial del catálogo ABB (no a escala en alto); si ABB publica CAD, reemplazarlo.
 - Bajar el STEP 3D de S800 (S803/S804N) de ABB Library y reemplazar el DXF 2D (hoy el frente se dibuja centrado con margen porque su proporción difiere de la ficha).
 1. ~~Cargar las carcasas que faltan~~ **Hecho 2026-11-18** con CAD ABB: OT100/125F4, OT125F3, OT160EV03/OT200-250E03, OT160EV04/OT200-250E04, F204, F202, SN201 (+ S200P como hipótesis). **2026-11-19:** cargados E2.2 4P, XT3 4P, XT1 3P, T4 4P, T2 3P, S803, OT63/80F3/F4. **Queda sin dibujar:** S 293-C 80 (S290, sin CAD en ABB Library: decidir reemplazo). Colores e inscripciones de las carcasas nuevas: medir con foto frontal ABB.

@@ -371,7 +371,9 @@ class PinturaCompleta(unittest.TestCase):
         """Un borde a 0,6–3 mm de una línea paralela del CAD se ve corrido: fue puesto a ojo. Los que quedan están en una lista
         congelada (reglas_validacion.json → freeRectNearMissKnown) hasta verificarlos con foto; no se aceptan nuevos."""
         from pintura import near_miss_edges
-        known = json.loads((ROOT / "datos" / "reglas_validacion.json").read_text(encoding="utf-8"))["freeRectNearMissKnown"]["items"]
+        rules = json.loads((ROOT / "datos" / "reglas_validacion.json").read_text(encoding="utf-8"))
+        known = rules["freeRectNearMissKnown"]["items"]
+        verified = rules.get("freeRectPhotoVerified", {}).get("items", {})  # confirmados con foto ABB: no se mueven
         looks, fronts = L("apariencias_abb.json")["items"], L("frentes_cad.json")["items"]
         for shell, front in fronts.items():
             for n, part in enumerate(looks[shell]["parts"]):
@@ -379,7 +381,8 @@ class PinturaCompleta(unittest.TestCase):
                     continue
                 edges = sorted(e for e, _ in near_miss_edges(front, part))
                 with self.subTest(shell=shell, parte=n):
-                    self.assertLessEqual(set(edges), set(known.get(shell, {}).get(str(n), [])), f"borde casi alineado con el CAD (puesto a ojo): {edges}")
+                    allowed = set(known.get(shell, {}).get(str(n), [])) | set(verified.get(shell, {}).get(str(n), {}).get("edges", []))
+                    self.assertLessEqual(set(edges), allowed, f"borde casi alineado con el CAD (puesto a ojo): {edges}")
 
     def test_cada_semilla_cae_en_una_superficie_y_la_pintura_esta_resuelta(self):
         from pintura import resolve
