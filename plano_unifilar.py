@@ -35,10 +35,75 @@ def _block_size(doc, name):
     return e.extmin, e.extmax
 
 
-def _sheet_inserts(layout, rules):
-    frame = next((i for i in layout.query("INSERT") if i.dxf.name == rules["frameBlock"]), None)
-    title = next((i for i in layout.query("INSERT") if i.dxf.name == rules["titleBlock"]), None)
+def _sheet_inserts(layout, blocks):
+    frame = next((i for i in layout.query("INSERT") if i.dxf.name == blocks["frameBlock"]), None)
+    title = next((i for i in layout.query("INSERT") if i.dxf.name == blocks["titleBlock"]), None)
     return frame, title
+
+
+def _norm(name):
+    return " ".join(str(name or "").upper().replace("_", " ").split())
+
+
+def detect_blocks(doc):
+    """Marco y rótulo del formato, sin depender del cliente: el rótulo es el bloque con atributos que aparece en las
+    presentaciones; el marco, el bloque sin atributos más grande que lo acompaña. Si no se encuentran, los nombres de
+    reglas_layout.json → planoUnifilar."""
+    from collections import Counter
+    titles, frames = Counter(), Counter()
+    for layout in doc.layouts:
+        if layout.name == "Model":
+            continue
+        inserts = list(layout.query("INSERT"))
+        with_attr = [i for i in inserts if len(i.attribs) >= 3]
+        if not with_attr:
+            continue
+        titles[max(with_attr, key=lambda i: len(i.attribs)).dxf.name] += 1
+        def area(i):
+            try:
+                e = bbox.extents(doc.blocks.get(i.dxf.name), fast=True)
+                return (e.extmax.x - e.extmin.x) * (e.extmax.y - e.extmin.y) * i.dxf.xscale * i.dxf.yscale if e.has_data else 0
+            except Exception:  # noqa: BLE001
+                return 0
+        plain = [i for i in inserts if not i.attribs and area(i) > 0]
+        if plain:
+            frames[max(plain, key=area).dxf.name] += 1
+    return {"titleBlock": titles.most_common(1)[0][0] if titles else RULES["titleBlock"],
+            "frameBlock": frames.most_common(1)[0][0] if frames else RULES["frameBlock"]}
+
+
+def analyze_template(path):
+    """Lo que necesita la ventana previa: presentaciones con hoja armable, nombre de los bloques y los campos del
+    rótulo (etiqueta, texto de ayuda de AutoCAD, valor actual y si se completa solo con el nombre de cada tablero)."""
+    doc = ezdxf.readfile(path)
+    blocks = detect_blocks(doc)
+    prompts = {}
+    try:
+        for a in doc.blocks.get(blocks["titleBlock"]).query("ATTDEF"):
+            prompts[a.dxf.tag] = a.dxf.get("prompt", "") or ""
+    except Exception:  # noqa: BLE001
+        pass
+    sheets, values, per_board = [], {}, None
+    from collections import Counter
+    hits = Counter()
+    for layout in doc.layouts:
+        if layout.name == "Model":
+            continue
+        frame, title = _sheet_inserts(layout, blocks)
+        if not (frame and title):
+            continue
+        sheets.append(layout.name)
+        for a in title.attribs:
+            if _norm(a.dxf.text) == _norm(layout.name):
+                hits[a.dxf.tag] += 1
+            values.setdefault(a.dxf.tag, a.dxf.text)
+    if hits and sheets:
+        tag, n = hits.most_common(1)[0]
+        per_board = tag if n >= max(1, len(sheets) // 2) else None
+    order = list(prompts) or list(values)
+    fields = [{"tag": t, "prompt": prompts.get(t, ""), "value": RULES["titleSuggestions"].get(values.get(t, ""), values.get(t, "")),
+               "template": values.get(t, ""), "perBoard": t == per_board} for t in order if t in values or t in prompts]
+    return {"sheets": sheets, "blocks": blocks, "fields": fields, "perBoardTag": per_board}
 
 
 def _unifilar_viewport(layout):
@@ -91,22 +156,31 @@ def _fit_scale(views, region_w, region_h, gap, scales):
     return best, "lado"
 
 
-def compose(template_path, projects, catalog, fronts, appearances, layouts=None):
-    """Devuelve (texto DXF, informe). `projects`: {nombre de presentación: proyecto}."""
+def compose(template_path, projects, catalog, fronts, appearances, layouts=None, title_values=None, only_generated=False):
+    """Devuelve (texto DXF, informe). `projects`: {nombre de presentación: proyecto}. `title_values`: {atributo: texto}
+    cargado por el usuario en la ventana previa (el atributo del nombre del tablero se completa solo con cada hoja).
+    `only_generated`: deja en el archivo sólo las hojas armadas."""
     doc = ezdxf.readfile(template_path)
+    blocks = detect_blocks(doc)
+    info_tag = None
+    if title_values is None:
+        title_values = {}
     msp = doc.modelspace()
     k = RULES["sheetScale"]  # marco A2 → A1
     report = []
     ext = bbox.extents(msp, fast=True)
     base_x = ext.extmin.x
     base_y = ext.extmin.y - RULES["modelGapMm"]
+    by_norm = {_norm(l.name): l.name for l in doc.layouts if l.name != "Model"}
     names = [n for n in (layouts or projects) if n in projects]
+    done = []
     for i, name in enumerate(names):
-        layout = doc.layouts.get(name) if name in doc.layouts else None
+        lname = by_norm.get(_norm(name))
+        layout = doc.layouts.get(lname) if lname else None
         if layout is None:
             report.append(f"{name}: el formato no tiene una presentación con ese nombre (no se agregó)")
             continue
-        frame, title = _sheet_inserts(layout, RULES)
+        frame, title = _sheet_inserts(layout, blocks)
         uvp = _unifilar_viewport(layout)
         if not (frame and title and uvp):
             report.append(f"{name}: falta el marco, el rótulo o la ventana del unifilar en la presentación")
@@ -125,9 +199,12 @@ def compose(template_path, projects, catalog, fronts, appearances, layouts=None)
         title.translate(new_t[0] - title.dxf.insert.x, new_t[1] - title.dxf.insert.y, 0)  # mueve también sus atributos
         (tx0, ty0, _), (tx1, ty1, _) = _block_size(doc, title.dxf.name)
         title_w, title_h = (tx1 - tx0) * title.dxf.xscale, (ty1 - ty0) * title.dxf.yscale
+        per_board = [a.dxf.tag for a in title.attribs if _norm(a.dxf.text) == _norm(layout.name)]
         for a in title.attribs:
-            if a.dxf.tag in RULES["titleAttributes"]:
-                a.dxf.text = RULES["titleAttributes"][a.dxf.tag]
+            if a.dxf.tag in per_board:
+                a.dxf.text = name  # el nombre del tablero, en cada hoja
+            elif a.dxf.tag in title_values:
+                a.dxf.text = str(title_values[a.dxf.tag])
         # 2) Unifilar: misma ventana y escala, arriba a la izquierda, con los márgenes del formato agrandados.
         left = uvp.dxf.center.x - uvp.dxf.width / 2 - ox
         top = (oy + fh) - (uvp.dxf.center.y + uvp.dxf.height / 2)
@@ -196,6 +273,11 @@ def compose(template_path, projects, catalog, fronts, appearances, layouts=None)
             lay.paper_size = RULES["paperSize"]
             lay.paper_width, lay.paper_height = RULES["paperWidthMm"], RULES["paperHeightMm"]
         report.append(f"{name}: unifilar + topográfico ({len(views)} vistas, {mode}, ESC. 1:{n:g}, zona {rname})")
+        done.append(layout.name)
+    if only_generated and done:
+        for layout in list(doc.layouts):
+            if layout.name != "Model" and layout.name not in done:
+                doc.layouts.delete(layout.name)
     for vp_layer, color in ((RULES["viewportLayer"], 8), (RULES["textLayer"], 7)):
         if vp_layer not in doc.layers:
             doc.layers.add(vp_layer, color=color)
@@ -216,6 +298,6 @@ if __name__ == "__main__":  # python plano_unifilar.py formato.dxf carpeta_con_p
         if isinstance(p, dict) and p.get("devices") is not None and p.get("project"):
             projs[p["project"]] = p
     only = sys.argv[4].split(",") if len(sys.argv) > 4 else None
-    text, rep = compose(template, projs, cat, fr, ap, only)
+    text, rep = compose(template, projs, cat, fr, ap, only, title_values=None)
     Path(output).write_text(text, encoding="utf-8")
     print("\n".join(rep))

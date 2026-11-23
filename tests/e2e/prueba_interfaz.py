@@ -333,6 +333,11 @@ def main():
                 pg.click("#exportDxf")
             dxf = Path(dl.value.path()).read_text(encoding="utf-8", errors="ignore")
             check("DXF con la vista de puerta cerrada", "ABB_PUERTA_CERRADA" in dxf and "RIESGO ELECTRICO" in dxf)
+            # Lección 33: la ventana del rótulo vivía dentro de la pantalla del editor y en Exportar no se veía.
+            pg.click("#exportPlano"); wait_idle(pg, 1500)
+            check("plano de fabricación: la ventana se ve desde Exportar", pg.is_visible("#planoForm") and pg.is_visible("label:has(#planoFmtFile)"), pg.inner_text("#planoFmtName"))
+            pg.click("#planoCancel")
+            check("plano de fabricación: cancelar cierra", not pg.is_visible("#planoPanel"))
             pg.click("summary:has-text('Lista de materiales')")
             check("lista de materiales", pg.locator("#bomTable tr").count() > 3)
             codes = pg.eval_on_selector_all("#bomTable tr td:nth-child(2)", "els=>els.map(e=>e.textContent.trim())")

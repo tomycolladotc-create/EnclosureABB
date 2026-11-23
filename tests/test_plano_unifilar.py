@@ -13,7 +13,7 @@ import ezdxf
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tests"))
-from plano_unifilar import RULES, compose  # noqa: E402
+from plano_unifilar import RULES, analyze_template, compose  # noqa: E402
 from test_regresion_general import BOARDS, result  # noqa: E402
 
 L = lambda n: json.loads((ROOT / "datos" / n).read_text(encoding="utf-8"))
@@ -70,8 +70,29 @@ class PlanoUnifilar(unittest.TestCase):
             self.assertFalse(overlap(b, rotulo), "vista sobre el rótulo")
         self.assertFalse(overlap(box(vps[0]), box(vps[1])))
         attrs = {a.dxf.tag: a.dxf.text for a in title.attribs}
-        self.assertEqual(attrs["TITLE_2OF3"], RULES["titleAttributes"]["TITLE_2OF3"])
-        self.assertEqual(attrs["DOCN°"], "X-001")  # los datos del usuario no se tocan
+        self.assertEqual(attrs["TITLE_2OF3"], "UNIFILAR")  # sin valores del usuario, el formato queda como vino
+        self.assertEqual(attrs["DOCN°"], "X-001")
+        self.assertEqual(attrs["TITLE_3OF3"], "TSB")
         texts = [t.dxf.text for t in lay.query("TEXT")]
         self.assertIn(RULES["frontTitle"], texts)
         self.assertIn(RULES["doorTitle"], texts)
+
+    def test_rotulo_personalizado_por_cliente(self):
+        """Lección 33: el rótulo lo completa el usuario en la ventana; el nombre del tablero se pone solo en cada hoja."""
+        pdf = next(b for b in BOARDS if b.stem == "TSB")
+        project = result(pdf)["project"]
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "formato.dxf"
+            formato_minimo(path, "TSB")
+            meta = analyze_template(str(path))
+            fields = {f["tag"]: f for f in meta["fields"]}
+            self.assertTrue(fields["TITLE_3OF3"]["perBoard"])  # el nombre de hoja no se pregunta
+            self.assertEqual(fields["TITLE_2OF3"]["value"], RULES["titleSuggestions"]["UNIFILAR"])
+            values = {"DOCN°": "CLI-200", "TITLE_2OF3": "UNIFILAR Y TOPOGRAFICO", "TITLE_3OF3": "NO DEBE PISAR"}
+            text, _ = compose(str(path), {"TSB": project}, L("catalogo_abb.json"), L("frentes_cad.json"), L("apariencias_abb.json"), title_values=values)
+        lay = ezdxf.read(io.StringIO(text)).layouts.get("TSB")
+        title = next(i for i in lay.query("INSERT") if i.dxf.name == RULES["titleBlock"])
+        attrs = {a.dxf.tag: a.dxf.text for a in title.attribs}
+        self.assertEqual(attrs["DOCN°"], "CLI-200")
+        self.assertEqual(attrs["TITLE_2OF3"], "UNIFILAR Y TOPOGRAFICO")
+        self.assertEqual(attrs["TITLE_3OF3"], "TSB")

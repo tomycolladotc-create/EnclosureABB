@@ -1,7 +1,7 @@
 """Servidor local del editor. Los datos ABB y el proyecto viven fuera del código."""
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import quote, unquote, parse_qs, urlparse
 import json
 import threading
 import logging
@@ -46,6 +46,8 @@ VALIDATION_RULES = ROOT / "datos" / "reglas_validacion.json"
 WEB = ROOT / "web" / "index.html"
 WEB_STYLES = ROOT / "web" / "styles.css"
 MAX_PDF = 30 * 1024 * 1024
+MAX_FORMAT = 200 * 1024 * 1024  # el DXF de formato con todos los unifilares puede pesar decenas de MB
+FORMATS = ROOT / "datos" / "formatos"  # formato de ploteo del usuario (DXF) y los últimos datos del rótulo; no se sube al repo
 logging.getLogger("pypdf").setLevel(logging.ERROR)
 
 
@@ -83,11 +85,17 @@ class Handler(BaseHTTPRequestHandler):
             data = json.loads(CATALOG.read_text(encoding="utf-8"))
             from bom import load_order_codes
             data["orderCodes"] = load_order_codes()  # códigos verificados: el editor muestra cuál irá a la lista
-            data["layoutRules"] = {"labels": json.loads((ROOT / "datos" / "reglas_layout.json").read_text(encoding="utf-8"))["labels"]}
+            rules = json.loads((ROOT / "datos" / "reglas_layout.json").read_text(encoding="utf-8"))
+            data["layoutRules"] = {"labels": rules["labels"], "plano": {k: rules["planoUnifilar"][k] for k in ("fieldLabels", "revisionColumns")}}
 
             return self.send_data(200, data)
         if route == "/api/ducts":  # secciones estándar de canaleta (catálogo ABB) para dibujarlas a mano
             return self.send_data(200, load_accessory_catalog().get("wiringDucts", {}))
+        if route == "/api/plano/formato":  # formato cargado la última vez, con los datos del rótulo que se usaron
+            meta = FORMATS / "formato.json"
+            if not meta.exists():
+                return self.send_data(404, {"error": "Todavía no se cargó un formato"})
+            return self.send_data(200, json.loads(meta.read_text(encoding="utf-8")))
         if route in ("/api/fronts", "/api/appearances"):  # ya resueltos (pintura.resolve): pantalla y DXF usan lo mismo
             fronts, appearances = resolved_drawing_data()
             return self.send_data(200, fronts if route == "/api/fronts" else appearances)
@@ -96,7 +104,7 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         route = urlparse(self.path).path
         length = int(self.headers.get("Content-Length", "0"))
-        if length <= 0 or length > MAX_PDF:
+        if length <= 0 or length > (MAX_FORMAT if route == "/api/plano/formato" else MAX_PDF):
             return self.send_data(400, {"error": "Archivo vacío o demasiado grande (máximo 30 MB)"})
         blob = self.rfile.read(length)
         if route == "/api/import-pdf":
@@ -209,6 +217,57 @@ class Handler(BaseHTTPRequestHandler):
                     complete(project, auto_confirm=True)
                 return self.send_data(200, {"accessories": project.get("accessories", []), "findings": check_project(project)})
             except (ValueError, UnicodeDecodeError, KeyError, StopIteration) as exc:
+                return self.send_data(422, {"error": str(exc)})
+        if route == "/api/plano/formato":  # formato de ploteo del usuario (DXF guardado desde su DWG)
+            if b"SECTION" not in blob[:4096]:
+                return self.send_data(400, {"error": "El archivo no es un DXF. En AutoCAD: Guardar como → AutoCAD 2018 DXF."})
+            try:
+                from plano_unifilar import analyze_template
+                FORMATS.mkdir(parents=True, exist_ok=True)
+                (FORMATS / "formato.dxf").write_bytes(blob)
+                meta = analyze_template(str(FORMATS / "formato.dxf"))
+                if not meta["sheets"]:
+                    return self.send_data(422, {"error": "El formato no tiene ninguna presentación con marco y rótulo con atributos."})
+                meta["filename"] = unquote(self.headers.get("X-Filename", "formato.dxf"))
+                (FORMATS / "formato.json").write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
+                return self.send_data(200, meta)
+            except Exception as exc:  # noqa: BLE001
+                return self.send_data(422, {"error": f"No se pudo leer el formato: {exc}"})
+        if route == "/api/plano/generar":  # hoja de fabricación con el rótulo que completó el usuario
+            try:
+                from plano_unifilar import compose
+                req = json.loads(blob)
+                if not (FORMATS / "formato.dxf").exists():
+                    return self.send_data(422, {"error": "Primero cargá el formato (DXF)."})
+                projects = {}
+                for pid in req.get("projects", []):
+                    p = proyectos.load(pid)
+                    projects[p.get("project", pid)] = p
+                if not projects:
+                    return self.send_data(422, {"error": "Elegí al menos un tablero."})
+                catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
+                fronts, appearances = resolved_drawing_data()
+                values = {k: str(v) for k, v in (req.get("values") or {}).items()}
+                text, report = compose(str(FORMATS / "formato.dxf"), projects, catalog, fronts, appearances,
+                                       title_values=values, only_generated=True)
+                meta = json.loads((FORMATS / "formato.json").read_text(encoding="utf-8"))
+                for f in meta["fields"]:  # la próxima vez la ventana arranca con lo último que se cargó
+                    if f["tag"] in values:
+                        f["value"] = values[f["tag"]]
+                meta["lastFilename"] = req.get("filename")
+                (FORMATS / "formato.json").write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
+                missing = [r for r in report if "no tiene" in r or "falta" in r]
+                if len(missing) == len(report):
+                    return self.send_data(422, {"error": "Ningún tablero se pudo armar: " + "; ".join(report)})
+                self.send_response(200)
+                body = text.encode("utf-8")
+                self.send_header("Content-Type", "application/dxf")
+                self.send_header("Content-Length", str(len(body)))
+                self.send_header("X-Report", quote(" | ".join(report)))
+                self.end_headers()
+                self.wfile.write(body)
+                return None
+            except (ValueError, FileNotFoundError, KeyError) as exc:
                 return self.send_data(422, {"error": str(exc)})
         if route == "/api/export-dxf":
             try:

@@ -44,17 +44,13 @@
     "betweenMm": 1
   },
   "planoUnifilar": {
-    "_ayuda": "Hoja de fabricación (plano_unifilar.py): unifilar del usuario + topográfico de la aplicación en el formato de ploteo del usuario. Nombres de bloques del formato, escalas normalizadas y separaciones.",
+    "_ayuda": "Hoja de fabricación (plano_unifilar.py): unifilar del usuario + topográfico de la aplicación en el formato de ploteo del usuario. Nombres de bloques del formato, escalas normalizadas y separaciones. frameBlock/titleBlock sólo se usan si no se pueden detectar en el formato (detect_blocks). titleSuggestions: valor propuesto en la ventana previa cuando el formato trae ese texto.",
     "frameBlock": "A2 594x420",
     "titleBlock": "Rotulo_BA_ferial",
     "sheetScale": 1.4142135623730951,
     "paperSize": "ISO_full_bleed_A1_(841.00_x_594.00_MM)",
     "paperWidthMm": 841.0,
     "paperHeightMm": 594.0,
-    "titleAttributes": {
-      "TITLE_2OF3": "UNIFILAR Y TOPOGRAFICO",
-      "TITULO2": "UNIFILAR Y TOPOGRAFICO"
-    },
     "scales": [
       2,
       2.5,
@@ -91,6 +87,36 @@
     "doorTitle": "PUERTA CERRADA",
     "viewportLayer": "TOPO-VENTANAS",
     "textLayer": "TOPO-TEXTO",
-    "textWidthFactor": 0.62
+    "textWidthFactor": 0.62,
+    "titleSuggestions": {
+      "UNIFILAR": "UNIFILAR Y TOPOGRAFICO"
+    },
+    "fieldLabels": {
+      "TITLE_1OF3": "Título – línea 1",
+      "TITLE_2OF3": "Título – línea 2",
+      "TITLE_3OF3": "Título – línea 3",
+      "REV": "Revisión",
+      "DOCN°": "N° de documento",
+      "SECTOR_DE_OBRA": "Sector de obra",
+      "TITULO1": "Título del proyecto 1",
+      "TITULO2": "Título del proyecto 2",
+      "TITULO3": "Título del proyecto 3",
+      "ETAPA": "Etapa",
+      "ARCHIVO": "Nombre de archivo (en el rótulo)",
+      "REV#": "Rev",
+      "MOT#": "Descripción",
+      "PROY#": "Proyectó",
+      "REVIS#": "Revisó",
+      "APR#": "Aprobó",
+      "FECHA#": "Fecha"
+    },
+    "revisionColumns": [
+      "REV",
+      "MOT",
+      "PROY",
+      "REVIS",
+      "APR",
+      "FECHA"
+    ]
   }
 }

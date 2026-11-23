@@ -3,6 +3,11 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-22 22:00 · Claude · Rótulo personalizable por cliente (ventana «Plano de fabricación»)
+- Hecho: botón «Plano de fabricación» en Exportar. Ventana: cargar el DXF de formato (queda guardado en datos/formatos, fuera de git), elegir tableros, completar el rótulo (campos detectados del bloque con más atributos; tabla de revisiones REV/MOT/PROY/REVIS/APR/FECHA editable; ARCHIVO sigue al nombre del archivo) y generar. El DXF sale sólo con las hojas elegidas y el rótulo cargado; el nombre del tablero se pone solo en cada hoja. Los valores se recuerdan. API: GET/POST /api/plano/formato, POST /api/plano/generar.
+- Ojo: la ventana estaba dentro de #screen-editor y no se veía en Exportar (lección 33): las ventanas van fuera de las pantallas.
+- Resultado: 175 tests; 126/126 interfaz; DXF de prueba (TSB, TSAA) con auditoría ezdxf 0 errores.
+
 ## 2026-11-22 21:15 · Claude · Plano de fabricación: unifilar del usuario + topográfico en su formato
 - Hecho: plano_unifilar.py toma el DXF de formato del usuario (BAF-E-EL-PL-104-0 Unifilares, una presentación por tablero con marco A2 y rótulo Rotulo_BA_ferial) y en cada hoja deja su unifilar tal cual (misma ventana 1:1) y agrega el topográfico de la aplicación con puerta abierta y cerrada, a escala normalizada (1:2 a 1:10 según el tablero), en A1 1:1; rótulo con «UNIFILAR Y TOPOGRAFICO» (resto de los datos sin tocar). Reglas en reglas_layout.json → planoUnifilar. Las cotas se explotan antes de importar (el importador no copia el bloque de la cota). Placa grabada de la puerta: factor de ancho 0,75 (los nombres largos salían de la placa).
 - Resultado: 24 hojas, auditoría ezdxf 0 errores/0 arreglos; 174 tests; 124/124 interfaz.
