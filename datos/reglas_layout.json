@@ -118,5 +118,33 @@
       "APR",
       "FECHA"
     ]
+  },
+  "equipamientoExcel": {
+    "_ayuda": "Excel de equipamiento eléctrico (botón en Exportar). Pedido de Thomas 2026-11-19: sólo equipamiento eléctrico, sin canalizaciones; columnas código, cantidad, circuitos y tableros.",
+    "include": [
+      "Equipo",
+      "Equipo (no dibujado)",
+      "Accionamiento OT",
+      "Señalización",
+      "Peine",
+      "Bloque de distribución",
+      "Barra de distribución",
+      "Bornera de tierra (PE)",
+      "Barra de tierra (PE)"
+    ],
+    "exclude": [
+      "Canaleta",
+      "Montaje DIN",
+      "Envolvente",
+      "Envolvente (estructura)",
+      "Kit de montaje",
+      "Cubrebornes"
+    ],
+    "font": "Arial",
+    "colors": {
+      "header": "1F3A4D",
+      "missing": "F8CBAD",
+      "confirm": "FFF2CC"
+    }
   }
 }

@@ -3,6 +3,12 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-23 03:30 · Claude · Códigos de pedido para comprar y Excel de equipamiento desde el programa
+- Hecho: +46 códigos ABB verificados (cada uno aparece junto a su modelo en una ficha/distribuidor/catálogo; fuentes en fuentes_descargadas.json): S200/S200M/S200L/S200P/SN201L, S800N/S, F202, Tmax XT1/XT2/XT3/T2/T4, E2.2, OT. Campo `confirm`: código verificado pero el unifilar deja una variante abierta (OT…F4 seccionador/conmutador, E2.2 fijo/extraíble, S201P discontinuado) → la lista lo marca «a confirmar». Equipos sin código: de 57 renglones a 2 (S 251 Na C 10 no existe en catálogo vigente; F204-SX ambiguo), con motivo.
+- Hecho: Exportar → «Excel de equipamiento» (excel_equipamiento.py, POST /api/export/equipamiento; categorías en reglas_layout.json → equipamientoExcel). 24 tableros: 85 renglones, 74 con código.
+- Quedan sin código (decisión de diseño, no de catálogo): barras de distribución/PE «a dimensionar» y la manija de los OT (directa o de puerta).
+- Resultado: 182 tests; 128/128 interfaz.
+
 ## 2026-11-22 22:00 · Claude · Rótulo personalizable por cliente (ventana «Plano de fabricación»)
 - Hecho: botón «Plano de fabricación» en Exportar. Ventana: cargar el DXF de formato (queda guardado en datos/formatos, fuera de git), elegir tableros, completar el rótulo (campos detectados del bloque con más atributos; tabla de revisiones REV/MOT/PROY/REVIS/APR/FECHA editable; ARCHIVO sigue al nombre del archivo) y generar. El DXF sale sólo con las hojas elegidas y el rótulo cargado; el nombre del tablero se pone solo en cada hoja. Los valores se recuerdan. API: GET/POST /api/plano/formato, POST /api/plano/generar.
 - Ojo: la ventana estaba dentro de #screen-editor y no se veía en Exportar (lección 33): las ventanas van fuera de las pantallas.

@@ -64,6 +64,6 @@
 - Imán a bordes al mover canaletas.
 - Fijar el gabinete al agregar equipos (que no salte a uno más grande sin preguntar).
 - Quitar "Nuevo tablero vacío" y "Revisiones" si no se usan.
-- Exportar la lista de materiales también a Excel con formato (hoy CSV).
+- Hecho 2026-11-23: Excel de equipamiento eléctrico de varios tableros desde Exportar.
 - Plano de fabricación: lista de materiales del tablero en el espacio libre de la hoja; opción A0 si el topográfico queda chico.
 - Plano de fabricación: guardar varios juegos de rótulo (uno por cliente) y elegir cuál usar.

@@ -68,6 +68,11 @@ def lookup_order_code(model, poles, codes):
     return None
 
 
+def _known_status(item):
+    """Estado de un código verificado: si el unifilar deja abierta una variante, «a confirmar: …» (la lista lo junta en el aviso de compra)."""
+    return f"a confirmar: {item['confirm']}" if item.get("confirm") else "verificado"
+
+
 def unverified_note(model, codes):
     key = model_key(model)
     return next((x["motivo"] for x in codes.get("sinVerificar", []) if model_key(x["model"]) == key), None)
@@ -168,7 +173,7 @@ def build_bom(project, catalog, accessory_catalog=None, order_codes=None):
         if corr:  # cambio pedido por el usuario: la lista lo dice para que nadie compre lo que figura en el unifilar
             extra += f" · CAMBIADO por pedido del usuario: el unifilar dice {corr['model']} ({corr['poles']}P)"
         add("Equipo", code or (known or {}).get("orderCode"), f"{ref}" + (f" · {poles} polos" if poles and str(poles) not in ref else "") + extra + (f" · {hint}" if hint else ""),
-            len(devices), "u", tags, "código cargado por el usuario" if code else ("verificado" if known else "falta código de pedido"),
+            len(devices), "u", tags, "código cargado por el usuario" if code else (_known_status(known) if known else "falta código de pedido"),
             (known or {}).get("source") or shell.get("cadSource", ""))
     missing_drawn = {}
     for device in project.get("devicesNotDrawn", []):
@@ -180,6 +185,7 @@ def build_bom(project, catalog, accessory_catalog=None, order_codes=None):
         hint = None if known or devices[0].get("orderCode") else unverified_note(model, codes)
         add("Equipo (no dibujado)", devices[0].get("orderCode") or (known or {}).get("orderCode"),
             f"{model or '?'}" + (f" · {poles} polos" if poles else "") + (f" · {known['note']}" if known and known.get("note") else "")
+            + (f" · A CONFIRMAR: {known['confirm']}" if known and known.get("confirm") else "")
             + f" · NO está en el dibujo: {reason}" + (f" · {hint}" if hint else ""),
             len(devices), "u", tags, "falta en el dibujo", (known or {}).get("source", ""))
 

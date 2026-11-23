@@ -8,6 +8,7 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
 import time
 from pathlib import Path
 
@@ -338,6 +339,15 @@ def main():
             check("plano de fabricación: la ventana se ve desde Exportar", pg.is_visible("#planoForm") and pg.is_visible("label:has(#planoFmtFile)"), pg.inner_text("#planoFmtName"))
             pg.click("#planoCancel")
             check("plano de fabricación: cancelar cierra", not pg.is_visible("#planoPanel"))
+            # Excel de equipamiento desde el programa (pedido 2026-11-23).
+            pg.click("#exportEquip"); wait_idle(pg, 1000)
+            check("excel de equipamiento: la ventana se ve y lista los tableros", pg.is_visible("#equipForm") and pg.locator("#equipBoards input").count() >= 1)
+            with pg.expect_download(timeout=120000) as dl:
+                pg.click("#equipGo")
+            xlsx = Path(tempfile.mkdtemp()) / "eq.xlsx"; dl.value.save_as(xlsx)
+            from openpyxl import load_workbook
+            ws = load_workbook(xlsx)["Equipamiento eléctrico"]
+            check("excel de equipamiento: baja con código, cantidad, circuitos y tableros", all(h in [c.value for c in ws[1]] for h in ("Código", "Cantidad", "Circuitos", "Tableros")) and ws.max_row > 1, ws.max_row)
             pg.click("summary:has-text('Lista de materiales')")
             check("lista de materiales", pg.locator("#bomTable tr").count() > 3)
             codes = pg.eval_on_selector_all("#bomTable tr td:nth-child(2)", "els=>els.map(e=>e.textContent.trim())")

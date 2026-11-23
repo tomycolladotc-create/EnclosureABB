@@ -1,305 +1,360 @@
 {
- "_ayuda": "Todo archivo bajado de internet para este proyecto se guarda en el repo y se registra acá (origen, fecha, hash, para qué se usó). Los PDF son catálogos públicos de ABB, guardados para uso interno en este repo privado. El texto por página (texto/*.json) sirve para buscar sin abrir el PDF; las tablas pierden encabezados, verificar mirando la imagen de la página.",
- "archivos": [
-  {
-   "archivo": "docs/catalogos_abb/ABB_SPEP185_catalogo_1STC803009D0103.pdf",
-   "documento": "System pro E power - Empty enclosures and 185 mm Busbar System, Technical Catalogue (1STC803009D0103)",
-   "origen": "https://library.e.abb.com/public/ea19569e71bd4a55ac10d34ebc2c89d8/Katalog_185_1STC803009D0103%20SPEP%20185%20catalogue%202024%20Rev%203.pdf",
-   "bajado": "2026-11-15",
-   "bytes": 44649801,
-   "sha256": "27cf77cfc939dafec3d0b2411529291e6f0f5d16027c4836f5ca09b218c9de54",
-   "texto": "docs/catalogos_abb/texto/1STC803009D0103_paginas.json",
-   "usado_en": "datos/catalogo_abb.json -> enclosures[] de estructura System pro E (structure, páginas 20-24, 31, 46, 129-136)"
-  },
-  {
-   "archivo": "docs/catalogos_abb/ABB_Enclosures_Automation_1STC804013D0201.pdf",
-   "documento": "General Catalogue - Enclosures for Automation (1STC804013D0201, 02.2011)",
-   "origen": "https://content.voltimum.com/au/190/ABB_-_Enclosures_for_Automation_1stc804013d0201.pdf (copia del catálogo de ABB SACE en Voltimum)",
-   "bajado": "2026-11-15",
-   "bytes": 19516707,
-   "sha256": "6ec8fb831401d370e514cc74eafca51cf5d94eecaf940dce3230481de1980543",
-   "texto": "docs/catalogos_abb/texto/1STC804013D0201_paginas.json",
-   "usado_en": "datos/catalogo_abb.json -> enclosures[] SR2 (págs. 2/4-2/10, 9/6-9/7); pendiente: kits KD (pág. 2/4 y 2/8), IS2, AM2"
-  },
-  {
-   "archivo": "docs/imagenes_abb/XT1C_1SDA067405R1_frontal.png",
-   "documento": "Imagen frontal oficial ABB XT1C 160 TMD 80-800 4P (9IBA255342)",
-   "origen": "https://cdn.productimages.abb.com/9IBA255342_400x400.png",
-   "bajado": "2026-11-15",
-   "bytes": 73283,
-   "sha256": "8aed93aceda4815e990619958075f861c1fa7e504d6278a52545e4dcb1ef73ef",
-   "usado_en": "datos/apariencias_abb.json -> abb.tmax.xt1.4p.fixed.front.marking"
-  },
-  {
-   "archivo": "docs/imagenes_abb/XT2N_1SDX176607R1_frontal.png",
-   "documento": "Imagen frontal oficial ABB XT2N 160 TMG 80-240 4P + Acc (9IBA255267)",
-   "origen": "https://cdn.productimages.abb.com/9IBA255267_400x400.png",
-   "bajado": "2026-11-15",
-   "bytes": 92493,
-   "sha256": "80d8d88a1b6415281e2a393086ef5f1c18ebb3a86c20428e1bed216ba245cb72",
-   "usado_en": "datos/apariencias_abb.json -> abb.tmax.xt2.4p.fixed.front.marking"
-  },
-  {
-   "archivo": "docs/imagenes_abb/OT400E04P_1SCA022719R1810_frontal.jpg",
-   "documento": "Imagen frontal oficial ABB OT400E04P (9PAA00000422688)",
-   "origen": "https://cdn.productimages.abb.com/9PAA00000422688_400x400.jpg",
-   "bajado": "2026-11-15",
-   "bytes": 8361,
-   "sha256": "81242e314bb7038556501e46b330b92c78f6bc702d6504c528097c81fad368c0",
-   "usado_en": "datos/apariencias_abb.json -> abb.ot400e04.4p.front.marking"
-  },
-  {
-   "archivo": "cad/abb/f200/F204_3D_9AKK106354A0756_B.stp",
-   "documento": "F204 - 3D Product skin (9AKK106354A0756 rev B)",
-   "origen": "https://search.abb.com/library/Download.aspx?DocumentID=9AKK106354A0756&LanguageCode=en&DocumentPartId=&Action=Launch",
-   "buscado_en": "https://library.abb.com (búsqueda pública)",
-   "bajado": "2026-11-18",
-   "bytes": 13565884,
-   "sha256": "d8e7d63d75b0492dca65dd603243a27eca567cb6c2845b57b0a6e3799773681a",
-   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
-  },
-  {
-   "archivo": "cad/abb/f200/F202_3D_9AKK106354A0757_A.stp",
-   "documento": "F202 - 3D Product skin (9AKK106354A0757 rev A)",
-   "origen": "https://search.abb.com/library/Download.aspx?DocumentID=9AKK106354A0757&LanguageCode=en&DocumentPartId=&Action=Launch",
-   "buscado_en": "https://library.abb.com (búsqueda pública)",
-   "bajado": "2026-11-18",
-   "bytes": 8799141,
-   "sha256": "3fd1379385467db25a497e68f5808a1252bb594bfc4fdc866b24370c28b27113",
-   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
-  },
-  {
-   "archivo": "cad/abb/sn201/SN201_3D_9AKK106930A4363.stp",
-   "documento": "3D SN201 (9AKK106930A4363)",
-   "origen": "https://search.abb.com/library/Download.aspx?DocumentID=9AKK106930A4363&LanguageCode=en&DocumentPartId=&Action=Launch",
-   "buscado_en": "https://library.abb.com (búsqueda pública)",
-   "bajado": "2026-11-18",
-   "bytes": 12403626,
-   "sha256": "cb88503925776ca3cd704fd747f99c7c00b6e0cbea320ea446b398cc1c639c02",
-   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
-  },
-  {
-   "archivo": "cad/abb/ot100_125/OT100-125F4N2.stp",
-   "documento": "OT100…OT125F4N2, stp-file (rev A)",
-   "origen": "https://search.abb.com/library/Download.aspx?DocumentID=OT100-125F4N2.STP&LanguageCode=en&DocumentPartId=&Action=Launch",
-   "buscado_en": "https://library.abb.com (búsqueda pública)",
-   "bajado": "2026-11-18",
-   "bytes": 2031614,
-   "sha256": "8661b6179b2875a5b6a0937e20bf6a34fefd38a1138fec5e415d58a59b96c63e",
-   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
-  },
-  {
-   "archivo": "cad/abb/ot100_125/OT100-125F3.stp",
-   "documento": "OT100-125F3 (biblioteca lo lista como igs-file; el archivo bajado es STEP)",
-   "origen": "https://search.abb.com/library/Download.aspx?DocumentID=OT100-125F3.IGS&LanguageCode=en&DocumentPartId=&Action=Launch",
-   "buscado_en": "https://library.abb.com (búsqueda pública)",
-   "bajado": "2026-11-18",
-   "bytes": 7287631,
-   "sha256": "600c7b4ceda0e3ed0ceba3c5ea29032c44c7cff025d771f0804594303286a596",
-   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
-  },
-  {
-   "archivo": "cad/abb/ot160_250/OT200-250E03.stp",
-   "documento": "OT200…OT250E03, stp-file (rev B); la ficha del OT160EV03P remite a este dibujo",
-   "origen": "https://search.abb.com/library/Download.aspx?DocumentID=OT200-250E03.STP&LanguageCode=en&DocumentPartId=&Action=Launch",
-   "buscado_en": "https://library.abb.com (búsqueda pública)",
-   "bajado": "2026-11-18",
-   "bytes": 615393,
-   "sha256": "952604f0c0da2eef8e7859a393435da339f6949a759053db9872571d16b5cf3f",
-   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
-  },
-  {
-   "archivo": "cad/abb/ot160_250/OT200-250E04.stp",
-   "documento": "OT200…250E04, stp-file (rev A)",
-   "origen": "https://search.abb.com/library/Download.aspx?DocumentID=OT200...250E04.STP&LanguageCode=en&DocumentPartId=&Action=Launch",
-   "buscado_en": "https://library.abb.com (búsqueda pública)",
-   "bajado": "2026-11-18",
-   "bytes": 1755790,
-   "sha256": "de24dd57c09873e0bcfebfa536dfe3df6ae8c4a6d61b45651d7c684c782fbd59",
-   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
-  },
-  {
-   "archivo": "cad/abb/e2_2/1SDH001252R0123_1PA_001_01_E2.2_IV_F.stp",
-   "documento": "E2.2 IV F, 3D STEP",
-   "origen": "https://search.abb.com/library/Download.aspx?DocumentID=1SDH001252R0123&LanguageCode=en&DocumentPartId=&Action=Launch",
-   "buscado_en": "https://library.abb.com (búsqueda pública)",
-   "bajado": "2026-11-19",
-   "bytes": 1325441,
-   "sha256": "2d5c58c235fe746470564271e0c786b8bcc0f5153b13bf7ff4a48800dddc2aef",
-   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
-  },
-  {
-   "archivo": "cad/abb/xt3/1SDH001295R0483_XT3 4p FIXED F.stp",
-   "documento": "XT3 4p FIXED F, 3D STEP",
-   "origen": "https://search.abb.com/library/Download.aspx?DocumentID=1SDH001295R0483&LanguageCode=en&DocumentPartId=&Action=Launch",
-   "buscado_en": "https://library.abb.com (búsqueda pública)",
-   "bajado": "2026-11-19",
-   "bytes": 23702284,
-   "sha256": "9d952cc13ec988b2e02a9fab787b8058d0151a511914591991a9f04dd31d2f44",
-   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
-  },
-  {
-   "archivo": "cad/abb/xt1_3p/1SDH001295R0008_XT1 3p FIXED F.stp",
-   "documento": "XT1 3p FIXED F, 3D STEP",
-   "origen": "https://search.abb.com/library/Download.aspx?DocumentID=1SDH001295R0008&LanguageCode=en&DocumentPartId=&Action=Launch",
-   "buscado_en": "https://library.abb.com (búsqueda pública)",
-   "bajado": "2026-11-19",
-   "bytes": 18982346,
-   "sha256": "ae1820ece7f855032ecf3d6c9a773da75fce4343a1de982b160e67cec18cbb39",
-   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
-  },
-  {
-   "archivo": "cad/abb/t4/0000018707.zip",
-   "documento": "T4 4 poles Fixed (IGS dentro del zip)",
-   "origen": "https://library.abb.com (resultado 'T4 4p F'; descarga 0000018707.zip)",
-   "buscado_en": "https://library.abb.com (búsqueda pública)",
-   "bajado": "2026-11-19",
-   "bytes": 95075,
-   "sha256": "e7cbd90d733f458a0e6e18b91ec9bcbbfbc850c00911fe6c0dc3bd59a8c21544",
-   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
-  },
-  {
-   "archivo": "cad/abb/t4/x/T4 4 poles Fixed.igs",
-   "documento": "T4 4 poles Fixed, IGES (extraído del zip)",
-   "origen": "cad/abb/t4/0000018707.zip",
-   "buscado_en": "https://library.abb.com (búsqueda pública)",
-   "bajado": "2026-11-19",
-   "bytes": 902340,
-   "sha256": "8b04a924a0634b6d6d3015778cc59ec69757c6cdaa24bf3fce11000a6581d075",
-   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
-  },
-  {
-   "archivo": "cad/abb/t2/0000018689.zip",
-   "documento": "T2 fixed 3 poles F (IGS dentro del zip)",
-   "origen": "https://library.abb.com (resultado 'T2 3p F'; descarga 0000018689.zip)",
-   "buscado_en": "https://library.abb.com (búsqueda pública)",
-   "bajado": "2026-11-19",
-   "bytes": 195737,
-   "sha256": "33f22aba7e34910e6a159403f24c4e731439451bf90e1ac9680996917ea0fbce",
-   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
-  },
-  {
-   "archivo": "cad/abb/t2/x/T2_fixed_3poles_F.igs",
-   "documento": "T2 fixed 3 poles F, IGES (extraído del zip)",
-   "origen": "cad/abb/t2/0000018689.zip",
-   "buscado_en": "https://library.abb.com (búsqueda pública)",
-   "bajado": "2026-11-19",
-   "bytes": 1576908,
-   "sha256": "33c9b60fd6fc7b4bbb6a9c332e4ec49d108406508380f83ea018983bfb4bab61",
-   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
-  },
-  {
-   "archivo": "cad/abb/s800/2D DXF S800 1-4 poles.zip",
-   "documento": "2D DXF S800 1-4 poles",
-   "origen": "https://search.abb.com/library/Download.aspx?DocumentID=9AKK106930A3272&LanguageCode=en&DocumentPartId=&Action=Launch",
-   "buscado_en": "https://library.abb.com (búsqueda pública)",
-   "bajado": "2026-11-19",
-   "bytes": 257096,
-   "sha256": "7bdcc7b9bd8d0eb0420f073dbe04ff8ed7d8acb1a75ea05c55118cfe24ba35cf",
-   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
-  },
-  {
-   "archivo": "cad/abb/s800/x/2D S800 3pole drawing.DXF",
-   "documento": "S800 3 polos, DXF 2D (extraído del zip)",
-   "origen": "cad/abb/s800/2D DXF S800 1-4 poles.zip",
-   "buscado_en": "https://library.abb.com (búsqueda pública)",
-   "bajado": "2026-11-19",
-   "bytes": 646092,
-   "sha256": "5f43e79864619363c3a882bcd9b8fc08f99b884df0f9c4e53a9ed0901f0fc27e",
-   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
-  },
-  {
-   "archivo": "cad/abb/ot63_80/OT63-80F3.igs",
-   "documento": "OT63-80F3, IGES",
-   "origen": "https://library.abb.com (búsqueda pública 'OT63F3')",
-   "buscado_en": "https://library.abb.com (búsqueda pública)",
-   "bajado": "2026-11-19",
-   "bytes": 1198266,
-   "sha256": "f90a2439decc25243a99f7cc0938df2b9df206e493be3780e0d3abd7991986cd",
-   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
-  },
-  {
-   "archivo": "cad/abb/ot63_80/ot63-80f4n2.stp",
-   "documento": "OT63-80F4N2, STEP",
-   "origen": "https://library.abb.com (búsqueda pública 'OT63F4')",
-   "buscado_en": "https://library.abb.com (búsqueda pública)",
-   "bajado": "2026-11-19",
-   "bytes": 7641141,
-   "sha256": "bc18594195d3ea06cffc166c692f881e34abbca303529fcf12e7509b5838e51e",
-   "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
-  },
-  {
-   "fecha": "2026-11-20",
-   "tema": "Frente del S290 (S293-C80) desde el catálogo ABB",
-   "urls": [
-    "https://library.abb.com/r?q=GHS2932001R0804",
-    "https://search.abb.com/library/Download.aspx?DocumentID=ABB%2FNN31%2F05_04&LanguageCode=cs&DocumentPartId=&Action=Launch"
-   ],
-   "archivo": "cad/abb/s290/ABB_NN31_05_04_p6-4_rozmery_S280_S290.pdf (página 6/4 del catálogo ABB NN31/05_04, 346 págs., 6,9 MB, descargado con el navegador de la PC del usuario porque ABB Library no se alcanza desde el espacio de trabajo)",
-   "resultado": "S290 no tiene CAD 2D/3D en ABB Library; el catálogo trae el dibujo vectorial de medidas (1P 26,25 / 2P 52,5 / 3P 78,75 / 4P 105 × 90 mm). Código de pedido del S293-C80 confirmado en ABB Library: GHS2932001R0804. El catálogo actual 2CSC400002D0913 (IT, 2025) ya no incluye el S290.",
-   "usado_en": "work/proyectar_cad.py (tipo pdf) → datos/frentes_cad.json abb.s290.3p.front; datos/apariencias_abb.json"
-  }
- ],
- "consultadas": [
-  {
-   "fecha": "2026-11-18",
-   "tema": "Bornera equipotencial PE (DBL125) y topes",
-   "urls": [
-    "https://www.tti.com/content/dam/tti-commons/supplier/te-connectivity/doc/te-connectivity-1snl-dbl-power-distribution-blocks-product-catalog-ap.pdf",
-    "https://th.rs-online.com/web/p/distribution-blocks/1003920",
-    "https://www.gexpro.com/p/1017877/entrelec/terminal-block-distribution-gray-125a-feed-through-282mm-w/888614490413/1snl312510r0000",
-    "https://www.te.com/en/about-te/news-center/abb-entrelec-news.html",
-    "https://www.electricautomationnetwork.com/PDF/ENGLISH/ENTRELEC/1SNA399903R0200.pdf"
-   ],
-   "nota": "sólo consulta web (no se descargaron archivos); datos volcados en datos/accesorios_abb.json → earthTerminals te-dbl125-pe"
-  },
-  {
-   "fecha": "2026-11-18",
-   "tema": "Bloque de distribución BRT125A",
-   "urls": [
-    "https://www.farnell.com/datasheets/2917447.pdf",
-    "https://ph.rs-online.com/web/p/distribution-blocks/4132331",
-    "https://www.rapidonline.com/abb-017953523-four-pole-distribution-block-125a-28-3489"
-   ],
-   "nota": "sólo consulta web; datos en datos/accesorios_abb.json → distributionBlocks abb-brt125a"
-  },
-  {
-   "fecha": "2026-11-18",
-   "tema": "Códigos de pedido de los equipos de los unifilares de prueba (S200/S200L/S200M/S800/F204/T2S/OT)",
-   "urls": [
-    "https://automation-warehouse.com/products/2cds241801r0204",
-    "https://cdn.erply.com/files/396198/2CSF204001R1250.pdf",
-    "https://docs.rs-online.com/5e74/A700000015162099.pdf",
-    "https://elettroclimashop.com/cdn/4225250.pdf",
-    "https://empower.abb.com/ecatalog/ec/EN_NA/p/2CCS864001R0324",
-    "https://ie.rs-online.com/web/p/mcbs/7467769",
-    "https://no.rs-online.com/web/p/mcbs/7467719",
-    "https://onninen.pl/en/product/ABB-Overcurrent-circuit-breaker-4P-C-characteristic-40A-10kA-AC-S204M-C40-2CDS274001R0404-560664",
-    "https://plc-direct.com/products/2ccs864001r0824",
-    "https://plc-direct.com/products/2cds241801r0104",
-    "https://plc-direct.com/products/2cds241801r0164",
-    "https://plc-direct.com/products/s804n-c20",
-    "https://se.rs-online.com/web/p/mcbs/5355995",
-    "https://uk.rs-online.com/web/p/mcbs/1833669",
-    "https://uk.rs-online.com/web/p/mcbs/7467766",
-    "https://uk.rs-online.com/web/p/mcbs/7467778",
-    "https://uk.rs-online.com/web/p/mcbs/7467784",
-    "https://www.electricautomationnetwork.com/en/abb/t2s-160-pr221ds-ls-in160a-4p-f-f-abb-t2s160-1sda051142r1",
-    "https://www.electrisa.com/cdn/shop/files/14192448000.PDF"
-   ],
-   "nota": "sólo consulta web; datos volcados en datos/codigos_pedido_abb.json"
-  },
-  {
-   "fecha": "2026-11-19",
-   "tema": "Medidas S290 (S293, sin CAD) y S803 (lecciones 11 y 12 de docs/LECCIONES.md)",
-   "urls": [
-    "https://datasheet.octopart.com/S293-C100-ABB-Control-datasheet-62100593.pdf",
-    "https://manualmachine.com/abb/s292c80/16896891-data-sheet",
-    "https://files.kempstoncontrols.com/files/7bbef7da969ae43c8e0c7babd504edd4/2CCS863001R0804",
-    "https://www.farnell.com/datasheets/2912218.pdf"
-   ],
-   "resultado": "S293 (S290 3P): 78,8 × 90 × 70 mm; S292: 52,5 × 90 × 70; S803S/B/C-C80: 81 × 95 × 82,5 mm (4,5 módulos)",
-   "usado_en": "datos/catalogo_abb.json -> abb.s290.3p.front, abb.s803.3p.front"
-  }
- ]
+  "_ayuda": "Todo archivo bajado de internet para este proyecto se guarda en el repo y se registra acá (origen, fecha, hash, para qué se usó). Los PDF son catálogos públicos de ABB, guardados para uso interno en este repo privado. El texto por página (texto/*.json) sirve para buscar sin abrir el PDF; las tablas pierden encabezados, verificar mirando la imagen de la página.",
+  "archivos": [
+    {
+      "archivo": "docs/catalogos_abb/ABB_SPEP185_catalogo_1STC803009D0103.pdf",
+      "documento": "System pro E power - Empty enclosures and 185 mm Busbar System, Technical Catalogue (1STC803009D0103)",
+      "origen": "https://library.e.abb.com/public/ea19569e71bd4a55ac10d34ebc2c89d8/Katalog_185_1STC803009D0103%20SPEP%20185%20catalogue%202024%20Rev%203.pdf",
+      "bajado": "2026-11-15",
+      "bytes": 44649801,
+      "sha256": "27cf77cfc939dafec3d0b2411529291e6f0f5d16027c4836f5ca09b218c9de54",
+      "texto": "docs/catalogos_abb/texto/1STC803009D0103_paginas.json",
+      "usado_en": "datos/catalogo_abb.json -> enclosures[] de estructura System pro E (structure, páginas 20-24, 31, 46, 129-136)"
+    },
+    {
+      "archivo": "docs/catalogos_abb/ABB_Enclosures_Automation_1STC804013D0201.pdf",
+      "documento": "General Catalogue - Enclosures for Automation (1STC804013D0201, 02.2011)",
+      "origen": "https://content.voltimum.com/au/190/ABB_-_Enclosures_for_Automation_1stc804013d0201.pdf (copia del catálogo de ABB SACE en Voltimum)",
+      "bajado": "2026-11-15",
+      "bytes": 19516707,
+      "sha256": "6ec8fb831401d370e514cc74eafca51cf5d94eecaf940dce3230481de1980543",
+      "texto": "docs/catalogos_abb/texto/1STC804013D0201_paginas.json",
+      "usado_en": "datos/catalogo_abb.json -> enclosures[] SR2 (págs. 2/4-2/10, 9/6-9/7); pendiente: kits KD (pág. 2/4 y 2/8), IS2, AM2"
+    },
+    {
+      "archivo": "docs/imagenes_abb/XT1C_1SDA067405R1_frontal.png",
+      "documento": "Imagen frontal oficial ABB XT1C 160 TMD 80-800 4P (9IBA255342)",
+      "origen": "https://cdn.productimages.abb.com/9IBA255342_400x400.png",
+      "bajado": "2026-11-15",
+      "bytes": 73283,
+      "sha256": "8aed93aceda4815e990619958075f861c1fa7e504d6278a52545e4dcb1ef73ef",
+      "usado_en": "datos/apariencias_abb.json -> abb.tmax.xt1.4p.fixed.front.marking"
+    },
+    {
+      "archivo": "docs/imagenes_abb/XT2N_1SDX176607R1_frontal.png",
+      "documento": "Imagen frontal oficial ABB XT2N 160 TMG 80-240 4P + Acc (9IBA255267)",
+      "origen": "https://cdn.productimages.abb.com/9IBA255267_400x400.png",
+      "bajado": "2026-11-15",
+      "bytes": 92493,
+      "sha256": "80d8d88a1b6415281e2a393086ef5f1c18ebb3a86c20428e1bed216ba245cb72",
+      "usado_en": "datos/apariencias_abb.json -> abb.tmax.xt2.4p.fixed.front.marking"
+    },
+    {
+      "archivo": "docs/imagenes_abb/OT400E04P_1SCA022719R1810_frontal.jpg",
+      "documento": "Imagen frontal oficial ABB OT400E04P (9PAA00000422688)",
+      "origen": "https://cdn.productimages.abb.com/9PAA00000422688_400x400.jpg",
+      "bajado": "2026-11-15",
+      "bytes": 8361,
+      "sha256": "81242e314bb7038556501e46b330b92c78f6bc702d6504c528097c81fad368c0",
+      "usado_en": "datos/apariencias_abb.json -> abb.ot400e04.4p.front.marking"
+    },
+    {
+      "archivo": "cad/abb/f200/F204_3D_9AKK106354A0756_B.stp",
+      "documento": "F204 - 3D Product skin (9AKK106354A0756 rev B)",
+      "origen": "https://search.abb.com/library/Download.aspx?DocumentID=9AKK106354A0756&LanguageCode=en&DocumentPartId=&Action=Launch",
+      "buscado_en": "https://library.abb.com (búsqueda pública)",
+      "bajado": "2026-11-18",
+      "bytes": 13565884,
+      "sha256": "d8e7d63d75b0492dca65dd603243a27eca567cb6c2845b57b0a6e3799773681a",
+      "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+    },
+    {
+      "archivo": "cad/abb/f200/F202_3D_9AKK106354A0757_A.stp",
+      "documento": "F202 - 3D Product skin (9AKK106354A0757 rev A)",
+      "origen": "https://search.abb.com/library/Download.aspx?DocumentID=9AKK106354A0757&LanguageCode=en&DocumentPartId=&Action=Launch",
+      "buscado_en": "https://library.abb.com (búsqueda pública)",
+      "bajado": "2026-11-18",
+      "bytes": 8799141,
+      "sha256": "3fd1379385467db25a497e68f5808a1252bb594bfc4fdc866b24370c28b27113",
+      "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+    },
+    {
+      "archivo": "cad/abb/sn201/SN201_3D_9AKK106930A4363.stp",
+      "documento": "3D SN201 (9AKK106930A4363)",
+      "origen": "https://search.abb.com/library/Download.aspx?DocumentID=9AKK106930A4363&LanguageCode=en&DocumentPartId=&Action=Launch",
+      "buscado_en": "https://library.abb.com (búsqueda pública)",
+      "bajado": "2026-11-18",
+      "bytes": 12403626,
+      "sha256": "cb88503925776ca3cd704fd747f99c7c00b6e0cbea320ea446b398cc1c639c02",
+      "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+    },
+    {
+      "archivo": "cad/abb/ot100_125/OT100-125F4N2.stp",
+      "documento": "OT100…OT125F4N2, stp-file (rev A)",
+      "origen": "https://search.abb.com/library/Download.aspx?DocumentID=OT100-125F4N2.STP&LanguageCode=en&DocumentPartId=&Action=Launch",
+      "buscado_en": "https://library.abb.com (búsqueda pública)",
+      "bajado": "2026-11-18",
+      "bytes": 2031614,
+      "sha256": "8661b6179b2875a5b6a0937e20bf6a34fefd38a1138fec5e415d58a59b96c63e",
+      "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+    },
+    {
+      "archivo": "cad/abb/ot100_125/OT100-125F3.stp",
+      "documento": "OT100-125F3 (biblioteca lo lista como igs-file; el archivo bajado es STEP)",
+      "origen": "https://search.abb.com/library/Download.aspx?DocumentID=OT100-125F3.IGS&LanguageCode=en&DocumentPartId=&Action=Launch",
+      "buscado_en": "https://library.abb.com (búsqueda pública)",
+      "bajado": "2026-11-18",
+      "bytes": 7287631,
+      "sha256": "600c7b4ceda0e3ed0ceba3c5ea29032c44c7cff025d771f0804594303286a596",
+      "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+    },
+    {
+      "archivo": "cad/abb/ot160_250/OT200-250E03.stp",
+      "documento": "OT200…OT250E03, stp-file (rev B); la ficha del OT160EV03P remite a este dibujo",
+      "origen": "https://search.abb.com/library/Download.aspx?DocumentID=OT200-250E03.STP&LanguageCode=en&DocumentPartId=&Action=Launch",
+      "buscado_en": "https://library.abb.com (búsqueda pública)",
+      "bajado": "2026-11-18",
+      "bytes": 615393,
+      "sha256": "952604f0c0da2eef8e7859a393435da339f6949a759053db9872571d16b5cf3f",
+      "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+    },
+    {
+      "archivo": "cad/abb/ot160_250/OT200-250E04.stp",
+      "documento": "OT200…250E04, stp-file (rev A)",
+      "origen": "https://search.abb.com/library/Download.aspx?DocumentID=OT200...250E04.STP&LanguageCode=en&DocumentPartId=&Action=Launch",
+      "buscado_en": "https://library.abb.com (búsqueda pública)",
+      "bajado": "2026-11-18",
+      "bytes": 1755790,
+      "sha256": "de24dd57c09873e0bcfebfa536dfe3df6ae8c4a6d61b45651d7c684c782fbd59",
+      "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+    },
+    {
+      "archivo": "cad/abb/e2_2/1SDH001252R0123_1PA_001_01_E2.2_IV_F.stp",
+      "documento": "E2.2 IV F, 3D STEP",
+      "origen": "https://search.abb.com/library/Download.aspx?DocumentID=1SDH001252R0123&LanguageCode=en&DocumentPartId=&Action=Launch",
+      "buscado_en": "https://library.abb.com (búsqueda pública)",
+      "bajado": "2026-11-19",
+      "bytes": 1325441,
+      "sha256": "2d5c58c235fe746470564271e0c786b8bcc0f5153b13bf7ff4a48800dddc2aef",
+      "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+    },
+    {
+      "archivo": "cad/abb/xt3/1SDH001295R0483_XT3 4p FIXED F.stp",
+      "documento": "XT3 4p FIXED F, 3D STEP",
+      "origen": "https://search.abb.com/library/Download.aspx?DocumentID=1SDH001295R0483&LanguageCode=en&DocumentPartId=&Action=Launch",
+      "buscado_en": "https://library.abb.com (búsqueda pública)",
+      "bajado": "2026-11-19",
+      "bytes": 23702284,
+      "sha256": "9d952cc13ec988b2e02a9fab787b8058d0151a511914591991a9f04dd31d2f44",
+      "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+    },
+    {
+      "archivo": "cad/abb/xt1_3p/1SDH001295R0008_XT1 3p FIXED F.stp",
+      "documento": "XT1 3p FIXED F, 3D STEP",
+      "origen": "https://search.abb.com/library/Download.aspx?DocumentID=1SDH001295R0008&LanguageCode=en&DocumentPartId=&Action=Launch",
+      "buscado_en": "https://library.abb.com (búsqueda pública)",
+      "bajado": "2026-11-19",
+      "bytes": 18982346,
+      "sha256": "ae1820ece7f855032ecf3d6c9a773da75fce4343a1de982b160e67cec18cbb39",
+      "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+    },
+    {
+      "archivo": "cad/abb/t4/0000018707.zip",
+      "documento": "T4 4 poles Fixed (IGS dentro del zip)",
+      "origen": "https://library.abb.com (resultado 'T4 4p F'; descarga 0000018707.zip)",
+      "buscado_en": "https://library.abb.com (búsqueda pública)",
+      "bajado": "2026-11-19",
+      "bytes": 95075,
+      "sha256": "e7cbd90d733f458a0e6e18b91ec9bcbbfbc850c00911fe6c0dc3bd59a8c21544",
+      "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+    },
+    {
+      "archivo": "cad/abb/t4/x/T4 4 poles Fixed.igs",
+      "documento": "T4 4 poles Fixed, IGES (extraído del zip)",
+      "origen": "cad/abb/t4/0000018707.zip",
+      "buscado_en": "https://library.abb.com (búsqueda pública)",
+      "bajado": "2026-11-19",
+      "bytes": 902340,
+      "sha256": "8b04a924a0634b6d6d3015778cc59ec69757c6cdaa24bf3fce11000a6581d075",
+      "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+    },
+    {
+      "archivo": "cad/abb/t2/0000018689.zip",
+      "documento": "T2 fixed 3 poles F (IGS dentro del zip)",
+      "origen": "https://library.abb.com (resultado 'T2 3p F'; descarga 0000018689.zip)",
+      "buscado_en": "https://library.abb.com (búsqueda pública)",
+      "bajado": "2026-11-19",
+      "bytes": 195737,
+      "sha256": "33f22aba7e34910e6a159403f24c4e731439451bf90e1ac9680996917ea0fbce",
+      "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+    },
+    {
+      "archivo": "cad/abb/t2/x/T2_fixed_3poles_F.igs",
+      "documento": "T2 fixed 3 poles F, IGES (extraído del zip)",
+      "origen": "cad/abb/t2/0000018689.zip",
+      "buscado_en": "https://library.abb.com (búsqueda pública)",
+      "bajado": "2026-11-19",
+      "bytes": 1576908,
+      "sha256": "33c9b60fd6fc7b4bbb6a9c332e4ec49d108406508380f83ea018983bfb4bab61",
+      "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+    },
+    {
+      "archivo": "cad/abb/s800/2D DXF S800 1-4 poles.zip",
+      "documento": "2D DXF S800 1-4 poles",
+      "origen": "https://search.abb.com/library/Download.aspx?DocumentID=9AKK106930A3272&LanguageCode=en&DocumentPartId=&Action=Launch",
+      "buscado_en": "https://library.abb.com (búsqueda pública)",
+      "bajado": "2026-11-19",
+      "bytes": 257096,
+      "sha256": "7bdcc7b9bd8d0eb0420f073dbe04ff8ed7d8acb1a75ea05c55118cfe24ba35cf",
+      "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+    },
+    {
+      "archivo": "cad/abb/s800/x/2D S800 3pole drawing.DXF",
+      "documento": "S800 3 polos, DXF 2D (extraído del zip)",
+      "origen": "cad/abb/s800/2D DXF S800 1-4 poles.zip",
+      "buscado_en": "https://library.abb.com (búsqueda pública)",
+      "bajado": "2026-11-19",
+      "bytes": 646092,
+      "sha256": "5f43e79864619363c3a882bcd9b8fc08f99b884df0f9c4e53a9ed0901f0fc27e",
+      "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+    },
+    {
+      "archivo": "cad/abb/ot63_80/OT63-80F3.igs",
+      "documento": "OT63-80F3, IGES",
+      "origen": "https://library.abb.com (búsqueda pública 'OT63F3')",
+      "buscado_en": "https://library.abb.com (búsqueda pública)",
+      "bajado": "2026-11-19",
+      "bytes": 1198266,
+      "sha256": "f90a2439decc25243a99f7cc0938df2b9df206e493be3780e0d3abd7991986cd",
+      "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+    },
+    {
+      "archivo": "cad/abb/ot63_80/ot63-80f4n2.stp",
+      "documento": "OT63-80F4N2, STEP",
+      "origen": "https://library.abb.com (búsqueda pública 'OT63F4')",
+      "buscado_en": "https://library.abb.com (búsqueda pública)",
+      "bajado": "2026-11-19",
+      "bytes": 7641141,
+      "sha256": "bc18594195d3ea06cffc166c692f881e34abbca303529fcf12e7509b5838e51e",
+      "usado_en": "datos/frentes_cad.json (work/proyectar_cad.py) y datos/catalogo_abb.json -> deviceShells"
+    },
+    {
+      "fecha": "2026-11-20",
+      "tema": "Frente del S290 (S293-C80) desde el catálogo ABB",
+      "urls": [
+        "https://library.abb.com/r?q=GHS2932001R0804",
+        "https://search.abb.com/library/Download.aspx?DocumentID=ABB%2FNN31%2F05_04&LanguageCode=cs&DocumentPartId=&Action=Launch"
+      ],
+      "archivo": "cad/abb/s290/ABB_NN31_05_04_p6-4_rozmery_S280_S290.pdf (página 6/4 del catálogo ABB NN31/05_04, 346 págs., 6,9 MB, descargado con el navegador de la PC del usuario porque ABB Library no se alcanza desde el espacio de trabajo)",
+      "resultado": "S290 no tiene CAD 2D/3D en ABB Library; el catálogo trae el dibujo vectorial de medidas (1P 26,25 / 2P 52,5 / 3P 78,75 / 4P 105 × 90 mm). Código de pedido del S293-C80 confirmado en ABB Library: GHS2932001R0804. El catálogo actual 2CSC400002D0913 (IT, 2025) ya no incluye el S290.",
+      "usado_en": "work/proyectar_cad.py (tipo pdf) → datos/frentes_cad.json abb.s290.3p.front; datos/apariencias_abb.json"
+    }
+  ],
+  "consultadas": [
+    {
+      "fecha": "2026-11-18",
+      "tema": "Bornera equipotencial PE (DBL125) y topes",
+      "urls": [
+        "https://www.tti.com/content/dam/tti-commons/supplier/te-connectivity/doc/te-connectivity-1snl-dbl-power-distribution-blocks-product-catalog-ap.pdf",
+        "https://th.rs-online.com/web/p/distribution-blocks/1003920",
+        "https://www.gexpro.com/p/1017877/entrelec/terminal-block-distribution-gray-125a-feed-through-282mm-w/888614490413/1snl312510r0000",
+        "https://www.te.com/en/about-te/news-center/abb-entrelec-news.html",
+        "https://www.electricautomationnetwork.com/PDF/ENGLISH/ENTRELEC/1SNA399903R0200.pdf"
+      ],
+      "nota": "sólo consulta web (no se descargaron archivos); datos volcados en datos/accesorios_abb.json → earthTerminals te-dbl125-pe"
+    },
+    {
+      "fecha": "2026-11-18",
+      "tema": "Bloque de distribución BRT125A",
+      "urls": [
+        "https://www.farnell.com/datasheets/2917447.pdf",
+        "https://ph.rs-online.com/web/p/distribution-blocks/4132331",
+        "https://www.rapidonline.com/abb-017953523-four-pole-distribution-block-125a-28-3489"
+      ],
+      "nota": "sólo consulta web; datos en datos/accesorios_abb.json → distributionBlocks abb-brt125a"
+    },
+    {
+      "fecha": "2026-11-18",
+      "tema": "Códigos de pedido de los equipos de los unifilares de prueba (S200/S200L/S200M/S800/F204/T2S/OT)",
+      "urls": [
+        "https://automation-warehouse.com/products/2cds241801r0204",
+        "https://cdn.erply.com/files/396198/2CSF204001R1250.pdf",
+        "https://docs.rs-online.com/5e74/A700000015162099.pdf",
+        "https://elettroclimashop.com/cdn/4225250.pdf",
+        "https://empower.abb.com/ecatalog/ec/EN_NA/p/2CCS864001R0324",
+        "https://ie.rs-online.com/web/p/mcbs/7467769",
+        "https://no.rs-online.com/web/p/mcbs/7467719",
+        "https://onninen.pl/en/product/ABB-Overcurrent-circuit-breaker-4P-C-characteristic-40A-10kA-AC-S204M-C40-2CDS274001R0404-560664",
+        "https://plc-direct.com/products/2ccs864001r0824",
+        "https://plc-direct.com/products/2cds241801r0104",
+        "https://plc-direct.com/products/2cds241801r0164",
+        "https://plc-direct.com/products/s804n-c20",
+        "https://se.rs-online.com/web/p/mcbs/5355995",
+        "https://uk.rs-online.com/web/p/mcbs/1833669",
+        "https://uk.rs-online.com/web/p/mcbs/7467766",
+        "https://uk.rs-online.com/web/p/mcbs/7467778",
+        "https://uk.rs-online.com/web/p/mcbs/7467784",
+        "https://www.electricautomationnetwork.com/en/abb/t2s-160-pr221ds-ls-in160a-4p-f-f-abb-t2s160-1sda051142r1",
+        "https://www.electrisa.com/cdn/shop/files/14192448000.PDF"
+      ],
+      "nota": "sólo consulta web; datos volcados en datos/codigos_pedido_abb.json"
+    },
+    {
+      "fecha": "2026-11-19",
+      "tema": "Medidas S290 (S293, sin CAD) y S803 (lecciones 11 y 12 de docs/LECCIONES.md)",
+      "urls": [
+        "https://datasheet.octopart.com/S293-C100-ABB-Control-datasheet-62100593.pdf",
+        "https://manualmachine.com/abb/s292c80/16896891-data-sheet",
+        "https://files.kempstoncontrols.com/files/7bbef7da969ae43c8e0c7babd504edd4/2CCS863001R0804",
+        "https://www.farnell.com/datasheets/2912218.pdf"
+      ],
+      "resultado": "S293 (S290 3P): 78,8 × 90 × 70 mm; S292: 52,5 × 90 × 70; S803S/B/C-C80: 81 × 95 × 82,5 mm (4,5 módulos)",
+      "usado_en": "datos/catalogo_abb.json -> abb.s290.3p.front, abb.s803.3p.front"
+    },
+    {
+      "fecha": "2026-11-23",
+      "tema": "Códigos de pedido faltantes: S200/S200M/S200L/S200P/SN201, S800N/S, F202, Tmax XT1/XT2/XT3/T2/T4, Emax 2 E2.2, OT",
+      "urls": [
+        "https://automation-warehouse.com/products/2cds241801r0254",
+        "https://baoanjsc.com.vn/TaiLieu/miniature-circuit-breakers-mcb-c-characteristic-abb-S200-M-C-series-CATALOG-9168.pdf",
+        "https://docs.rs-online.com/0b81/A700000015164880.pdf",
+        "https://docs.rs-online.com/5baf/A700000015153647.pdf",
+        "https://docs.rs-online.com/8e38/A700000015363443.pdf",
+        "https://docs.rs-online.com/c6b2/A700000015363692.pdf",
+        "https://docs.rs-online.com/e68f/0900766b816cd175.pdf",
+        "https://empower.abb.com/ecatalog/ec/EN_CA/p/1SDA067435R1",
+        "https://empower.abb.com/ecatalog/ec/EN_CA/p/1SDA067734R1",
+        "https://empower.abb.com/ecatalog/ec/EN_CA/p/1SDA068228R1",
+        "https://empower.abb.com/ecatalog/ec/EN_CA/p/2CCS863001R0634",
+        "https://empower.abb.com/ecatalog/ec/EN_NA/p/1SDA066817R1",
+        "https://empower.abb.com/ecatalog/ec/EN_NA/p/2CSF202001R1250",
+        "https://empower.abb.com/ecatalog/ec/FR_CA/p/1SDA067443R1",
+        "https://gzhls.at/blob/ldb/3/0/8/8/06aad5c0c4ca060efb11736bf4a6cb50db6f.pdf",
+        "https://new.abb.com/docs/librariesprovider63/niederspannungsprodukte/01-sicherungsautomaten.pdf",
+        "https://new.abb.com/docs/librariesprovider63/niederspannungsprodukte/downloads-installationsger%C3%A4te-01.2022/t2_k1.pdf?sfvrsn=7785ef09_2",
+        "https://new.abb.com/products/1SCA022727R8000/ot400e04-switch-disconnector",
+        "https://new.abb.com/products/1SDA054129R1/t4s-320-pr221ds-ls-i-in-320-4p-f-f",
+        "https://no.rs-online.com/web/p/mcbs/7467810",
+        "https://nz.rs-online.com/web/p/mcbs/5354289",
+        "https://nz.rs-online.com/web/p/mcbs/7467813",
+        "https://onninen.no/en/abb-automat-s201m-c-10-na-2cds271103r0104/p/GAG367",
+        "https://onninen.no/en/abb-automat-s204m-c-32-2cds274001r0324/p/GAG421",
+        "https://onninen.no/en/abb-effektbryter-xt1c-160-tmd-r80-4p-f-f/p/CPJ152",
+        "https://plc-direct.com/en-se/products/2cds284001r0254",
+        "https://shop.in.abb.com/1sca022720r0910/ot250e04-switch-disconnector.html",
+        "https://shop.tecogrp.com/?p=15986",
+        "https://shop.tecogrp.com/product/xt1n-160-tmd-80-800-4p-f-f/",
+        "https://tlauk.net/document/65795/1SDA068227R1.pdf",
+        "https://uk.rs-online.com/web/p/isolator-switches/6867294",
+        "https://uk.rs-online.com/web/p/mcbs/0140560",
+        "https://uk.rs-online.com/web/p/mcbs/5354295",
+        "https://uk.rs-online.com/web/p/mcbs/5354302",
+        "https://uk.rs-online.com/web/p/mcbs/5354324",
+        "https://uk.rs-online.com/web/p/mcbs/5354346?gb=s",
+        "https://uk.rs-online.com/web/p/mcbs/7467817",
+        "https://uk.rs-online.com/web/p/non-fused-switch-disconnectors/6867284/",
+        "https://www.abbconnect.nl/Details/Index.aspx/2CSS245101R0165?languageCode=nl&country=nl&ShowBorder=True",
+        "https://www.carltonbates.com/static/catalog/products/images/PDF/OT40F3.pdf",
+        "https://www.electricautomationnetwork.com/en/abb/miniature-circuit-breaker-s200-2p-c-20-a-abb-s201-c20na-2cds251103r0204",
+        "https://www.electricautomationnetwork.com/en/abb/t2s-160-pr221ds-ls-in160a-3p-f-f-abb-t2s160-1sda051137r1",
+        "https://www.novaut.com/en/residential-third/129916-2cds251103r0104-abb.html",
+        "https://www.onninen.no/en/abb-automat-s804n-c32-2ccs894001r0324/p/GAR194",
+        "https://www.onninen.no/en/abb-automat-s804s-c25-2ccs864001r0254/p/GAQ725",
+        "https://www.polimet.com.pl/zamienniki/nowa-seria-wylacznikow-nadmiarowo-pradowych-s300p",
+        "https://www.voltimum.co.uk/pa/product/abb/s204-c40-miniature-circuit-breaker-4p-c-40",
+        "https://www.voltimum.co.uk/product-details/roHjcRRq/abb/xt1s-160-tmd-160-1600-4p-f-f-inn50"
+      ],
+      "nota": "sólo consulta web; cada código aparece junto a su modelo en la fuente; datos en datos/codigos_pedido_abb.json"
+    }
+  ]
 }

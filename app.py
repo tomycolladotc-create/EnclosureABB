@@ -269,6 +269,21 @@ class Handler(BaseHTTPRequestHandler):
                 return None
             except (ValueError, FileNotFoundError, KeyError) as exc:
                 return self.send_data(422, {"error": str(exc)})
+        if route == "/api/export/equipamiento":  # Excel de equipamiento eléctrico de los tableros elegidos
+            try:
+                from excel_equipamiento import build_xlsx
+                req = json.loads(blob)
+                projects = {}
+                for pid in req.get("projects", []):
+                    p = proyectos.load(pid)
+                    projects[p.get("project", pid)] = p
+                if not projects:
+                    return self.send_data(422, {"error": "Elegí al menos un tablero."})
+                catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
+                return self.send_data(200, build_xlsx(projects, catalog),
+                                      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            except (ValueError, FileNotFoundError, KeyError) as exc:
+                return self.send_data(422, {"error": str(exc)})
         if route == "/api/export-dxf":
             try:
                 project = json.loads(blob)

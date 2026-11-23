@@ -1,5 +1,5 @@
 {
-  "_ayuda": "Códigos de pedido ABB por modelo (clave = modelo sin espacios, coma decimal → punto, mayúsculas) y cantidad de polos. Sólo códigos verificados en una ficha o distribuidor que muestra el código ABB; lo que no se pudo verificar queda en 'sinVerificar' y la lista de materiales lo marca FALTA CÓDIGO.",
+  "_ayuda": "Códigos de pedido ABB por modelo (clave = modelo sin espacios, coma decimal → punto, mayúsculas) y cantidad de polos. Sólo códigos verificados en una ficha o distribuidor que muestra el código ABB; lo que no se pudo verificar queda en 'sinVerificar' y la lista de materiales lo marca FALTA CÓDIGO. Un ítem con 'confirm' tiene código verificado pero el unifilar deja una variante abierta: la lista lo marca «a confirmar» con ese texto.",
   "items": [
     {
       "model": "S201L-C10NA",
@@ -189,25 +189,436 @@
       "source": "https://www.onninen.no/en/abb-automat-s201m-b-16-na-2cds271103r0165/p/GAG364",
       "status": "verificado (ficha/distribuidor con el código ABB)",
       "note": null
+    },
+    {
+      "model": "S204-C32",
+      "poles": 4,
+      "orderCode": "2CDS254001R0324",
+      "descripcion": "S200 4P C 32 A",
+      "source": "https://uk.rs-online.com/web/p/mcbs/7467817",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S204-C25",
+      "poles": 4,
+      "orderCode": "2CDS254001R0254",
+      "descripcion": "S200 4P C 25 A",
+      "source": "https://nz.rs-online.com/web/p/mcbs/7467813",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S204-C20",
+      "poles": 4,
+      "orderCode": "2CDS254001R0204",
+      "descripcion": "S200 4P C 20 A",
+      "source": "https://no.rs-online.com/web/p/mcbs/7467810",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S204-C40",
+      "poles": 4,
+      "orderCode": "2CDS254001R0404",
+      "descripcion": "S200 4P C 40 A",
+      "source": "https://www.voltimum.co.uk/pa/product/abb/s204-c40-miniature-circuit-breaker-4p-c-40",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S804N-C32",
+      "poles": 4,
+      "orderCode": "2CCS894001R0324",
+      "descripcion": "S800N 4P C 32 A (36 kA)",
+      "source": "https://www.onninen.no/en/abb-automat-s804n-c32-2ccs894001r0324/p/GAR194",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S804N-C40",
+      "poles": 4,
+      "orderCode": "2CCS894001R0404",
+      "descripcion": "S800N 4P C 40 A (36 kA)",
+      "source": "https://uk.rs-online.com/web/p/mcbs/0140560",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S203M-C16",
+      "poles": 3,
+      "orderCode": "2CDS273001R0164",
+      "descripcion": "S200M 3P C 16 A",
+      "source": "https://nz.rs-online.com/web/p/mcbs/5354289",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S203M-C20",
+      "poles": 3,
+      "orderCode": "2CDS273001R0204",
+      "descripcion": "S200M 3P C 20 A",
+      "source": "https://uk.rs-online.com/web/p/mcbs/5354295",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S203M-C25",
+      "poles": 3,
+      "orderCode": "2CDS273001R0254",
+      "descripcion": "S200M 3P C 25 A",
+      "source": "https://uk.rs-online.com/web/p/mcbs/5354302",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S203M-C40",
+      "poles": 3,
+      "orderCode": "2CDS273001R0404",
+      "descripcion": "S200M 3P C 40 A",
+      "source": "https://uk.rs-online.com/web/p/mcbs/5354324",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S203M-C50",
+      "poles": 3,
+      "orderCode": "2CDS273001R0504",
+      "descripcion": "S200M 3P C 50 A",
+      "source": "https://uk.rs-online.com/web/p/mcbs/5354346?gb=s",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S204M-C32",
+      "poles": 4,
+      "orderCode": "2CDS274001R0324",
+      "descripcion": "S200M 4P C 32 A",
+      "source": "https://onninen.no/en/abb-automat-s204m-c-32-2cds274001r0324/p/GAG421",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S201-B16NA",
+      "poles": 2,
+      "orderCode": "2CDS251103R0165",
+      "descripcion": "S200 1P+N B 16 A",
+      "source": "https://gzhls.at/blob/ldb/3/0/8/8/06aad5c0c4ca060efb11736bf4a6cb50db6f.pdf",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S201-C20NA",
+      "poles": 2,
+      "orderCode": "2CDS251103R0204",
+      "descripcion": "S200 1P+N C 20 A",
+      "source": "https://www.electricautomationnetwork.com/en/abb/miniature-circuit-breaker-s200-2p-c-20-a-abb-s201-c20na-2cds251103r0204",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S201L-C25NA",
+      "poles": 2,
+      "orderCode": "2CDS241801R0254",
+      "descripcion": "S200L 1P+N C 25 A",
+      "source": "https://automation-warehouse.com/products/2cds241801r0254",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S201M-C10NA",
+      "poles": 2,
+      "orderCode": "2CDS271103R0104",
+      "descripcion": "S200M 1P+N C 10 A",
+      "source": "https://onninen.no/en/abb-automat-s201m-c-10-na-2cds271103r0104/p/GAG367",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S201M-C20NA",
+      "poles": 2,
+      "orderCode": "2CDS271103R0204",
+      "descripcion": "S200M 1P+N C 20 A",
+      "source": "https://baoanjsc.com.vn/TaiLieu/miniature-circuit-breakers-mcb-c-characteristic-abb-S200-M-C-series-CATALOG-9168.pdf",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S204L-C16",
+      "poles": 4,
+      "orderCode": "2CDS244701R0164",
+      "descripcion": "S200L 4P C 16 A",
+      "source": "https://docs.rs-online.com/e68f/0900766b816cd175.pdf",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S204P-C25",
+      "poles": 4,
+      "orderCode": "2CDS284001R0254",
+      "descripcion": "S200P 4P C 25 A",
+      "source": "https://plc-direct.com/en-se/products/2cds284001r0254",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S803S-C63",
+      "poles": 3,
+      "orderCode": "2CCS863001R0634",
+      "descripcion": "S800S 3P C 63 A (50 kA)",
+      "source": "https://empower.abb.com/ecatalog/ec/EN_CA/p/2CCS863001R0634",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S804S-C25",
+      "poles": 4,
+      "orderCode": "2CCS864001R0254",
+      "descripcion": "S800S 4P C 25 A (50 kA)",
+      "source": "https://www.onninen.no/en/abb-automat-s804s-c25-2ccs864001r0254/p/GAQ725",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S201-B10NA",
+      "poles": 2,
+      "orderCode": "2CDS251103R0105",
+      "descripcion": "S200 1P+N B 10 A",
+      "source": "https://new.abb.com/docs/librariesprovider63/niederspannungsprodukte/downloads-installationsger%C3%A4te-01.2022/t2_k1.pdf?sfvrsn=7785ef09_2",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S201P-B6NA",
+      "poles": 2,
+      "orderCode": "2CDS281103R0065",
+      "descripcion": "S200P 1P+N B 6 A",
+      "source": "https://new.abb.com/docs/librariesprovider63/niederspannungsprodukte/01-sicherungsautomaten.pdf",
+      "note": "ABB lo discontinuó; reemplazo S301P-B6NA 2CDS381103R0065 (https://www.polimet.com.pl/zamienniki/nowa-seria-wylacznikow-nadmiarowo-pradowych-s300p)",
+      "confirm": "ABB lo discontinuó: si no hay stock, el reemplazo es S301P-B6NA 2CDS381103R0065",
+      "status": "verificado (ficha/distribuidor con el código ABB)"
+    },
+    {
+      "model": "F202AC-25/0.03",
+      "poles": 2,
+      "orderCode": "2CSF202001R1250",
+      "descripcion": "Diferencial 2P tipo AC 25 A 30 mA",
+      "source": "https://empower.abb.com/ecatalog/ec/EN_NA/p/2CSF202001R1250",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "XT1B160TMD80-800",
+      "poles": 4,
+      "orderCode": "1SDA066817R1",
+      "descripcion": "Tmax XT1B 160 TMD 80-800 4p F F (fijo, terminales delanteros)",
+      "source": "https://empower.abb.com/ecatalog/ec/EN_NA/p/1SDA066817R1",
+      "note": "variante fija con terminales delanteros (F F); el unifilar no indica otra",
+      "status": "verificado (ficha/distribuidor con el código ABB)"
+    },
+    {
+      "model": "XT1N160TMD80-800",
+      "poles": 4,
+      "orderCode": "1SDA067423R1",
+      "descripcion": "Tmax XT1N 160 TMD 80-800 4p F F (fijo, terminales delanteros)",
+      "source": "https://shop.tecogrp.com/product/xt1n-160-tmd-80-800-4p-f-f/",
+      "note": "variante fija con terminales delanteros (F F); el unifilar no indica otra",
+      "status": "verificado (ficha/distribuidor con el código ABB)"
+    },
+    {
+      "model": "XT1C160TMD80-800",
+      "poles": 4,
+      "orderCode": "1SDA067405R1",
+      "descripcion": "Tmax XT1C 160 TMD 80-800 4p F F (fijo, terminales delanteros)",
+      "source": "https://onninen.no/en/abb-effektbryter-xt1c-160-tmd-r80-4p-f-f/p/CPJ152",
+      "note": "variante fija con terminales delanteros (F F); el unifilar no indica otra",
+      "status": "verificado (ficha/distribuidor con el código ABB)"
+    },
+    {
+      "model": "XT1S160TMD125-1250N=50%",
+      "poles": 4,
+      "orderCode": "1SDA067443R1",
+      "descripcion": "Tmax XT1S 160 TMD 125-1250 4p F F InN=50%",
+      "source": "https://empower.abb.com/ecatalog/ec/FR_CA/p/1SDA067443R1",
+      "note": "variante fija con terminales delanteros (F F); el unifilar no indica otra",
+      "status": "verificado (ficha/distribuidor con el código ABB)"
+    },
+    {
+      "model": "XT1S160TMD125-1250",
+      "poles": 3,
+      "orderCode": "1SDA067435R1",
+      "descripcion": "Tmax XT1S 160 TMD 125-1250 3p F F",
+      "source": "https://empower.abb.com/ecatalog/ec/EN_CA/p/1SDA067435R1",
+      "note": "variante fija con terminales delanteros (F F); el unifilar no indica otra",
+      "status": "verificado (ficha/distribuidor con el código ABB)"
+    },
+    {
+      "model": "XT1S160TMD160-1600N=50%",
+      "poles": 4,
+      "orderCode": "1SDA067444R1",
+      "descripcion": "Tmax XT1S 160 TMD 160-1600 4p F F InN=50%",
+      "source": "https://www.voltimum.co.uk/product-details/roHjcRRq/abb/xt1s-160-tmd-160-1600-4p-f-f-inn50",
+      "note": "variante fija con terminales delanteros (F F); el unifilar no indica otra",
+      "status": "verificado (ficha/distribuidor con el código ABB)"
+    },
+    {
+      "model": "XT2N160TMG80-240",
+      "poles": 4,
+      "orderCode": "1SDA067734R1",
+      "descripcion": "Tmax XT2N 160 TMG 80-240 4p F F",
+      "source": "https://empower.abb.com/ecatalog/ec/EN_CA/p/1SDA067734R1",
+      "note": "variante fija con terminales delanteros (F F); el unifilar no indica otra",
+      "status": "verificado (ficha/distribuidor con el código ABB)"
+    },
+    {
+      "model": "XT3S250TMD200-2000N=50%",
+      "poles": 4,
+      "orderCode": "1SDA068227R1",
+      "descripcion": "Tmax XT3S 250 TMD 200-2000 4p F F InN=50%",
+      "source": "https://tlauk.net/document/65795/1SDA068227R1.pdf",
+      "note": "variante fija con terminales delanteros (F F); el unifilar no indica otra",
+      "status": "verificado (ficha/distribuidor con el código ABB)"
+    },
+    {
+      "model": "XT3S250TMD250-2500N=50%",
+      "poles": 4,
+      "orderCode": "1SDA068228R1",
+      "descripcion": "Tmax XT3S 250 TMD 250-2500 4p F F InN=50%",
+      "source": "https://empower.abb.com/ecatalog/ec/EN_CA/p/1SDA068228R1",
+      "note": "variante fija con terminales delanteros (F F); el unifilar no indica otra",
+      "status": "verificado (ficha/distribuidor con el código ABB)"
+    },
+    {
+      "model": "T2S160PR221DS-LS160A",
+      "poles": 3,
+      "orderCode": "1SDA051137R1",
+      "descripcion": "Tmax T2S 160 PR221DS-LS In=160 A 3p F F",
+      "source": "https://www.electricautomationnetwork.com/en/abb/t2s-160-pr221ds-ls-in160a-3p-f-f-abb-t2s160-1sda051137r1",
+      "note": "variante fija con terminales delanteros (F F); el unifilar no indica otra",
+      "status": "verificado (ficha/distribuidor con el código ABB)"
+    },
+    {
+      "model": "E2.2N2000EkipDipLI2000",
+      "poles": 4,
+      "orderCode": "1SDA071661R1",
+      "descripcion": "Emax 2 E2.2N 2000 Ekip Dip LI 4p F HR (fijo, terminales posteriores horizontales)",
+      "source": "https://shop.tecogrp.com/?p=15986",
+      "note": "versión fija F HR; si se prefiere extraíble (WMP) es otro código: confirmar antes de comprar",
+      "confirm": "se toma la versión fija con terminales posteriores horizontales (F HR); si el tablero lleva el interruptor extraíble (WMP) el código es otro",
+      "status": "verificado (ficha/distribuidor con el código ABB)"
+    },
+    {
+      "model": "OT125F3",
+      "poles": 3,
+      "orderCode": "1SCA105033R1001",
+      "descripcion": "Seccionador bajo carga OT125F3 3P 125 A (montaje en base)",
+      "source": "https://docs.rs-online.com/c6b2/A700000015363692.pdf",
+      "note": "manija y eje se piden aparte (ver renglón Accionamiento OT)",
+      "status": "verificado (ficha/distribuidor con el código ABB)"
+    },
+    {
+      "model": "OT200E04",
+      "poles": 4,
+      "orderCode": "1SCA022713R4850",
+      "descripcion": "Seccionador bajo carga OT200E04 4P 200 A (montaje en base, incluye bulones de terminal)",
+      "source": "https://docs.rs-online.com/5baf/A700000015153647.pdf",
+      "note": "manija y eje no incluidos (ver renglón Accionamiento OT)",
+      "status": "verificado (ficha/distribuidor con el código ABB)"
+    },
+    {
+      "model": "OT63F3",
+      "poles": 3,
+      "orderCode": "1SCA105332R1001",
+      "descripcion": "Seccionador bajo carga OT63F3 3P 63 A (montaje en base/riel DIN)",
+      "source": "https://docs.rs-online.com/8e38/A700000015363443.pdf",
+      "note": "manija y eje no incluidos (ver renglón Accionamiento OT)",
+      "status": "verificado (ficha/distribuidor con el código ABB)"
+    },
+    {
+      "model": "OT160EV04",
+      "poles": 4,
+      "orderCode": "1SCA120518R1001",
+      "descripcion": "Seccionador bajo carga OT160EV04 4P 160 A (montaje en base, incluye bulones de terminal)",
+      "source": "https://docs.rs-online.com/0b81/A700000015164880.pdf",
+      "note": "manija y eje no incluidos (ver renglón Accionamiento OT)",
+      "status": "verificado (ficha/distribuidor con el código ABB)"
+    },
+    {
+      "model": "OT250E04",
+      "poles": 4,
+      "orderCode": "1SCA022720R0910",
+      "descripcion": "Seccionador bajo carga OT250E04 4P 250 A (montaje en base, incluye bulones de terminal)",
+      "source": "https://shop.in.abb.com/1sca022720r0910/ot250e04-switch-disconnector.html",
+      "note": "manija y eje no incluidos (ver renglón Accionamiento OT)",
+      "status": "verificado (ficha/distribuidor con el código ABB)"
+    },
+    {
+      "model": "OT400E04",
+      "poles": 4,
+      "orderCode": "1SCA022727R8000",
+      "descripcion": "Seccionador bajo carga OT400E04 4P 400 A (montaje en base, incluye bulones de terminal)",
+      "source": "https://new.abb.com/products/1SCA022727R8000/ot400e04-switch-disconnector",
+      "note": "manija y eje no incluidos (ver renglón Accionamiento OT)",
+      "status": "verificado (ficha/distribuidor con el código ABB)"
+    },
+    {
+      "model": "T4S320PR221DS-LS/I320A",
+      "poles": 4,
+      "orderCode": "1SDA054129R1",
+      "descripcion": "Tmax T4S 320 PR221DS-LS/I In=320 A 4p F F",
+      "source": "https://new.abb.com/products/1SDA054129R1/t4s-320-pr221ds-ls-i-in-320-4p-f-f",
+      "note": "variante fija con terminales delanteros (F F); el unifilar no indica otra",
+      "status": "verificado (ficha/distribuidor con el código ABB)"
+    },
+    {
+      "model": "SN201L-B16",
+      "poles": 2,
+      "orderCode": "2CSS245101R0165",
+      "descripcion": "SN201 L 1P+N B 16 A (4,5 kA, 1 módulo)",
+      "source": "https://www.abbconnect.nl/Details/Index.aspx/2CSS245101R0165?languageCode=nl&country=nl&ShowBorder=True",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "OT80F4",
+      "poles": 4,
+      "orderCode": "1SCA105413R1001",
+      "descripcion": "Seccionador bajo carga OT80F4N2 4P 80 A",
+      "source": "https://uk.rs-online.com/web/p/non-fused-switch-disconnectors/6867284/",
+      "note": "manija y eje no incluidos (ver renglón Accionamiento OT)",
+      "confirm": "el unifilar dice «OT80F4» sin sufijo: se toma el seccionador OT80F4N2 (4 polos, el 4.º conmuta el neutro); si en realidad es conmutador de redes (sufijo C) el código es otro",
+      "status": "verificado (ficha/distribuidor con el código ABB)"
+    },
+    {
+      "model": "OT125F4",
+      "poles": 4,
+      "orderCode": "1SCA105051R1001",
+      "descripcion": "Seccionador bajo carga OT125F4N2 4P 125 A",
+      "source": "https://uk.rs-online.com/web/p/isolator-switches/6867294",
+      "note": "manija y eje no incluidos (ver renglón Accionamiento OT)",
+      "confirm": "el unifilar dice «OT125F4» sin sufijo: se toma el seccionador OT125F4N2 (4 polos, el 4.º conmuta el neutro); si en realidad es conmutador de redes (sufijo C) el código es otro",
+      "status": "verificado (ficha/distribuidor con el código ABB)"
+    },
+    {
+      "model": "OT100F4",
+      "poles": 4,
+      "orderCode": "1SCA105018R1001",
+      "descripcion": "Seccionador bajo carga OT100F4N2 4P 100 A",
+      "source": "https://www.carltonbates.com/static/catalog/products/images/PDF/OT40F3.pdf",
+      "note": "manija y eje no incluidos (ver renglón Accionamiento OT)",
+      "confirm": "el unifilar dice «OT100F4» sin sufijo: se toma el seccionador OT100F4N2 (4 polos, el 4.º conmuta el neutro); si en realidad es conmutador de redes (sufijo C) el código es otro",
+      "status": "verificado (ficha/distribuidor con el código ABB)"
     }
   ],
   "sinVerificar": [
     {
-      "model": "OT100F4",
-      "motivo": "el unifilar no indica la variante (OT100F4N2 1SCA105018R1001 seccionador / OT100F4C 1SCA105019R1001 conmutador): definir antes de comprar; manija y eje no incluidos en el OT100F4N2 (pedirlos aparte)"
-    },
-    {
-      "model": "S293-C80",
-      "motivo": "no se encontró ficha con el código de pedido"
-    },
-    {
-      "model": "SN201L-B16",
-      "motivo": "no se encontró ficha con el código de pedido"
-    },
-    {
       "model": "F204-SXAC-40/0.3",
       "motivo": "designación ambigua en el unifilar ('SX'): F204 AC-40/0.3 es 2CSF204001R3400 y F204 A S-40/0.3 (selectivo) es 2CSF204201R3400; confirmar cuál"
+    },
+    {
+      "model": "S 251 Na C 10",
+      "motivo": "el unifilar dice «S 251 Na C 10» (1P+N, C 10 A, 6 kA) y ese modelo no figura en el catálogo vigente de ABB; el equivalente S200 sería S201-C10NA 2CDS251103R0104: confirmar con el proyectista antes de comprar"
     }
   ],
-  "fuente": "consulta web 2026-11-18 (ver datos/fuentes_descargadas.json)"
+  "fuente": "consulta web 2026-11-18 y 2026-11-23 (ver datos/fuentes_descargadas.json)"
 }

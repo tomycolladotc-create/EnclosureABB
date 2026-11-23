@@ -54,7 +54,7 @@
 
 <main id="screen-export" class="screen"><div class="page narrow">
 <div class="page-head"><div><h1>Exportar <span id="exportProjectName"></span></h1><p id="exportSummary" class="muted"></p></div><button class="secondary" data-go="editor">Volver</button></div>
-<div class="formats"><button id="exportDxf" class="format main"><strong>DXF</strong><span>AutoCAD · bloques, capas y atributos</span></button><button id="exportPdf" class="format"><strong>PDF</strong><span>Imprimir o enviar</span></button><button id="exportPng" class="format"><strong>PNG</strong><span>Imagen frontal</span></button><button id="exportSvg" class="format"><strong>SVG</strong><span>Vectorial editable</span></button><button id="exportPlano" class="format"><strong>Plano de fabricación</strong><span>Tu formato · unifilar + topográfico</span></button></div>
+<div class="formats"><button id="exportDxf" class="format main"><strong>DXF</strong><span>AutoCAD · bloques, capas y atributos</span></button><button id="exportPdf" class="format"><strong>PDF</strong><span>Imprimir o enviar</span></button><button id="exportPng" class="format"><strong>PNG</strong><span>Imagen frontal</span></button><button id="exportSvg" class="format"><strong>SVG</strong><span>Vectorial editable</span></button><button id="exportPlano" class="format"><strong>Plano de fabricación</strong><span>Tu formato · unifilar + topográfico</span></button><button id="exportEquip" class="format"><strong>Excel de equipamiento</strong><span>Códigos, cantidades, circuitos y tableros</span></button></div>
 <div class="exportview"><span>Vista para PDF, PNG y SVG</span><div class="viewtoggle inline" role="group" aria-label="Vista a exportar"><button id="expInt" class="on">Interior</button><button id="expDoor">Puerta cerrada</button></div><small class="muted">El DXF lleva las dos vistas, una al lado de la otra.</small></div>
 <div id="exportWarning" class="note"></div>
 <details class="fold"><summary>Lista de materiales <span id="bomCount" class="muted"></span></summary><div class="fold-body"><div id="bomIssues"></div><button id="exportBom" class="secondary">Descargar CSV</button><div class="tbl"><table><thead><tr><th>Categoría</th><th>Código</th><th>Descripción</th><th>Cant.</th><th>Unidad</th><th>Estado</th></tr></thead><tbody id="bomTable"></tbody></table></div></div></details>
@@ -68,6 +68,10 @@
 <label>Nombre del archivo a generar<input id="planoFile" autocomplete="off"></label></div>
 <div class="row"><button type="button" id="planoCancel" class="secondary">Cancelar</button><button id="planoGo" class="primary" type="submit" disabled>Generar plano (DXF)</button></div></form></div>
 
+<div id="equipPanel" class="modal" hidden><form class="modal-box wide" id="equipForm"><h2>Excel de equipamiento eléctrico</h2><p class="muted">Una lista para cotizar: código ABB, cantidad, circuitos y tableros. Sin canalizaciones ni montaje.</p>
+<fieldset class="plano-box"><legend>Tableros</legend><div class="plano-tools"><button type="button" class="secondary" id="equipAll">Todos</button><button type="button" class="secondary" id="equipNone">Ninguno</button></div><div id="equipBoards" class="plano-boards"></div></fieldset>
+<label>Nombre del archivo<input id="equipFile" autocomplete="off" value="Equipamiento electrico.xlsx"></label>
+<div class="row"><button type="button" id="equipCancel" class="secondary">Cancelar</button><button id="equipGo" class="primary" type="submit">Generar Excel</button></div></form></div>
 <div id="message" class="toast" role="status"></div>
 <script>
 let ducts={sections:[]},selDuct=null,project,catalog,fronts,appearances,projectList=[],selected=null,history=[],future=[],drag=null,pan=null,view=null;
@@ -487,6 +491,17 @@ $('planoNone').onclick=()=>document.querySelectorAll('#planoBoards input').forEa
 $('planoFile').oninput=planoSyncArchivo;
 $('planoFmtFile').onchange=async e=>{const file=e.target.files[0];e.target.value='';if(!file)return;$('planoFmtName').textContent='leyendo '+file.name+'…';
  const r=await fetch('/api/plano/formato',{method:'POST',headers:{'X-Filename':encodeURIComponent(file.name)},body:file});const data=await r.json();if(!r.ok){planoRender();return notice(data.error)}planoMeta=data;planoRender()};
+/* Excel de equipamiento eléctrico: los tableros elegidos, en un solo archivo para cotizar. */
+$('exportEquip').onclick=async()=>{if(dirty)await saveProject(true);projectList=await fetch('/api/projects').then(x=>x.json());
+ $('equipBoards').innerHTML=[...projectList].sort((a,b)=>a.name.localeCompare(b.name,'es',{numeric:true})).map(p=>`<label><input type="checkbox" value="${esc(p.id)}" ${p.id===projectId?'checked':''}>${esc(p.name)}</label>`).join('');$('equipPanel').hidden=false};
+$('equipAll').onclick=()=>document.querySelectorAll('#equipBoards input').forEach(c=>c.checked=true);
+$('equipNone').onclick=()=>document.querySelectorAll('#equipBoards input').forEach(c=>c.checked=false);
+$('equipCancel').onclick=()=>{$('equipPanel').hidden=true};
+$('equipForm').onsubmit=async e=>{e.preventDefault();const ids=[...document.querySelectorAll('#equipBoards input:checked')].map(c=>c.value);if(!ids.length)return notice('Elegí al menos un tablero.');
+ let name=$('equipFile').value.trim()||'Equipamiento electrico.xlsx';if(!/\.xlsx$/i.test(name))name+='.xlsx';$('equipGo').disabled=true;$('equipGo').textContent='Generando…';
+ try{const r=await fetch('/api/export/equipamiento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({projects:ids})});
+  if(!r.ok)return notice((await r.json()).error);download(name,await r.blob(),'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');$('equipPanel').hidden=true;notice(`Excel generado: ${ids.length} tablero(s).`)}
+ finally{$('equipGo').disabled=false;$('equipGo').textContent='Generar Excel'}};
 $('planoForm').onsubmit=async e=>{e.preventDefault();const ids=[...document.querySelectorAll('#planoBoards input:checked')].map(c=>c.value);if(!ids.length)return notice('Elegí al menos un tablero.');
  const values={};document.querySelectorAll('#planoPanel input[data-tag]').forEach(i=>values[i.dataset.tag]=i.value);let name=$('planoFile').value.trim()||'Plano de fabricacion.dxf';if(!/\.dxf$/i.test(name))name+='.dxf';
  $('planoGo').disabled=true;$('planoGo').textContent='Generando…';

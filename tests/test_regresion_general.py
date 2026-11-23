@@ -127,3 +127,26 @@ class Regresion24Tableros(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class CodigosDePedido(unittest.TestCase):
+    """Pedido de Thomas 2026-11-23: «sin códigos la lista no sirve para cotizar». Todo equipo eléctrico de los 24
+    tableros tiene código verificado; si no, la lista dice por qué (ambigüedad del unifilar), nunca un FALTA mudo."""
+
+    def test_todo_equipo_con_codigo_o_motivo(self):
+        from bom import MISSING
+        for pdf in BOARDS:
+            with self.subTest(tablero=pdf.stem):
+                for row in result(pdf)["bom"]:
+                    if not row["category"].startswith("Equipo"):
+                        continue
+                    if row["code"] == MISSING:
+                        self.assertIn("unifilar", row["description"], f"equipo sin código ni motivo: {row['description'][:80]}")
+
+    def test_codigos_con_variante_abierta_quedan_a_confirmar(self):
+        import bom
+        codes = bom.load_order_codes()
+        for item in codes["items"]:
+            with self.subTest(modelo=item["model"]):
+                self.assertTrue(item.get("source", "").startswith("http"), "código sin fuente")
+                self.assertTrue(bom._known_status(item).startswith("a confirmar") == bool(item.get("confirm")))
