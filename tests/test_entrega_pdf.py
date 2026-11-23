@@ -28,7 +28,7 @@ class EntregaPdf(unittest.TestCase):
 
     def test_hojas_numeradas_y_todas_con_rotulo(self):
         n = self.doc.page_count
-        self.assertGreaterEqual(n, 2 + len(self.projects) + 1)
+        self.assertGreaterEqual(n, 2 + 2 * len(self.projects) + 1)
         for i, t in enumerate(self.texts, start=1):
             with self.subTest(hoja=i):
                 self.assertIn(f"{i} de {n}", t)
@@ -39,10 +39,11 @@ class EntregaPdf(unittest.TestCase):
     def test_indice_y_tableros_con_escala(self):
         self.assertIn("Índice", self.texts[1])
         for k, name in enumerate(self.projects):
-            t = self.texts[2 + k]
+            t = self.texts[2 + 2 * k]  # cada tablero: su hoja y detrás la de taller
             self.assertIn(f"Tablero {name}", t)
             self.assertRegex(t, r"\n1:[\d.]+\n")  # casilla Escala del rótulo (los títulos de las vistas son dibujo, no texto)
-            self.assertGreater(len(self.doc[2 + k].get_drawings()), 100, "la hoja no tiene el dibujo del tablero")
+            self.assertGreater(len(self.doc[2 + 2 * k].get_drawings()), 100, "la hoja no tiene el dibujo del tablero")
+            self.assertIn(f"Taller {name}", self.texts[3 + 2 * k])
 
     def test_lista_consolidada(self):
         self.assertIn("Lista de equipamiento eléctrico", self.texts[-1])

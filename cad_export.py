@@ -36,11 +36,37 @@ def _ascii(text):
     return out
 
 
+def door_features(project, structure, body):
+    """Geometría de la puerta cerrada (mm desde el borde superior izquierdo de la puerta, vista desde afuera).
+    La usan la vista «puerta cerrada» del DXF y el plano de perforado de taller (taller.py): un solo lugar.
+    Mismos números que la vista 'Puerta cerrada' del editor (web/index.html)."""
+    w, hb = body["width"], body["height"]
+    hinges = [(hy - 22, 44) for hy in (hb * 0.12, hb * 0.88)]  # (y, alto) de cada bisagra, ancho 9 mm, de fábrica
+    locks = (structure or {}).get("locks")
+    lock_ys = [hb / 2] if not locks or locks.get("count") == 1 else [locks["F"], hb - locks["F"]]
+    name = str(project.get("project") or "TABLERO").upper()
+    pw = min(w * 0.62, 280)
+    phh = max(26, min(56, hb * 0.07))
+    px, py = (w - pw) / 2, max(40, hb * 0.09)
+    fs = min(phh * 0.55, pw * 0.88 / max(len(name), 1) / 0.75)  # Arial Bold en mayúsculas: ~0,75 del alto por letra (con 0,62 los nombres largos salían de la placa)
+    lights = (project.get("signals") or {}).get("pilotLights") or []
+    pitch = 48
+    ly = py + phh + max(55, hb * 0.07)
+    lx0 = w / 2 - (len(lights) - 1) * pitch / 2
+    ty = ly + 60 if lights else py + phh + 50
+    ts = max(36, min(w * 0.26, 130, (hb - 24 - ty) / 1.25))  # el cartel siempre dentro de la puerta
+    return {"w": w, "h": hb, "hinges": hinges, "locks": [(w - 34, y) for y in lock_ys], "lockR": (15, 9.5),
+            "plate": {"x": px, "y": py, "w": pw, "h": phh, "text": name, "font": fs},
+            "lights": [{"x": lx0 + i * pitch, "y": ly, "label": l.get("label", ""), "cutR": 11, "bezelR": 15} for i, l in enumerate(lights)],
+            "lightsTitleY": ly - 29, "sign": {"x": w / 2 - ts / 2, "y": ty, "size": ts}}
+
+
 def _door_view(space, ox, project, structure, body, plinth):
     """Puerta cerrada: placa grabada con la nomenclatura, perforaciones de los pilotos del unifilar
     (corte Ø22 de catálogo y bisel Ø30 de CL2-523R) y cartel de riesgo eléctrico. Misma geometría que la
-    vista 'Puerta cerrada' del editor, con el eje Y hacia arriba."""
-    w, hb = body["width"], body["height"]
+    vista 'Puerta cerrada' del editor, con el eje Y hacia arriba (door_features)."""
+    f = door_features(project, structure, body)
+    w, hb = f["w"], f["h"]
     top = plinth + hb
 
     def Y(y):  # coordenada desde el borde superior de la puerta
@@ -61,38 +87,25 @@ def _door_view(space, ox, project, structure, body, plinth):
     box(7, 7, w - 14, hb - 14, "ABB_PUERTA_CERRADA")
     if plinth:
         poly([(ox, 0), (ox + w, 0), (ox + w, plinth), (ox, plinth)], "ABB_PUERTA_CERRADA")
-    for hy in (hb * 0.12, hb * 0.88):  # bisagras
-        box(0, hy - 22, 9, 44, "ABB_PUERTA_CERRADA")
-    locks = (structure or {}).get("locks")
-    lock_ys = [hb / 2] if not locks or locks.get("count") == 1 else [locks["F"], hb - locks["F"]]
-    for ly in lock_ys:
-        space.add_circle((ox + w - 34, Y(ly)), 15, dxfattribs={"layer": "ABB_PUERTA_CERRADA"})
-        space.add_circle((ox + w - 34, Y(ly)), 9.5, dxfattribs={"layer": "ABB_PUERTA_CERRADA"})
+    for hy, hh in f["hinges"]:  # bisagras
+        box(0, hy, 9, hh, "ABB_PUERTA_CERRADA")
+    for lx, ly in f["locks"]:
+        for r in f["lockR"]:
+            space.add_circle((ox + lx, Y(ly)), r, dxfattribs={"layer": "ABB_PUERTA_CERRADA"})
     # Placa grabada con la nomenclatura del tablero.
-    name = str(project.get("project") or "TABLERO").upper()
-    pw = min(w * 0.62, 280)
-    phh = max(26, min(56, hb * 0.07))
-    px, py = (w - pw) / 2, max(40, hb * 0.09)
-    fs = min(phh * 0.55, pw * 0.88 / max(len(name), 1) / 0.75)  # Arial Bold en mayúsculas: ~0,75 del alto por letra (con 0,62 los nombres largos salían de la placa)
-    box(px, py, pw, phh, "ABB_PUERTA_GRABADO")
-    box(px + 3, py + 3, pw - 6, phh - 6, "ABB_PUERTA_GRABADO")
-    text(name, w / 2, py + phh / 2, fs, "ABB_PUERTA_GRABADO")
+    pl = f["plate"]
+    box(pl["x"], pl["y"], pl["w"], pl["h"], "ABB_PUERTA_GRABADO")
+    box(pl["x"] + 3, pl["y"] + 3, pl["w"] - 6, pl["h"] - 6, "ABB_PUERTA_GRABADO")
+    text(pl["text"], w / 2, pl["y"] + pl["h"] / 2, pl["font"], "ABB_PUERTA_GRABADO")
     # Pilotos de presencia de tensión detectados en el unifilar: corte Ø22, bisel Ø30, letra grabada.
-    lights = (project.get("signals") or {}).get("pilotLights") or []
-    pitch = 48
-    ly = py + phh + max(55, hb * 0.07)
-    lx0 = w / 2 - (len(lights) - 1) * pitch / 2
-    if lights:
-        text("PRESENCIA DE TENSION", w / 2, ly - 29, 9.5, "ABB_PUERTA_SENIALIZACION")
-    for i, light in enumerate(lights):
-        cx = lx0 + i * pitch
-        space.add_circle((ox + cx, Y(ly)), 11, dxfattribs={"layer": "ABB_PUERTA_SENIALIZACION"})
-        space.add_circle((ox + cx, Y(ly)), 15, dxfattribs={"layer": "ABB_PUERTA_SENIALIZACION"})
-        text(light.get("label", ""), cx, ly + 27, 12, "ABB_PUERTA_SENIALIZACION")
+    if f["lights"]:
+        text("PRESENCIA DE TENSION", w / 2, f["lightsTitleY"], 9.5, "ABB_PUERTA_SENIALIZACION")
+    for light in f["lights"]:
+        space.add_circle((ox + light["x"], Y(light["y"])), light["cutR"], dxfattribs={"layer": "ABB_PUERTA_SENIALIZACION"})
+        space.add_circle((ox + light["x"], Y(light["y"])), light["bezelR"], dxfattribs={"layer": "ABB_PUERTA_SENIALIZACION"})
+        text(light["label"], light["x"], light["y"] + 27, 12, "ABB_PUERTA_SENIALIZACION")
     # Cartel de riesgo eléctrico (triángulo amarillo con rayo + leyenda).
-    ty = ly + 60 if lights else py + phh + 50
-    ts = max(36, min(w * 0.26, 130, (hb - 24 - ty) / 1.25))  # el cartel siempre dentro de la puerta
-    tx = w / 2 - ts / 2
+    tx, ty, ts = f["sign"]["x"], f["sign"]["y"], f["sign"]["size"]
 
     def P(x, y):
         return (ox + tx + x, Y(ty + y))

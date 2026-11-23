@@ -79,7 +79,7 @@ def validate(project, catalog, rules):
     unknown_depth = []
     for device in devices:
         shell = shells.get(device.get("shell"), {})
-        depth = device.get("depth") or shell.get("depth")
+        depth = device.get("depth") or shell.get("depthMm")  # clave del catálogo: depthMm (antes se leía "depth" y nunca había dato)
         if depth:
             required_depths.append((device.get("tag", "?"), depth))
         elif not _is_din(device, shells):

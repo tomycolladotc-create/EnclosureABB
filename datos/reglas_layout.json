@@ -201,5 +201,16 @@
     "sheetNumberFormat": "{documento}-{n:02d}",
     "frontTitle": "PUERTA ABIERTA",
     "doorTitle": "PUERTA CERRADA"
+  },
+  "taller": {
+    "_ayuda": "Hoja de taller por tablero (en el PDF de entrega): perforado de la puerta con cotas y vista lateral con la profundidad. Pedido de Thomas 2026-11-23.",
+    "dinRailDepthMm": 7.5,
+    "dinRailSource": "EN 60715 (riel TH35-7,5)",
+    "textMm": 3.0,
+    "smallTextMm": 2.4,
+    "dimOffsetMm": 12,
+    "gapMm": 60,
+    "doorTitle": "PERFORADO DE PUERTA (vista desde afuera)",
+    "sideTitle": "VISTA LATERAL · PROFUNDIDAD"
   }
 }

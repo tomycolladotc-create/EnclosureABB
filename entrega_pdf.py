@@ -58,26 +58,51 @@ def _board_drawing(project, catalog, fronts, appearances, area_w, area_h):
         t = msp.add_text(f"{label}  ESC. 1:{n}", dxfattribs={"height": RULES["viewTitleMm"] * n, "layer": "TITULOS"})
         t.set_placement(((b.extmin.x + b.extmax.x) / 2, box.extmin.y - RULES["viewTitleMm"] * 1.8 * n), align=__import__("ezdxf").enums.TextEntityAlignment.TOP_CENTER)
         ents.append(t)
-    # split_views ya dejó en el model space sólo el frente, la puerta y estos títulos: se dibuja la hoja entera, con fondo
-    # blanco (así el color 7 sale negro, como en el papel). draw_entities no aplica los colores de la hoja.
+    # split_views ya dejó en el model space sólo el frente, la puerta y estos títulos.
+    return _render(doc, area_w, area_h, n), n
+
+
+def _render(doc, area_w, area_h, n):
+    """Model space entero a escala 1:n en una página de area_w × area_h mm (PDF de una página). Fondo blanco: el color 7
+    sale negro, como en el papel (draw_entities no aplica los colores de la hoja, por eso draw_layout)."""
+    msp = doc.modelspace()
     props = LayoutProperties.from_layout(msp)
     props.set_colors("#ffffff")
     backend = svg.SVGBackend()
     Frontend(RenderContext(doc), backend).draw_layout(msp, layout_properties=props)
     page = layout.Page(area_w, area_h, layout.Units.mm, margins=layout.Margins.all(0))
     text = backend.get_string(page, settings=layout.Settings(scale=1 / n, fit_page=False))
-    return pymupdf.open(stream=_inline_css(text).encode("utf-8"), filetype="svg").convert_to_pdf(), n
+    return pymupdf.open(stream=_inline_css(text).encode("utf-8"), filetype="svg").convert_to_pdf()
 
 
-def _draw_all(projects, catalog, fronts, appearances, area_w, area_h):
+def _shop_drawing(project, catalog, accessories, area_w, area_h):
+    """Hoja de taller: perforado de puerta acotado y vista lateral (taller.shop_doc), a escala normalizada."""
+    from taller import shop_doc
+    n = PLANO_RULES["scales"][0]
+    for _ in range(4):  # textos y cotas crecen con la escala: se arma, se mide y se vuelve a elegir hasta que no cambie
+        doc = shop_doc(project, catalog, accessories, n)
+        box = bbox.extents(doc.modelspace(), fast=True)
+        new = pick_scale(box.extmax.x - box.extmin.x, box.extmax.y - box.extmin.y, area_w, area_h)
+        if new <= n:
+            break
+        n = new
+    return _render(doc, area_w, area_h, n), n
+
+
+def _board_and_shop(project, catalog, fronts, appearances, accessories, area_w, area_h):
+    front = _board_drawing(project, catalog, fronts, appearances, area_w, area_h)
+    return front, (_shop_drawing(project, catalog, accessories, area_w, area_h) if accessories is not None else None)
+
+
+def _draw_all(projects, catalog, fronts, appearances, area_w, area_h, accessories=None):
     """Dibujo de cada tablero; con varios, en paralelo (uno por núcleo): cada tablero es independiente."""
     import os
     from concurrent.futures import ProcessPoolExecutor
     workers = min(len(projects), os.cpu_count() or 1)
     if workers <= 1:
-        return [_board_drawing(p, catalog, fronts, appearances, area_w, area_h) for p in projects]
+        return [_board_and_shop(p, catalog, fronts, appearances, accessories, area_w, area_h) for p in projects]
     with ProcessPoolExecutor(max_workers=workers) as pool:
-        futures = [pool.submit(_board_drawing, p, catalog, fronts, appearances, area_w, area_h) for p in projects]
+        futures = [pool.submit(_board_and_shop, p, catalog, fronts, appearances, accessories, area_w, area_h) for p in projects]
         return [f.result() for f in futures]
 
 
@@ -151,8 +176,9 @@ def _bom_chunks(items, qty, height_mm):
     return chunks
 
 
-def build_pdf(projects, catalog, fronts, appearances, values):
-    """projects: {nombre: proyecto} en el orden de entrega. values: campos del rótulo (entregaPdf.fields). Devuelve bytes."""
+def build_pdf(projects, catalog, fronts, appearances, values, shop=True):
+    """projects: {nombre: proyecto} en el orden de entrega. values: campos del rótulo (entregaPdf.fields).
+    shop: agrega detrás de cada tablero su hoja de taller (perforado de puerta y vista lateral). Devuelve bytes."""
     pw, ph = RULES["pageMm"]
     m, band, fs = RULES["marginMm"], RULES["titleBandMm"], RULES["fontMm"]
     area_w, area_h = pw - 2 * m - 6, ph - 2 * m - band - 6
@@ -163,7 +189,9 @@ def build_pdf(projects, catalog, fronts, appearances, values):
         qty[d["key"]] = qty.get(d["key"], 0) + d["quantity"]
     bom_chunks = _bom_chunks(items, qty, ph - 2 * m - band - 22)
     bom_pages = len(bom_chunks)
-    total = 2 + len(projects) + bom_pages
+    per_board = 2 if shop else 1
+    total = 2 + per_board * len(projects) + bom_pages
+    accessories = json.loads((Path(__file__).resolve().parent / "datos" / "accesorios_abb.json").read_text(encoding="utf-8")) if shop else None
     number = lambda n: RULES["sheetNumberFormat"].format(documento=base, n=n)  # noqa: E731
     out = pymupdf.open()
 
@@ -175,7 +203,7 @@ def build_pdf(projects, catalog, fronts, appearances, values):
     # 1) Carátula
     page = new_page(1, "Carátula")
     page.insert_text((30 * MM, 70 * MM), values.get("proyecto", "") or "Tableros eléctricos", fontsize=fs["title"] * MM, fontname="hebo")
-    page.insert_text((30 * MM, 85 * MM), "Frentes, puertas y lista de equipamiento", fontsize=fs["subtitle"] * MM, fontname=FONT)
+    page.insert_text((30 * MM, 85 * MM), "Frentes, puertas, planos de taller y lista de equipamiento" if shop else "Frentes, puertas y lista de equipamiento", fontsize=fs["subtitle"] * MM, fontname=FONT)
     y = 110
     for f in RULES["fields"]:
         if values.get(f["key"]):
@@ -186,12 +214,16 @@ def build_pdf(projects, catalog, fronts, appearances, values):
     # 2) Índice (se completa después de saber la escala de cada hoja)
     index = [(1, number(1), "Carátula", ""), (2, number(2), "Índice", "")]
     sheets = []
-    for k, (name, (pdf, n)) in enumerate(zip(projects, _draw_all(list(projects.values()), catalog, fronts, appearances, area_w, area_h))):
-        i = 3 + k
-        sheets.append((i, name, pdf, n))
+    drawings = _draw_all(list(projects.values()), catalog, fronts, appearances, area_w, area_h, accessories)
+    for k, (name, ((pdf, n), shop_sheet)) in enumerate(zip(projects, drawings)):
+        i = 3 + per_board * k
+        sheets.append((i, f"Tablero {name}", pdf, n))
         index.append((i, number(i), f"Tablero {name}: puerta abierta y cerrada", f"1:{n}"))
+        if shop_sheet:
+            sheets.append((i + 1, f"Taller {name}", shop_sheet[0], shop_sheet[1]))
+            index.append((i + 1, number(i + 1), f"Tablero {name}: perforado de puerta y vista lateral", f"1:{shop_sheet[1]}"))
     for b in range(bom_pages):
-        i = 3 + len(projects) + b
+        i = 3 + per_board * len(projects) + b
         index.append((i, number(i), "Lista de equipamiento eléctrico" + (f" ({b + 1}/{bom_pages})" if bom_pages > 1 else ""), ""))
     page = new_page(2, "Índice")
     page.insert_text((m * MM + 10 * MM, 30 * MM), "Índice", fontsize=fs["subtitle"] * 1.5 * MM, fontname="hebo")
@@ -204,15 +236,15 @@ def build_pdf(projects, catalog, fronts, appearances, values):
         y += fs["table"] * 2.2
 
     # 3) Una hoja por tablero, a escala real (el dibujo entra tal cual, sin estirar)
-    for i, name, pdf, n in sheets:
-        page = new_page(i, f"Tablero {name}", f"1:{n}")
+    for i, content, pdf, n in sheets:
+        page = new_page(i, content, f"1:{n}")
         src = pymupdf.open("pdf", pdf)
         x, y = m + 3, m + 3
         page.show_pdf_page(pymupdf.Rect(x * MM, y * MM, (x + area_w) * MM, (y + area_h) * MM), src, 0)
 
     # 4) Lista consolidada: la descripción se parte en renglones (nunca se achica hasta no leerse) y se pagina por altura
     for b, chunk in enumerate(bom_chunks):
-        i = 3 + len(projects) + b
+        i = 3 + per_board * len(projects) + b
         page = new_page(i, "Lista de equipamiento eléctrico")
         y = m + 10
         page.insert_text(((m + 4) * MM, y * MM), "Lista de equipamiento eléctrico (sin canalizaciones ni montaje)", fontsize=fs["subtitle"] * MM, fontname="hebo")

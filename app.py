@@ -288,7 +288,7 @@ class Handler(BaseHTTPRequestHandler):
                 (FORMATS / "entrega.json").write_text(json.dumps(values, ensure_ascii=False, indent=1), encoding="utf-8")
                 catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
                 fronts, appearances = resolved_drawing_data()
-                return self.send_data(200, build_pdf(projects, catalog, fronts, appearances, values), "application/pdf")
+                return self.send_data(200, build_pdf(projects, catalog, fronts, appearances, values, shop=bool(req.get("shop", True))), "application/pdf")
             except (ValueError, FileNotFoundError, KeyError) as exc:
                 return self.send_data(422, {"error": str(exc)})
         if route == "/api/export/equipamiento":  # Excel de equipamiento eléctrico de los tableros elegidos

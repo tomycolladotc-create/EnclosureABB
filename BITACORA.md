@@ -3,6 +3,14 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-23 07:30 · Claude · Planos de taller: perforado de puerta, vista lateral y placas
+- Hecho: taller.py: hoja de taller por tablero dentro del PDF de entrega (opción en la ventana, activada): perforado de puerta acotado desde el borde superior izquierdo (cotas con coma decimal), tabla de agujeros con Ø del catálogo de accesorios, cerradura/bisagras de fábrica en gris, placa y cartel pegados en punteado; vista lateral con profundidad exterior/útil y el equipo más profundo (+ riel DIN EN 60715) con su margen. Excel de equipamiento: hoja «Placas de identificación» (texto y tamaño iguales al dibujo).
+- Una sola geometría de puerta: cad_export.door_features (la vista del DXF quedó idéntica, comparada entidad por entidad).
+- Profundidades: 12 carcasas medidas del modelo 3D ABB (caja exacta OCP, mismo criterio que las ya cargadas, difieren ≤1,5 mm) + S804N de ficha. Sin dato: T2 (el IGES trae geometría fuera del equipo) y S803.
+- Error corregido: validacion.py leía shell["depth"] pero el catálogo usa depthMm: la profundidad nunca se controlaba (lección 37). Los 24 tableros entran.
+- Ojo: estilo de cota EZDXF supone metros (dimlfac 100): se fija dimlfac 1.
+- Resultado: 190 tests; 130/130 interfaz.
+
 ## 2026-11-23 05:40 · Claude · PDF único de entrega con rótulo completo
 - Hecho: Exportar → «PDF de entrega» (entrega_pdf.py, POST /api/export/entrega, GET /api/entrega/datos). A3: carátula, índice, una hoja por tablero (puerta abierta y cerrada a escala normalizada 1:N, títulos con la escala), lista consolidada (descripciones partidas en renglones, paginada por altura). Rótulo en todas las hojas: proyecto, cliente, contenido, escala, hoja n de N, N° de plano (documento-NN), revisión, fecha, dibujó/revisó/aprobó; los datos se recuerdan (datos/formatos/entrega.json). Reglas: reglas_layout.json → entregaPdf.
 - Cómo: el dibujo sale del mismo DXF del programa (plano_unifilar.split_views) → ezdxf SVG → PyMuPDF; el SVG de ezdxf usa clases CSS que PyMuPDF no aplica (se copian a cada elemento) y hay que dibujar con draw_layout para el fondo blanco. Tableros en paralelo (1 por núcleo): 24 tableros ≈ 106 s con 2 núcleos.

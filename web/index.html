@@ -75,6 +75,7 @@
 <div id="entregaPanel" class="modal" hidden><form class="modal-box wide" id="entregaForm"><h2>PDF de entrega</h2><p class="muted">Un solo PDF A3: carátula, índice, una hoja por tablero (puerta abierta y cerrada a escala) y la lista de equipamiento, con rótulo y hojas numeradas.</p>
 <fieldset class="plano-box"><legend>Tableros</legend><div class="plano-tools"><button type="button" class="secondary" id="entregaAll">Todos</button><button type="button" class="secondary" id="entregaNone">Ninguno</button></div><div id="entregaBoards" class="plano-boards"></div></fieldset>
 <fieldset class="plano-box"><legend>Rótulo</legend><div id="entregaFields" class="plano-grid"></div></fieldset>
+<label class="check"><input type="checkbox" id="entregaShop" checked> Incluir planos de taller (perforado de puerta acotado y vista lateral con profundidad)</label>
 <label>Nombre del archivo<input id="entregaFile" autocomplete="off" value="Entrega tableros.pdf"></label>
 <div class="row"><button type="button" id="entregaCancel" class="secondary">Cancelar</button><button id="entregaGo" class="primary" type="submit">Generar PDF</button></div></form></div>
 <div id="message" class="toast" role="status"></div>
@@ -517,7 +518,7 @@ $('entregaCancel').onclick=()=>{$('entregaPanel').hidden=true};
 $('entregaForm').onsubmit=async e=>{e.preventDefault();const ids=[...document.querySelectorAll('#entregaBoards input:checked')].map(c=>c.value);if(!ids.length)return notice('Elegí al menos un tablero.');
  const values={};document.querySelectorAll('#entregaFields input').forEach(i=>values[i.dataset.key]=i.value.trim());let name=$('entregaFile').value.trim()||'Entrega tableros.pdf';if(!/\.pdf$/i.test(name))name+='.pdf';
  $('entregaGo').disabled=true;$('entregaGo').textContent=ids.length>4?'Generando… (unos segundos por tablero)':'Generando…';
- try{const r=await fetch('/api/export/entrega',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({projects:ids,values})});
+ try{const r=await fetch('/api/export/entrega',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({projects:ids,values,shop:$('entregaShop').checked})});
   if(!r.ok)return notice((await r.json()).error);download(name,await r.blob(),'application/pdf');$('entregaPanel').hidden=true;notice(`PDF de entrega generado: ${ids.length} tablero(s).`)}
  finally{$('entregaGo').disabled=false;$('entregaGo').textContent='Generar PDF'}};
 $('planoForm').onsubmit=async e=>{e.preventDefault();const ids=[...document.querySelectorAll('#planoBoards input:checked')].map(c=>c.value);if(!ids.length)return notice('Elegí al menos un tablero.');

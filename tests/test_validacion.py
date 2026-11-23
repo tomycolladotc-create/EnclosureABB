@@ -3,7 +3,8 @@ import unittest
 from validacion import validate
 
 
-CATALOG = {"deviceShells": [{"id": "din", "mounting": "din", "depth": 70}, {"id": "kit"}]}
+CATALOG = {"deviceShells": [{"id": "din", "mounting": "din", "depthMm": 70}, {"id": "kit"}]}
+# depthMm es la clave del catálogo real; hasta 2026-11-23 la validación leía "depth" y nunca encontraba profundidades.
 RULES = {"railPositionToleranceMm": 2, "railEndClearanceMm": 0, "fallbackMinDepthForKitDevicesMm": 200}
 
 

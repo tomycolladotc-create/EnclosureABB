@@ -3807,7 +3807,9 @@
       ],
       "frontGeometry": "datos/frentes_cad.json",
       "appearance": "datos/apariencias_abb.json",
-      "appearanceStatus": "paleta vectorial contrastada con imagen de producto ABB; no es una textura CAD fotorealista"
+      "appearanceStatus": "paleta vectorial contrastada con imagen de producto ABB; no es una textura CAD fotorealista",
+      "depthMm": 97.6,
+      "depthSource": "caja exacta del modelo 3D ABB cad/abb/xt1/1SDH001295R0080_XT1_4P_FIXED_F.stp (OCP BRepBndLib; incluye manija y bornes), medida 2026-11-23"
     },
     {
       "id": "abb.tmax.xt2.4p.fixed.front",
@@ -3825,7 +3827,9 @@
       ],
       "frontGeometry": "datos/frentes_cad.json",
       "appearance": "datos/apariencias_abb.json",
-      "appearanceStatus": "paleta vectorial contrastada con imagen de producto ABB; no es una textura CAD fotorealista"
+      "appearanceStatus": "paleta vectorial contrastada con imagen de producto ABB; no es una textura CAD fotorealista",
+      "depthMm": 117.4,
+      "depthSource": "caja exacta del modelo 3D ABB cad/abb/xt2/1SDH002230A1002_XT2_4P_FIXED_F.stp (OCP BRepBndLib; incluye manija y bornes), medida 2026-11-23"
     },
     {
       "id": "abb.s804n.4p.front",
@@ -3842,7 +3846,9 @@
       "frontGeometry": "datos/frentes_cad.json",
       "appearance": "datos/apariencias_abb.json",
       "appearanceStatus": "paleta vectorial contrastada con imagen de producto ABB; no es una textura CAD fotorealista",
-      "cadAspectNote": "El DXF 2D de ABB tiene otra proporción que la ficha (ancho/alto): el armado usa la ficha y el frente se dibuja sin deformar, centrado (queda un margen a los costados). Pendiente: reemplazar por el STEP 3D de S800 de ABB Library."
+      "cadAspectNote": "El DXF 2D de ABB tiene otra proporción que la ficha (ancho/alto): el armado usa la ficha y el frente se dibuja sin deformar, centrado (queda un margen a los costados). Pendiente: reemplazar por el STEP 3D de S800 de ABB Library.",
+      "depthMm": 82.5,
+      "depthSource": "ficha S804N-C32 (built-in depth 82,5 mm): https://www.onninen.no/en/abb-automat-s804n-c32-2ccs894001r0324/p/GAR194"
     },
     {
       "id": "abb.s200m.1p.front",
@@ -3859,7 +3865,9 @@
       "poleModule": {
         "width": 17.5,
         "_ayuda": "Carcasa por polo: el ancho del equipo es polos × width. Fuente: ABB S200/S200M, dimensiones por polo 88 x 69 x 17,5 mm (datasheet 2CDC002157D0202)."
-      }
+      },
+      "depthMm": 72.5,
+      "depthSource": "caja exacta del modelo 3D ABB cad/abb/s201m/S200M_1P_3D_9AKK106930A4834.stp (OCP BRepBndLib; incluye manija y bornes), medida 2026-11-23"
     },
     {
       "id": "abb.ot400e04.4p.front",
@@ -3877,7 +3885,9 @@
       "frontGeometry": "datos/frentes_cad.json",
       "appearance": "datos/apariencias_abb.json",
       "appearanceStatus": "paleta vectorial contrastada con imagen de producto ABB; no es una textura CAD fotorealista",
-      "dimensionsNote": " · 2026-11-19: el ancho del dibujo y del armado es el contorno del CAD ABB (258 mm, incluye las orejas de fijación que ocupan lugar en la placa); antes se usaba 235 mm y el frente quedaba deformado 9 %."
+      "dimensionsNote": " · 2026-11-19: el ancho del dibujo y del armado es el contorno del CAD ABB (258 mm, incluye las orejas de fijación que ocupan lugar en la placa); antes se usaba 235 mm y el frente quedaba deformado 9 %.",
+      "depthMm": 105.5,
+      "depthSource": "caja exacta del modelo 3D ABB cad/abb/ot400/OT315_400E04.igs (OCP BRepBndLib; incluye manija y bornes), medida 2026-11-23"
     },
     {
       "id": "abb.s200m.1pn.front",
@@ -3893,7 +3903,9 @@
       ],
       "frontGeometry": "datos/frentes_cad.json",
       "appearance": "datos/apariencias_abb.json",
-      "appearanceStatus": "paleta vectorial contrastada con imagen de producto ABB; no es una textura CAD fotorealista"
+      "appearanceStatus": "paleta vectorial contrastada con imagen de producto ABB; no es una textura CAD fotorealista",
+      "depthMm": 74.7,
+      "depthSource": "caja exacta del modelo 3D ABB cad/abb/s201m_na/S200M_1PN_2P_3D_9AKK106930A4835.stp (OCP BRepBndLib; incluye manija y bornes), medida 2026-11-23"
     },
     {
       "id": "abb.f204.4p.front",
@@ -3908,7 +3920,9 @@
       ],
       "frontGeometry": "datos/frentes_cad.json",
       "appearance": "datos/apariencias_abb.json",
-      "dimensionsNote": "Ancho 4 módulos (70 mm, ficha ABB/RS: 70 × 85 mm); alto = contorno frontal del CAD con clips (90,4 mm)."
+      "dimensionsNote": "Ancho 4 módulos (70 mm, ficha ABB/RS: 70 × 85 mm); alto = contorno frontal del CAD con clips (90,4 mm).",
+      "depthMm": 76.3,
+      "depthSource": "caja exacta del modelo 3D ABB cad/abb/f200/F204_3D_9AKK106354A0756_B.stp (OCP BRepBndLib; incluye manija y bornes), medida 2026-11-23"
     },
     {
       "id": "abb.f202.2p.front",
@@ -3922,7 +3936,9 @@
         "cad/abb/f200/F202_3D_9AKK106354A0757_A.stp"
       ],
       "frontGeometry": "datos/frentes_cad.json",
-      "appearance": "datos/apariencias_abb.json"
+      "appearance": "datos/apariencias_abb.json",
+      "depthMm": 73.9,
+      "depthSource": "caja exacta del modelo 3D ABB cad/abb/f200/F202_3D_9AKK106354A0757_A.stp (OCP BRepBndLib; incluye manija y bornes), medida 2026-11-23"
     },
     {
       "id": "abb.sn201.1pn.front",
@@ -3938,7 +3954,9 @@
       "frontGeometry": "datos/frentes_cad.json",
       "appearance": "datos/apariencias_abb.json",
       "dimensionsNote": "Ficha ABB SN201 L: 85 × 68,9 × 17,6 mm por polo; el alto del dibujo es el contorno frontal del CAD con clips (91,8 mm).",
-      "cadAspectNote": "El CAD ABB mide 18,6 mm de ancho (incluye un saliente) y la ficha 17,6 mm por polo: el armado usa la ficha y el frente se dibuja sin deformar, centrado (sobresale 0,5 mm por lado)."
+      "cadAspectNote": "El CAD ABB mide 18,6 mm de ancho (incluye un saliente) y la ficha 17,6 mm por polo: el armado usa la ficha y el frente se dibuja sin deformar, centrado (sobresale 0,5 mm por lado).",
+      "depthMm": 72.7,
+      "depthSource": "caja exacta del modelo 3D ABB cad/abb/sn201/SN201_3D_9AKK106930A4363.stp (OCP BRepBndLib; incluye manija y bornes), medida 2026-11-23"
     },
     {
       "id": "abb.ot100_125f4.4p.front",
@@ -3953,7 +3971,9 @@
       ],
       "frontGeometry": "datos/frentes_cad.json",
       "appearance": "datos/apariencias_abb.json",
-      "dimensionsNote": "Ficha ABB OT100F4N2 (1SCA105018R1001): 100 × 96,5 × 74 mm; montaje en base o riel DIN; manija y eje no incluidos."
+      "dimensionsNote": "Ficha ABB OT100F4N2 (1SCA105018R1001): 100 × 96,5 × 74 mm; montaje en base o riel DIN; manija y eje no incluidos.",
+      "depthMm": 72.7,
+      "depthSource": "caja exacta del modelo 3D ABB cad/abb/ot100_125/OT100-125F4N2.stp (OCP BRepBndLib; incluye manija y bornes), medida 2026-11-23"
     },
     {
       "id": "abb.ot100_125f3.3p.front",
@@ -3967,7 +3987,9 @@
         "cad/abb/ot100_125/OT100-125F3.stp"
       ],
       "frontGeometry": "datos/frentes_cad.json",
-      "appearance": "datos/apariencias_abb.json"
+      "appearance": "datos/apariencias_abb.json",
+      "depthMm": 74.0,
+      "depthSource": "caja exacta del modelo 3D ABB cad/abb/ot100_125/OT100-125F3.stp (OCP BRepBndLib; incluye manija y bornes), medida 2026-11-23"
     },
     {
       "id": "abb.ot160_250e03.3p.front",
@@ -4073,7 +4095,8 @@
         "cad/abb/t2/x/T2_fixed_3poles_F.igs"
       ],
       "frontGeometry": "datos/frentes_cad.json",
-      "appearance": "datos/apariencias_abb.json"
+      "appearance": "datos/apariencias_abb.json",
+      "depthNote": "sin profundidad confiable: el IGES de ABB trae geometría fuera del equipo (la caja da 452 mm)"
     },
     {
       "id": "abb.s803.3p.front",
@@ -4105,7 +4128,9 @@
         "cad/abb/ot63_80/OT63-80F3.igs"
       ],
       "frontGeometry": "datos/frentes_cad.json",
-      "appearance": "datos/apariencias_abb.json"
+      "appearance": "datos/apariencias_abb.json",
+      "depthMm": 72.0,
+      "depthSource": "caja exacta del modelo 3D ABB cad/abb/ot63_80/OT63-80F3.igs (OCP BRepBndLib; incluye manija y bornes), medida 2026-11-23"
     },
     {
       "id": "abb.ot63_80f4.4p.front",
@@ -4120,7 +4145,9 @@
         "cad/abb/ot63_80/ot63-80f4n2.stp"
       ],
       "frontGeometry": "datos/frentes_cad.json",
-      "appearance": "datos/apariencias_abb.json"
+      "appearance": "datos/apariencias_abb.json",
+      "depthMm": 74.2,
+      "depthSource": "caja exacta del modelo 3D ABB cad/abb/ot63_80/ot63-80f4n2.stp (OCP BRepBndLib; incluye manija y bornes), medida 2026-11-23"
     },
     {
       "id": "abb.s290.3p.front",

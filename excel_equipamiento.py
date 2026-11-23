@@ -55,6 +55,25 @@ def collect(projects, catalog):
     return detail, items
 
 
+def nameplates(projects, catalog):
+    """Placas para grabar, con el mismo texto y tamaño del dibujo: la placa de la puerta (cad_export.door_features) y el
+    portaetiquetas de cada equipo (etiquetas.label_boxes, la misma regla del editor y del DXF)."""
+    from cad_export import LABEL_RULES, door_features
+    from etiquetas import label_boxes
+    rows = []
+    for board, project in projects.items():
+        cab = project["enclosure"]
+        spec = next((e for e in catalog["enclosures"] if e["id"] == cab.get("id")), None) or {}
+        door = door_features(project, spec.get("structure"), cab["externalBody"])
+        pl = door["plate"]
+        rows.append([board, "Puerta", "Placa del tablero", pl["text"], round(pl["w"], 1), round(pl["h"], 1), round(pl["font"], 1)])
+        devices = project.get("devices", [])
+        for d, b in zip(devices, label_boxes(devices, cab["functional"]["width"], LABEL_RULES)):
+            text = str(d.get("circuit") or d.get("tag") or "")
+            rows.append([board, d.get("tag", ""), d.get("model", ""), text, round(b["w"], 1), LABEL_RULES["heightMm"], round(b["font"], 1)])
+    return rows
+
+
 def build_xlsx(projects, catalog):
     from openpyxl import Workbook
     from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
@@ -108,6 +127,22 @@ def build_xlsx(projects, catalog):
     style(ws, [5, 18, 18, 60, 10, 8, 55, 30, 30, 10], 5, 3, 9, "J")
     style(ds, [10, 20, 18, 18, 70, 10, 8, 45, 28, 40], 6, 4, 9, "A")
 
+    ps = wb.create_sheet("Placas de identificación")
+    ps.append(["Tablero", "Equipo", "Modelo", "Texto a grabar", "Ancho (mm)", "Alto (mm)", "Letra (mm)"])
+    for row in nameplates(projects, catalog):
+        ps.append(row)
+    for c in ps[1]:
+        c.font, c.fill, c.alignment, c.border = head, head_fill, Alignment(wrap_text=True, vertical="center"), box
+    for row in ps.iter_rows(min_row=2):
+        for c in row:
+            c.font, c.alignment, c.border = normal, wrap, box
+        for c in row[4:7]:
+            c.number_format = "0.0"
+    for i, w in enumerate([22, 10, 30, 40, 11, 10, 10], start=1):
+        ps.column_dimensions[get_column_letter(i)].width = w
+    ps.freeze_panes = "A2"
+    ps.auto_filter.ref = ps.dimensions
+
     ns = wb.create_sheet("Notas", 0)
     missing = sum(1 for _, g in items if g["code"] == MISSING)
     confirm = sum(1 for _, g in items if g["code"] != MISSING and any(str(s).startswith("a confirmar") for s in g["status"]))
@@ -121,6 +156,7 @@ def build_xlsx(projects, catalog):
         "Colores: rojo claro = falta el código de pedido (no comprar sin definirlo); amarillo = a confirmar antes de comprar "
         "(variante que el unifilar deja abierta) o cambiado por pedido del usuario.",
         "Los códigos salen de datos/codigos_pedido_abb.json; la fuente de cada uno está en la columna Fuente del detalle.",
+        "Hoja «Placas de identificación»: el texto y el tamaño de cada chapita son los mismos del dibujo (placa grabada de la puerta y portaetiqueta de cada equipo).",
     ]
     for t in notes:
         ns.append([t])
