@@ -179,5 +179,13 @@
         ]
       }
     }
+  },
+  "reserve": {
+    "_ayuda": "Reserva de espacio libre en los rieles DIN (pedido de Thomas 2026-11-23). El porcentaje pedido se guarda en cada proyecto (reservePercent, 0 si no se pide); el armado automático llena cada fila hasta (100 − reserva) % y la validación informa el libre real.",
+    "railAccessoryCategories": [
+      "Bornera de tierra (PE)",
+      "Señalización",
+      "Bloque de distribución"
+    ]
   }
 }

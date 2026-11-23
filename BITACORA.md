@@ -3,6 +3,11 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-23 08:30 · Claude · Reserva de espacio por tablero
+- Hecho: menú ⋯ → «Reserva libre en rieles (%)» (project.reservePercent, 0 por defecto: los 24 tableros no cambian). El armado llena cada fila de riel hasta (100 − reserva) % (layout_auto._pack_rail_rows) y elige gabinete en consecuencia; validacion.rail_reserve informa el libre real (equipos DIN + accesorios de riel; peines no) y avisa «reserve_below» si queda por debajo. Se ve en el menú y en la hoja de taller del PDF.
+- Hoy, sin reserva: libre entre 5,7 % (TS3/TS4) y 56 % (TS5). Con 20 % pedido, TS3 pasa a SRN12630K (52,9 %).
+- Resultado: 193 tests; 131/131 interfaz.
+
 ## 2026-11-23 07:30 · Claude · Planos de taller: perforado de puerta, vista lateral y placas
 - Hecho: taller.py: hoja de taller por tablero dentro del PDF de entrega (opción en la ventana, activada): perforado de puerta acotado desde el borde superior izquierdo (cotas con coma decimal), tabla de agujeros con Ø del catálogo de accesorios, cerradura/bisagras de fábrica en gris, placa y cartel pegados en punteado; vista lateral con profundidad exterior/útil y el equipo más profundo (+ riel DIN EN 60715) con su margen. Excel de equipamiento: hoja «Placas de identificación» (texto y tamaño iguales al dibujo).
 - Una sola geometría de puerta: cad_export.door_features (la vista del DXF quedó idéntica, comparada entidad por entidad).

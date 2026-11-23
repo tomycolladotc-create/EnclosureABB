@@ -17,6 +17,7 @@
 <div class="menu"><button id="moreBtn" class="icon" title="Más opciones" aria-label="Más opciones">⋯</button>
 <div id="moreMenu" class="popover" hidden>
 <label>Gabinete<select id="enclosure"></select></label>
+<label title="Parte de cada riel DIN que queda libre para ampliaciones. Al cambiarla se rearma el tablero.">Reserva libre en rieles (%)<input id="reservePct" type="number" min="0" max="60" step="5" inputmode="numeric"></label><div id="reserveInfo" class="muted small"></div>
 <button id="autoLayout" class="menu-item">Rearmar el tablero</button>
 <button id="autoFree" class="menu-item" title="Riel GD con posición propuesta por el programa">Rearmar con riel libre (GD)</button>
 <button id="autoDucts" class="menu-item" hidden>Volver a canaletas automáticas</button>
@@ -169,7 +170,7 @@ function scheduleValidation(){clearTimeout(validationTimer);validationTimer=setT
 async function runValidation(){
  const r=await fetch('/api/validate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(project)});if(!r.ok)return;
  validationResult=await r.json();invalidTags=new Set(validationResult.findings.filter(f=>f.level==='error').flatMap(f=>f.tags));
-updateChip();
+updateChip();updateReserve();
  document.querySelectorAll('.device').forEach(g=>{const d=project.devices[+g.dataset.index],hit=g.querySelector('.hitbox');if(hit&&invalidTags.has(d.tag)){hit.style.stroke='#d92d20';hit.style.strokeWidth='5';hit.style.strokeDasharray='7 4'}else if(hit){hit.style.stroke='none'}});
  updateExportSummary();
 }
@@ -301,6 +302,8 @@ function accessoriesSvg(fx,fy,h){return (project.accessories||[]).filter(a=>a.pl
 // Propuestas de accesorios que el usuario confirma o descarta (bloque o barra de distribución).
 
 
+function updateReserve(){const r=validationResult.reserve;if(!$('reserveInfo'))return;$('reservePct').value=project.reservePercent||0;
+ $('reserveInfo').textContent=r&&r.freePercent!=null?`Libre hoy: ${String(r.freePercent).replace('.',',')} % de ${Math.round(r.railMm)} mm de riel`+(r.requested&&r.freePercent<r.requested?' · por debajo de lo pedido':''):''}
 function updateChip(){
  const real=findings.filter(f=>!f.manual).concat(manualDucts().filter(ductHits).map(a=>({severity:'error',message:`${ductName(a)} se superpone con ${nameOf(ductHits(a))}: movela.`}))),errs=real.filter(f=>f.severity==='error'),obs=real.filter(f=>f.severity!=='error'),manual=findings.filter(f=>f.manual),v=validationResult.findings||[];
  const bad=errs.length+(validationResult.errors||0),warn=obs.length,chip=$('normaChip'),pend=v.filter(f=>f.level!=='error');
@@ -521,6 +524,8 @@ $('entregaForm').onsubmit=async e=>{e.preventDefault();const ids=[...document.qu
  try{const r=await fetch('/api/export/entrega',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({projects:ids,values,shop:$('entregaShop').checked})});
   if(!r.ok)return notice((await r.json()).error);download(name,await r.blob(),'application/pdf');$('entregaPanel').hidden=true;notice(`PDF de entrega generado: ${ids.length} tablero(s).`)}
  finally{$('entregaGo').disabled=false;$('entregaGo').textContent='Generar PDF'}};
+/* Reserva de espacio (pedido 2026-11-23): el porcentaje se guarda en el proyecto, el armado lo respeta y la validación informa el libre real. */
+$('reservePct').onchange=async()=>{const v=Math.max(0,Math.min(60,+$('reservePct').value||0));snapshot();project.reservePercent=v;notice('Rearmando con '+v+' % de reserva…');const a=await runAuto(false);if(a.ok)notice(`Reserva ${v} %: ${a.gabinete}.`)};
 $('planoForm').onsubmit=async e=>{e.preventDefault();const ids=[...document.querySelectorAll('#planoBoards input:checked')].map(c=>c.value);if(!ids.length)return notice('Elegí al menos un tablero.');
  const values={};document.querySelectorAll('#planoPanel input[data-tag]').forEach(i=>values[i.dataset.tag]=i.value);let name=$('planoFile').value.trim()||'Plano de fabricacion.dxf';if(!/\.dxf$/i.test(name))name+='.dxf';
  $('planoGo').disabled=true;$('planoGo').textContent='Generando…';

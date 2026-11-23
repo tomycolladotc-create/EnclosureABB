@@ -99,7 +99,31 @@ def validate(project, catalog, rules):
     from auditoria import audit
     findings.extend(audit(project, catalog, rules))
 
+    reserve = rail_reserve(project, catalog, rules)
+    if reserve["requested"] and reserve["freePercent"] is not None and reserve["freePercent"] < reserve["requested"]:
+        findings.append(_finding("warning", "reserve_below", f"Reserva libre en los rieles: {reserve['freePercent']:g} % (se pidió {reserve['requested']:g} %). "
+                                 "Rearmá con el armado automático o usá un gabinete más grande.", []))
+
     counts = {"errors": 0, "warnings": 0}
     for finding in findings:
         counts["errors" if finding["level"] == "error" else "warnings"] += 1
-    return {"ok": counts["errors"] == 0, **counts, "findings": findings}
+    return {"ok": counts["errors"] == 0, **counts, "findings": findings, "reserve": reserve}
+
+
+def rail_reserve(project, catalog, rules):
+    """Espacio libre en los rieles DIN: {freePercent, requested, usedMm, railMm}. Ocupan riel los equipos DIN y los accesorios
+    de riel (reglas_validacion.json → reserve.railAccessoryCategories); los peines van sobre los equipos y no cuentan."""
+    shells = {item["id"]: item for item in catalog.get("deviceShells", [])}
+    rails = project.get("enclosure", {}).get("mountingLayout", {}).get("dinRails", [])
+    total = sum(r.get("length", 0) for r in rails)
+    tol = rules.get("railPositionToleranceMm", 2)
+    cats = set((rules.get("reserve") or {}).get("railAccessoryCategories", []))
+    items = [d for d in project.get("devices", []) if _is_din(d, shells)] + \
+            [a for a in project.get("accessories", []) if a.get("bomCategory") in cats and "w" in a]
+    used = 0.0
+    for it in items:
+        cy = it.get("y", 0) + it.get("h", 0) / 2
+        if any(abs(cy - r.get("y", 0)) <= max(tol, it.get("h", 0) / 2) for r in rails):
+            used += it.get("w", 0)
+    free = round(100 * (1 - used / total), 1) if total else None
+    return {"freePercent": free, "requested": float(project.get("reservePercent") or 0), "usedMm": round(used, 1), "railMm": round(total, 1)}

@@ -252,6 +252,14 @@ def main():
             check("rearmar con riel libre", chip_ok(pg), chip(pg))
             pg.click("#moreBtn"); pg.click("#autoLayout"); wait_idle(pg, 4000)
             check("rearmar", chip_ok(pg), chip(pg))
+            # Reserva de espacio (pedido 2026-11-23): se pide 20 %, se rearma y el libre real queda informado y ≥ 20 %.
+            pg.click("#moreBtn"); pg.fill("#reservePct", "20"); pg.press("#reservePct", "Enter"); pg.dispatch_event("#reservePct", "change"); wait_idle(pg, 5000)
+            info = pg.inner_text("#reserveInfo") if pg.is_visible("#moreMenu") else (pg.click("#moreBtn") or pg.inner_text("#reserveInfo"))
+            libre = float(info.split("Libre hoy: ")[1].split(" %")[0].replace(",", ".")) if "Libre hoy" in info else -1
+            check("reserva 20 %: se rearma, queda ≥ 20 % libre y se informa", libre >= 20 and chip_ok(pg) and pg.evaluate("project.reservePercent") == 20, info)
+            pg.keyboard.press("Escape")
+            if pg.is_visible("#moreMenu"):
+                pg.click("#moreBtn")
             pg.click("#moreBtn")
             with pg.expect_download() as dl:
                 pg.click("#exportJson")

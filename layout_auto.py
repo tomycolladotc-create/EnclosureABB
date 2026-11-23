@@ -56,8 +56,10 @@ def _wrap(items, width, gap):
     return rows
 
 
-def _pack_rail_rows(devs, length, col_gap, pe_reserve):
-    """Reparte equipos de riel en filas de `length` mm: misma carcasa pegada (peine), distinta carcasa con separación. Deja lugar a los bornes PE en la última fila."""
+def _pack_rail_rows(devs, length, col_gap, pe_reserve, reserve=0.0):
+    """Reparte equipos de riel en filas de `length` mm: misma carcasa pegada (peine), distinta carcasa con separación. Deja lugar a los bornes PE en la última fila.
+    `reserve` (0…1): parte de cada fila que queda libre por pedido del usuario (reserva de espacio, project.reservePercent)."""
+    length = length * (1 - reserve)
     rows, cur, used = [], [], 0.0
     for d in devs:
         if d["w"] > length:
@@ -87,6 +89,7 @@ def _try(project, catalog, enc, rules, pe_reserve, extra_rows=0):
     fw, fh = enc["functional"]["width"], enc["functional"]["height"]
     margin, row_gap, col_gap = rules["margin"], rules["rowGap"], rules["colGap"]
     usable_w, usable_h = fw - 2 * margin, fh - 2 * margin
+    reserve = min(max(float(project.get("reservePercent") or 0), 0), 90) / 100  # reserva de espacio pedida por el usuario
     from auditoria import main_device
     entry = main_device(project)
     main, kit, rail_devs = _classify(project["devices"], catalog, rules, entry["tag"] if entry else None)
@@ -155,7 +158,7 @@ def _try(project, catalog, enc, rules, pe_reserve, extra_rows=0):
         if kd:
             # Kit KD del gabinete: filas de riel fijas (185 mm de paso, largo = módulos x 17,5 mm); no se inventa otra posición.
             length, pitch = kd["modulesPerRow"] * kd["moduleMm"], kd["rowPitchMm"]
-            rows = _pack_rail_rows(rail_devs, length, col_gap, pe_reserve)
+            rows = _pack_rail_rows(rail_devs, length, col_gap, pe_reserve, reserve)
             rows = rows + [[] for _ in range(extra_rows)] if rows is not None else None
             if rows is None or len(rows) > kd["rows"] or any(d["h"] > pitch for d in rail_devs) or length > fw:
                 return None
@@ -187,7 +190,7 @@ def _try(project, catalog, enc, rules, pe_reserve, extra_rows=0):
             else:
                 return None
             length = template["length"]
-            rows = _pack_rail_rows(rail_devs, length, col_gap, pe_reserve)
+            rows = _pack_rail_rows(rail_devs, length, col_gap, pe_reserve, reserve)
             if rows is None:
                 return None
             rows += [[] for _ in range(extra_rows)]  # fila libre para un bloque de distribución que no entró (ver autolayout_conforme)

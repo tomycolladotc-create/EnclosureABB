@@ -151,6 +151,10 @@ def shop_doc(project, catalog, accessories, scale=1):
     if d:
         lines.append(f"Equipo más profundo: {d['tag']} {d['model']} · {d['depth']:g} mm" + (f" + riel DIN {RULES['dinRailDepthMm']:g} mm ({RULES['dinRailSource']})" if d["rail"] else ""))
         lines.append(("ENTRA" if dc["margin"] >= 0 else "NO ENTRA") + f": margen {dc['margin']:g} mm hasta el fondo útil (sin contar la separación de la placa, que el catálogo no da)")
+    from validacion import rail_reserve
+    rr = rail_reserve(project, catalog, json.loads((ROOT / "datos" / "reglas_validacion.json").read_text(encoding="utf-8")))
+    if rr["freePercent"] is not None:
+        lines.append(f"Reserva libre en los rieles DIN: {rr['freePercent']:g} % de {rr['railMm']:g} mm" + (f" (pedida {rr['requested']:g} %)" if rr["requested"] else ""))
     if dc["unknown"]:
         lines.append("Sin profundidad en el catálogo: " + ", ".join(dc["unknown"]) + " (confirmar con la ficha ABB)")
     y -= t * 3

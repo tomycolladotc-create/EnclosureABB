@@ -70,3 +70,4 @@
 - Hecho 2026-11-23: PDF único de entrega (carátula, índice, tableros a escala, lista) con rótulo completo y hojas numeradas.
 - Hecho 2026-11-23: planos de taller (perforado de puerta acotado, vista lateral con profundidad) y placas de identificación en el Excel.
 - Pendiente taller: profundidad del T2 y del S803 (falta fuente confiable); separación placa–fondo del gabinete (el catálogo no la da).
+- Hecho 2026-11-23: reserva de espacio por tablero (se pide en %, el armado la respeta, se informa el libre real).
