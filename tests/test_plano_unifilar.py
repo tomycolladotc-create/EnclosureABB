@@ -23,6 +23,7 @@ def formato_minimo(path, board):
     doc = ezdxf.new("R2018")
     fr = doc.blocks.new(RULES["frameBlock"])
     fr.add_lwpolyline([(0, 0), (594, 0), (594, 420), (0, 420)], close=True)
+    fr.add_lwpolyline([(10, 10), (584, 10), (584, 410), (10, 410)], close=True)  # recuadro interior, como el formato real
     tb = doc.blocks.new(RULES["titleBlock"])
     tb.add_lwpolyline([(-180, 0), (0, 0), (0, 84), (-180, 84)], close=True)
     for i, tag in enumerate(["TITLE_3OF3", "TITLE_2OF3", "DOCN°"]):
@@ -69,6 +70,10 @@ class PlanoUnifilar(unittest.TestCase):
             self.assertFalse(overlap(b, box(uni)), "vista sobre el unifilar")
             self.assertFalse(overlap(b, rotulo), "vista sobre el rótulo")
         self.assertFalse(overlap(box(vps[0]), box(vps[1])))
+        # El rótulo queda dentro del recuadro interior del marco agrandado (salía 4 mm afuera).
+        k, fi = RULES["sheetScale"], next(i for i in lay.query("INSERT") if i.dxf.name == RULES["frameBlock"]).dxf.insert
+        self.assertLessEqual(tx, fi.x + 584 * k + 0.01)
+        self.assertGreaterEqual(title.dxf.insert.y, fi.y + 10 * k - 0.01)
         attrs = {a.dxf.tag: a.dxf.text for a in title.attribs}
         self.assertEqual(attrs["TITLE_2OF3"], "UNIFILAR")  # sin valores del usuario, el formato queda como vino
         self.assertEqual(attrs["DOCN°"], "X-001")

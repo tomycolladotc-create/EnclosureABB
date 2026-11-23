@@ -6,6 +6,7 @@
 ## 2026-11-22 22:00 · Claude · Rótulo personalizable por cliente (ventana «Plano de fabricación»)
 - Hecho: botón «Plano de fabricación» en Exportar. Ventana: cargar el DXF de formato (queda guardado en datos/formatos, fuera de git), elegir tableros, completar el rótulo (campos detectados del bloque con más atributos; tabla de revisiones REV/MOT/PROY/REVIS/APR/FECHA editable; ARCHIVO sigue al nombre del archivo) y generar. El DXF sale sólo con las hojas elegidas y el rótulo cargado; el nombre del tablero se pone solo en cada hoja. Los valores se recuerdan. API: GET/POST /api/plano/formato, POST /api/plano/generar.
 - Ojo: la ventana estaba dentro de #screen-editor y no se veía en Exportar (lección 33): las ventanas van fuera de las pantallas.
+- También: el rótulo en A1 quedaba 4 mm sobre el recuadro del marco (lección 34); REV del rótulo sigue a la última fila de revisiones; tableros ordenados por nombre.
 - Resultado: 175 tests; 126/126 interfaz; DXF de prueba (TSB, TSAA) con auditoría ezdxf 0 errores.
 
 ## 2026-11-22 21:15 · Claude · Plano de fabricación: unifilar del usuario + topográfico en su formato

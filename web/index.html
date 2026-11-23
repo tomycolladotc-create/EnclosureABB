@@ -462,7 +462,7 @@ const updatePoles=()=>{$('polesRow').hidden=!shell($('shell').value)?.poleModule
  $('openJson').onclick=()=>$('jsonFile').click();
  $('jsonFile').onchange=async e=>{try{const x=JSON.parse(await e.target.files[0].text());if(!Array.isArray(x.devices)||!x.enclosure)throw Error('Proyecto inválido');snapshot();project=x;fixedDimensions();const ce=catalog.enclosures.find(v=>v.functional.height===project.enclosure.functional.height&&v.functional.width===project.enclosure.functional.width);if(ce){if(!project.enclosure.mountingLayout?.dinRails?.length){project.enclosure.mountingLayout=clone(ce.mountingLayout);project.devices.forEach(alignDin)}$('enclosure').value=ce.id}selected=null;render();notice('Proyecto JSON abierto.')}catch(err){notice(err.message)}};
  // ── Plano de fabricación: ventana previa con los campos del rótulo del formato del usuario ─────────────
-let planoMeta=null,planoArchivoTocado=false;
+let planoMeta=null,planoArchivoTocado=false,planoRevTocado=false;
 const pnorm=s=>String(s||'').toUpperCase().replace(/_/g,' ').replace(/\s+/g,' ').trim();
 function planoLabel(tag,prompt){const L=catalog.layoutRules.plano.fieldLabels,m=/^(.*?)(\d)$/.exec(tag);return L[tag]||(m&&L[m[1]+'#'])||(prompt&&!/^\d+$/.test(prompt)?prompt:tag)}
 function planoRender(){const m=planoMeta;$('planoBody').hidden=!m;$('planoGo').disabled=!m;if(!m){$('planoFmtName').textContent='sin cargar';$('planoFmtInfo').textContent='Guardalo desde AutoCAD: Guardar como → AutoCAD 2018 DXF.';return}
@@ -475,7 +475,10 @@ function planoRender(){const m=planoMeta;$('planoBody').hidden=!m;$('planoGo').d
  const rows=Object.keys(rev).sort();
  $('planoRevs').innerHTML=rows.length?`<thead><tr>${cols.map(c=>`<th>${esc(planoLabel(c+'0',''))}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${cols.map(c=>{const f=rev[r][c];return `<td>${f?`<input data-tag="${esc(f.tag)}" value="${esc(f.value)}">`:''}</td>`}).join('')}</tr>`).join('')}</tbody>`:'';
  const base=(m.lastFilename||(m.filename||'formato').replace(/\.dxf$/i,'')+' - Fabricacion.dxf');$('planoFile').value=base;planoArchivoTocado=false;
- const arch=document.querySelector('#planoFields input[data-tag="ARCHIVO"]');if(arch)arch.oninput=()=>{planoArchivoTocado=true};planoSyncArchivo()}
+ const arch=document.querySelector('#planoFields input[data-tag="ARCHIVO"]');if(arch)arch.oninput=()=>{planoArchivoTocado=true};planoSyncArchivo();
+ planoRevTocado=false;const rv=document.querySelector('#planoFields input[data-tag="REV"]');if(rv)rv.oninput=()=>{planoRevTocado=true};$('planoRevs').oninput=planoSyncRev}
+/* La revisión del rótulo sigue a la última fila cargada de la tabla de revisiones, salvo que el usuario la cambie a mano. */
+function planoSyncRev(){const rv=document.querySelector('#planoFields input[data-tag="REV"]');if(!rv||planoRevTocado)return;const last=[...document.querySelectorAll('#planoRevs input[data-tag]')].filter(i=>/^REV\d+$/.test(i.dataset.tag)&&i.value.trim()).sort((a,b)=>+a.dataset.tag.slice(3)-+b.dataset.tag.slice(3)).pop();if(last)rv.value=last.value.trim()}
 function planoSyncArchivo(){const arch=document.querySelector('#planoFields input[data-tag="ARCHIVO"]');if(arch&&!planoArchivoTocado)arch.value=$('planoFile').value.replace(/\.dxf$/i,'')+'.dwg'}
 $('exportPlano').onclick=async()=>{if(dirty)await saveProject(true);projectList=await fetch('/api/projects').then(x=>x.json());const r=await fetch('/api/plano/formato');planoMeta=r.ok?await r.json():null;planoRender();$('planoPanel').hidden=false};
 $('planoCancel').onclick=()=>{$('planoPanel').hidden=true};

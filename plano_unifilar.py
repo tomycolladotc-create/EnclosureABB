@@ -185,8 +185,9 @@ def compose(template_path, projects, catalog, fronts, appearances, layouts=None,
         if not (frame and title and uvp):
             report.append(f"{name}: falta el marco, el rótulo o la ventana del unifilar en la presentación")
             continue
-        # 1) Hoja A1: el marco se agranda desde su esquina; el rótulo va a la nueva esquina inferior derecha,
-        #    con la misma separación al marco que tenía.
+        # 1) Hoja A1: el marco se agranda desde su esquina; el rótulo va a la nueva esquina inferior derecha.
+        #    La separación al borde se agranda igual que el marco: el recuadro interior del marco también se aleja
+        #    del borde ×k, y con la separación vieja el rótulo quedaba encima de esa línea.
         (fx0, fy0, _), (fx1, fy1, _) = _block_size(doc, frame.dxf.name)
         fw, fh = (fx1 - fx0) * frame.dxf.xscale, (fy1 - fy0) * frame.dxf.yscale
         ox, oy = frame.dxf.insert.x, frame.dxf.insert.y
@@ -195,7 +196,7 @@ def compose(template_path, projects, catalog, fronts, appearances, layouts=None,
         frame.dxf.xscale *= k
         frame.dxf.yscale *= k
         W, H = fw * k, fh * k
-        new_t = (ox + W - t_dx, oy + t_dy)
+        new_t = (ox + W - t_dx * k, oy + t_dy * k)
         title.translate(new_t[0] - title.dxf.insert.x, new_t[1] - title.dxf.insert.y, 0)  # mueve también sus atributos
         (tx0, ty0, _), (tx1, ty1, _) = _block_size(doc, title.dxf.name)
         title_w, title_h = (tx1 - tx0) * title.dxf.xscale, (ty1 - ty0) * title.dxf.yscale
