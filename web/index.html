@@ -63,7 +63,7 @@
 </div></main>
 <div id="planoPanel" class="modal" hidden><form class="modal-box wide" id="planoForm"><h2>Plano de fabricación</h2><p class="muted">En cada hoja de tu formato: tu unifilar y, al lado, el topográfico con la puerta abierta y cerrada. Completá el rótulo antes de generar.</p>
 <div class="plano-fmt"><div><strong>Formato:</strong> <span id="planoFmtName">sin cargar</span><div id="planoFmtInfo" class="muted"></div></div><label class="secondary filebtn button">Cargar formato (DXF)…<input type="file" id="planoFmtFile" accept=".dxf" hidden></label></div>
-<div id="planoBody" hidden><fieldset class="plano-box"><legend>Tableros</legend><div class="row" style="justify-content:flex-start;gap:8px;margin:0 0 6px"><button type="button" class="secondary" id="planoAll">Todos</button><button type="button" class="secondary" id="planoNone">Ninguno</button></div><div id="planoBoards" class="plano-boards"></div></fieldset>
+<div id="planoBody" hidden><fieldset class="plano-box"><legend>Tableros</legend><div class="plano-tools"><button type="button" class="secondary" id="planoAll">Todos</button><button type="button" class="secondary" id="planoNone">Ninguno</button></div><div id="planoBoards" class="plano-boards"></div></fieldset>
 <fieldset class="plano-box"><legend>Rótulo</legend><div id="planoFields" class="plano-grid"></div><table id="planoRevs" class="plano-revs"></table></fieldset>
 <label>Nombre del archivo a generar<input id="planoFile" autocomplete="off"></label></div>
 <div class="row"><button type="button" id="planoCancel" class="secondary">Cancelar</button><button id="planoGo" class="primary" type="submit" disabled>Generar plano (DXF)</button></div></form></div>
@@ -468,7 +468,7 @@ function planoLabel(tag,prompt){const L=catalog.layoutRules.plano.fieldLabels,m=
 function planoRender(){const m=planoMeta;$('planoBody').hidden=!m;$('planoGo').disabled=!m;if(!m){$('planoFmtName').textContent='sin cargar';$('planoFmtInfo').textContent='Guardalo desde AutoCAD: Guardar como → AutoCAD 2018 DXF.';return}
  $('planoFmtName').textContent=m.filename||'formato.dxf';$('planoFmtInfo').textContent=`${m.sheets.length} hojas · rótulo «${m.blocks.titleBlock}» · marco «${m.blocks.frameBlock}»`;
  const sheets=new Set(m.sheets.map(pnorm));
- $('planoBoards').innerHTML=projectList.map(p=>{const ok=sheets.has(pnorm(p.name));return `<label class="${ok?'':'off'}" title="${ok?'':'Tu formato no tiene una hoja con este nombre'}"><input type="checkbox" value="${esc(p.id)}" ${ok?'':'disabled'} ${ok&&p.id===projectId?'checked':''}>${esc(p.name)}</label>`}).join('');
+ $('planoBoards').innerHTML=[...projectList].sort((a,b)=>a.name.localeCompare(b.name,'es',{numeric:true})).map(p=>{const ok=sheets.has(pnorm(p.name));return `<label class="${ok?'':'off'}" title="${ok?'':'Tu formato no tiene una hoja con este nombre'}"><input type="checkbox" value="${esc(p.id)}" ${ok?'':'disabled'} ${ok&&p.id===projectId?'checked':''}>${esc(p.name)}</label>`}).join('');
  const cols=catalog.layoutRules.plano.revisionColumns,rev={},plain=[];
  for(const f of m.fields){const k=/^(.*?)(\d)$/.exec(f.tag);if(k&&cols.includes(k[1]))(rev[k[2]]=rev[k[2]]||{})[k[1]]=f;else plain.push(f)}
  $('planoFields').innerHTML=plain.map(f=>f.perBoard?`<label>${esc(planoLabel(f.tag,f.prompt))}<input value="nombre de cada tablero" disabled><span class="auto">Se completa solo en cada hoja</span></label>`:`<label>${esc(planoLabel(f.tag,f.prompt))}<input data-tag="${esc(f.tag)}" value="${esc(f.value)}"></label>`).join('');

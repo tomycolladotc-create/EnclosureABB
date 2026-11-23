@@ -54,8 +54,9 @@ input:focus,select:focus{outline:2px solid #9bb7e8;border-color:#6d94dc}
 .plano-grid label{margin:0}
 .plano-grid .auto{color:#6b7280;font-size:12px}
 .plano-boards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 12px;max-height:180px;overflow:auto}
-.plano-boards label{display:flex;gap:6px;align-items:center;margin:0;font-weight:400}
+.plano-boards label{display:flex;gap:8px;align-items:center;margin:0;padding:3px 4px;font-size:13px;font-weight:400;color:var(--ink);cursor:pointer;border-radius:6px}.plano-boards label:hover{background:#f1f4f7}.plano-boards input{width:auto;margin:0;flex:none}
+.plano-tools{display:flex;gap:8px;margin:0 0 6px}.plano-tools button{flex:none;padding:4px 12px;font-size:12px}
 .plano-boards label.off{color:#9aa1ad}
 table.plano-revs{width:100%;border-collapse:collapse;margin-top:10px}
 table.plano-revs th{font-size:12px;text-align:left;color:#4b5563;font-weight:600;padding:2px 4px}
-table.plano-revs td{padding:2px 4px}table.plano-revs input{width:100%}
+table.plano-revs td{padding:2px 4px}table.plano-revs input{width:100%;margin:0;padding:6px 8px}table.plano-revs th:nth-child(1),table.plano-revs td:nth-child(1){width:52px}table.plano-revs th:nth-child(2){width:34%}
