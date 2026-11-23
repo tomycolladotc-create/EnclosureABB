@@ -94,7 +94,13 @@ class Handler(BaseHTTPRequestHandler):
         if route == "/api/entrega/datos":  # campos del rótulo del PDF de entrega y lo último que se cargó
             rules = json.loads((ROOT / "datos" / "reglas_layout.json").read_text(encoding="utf-8"))["entregaPdf"]
             saved = FORMATS / "entrega.json"
-            return self.send_data(200, {"fields": rules["fields"], "values": json.loads(saved.read_text(encoding="utf-8")) if saved.exists() else {}})
+            data = {"fields": rules["fields"], "values": json.loads(saved.read_text(encoding="utf-8")) if saved.exists() else {}}
+            if (FORMATS / "formato.json").exists() and (FORMATS / "formato.dxf").exists():  # con formato cargado, su rótulo
+                from plano_unifilar import content_tags
+                meta = json.loads((FORMATS / "formato.json").read_text(encoding="utf-8"))
+                meta["contentTags"] = content_tags(meta.get("fields", []))
+                data["format"] = meta
+            return self.send_data(200, data)
         if route == "/api/plano/formato":  # formato cargado la última vez, con los datos del rótulo que se usaron
             meta = FORMATS / "formato.json"
             if not meta.exists():
@@ -285,10 +291,21 @@ class Handler(BaseHTTPRequestHandler):
                     return self.send_data(422, {"error": "Elegí al menos un tablero."})
                 values = {k: str(v) for k, v in (req.get("values") or {}).items()}
                 FORMATS.mkdir(parents=True, exist_ok=True)  # la próxima vez la ventana arranca con lo último que se cargó
-                (FORMATS / "entrega.json").write_text(json.dumps(values, ensure_ascii=False, indent=1), encoding="utf-8")
+                template = None
+                if req.get("format"):  # rótulo del formato del usuario: los datos son los mismos del plano de fabricación
+                    if not (FORMATS / "formato.dxf").exists():
+                        return self.send_data(422, {"error": "Primero cargá el formato (DXF) en «Plano de fabricación»."})
+                    template = str(FORMATS / "formato.dxf")
+                    meta = json.loads((FORMATS / "formato.json").read_text(encoding="utf-8"))
+                    for f in meta.get("fields", []):
+                        if f["tag"] in values:
+                            f["value"] = values[f["tag"]]
+                    (FORMATS / "formato.json").write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
+                else:
+                    (FORMATS / "entrega.json").write_text(json.dumps(values, ensure_ascii=False, indent=1), encoding="utf-8")
                 catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
                 fronts, appearances = resolved_drawing_data()
-                return self.send_data(200, build_pdf(projects, catalog, fronts, appearances, values, shop=bool(req.get("shop", True))), "application/pdf")
+                return self.send_data(200, build_pdf(projects, catalog, fronts, appearances, values, shop=bool(req.get("shop", True)), template=template), "application/pdf")
             except (ValueError, FileNotFoundError, KeyError) as exc:
                 return self.send_data(422, {"error": str(exc)})
         if route == "/api/export/equipamiento":  # Excel de equipamiento eléctrico de los tableros elegidos

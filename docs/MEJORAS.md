@@ -67,7 +67,7 @@
 - Hecho 2026-11-23: Excel de equipamiento eléctrico de varios tableros desde Exportar.
 - Plano de fabricación: lista de materiales del tablero en el espacio libre de la hoja; opción A0 si el topográfico queda chico.
 - Plano de fabricación: guardar varios juegos de rótulo (uno por cliente) y elegir cuál usar.
-- Hecho 2026-11-23: PDF único de entrega (carátula, índice, tableros a escala, lista) con rótulo completo y hojas numeradas.
+- Hecho 2026-11-23: PDF único de entrega (carátula, índice, tableros a escala, lista); con el formato del usuario cargado, en su marco y con su rótulo.
 - Hecho 2026-11-23: planos de taller (perforado de puerta acotado, vista lateral con profundidad) y placas de identificación en el Excel.
 - Pendiente taller: profundidad del T2 y del S803 (falta fuente confiable); separación placa–fondo del gabinete (el catálogo no la da).
 - Hecho 2026-11-23: reserva de espacio por tablero (se pide en %, el armado la respeta, se informa el libre real).

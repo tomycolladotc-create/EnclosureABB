@@ -73,9 +73,9 @@
 <fieldset class="plano-box"><legend>Tableros</legend><div class="plano-tools"><button type="button" class="secondary" id="equipAll">Todos</button><button type="button" class="secondary" id="equipNone">Ninguno</button></div><div id="equipBoards" class="plano-boards"></div></fieldset>
 <label>Nombre del archivo<input id="equipFile" autocomplete="off" value="Equipamiento electrico.xlsx"></label>
 <div class="row"><button type="button" id="equipCancel" class="secondary">Cancelar</button><button id="equipGo" class="primary" type="submit">Generar Excel</button></div></form></div>
-<div id="entregaPanel" class="modal" hidden><form class="modal-box wide" id="entregaForm"><h2>PDF de entrega</h2><p class="muted">Un solo PDF A3: carátula, índice, una hoja por tablero (puerta abierta y cerrada a escala) y la lista de equipamiento, con rótulo y hojas numeradas.</p>
+<div id="entregaPanel" class="modal" hidden><form class="modal-box wide" id="entregaForm"><h2>PDF de entrega</h2><p class="muted">Un solo PDF: carátula, índice, una hoja por tablero (puerta abierta y cerrada a escala) y la lista de equipamiento, con rótulo y hojas numeradas.</p>
 <fieldset class="plano-box"><legend>Tableros</legend><div class="plano-tools"><button type="button" class="secondary" id="entregaAll">Todos</button><button type="button" class="secondary" id="entregaNone">Ninguno</button></div><div id="entregaBoards" class="plano-boards"></div></fieldset>
-<fieldset class="plano-box"><legend>Rótulo</legend><div id="entregaFields" class="plano-grid"></div></fieldset>
+<fieldset class="plano-box"><legend>Rótulo</legend><p id="entregaFmt" class="muted"></p><div id="entregaFields" class="plano-grid"></div><table id="entregaRevs" class="plano-revs"></table></fieldset>
 <label class="check"><input type="checkbox" id="entregaShop" checked> Incluir planos de taller (perforado de puerta acotado y vista lateral con profundidad)</label>
 <label>Nombre del archivo<input id="entregaFile" autocomplete="off" value="Entrega tableros.pdf"></label>
 <div class="row"><button type="button" id="entregaCancel" class="secondary">Cancelar</button><button id="entregaGo" class="primary" type="submit">Generar PDF</button></div></form></div>
@@ -482,14 +482,17 @@ function planoRender(){const m=planoMeta;$('planoBody').hidden=!m;$('planoGo').d
  $('planoFmtName').textContent=m.filename||'formato.dxf';$('planoFmtInfo').textContent=`${m.sheets.length} hojas · rótulo «${m.blocks.titleBlock}» · marco «${m.blocks.frameBlock}»`;
  const sheets=new Set(m.sheets.map(pnorm));
  $('planoBoards').innerHTML=[...projectList].sort((a,b)=>a.name.localeCompare(b.name,'es',{numeric:true})).map(p=>{const ok=sheets.has(pnorm(p.name));return `<label class="${ok?'':'off'}" title="${ok?'':'Tu formato no tiene una hoja con este nombre'}"><input type="checkbox" value="${esc(p.id)}" ${ok?'':'disabled'} ${ok&&p.id===projectId?'checked':''}>${esc(p.name)}</label>`}).join('');
- const cols=catalog.layoutRules.plano.revisionColumns,rev={},plain=[];
- for(const f of m.fields){const k=/^(.*?)(\d)$/.exec(f.tag);if(k&&cols.includes(k[1]))(rev[k[2]]=rev[k[2]]||{})[k[1]]=f;else plain.push(f)}
- $('planoFields').innerHTML=plain.map(f=>f.perBoard?`<label>${esc(planoLabel(f.tag,f.prompt))}<input value="nombre de cada tablero" disabled><span class="auto">Se completa solo en cada hoja</span></label>`:`<label>${esc(planoLabel(f.tag,f.prompt))}<input data-tag="${esc(f.tag)}" value="${esc(f.value)}"></label>`).join('');
- const rows=Object.keys(rev).sort();
- $('planoRevs').innerHTML=rows.length?`<thead><tr>${cols.map(c=>`<th>${esc(planoLabel(c+'0',''))}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${cols.map(c=>{const f=rev[r][c];return `<td>${f?`<input data-tag="${esc(f.tag)}" value="${esc(f.value)}">`:''}</td>`}).join('')}</tr>`).join('')}</tbody>`:'';
+ rotuloRender(m,'planoFields','planoRevs',{});
  const base=(m.lastFilename||(m.filename||'formato').replace(/\.dxf$/i,'')+' - Fabricacion.dxf');$('planoFile').value=base;planoArchivoTocado=false;
  const arch=document.querySelector('#planoFields input[data-tag="ARCHIVO"]');if(arch)arch.oninput=()=>{planoArchivoTocado=true};planoSyncArchivo();
  planoRevTocado=false;const rv=document.querySelector('#planoFields input[data-tag="REV"]');if(rv)rv.oninput=()=>{planoRevTocado=true};$('planoRevs').oninput=planoSyncRev}
+/* Campos del rótulo del formato del usuario (plano de fabricación y PDF de entrega usan el mismo): los de cada hoja van
+   deshabilitados con su explicación; la tabla de revisiones aparte. auto: {tag: texto de ayuda} de los que completa el programa. */
+function rotuloRender(m,fieldsId,revsId,auto){const cols=catalog.layoutRules.plano.revisionColumns,rev={},plain=[];
+ for(const f of m.fields){const k=/^(.*?)(\d)$/.exec(f.tag);if(k&&cols.includes(k[1]))(rev[k[2]]=rev[k[2]]||{})[k[1]]=f;else plain.push(f)}
+ $(fieldsId).innerHTML=plain.map(f=>f.perBoard?`<label>${esc(planoLabel(f.tag,f.prompt))}<input value="nombre de cada tablero" disabled><span class="auto">Se completa solo en cada hoja</span></label>`:auto[f.tag]?`<label>${esc(planoLabel(f.tag,f.prompt))}<input value="${esc(auto[f.tag])}" disabled><span class="auto">Se completa solo en cada hoja</span></label>`:`<label>${esc(planoLabel(f.tag,f.prompt))}<input data-tag="${esc(f.tag)}" value="${esc(f.value)}"></label>`).join('');
+ const rows=Object.keys(rev).sort();
+ $(revsId).innerHTML=rows.length?`<thead><tr>${cols.map(c=>`<th>${esc(planoLabel(c+'0',''))}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${cols.map(c=>{const f=rev[r][c];return `<td>${f?`<input data-tag="${esc(f.tag)}" value="${esc(f.value)}">`:''}</td>`}).join('')}</tr>`).join('')}</tbody>`:''}
 /* La revisión del rótulo sigue a la última fila cargada de la tabla de revisiones, salvo que el usuario la cambie a mano. */
 function planoSyncRev(){const rv=document.querySelector('#planoFields input[data-tag="REV"]');if(!rv||planoRevTocado)return;const last=[...document.querySelectorAll('#planoRevs input[data-tag]')].filter(i=>/^REV\d+$/.test(i.dataset.tag)&&i.value.trim()).sort((a,b)=>+a.dataset.tag.slice(3)-+b.dataset.tag.slice(3)).pop();if(last)rv.value=last.value.trim()}
 function planoSyncArchivo(){const arch=document.querySelector('#planoFields input[data-tag="ARCHIVO"]');if(arch&&!planoArchivoTocado)arch.value=$('planoFile').value.replace(/\.dxf$/i,'')+'.dwg'}
@@ -514,14 +517,20 @@ $('equipForm').onsubmit=async e=>{e.preventDefault();const ids=[...document.quer
 /* PDF de entrega: los tableros elegidos con carátula, índice, lista y rótulo (los datos se recuerdan). */
 $('exportEntrega').onclick=async()=>{if(dirty)await saveProject(true);projectList=await fetch('/api/projects').then(x=>x.json());const meta=await fetch('/api/entrega/datos').then(x=>x.json());
  $('entregaBoards').innerHTML=[...projectList].sort((a,b)=>a.name.localeCompare(b.name,'es',{numeric:true})).map(p=>`<label><input type="checkbox" value="${esc(p.id)}" ${p.id===projectId?'checked':''}>${esc(p.name)}</label>`).join('');
- $('entregaFields').innerHTML=meta.fields.map(f=>`<label>${esc(f.label)}<input data-key="${esc(f.key)}" value="${esc(meta.values[f.key]||'')}" autocomplete="off"></label>`).join('');$('entregaPanel').hidden=false};
+ entregaFormat=!!meta.format;
+ if(entregaFormat){const f=meta.format,auto={};(f.contentTags||[]).forEach(t=>auto[t]='contenido de cada hoja');rotuloRender(f,'entregaFields','entregaRevs',auto);
+  $('entregaFmt').textContent=`Tu formato «${f.filename||'formato.dxf'}»: marco «${f.blocks.frameBlock}» y rótulo «${f.blocks.titleBlock}» en todas las hojas. Los datos son los mismos del plano de fabricación.`}
+ else{$('entregaRevs').innerHTML='';$('entregaFmt').textContent='Sin formato cargado: rótulo propio en A3. Para usar el tuyo, cargalo en «Plano de fabricación».';
+  $('entregaFields').innerHTML=meta.fields.map(f=>`<label>${esc(f.label)}<input data-key="${esc(f.key)}" value="${esc(meta.values[f.key]||'')}" autocomplete="off"></label>`).join('')}
+ $('entregaPanel').hidden=false};
+let entregaFormat=false;
 $('entregaAll').onclick=()=>document.querySelectorAll('#entregaBoards input').forEach(c=>c.checked=true);
 $('entregaNone').onclick=()=>document.querySelectorAll('#entregaBoards input').forEach(c=>c.checked=false);
 $('entregaCancel').onclick=()=>{$('entregaPanel').hidden=true};
 $('entregaForm').onsubmit=async e=>{e.preventDefault();const ids=[...document.querySelectorAll('#entregaBoards input:checked')].map(c=>c.value);if(!ids.length)return notice('Elegí al menos un tablero.');
- const values={};document.querySelectorAll('#entregaFields input').forEach(i=>values[i.dataset.key]=i.value.trim());let name=$('entregaFile').value.trim()||'Entrega tableros.pdf';if(!/\.pdf$/i.test(name))name+='.pdf';
+ const values={};if(entregaFormat)document.querySelectorAll('#entregaFields input[data-tag],#entregaRevs input[data-tag]').forEach(i=>values[i.dataset.tag]=i.value.trim());else document.querySelectorAll('#entregaFields input').forEach(i=>values[i.dataset.key]=i.value.trim());let name=$('entregaFile').value.trim()||'Entrega tableros.pdf';if(!/\.pdf$/i.test(name))name+='.pdf';
  $('entregaGo').disabled=true;$('entregaGo').textContent=ids.length>4?'Generando… (unos segundos por tablero)':'Generando…';
- try{const r=await fetch('/api/export/entrega',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({projects:ids,values,shop:$('entregaShop').checked})});
+ try{const r=await fetch('/api/export/entrega',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({projects:ids,values,shop:$('entregaShop').checked,format:entregaFormat})});
   if(!r.ok)return notice((await r.json()).error);download(name,await r.blob(),'application/pdf');$('entregaPanel').hidden=true;notice(`PDF de entrega generado: ${ids.length} tablero(s).`)}
  finally{$('entregaGo').disabled=false;$('entregaGo').textContent='Generar PDF'}};
 /* Reserva de espacio (pedido 2026-11-23): el porcentaje se guarda en el proyecto, el armado lo respeta y la validación informa el libre real. */

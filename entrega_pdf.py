@@ -126,7 +126,7 @@ def _title_block(page, values, sheet):
             ("Contenido", sheet["content"], 0.30), ("Escala", sheet.get("scale", "—"), 0.08), ("Hoja", sheet["page"], 0.10)]
     row2 = [("N° de plano", sheet["number"], 0.22), ("Revisión", values.get("revision", ""), 0.08), ("Fecha", values.get("fecha", ""), 0.12),
             ("Dibujó", values.get("dibujo", ""), 0.16), ("Revisó", values.get("reviso", ""), 0.16), ("Aprobó", values.get("aprobo", ""), 0.16),
-            ("Formato", "A3", 0.10)]
+            ("Formato", sheet.get("format", "A3"), 0.10)]
     for row, y in ((row1, y0), (row2, y0 + h)):
         x = x0
         for label, value, frac in row:
@@ -157,7 +157,7 @@ def _wrap(text, width_mm, max_lines=4):
     return lines or [""]
 
 
-def _bom_chunks(items, qty, height_mm):
+def _bom_chunks(items, qty, height_mm, cols=BOM_COLS):
     """Filas de la lista ya partidas en renglones, agrupadas por página según la altura disponible."""
     chunks, cur, used = [], [], 0
     for k, (key, g) in enumerate(items, start=1):
@@ -165,7 +165,7 @@ def _bom_chunks(items, qty, height_mm):
         state = "FALTA CÓDIGO" if g["code"] == "FALTA CÓDIGO" else ("a confirmar" if "confirmar" in status else "")
         color = (0.75, 0.1, 0.1) if state == "FALTA CÓDIGO" else (0.6, 0.45, 0) if state else (0, 0, 0)
         texts = [str(k), g["code"], g["description"], f"{qty[key]:g}", ", ".join(g["boards"]), state]
-        cells = [_wrap(t, w) for t, (_, w) in zip(texts, BOM_COLS)]
+        cells = [_wrap(t, w) for t, (_, w) in zip(texts, cols)]
         h = LINE * max(len(c) for c in cells) + 1.2
         if cur and used + h > height_mm:
             chunks.append(cur)
@@ -176,40 +176,100 @@ def _bom_chunks(items, qty, height_mm):
     return chunks
 
 
-def build_pdf(projects, catalog, fronts, appearances, values, shop=True):
-    """projects: {nombre: proyecto} en el orden de entrega. values: campos del rótulo (entregaPdf.fields).
-    shop: agrega detrás de cada tablero su hoja de taller (perforado de puerta y vista lateral). Devuelve bytes."""
+def _generic_sheet(values):
+    """Hoja A3 con el rótulo propio del programa: sólo si el usuario todavía no cargó su formato."""
     pw, ph = RULES["pageMm"]
-    m, band, fs = RULES["marginMm"], RULES["titleBandMm"], RULES["fontMm"]
-    area_w, area_h = pw - 2 * m - 6, ph - 2 * m - band - 6
+    m, band = RULES["marginMm"], RULES["titleBandMm"]
+    return {"size": (pw, ph), "content": (m + 3, m + 3, pw - 2 * m - 6, ph - 2 * m - band - 6),
+            "stamp": lambda page, info: _title_block(page, values, info), "format": "A3"}
+
+
+def _format_sheet(template, values):
+    """Hoja con el marco y el rótulo del formato del usuario (el mismo del plano de fabricación): tamaño de su marco,
+    dibujo dentro del recuadro interior y por encima del rótulo. Cada hoja completa el rótulo con lo que cargó el
+    usuario; el atributo del nombre del tablero lleva el tablero de la hoja y los de contenido, lo que contiene."""
+    from plano_unifilar import content_tags, sheet_frame
+    meta_path = Path(template).with_suffix(".json")
+    meta = json.loads(meta_path.read_text(encoding="utf-8")) if meta_path.exists() else {}
+    if not meta.get("fields"):
+        from plano_unifilar import analyze_template
+        meta = analyze_template(str(template))
+    per_board = meta.get("perBoardTag")
+    content = content_tags(meta.get("fields", []))
+    frame = sheet_frame(str(template))
+    pw, ph = frame["paper"]
+    ix0, iy0, ix1, iy1 = frame["inner"]
+    tx0, ty0, tx1, ty1 = frame["titleBox"]
+    g = RULES["format"]["gapMm"]
+    texts = RULES["format"]["content"]
+
+    def stamp(page, info):
+        for a in frame["title"].attribs:
+            tag = a.dxf.tag
+            if tag == per_board:
+                a.dxf.text = info.get("board", "")
+            elif tag in content:
+                a.dxf.text = texts[info["kind"]]
+            elif tag in values:
+                a.dxf.text = str(values[tag])
+        src = pymupdf.open("pdf", _render(frame["doc"], pw, ph, frame["unitsPerMm"]))
+        page.show_pdf_page(page.rect, src, 0, overlay=False)
+
+    from plano_unifilar import RULES as PR
+    rev_cols = PR.get("revisionColumns", [])
+    labels = PR.get("fieldLabels", {})
+    cover = []
+    for f in meta.get("fields", []):
+        tag = f["tag"]
+        rev = re.match(r"^(.*?)(\d)$", tag)
+        if tag in content or tag == per_board or (rev and rev.group(1) in rev_cols) or not str(values.get(tag, "")).strip():
+            continue
+        cover.append((labels.get(tag) or f.get("prompt") or tag, str(values[tag])))
+    return {"size": (pw, ph), "content": (ix0 + g, ph - iy1 + g, ix1 - ix0 - 2 * g, (iy1 - ty1) - 2 * g),
+            "stamp": stamp, "format": f"{pw:g} × {ph:g}", "cover": cover}
+
+
+def build_pdf(projects, catalog, fronts, appearances, values, shop=True, template=None):
+    """projects: {nombre: proyecto} en el orden de entrega. shop: agrega detrás de cada tablero su hoja de taller
+    (perforado de puerta y vista lateral). template: formato DXF del usuario (marco y rótulo); con él, `values` son los
+    atributos de su rótulo {tag: texto} y todas las hojas salen con ese rótulo. Sin formato, rótulo propio en A3 con
+    `values` de entregaPdf.fields. Devuelve bytes."""
+    sheet = _format_sheet(template, values) if template else _generic_sheet(values)
+    pw, ph = sheet["size"]
+    cx, cy, area_w, area_h = sheet["content"]
+    fs = RULES["fontMm"]
     base = values.get("documento") or "PL"
     detail, items = collect(projects, catalog)
     qty = {}
     for d in detail:
         qty[d["key"]] = qty.get(d["key"], 0) + d["quantity"]
-    bom_chunks = _bom_chunks(items, qty, ph - 2 * m - band - 22)
+    cols_scale = (area_w - 8) / sum(w for _, w in BOM_COLS)
+    cols = [(label, w * cols_scale) for label, w in BOM_COLS]
+    bom_chunks = _bom_chunks(items, qty, area_h - 22, cols)
     bom_pages = len(bom_chunks)
     per_board = 2 if shop else 1
     total = 2 + per_board * len(projects) + bom_pages
     accessories = json.loads((Path(__file__).resolve().parent / "datos" / "accesorios_abb.json").read_text(encoding="utf-8")) if shop else None
-    number = lambda n: RULES["sheetNumberFormat"].format(documento=base, n=n)  # noqa: E731
+    number = (lambda n: RULES["sheetNumberFormat"].format(documento=base, n=n)) if not template else (lambda n: f"Hoja {n}")  # noqa: E731
     out = pymupdf.open()
 
-    def new_page(i, content, scale=None):
+    def new_page(i, kind, content, board="", scale=None):
         page = out.new_page(width=pw * MM, height=ph * MM)
-        _title_block(page, values, {"content": content, "number": number(i), "page": f"{i} de {total}", "scale": scale or "—"})
+        sheet["stamp"](page, {"kind": kind, "board": board, "content": content, "number": number(i),
+                              "page": f"{i} de {total}", "scale": scale or "—", "format": sheet["format"]})
         return page
 
     # 1) Carátula
-    page = new_page(1, "Carátula")
-    page.insert_text((30 * MM, 70 * MM), values.get("proyecto", "") or "Tableros eléctricos", fontsize=fs["title"] * MM, fontname="hebo")
-    page.insert_text((30 * MM, 85 * MM), "Frentes, puertas, planos de taller y lista de equipamiento" if shop else "Frentes, puertas y lista de equipamiento", fontsize=fs["subtitle"] * MM, fontname=FONT)
-    y = 110
-    for f in RULES["fields"]:
-        if values.get(f["key"]):
-            page.insert_text((30 * MM, y * MM), f"{f['label']}: {values[f['key']]}", fontsize=fs["cell"] * 1.6 * MM, fontname=FONT)
-            y += 9
-    page.insert_text((30 * MM, (y + 6) * MM), f"{len(projects)} tablero(s) · {total} hojas", fontsize=fs["cell"] * 1.6 * MM, fontname=FONT)
+    page = new_page(1, "cover", "Carátula")
+    title = values.get("proyecto") or "Tableros eléctricos"
+    page.insert_text(((cx + 20) * MM, (cy + 50) * MM), title, fontsize=fs["title"] * MM, fontname="hebo")
+    page.insert_text(((cx + 20) * MM, (cy + 65) * MM), "Frentes, puertas, planos de taller y lista de equipamiento" if shop else "Frentes, puertas y lista de equipamiento", fontsize=fs["subtitle"] * MM, fontname=FONT)
+    y = cy + 90
+    lines = sheet.get("cover") if template else [(f["label"], values[f["key"]]) for f in RULES["fields"] if values.get(f["key"])]
+    for label, value in lines:
+        page.insert_text(((cx + 20) * MM, y * MM), f"{label}: {value}", fontsize=fs["cell"] * 1.6 * MM, fontname=FONT)
+        y += 9
+    page.insert_text(((cx + 20) * MM, (y + 6) * MM), f"{len(projects)} tablero(s) · {total} hojas", fontsize=fs["cell"] * 1.6 * MM, fontname=FONT)
 
     # 2) Índice (se completa después de saber la escala de cada hoja)
     index = [(1, number(1), "Carátula", ""), (2, number(2), "Índice", "")]
@@ -217,52 +277,50 @@ def build_pdf(projects, catalog, fronts, appearances, values, shop=True):
     drawings = _draw_all(list(projects.values()), catalog, fronts, appearances, area_w, area_h, accessories)
     for k, (name, ((pdf, n), shop_sheet)) in enumerate(zip(projects, drawings)):
         i = 3 + per_board * k
-        sheets.append((i, f"Tablero {name}", pdf, n))
+        sheets.append((i, "board", f"Tablero {name}", name, pdf, n))
         index.append((i, number(i), f"Tablero {name}: puerta abierta y cerrada", f"1:{n}"))
         if shop_sheet:
-            sheets.append((i + 1, f"Taller {name}", shop_sheet[0], shop_sheet[1]))
+            sheets.append((i + 1, "shop", f"Taller {name}", name, shop_sheet[0], shop_sheet[1]))
             index.append((i + 1, number(i + 1), f"Tablero {name}: perforado de puerta y vista lateral", f"1:{shop_sheet[1]}"))
     for b in range(bom_pages):
         i = 3 + per_board * len(projects) + b
         index.append((i, number(i), "Lista de equipamiento eléctrico" + (f" ({b + 1}/{bom_pages})" if bom_pages > 1 else ""), ""))
-    page = new_page(2, "Índice")
-    page.insert_text((m * MM + 10 * MM, 30 * MM), "Índice", fontsize=fs["subtitle"] * 1.5 * MM, fontname="hebo")
-    y = 42
+    page = new_page(2, "index", "Índice")
+    page.insert_text(((cx + 10) * MM, (cy + 20) * MM), "Índice", fontsize=fs["subtitle"] * 1.5 * MM, fontname="hebo")
+    y = cy + 32
     for i, num, content, scale in index:
-        page.insert_text((m * MM + 10 * MM, y * MM), f"Hoja {i}", fontsize=fs["table"] * MM, fontname=FONT)
-        page.insert_text((m * MM + 35 * MM, y * MM), num, fontsize=fs["table"] * MM, fontname=FONT)
-        page.insert_text((m * MM + 95 * MM, y * MM), content, fontsize=fs["table"] * MM, fontname=FONT)
-        page.insert_text((m * MM + 300 * MM, y * MM), scale, fontsize=fs["table"] * MM, fontname=FONT)
+        for dx, text in ((10, f"Hoja {i}"), (35, "" if template else num), (95 if not template else 35, content), (300 if not template else 240, scale)):
+            if text:
+                page.insert_text(((cx + dx) * MM, y * MM), text, fontsize=fs["table"] * MM, fontname=FONT)
         y += fs["table"] * 2.2
 
     # 3) Una hoja por tablero, a escala real (el dibujo entra tal cual, sin estirar)
-    for i, content, pdf, n in sheets:
-        page = new_page(i, content, f"1:{n}")
+    for i, kind, content, board, pdf, n in sheets:
+        page = new_page(i, kind, content, board, f"1:{n}")
         src = pymupdf.open("pdf", pdf)
-        x, y = m + 3, m + 3
-        page.show_pdf_page(pymupdf.Rect(x * MM, y * MM, (x + area_w) * MM, (y + area_h) * MM), src, 0)
+        page.show_pdf_page(pymupdf.Rect(cx * MM, cy * MM, (cx + area_w) * MM, (cy + area_h) * MM), src, 0)
 
     # 4) Lista consolidada: la descripción se parte en renglones (nunca se achica hasta no leerse) y se pagina por altura
     for b, chunk in enumerate(bom_chunks):
         i = 3 + per_board * len(projects) + b
-        page = new_page(i, "Lista de equipamiento eléctrico")
-        y = m + 10
-        page.insert_text(((m + 4) * MM, y * MM), "Lista de equipamiento eléctrico (sin canalizaciones ni montaje)", fontsize=fs["subtitle"] * MM, fontname="hebo")
+        page = new_page(i, "bom", "Lista de equipamiento eléctrico")
+        y = cy + 7
+        page.insert_text(((cx + 4) * MM, y * MM), "Lista de equipamiento eléctrico (sin canalizaciones ni montaje)", fontsize=fs["subtitle"] * MM, fontname="hebo")
         y += 8
-        x = m + 4
-        for label, w in BOM_COLS:
+        x = cx + 4
+        for label, w in cols:
             page.insert_text((x * MM, y * MM), label, fontsize=fs["table"] * MM, fontname="hebo")
             x += w
         y += 1.5
-        page.draw_line(((m + 4) * MM, y * MM), ((pw - m - 4) * MM, y * MM), color=(0, 0, 0), width=0.6)
+        page.draw_line(((cx + 4) * MM, y * MM), ((cx + area_w - 4) * MM, y * MM), color=(0, 0, 0), width=0.6)
         for cells, color in chunk:
             lines = max(len(c) for c in cells)
-            x = m + 4
-            for (label, w), text in zip(BOM_COLS, cells):
+            x = cx + 4
+            for (label, w), text in zip(cols, cells):
                 for k, line in enumerate(text):
                     page.insert_text((x * MM, (y + LINE * (k + 1)) * MM), line, fontsize=fs["table"] * MM, fontname=FONT,
                                      color=color if label == "Estado" else (0, 0, 0))
                 x += w
             y += LINE * lines + 1.2
-            page.draw_line(((m + 4) * MM, y * MM), ((pw - m - 4) * MM, y * MM), color=(0.8, 0.8, 0.8), width=0.3)
+            page.draw_line(((cx + 4) * MM, y * MM), ((cx + area_w - 4) * MM, y * MM), color=(0.8, 0.8, 0.8), width=0.3)
     return out.tobytes(deflate=True, garbage=3)

@@ -106,6 +106,55 @@ def analyze_template(path):
     return {"sheets": sheets, "blocks": blocks, "fields": fields, "perBoardTag": per_board}
 
 
+def content_tags(fields):
+    """Atributos del rótulo que dicen qué contiene la hoja: los que en el formato traen un texto de
+    RULES["titleSuggestions"] (p. ej. «UNIFILAR»). En el plano de fabricación llevan «UNIFILAR Y TOPOGRAFICO»; en el PDF
+    de entrega, el contenido de cada hoja."""
+    return [f["tag"] for f in fields if f.get("template", "") in RULES["titleSuggestions"]]
+
+
+def sheet_frame(template_path):
+    """Marco y rótulo del formato del usuario, solos, para dibujar otras hojas con el mismo rótulo (PDF de entrega).
+    Toma la primera presentación con marco y rótulo y copia los dos tal cual están ahí (bloques, escala, posición y
+    estilos de texto). Medidas en mm de papel: el bloque del marco está dibujado en mm de su hoja, así que una unidad del
+    marco insertado a escala s es 1/s mm de papel. Devuelve {doc, title, paper, inner, titleBox, unitsPerMm}:
+    `inner` es el recuadro interior del marco (la polilínea más grande dentro del borde), `titleBox` la caja del rótulo;
+    los dos como (x0, y0, x1, y1) con y desde abajo."""
+    src = ezdxf.readfile(template_path)
+    blocks = detect_blocks(src)
+    for layout in src.layouts:
+        if layout.name == "Model":
+            continue
+        frame, title = _sheet_inserts(layout, blocks)
+        if frame and title:
+            break
+    else:
+        raise ValueError("El formato no tiene una presentación con marco y rótulo.")
+    doc = ezdxf.new("R2018", setup=True)
+    imp = Importer(src, doc)
+    imp.import_entities([frame, title], doc.modelspace())
+    imp.finalize()
+    (bx0, by0, _), (bx1, by1, _) = _block_size(src, frame.dxf.name)
+    s = frame.dxf.xscale
+    ox, oy = frame.dxf.insert.x + bx0 * s, frame.dxf.insert.y + by0 * frame.dxf.yscale
+    for e in doc.modelspace():
+        e.translate(-ox, -oy, 0)
+    new_title = next(i for i in doc.modelspace().query("INSERT") if i.dxf.name == title.dxf.name)
+    pw, ph = bx1 - bx0, by1 - by0
+    inner = (0.0, 0.0, pw, ph)
+    best = 0.0
+    for e in src.blocks.get(frame.dxf.name).query("LWPOLYLINE POLYLINE"):
+        b = bbox.extents([e], fast=True)
+        if not b.has_data:
+            continue
+        w, h = b.extmax.x - b.extmin.x, b.extmax.y - b.extmin.y
+        if best < w * h < pw * ph * 0.98:
+            best, inner = w * h, (b.extmin.x - bx0, b.extmin.y - by0, b.extmax.x - bx0, b.extmax.y - by0)
+    tb = bbox.extents([new_title])
+    return {"doc": doc, "title": new_title, "paper": (pw, ph), "inner": inner, "unitsPerMm": s,
+            "titleBox": (tb.extmin.x / s, tb.extmin.y / s, tb.extmax.x / s, tb.extmax.y / s)}
+
+
 def _unifilar_viewport(layout):
     """La ventana grande del unifilar (la de mayor área que no sea la ventana general de la presentación)."""
     vps = [v for v in layout.query("VIEWPORT") if v.dxf.get("id", 2) != 1]

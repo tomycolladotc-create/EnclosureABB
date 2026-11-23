@@ -3,6 +3,11 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-23 10:30 · Claude · PDF de entrega con el rótulo del usuario
+- Error: el PDF de entrega dibujaba un rótulo propio del programa (A3) en vez del formato del cliente ya cargado en «Plano de fabricación» (lección 39).
+- Hecho: con el formato cargado, todas las hojas salen con SU marco y SU rótulo (plano_unifilar.sheet_frame copia marco + rótulo de la primera presentación; tamaño de hoja = marco, dibujo dentro del recuadro interior y sobre el rótulo). Atributos: los datos del usuario (los mismos del plano de fabricación, se guardan en formato.json); el del tablero lleva el tablero; los de contenido (los que en el formato dicen UNIFILAR) llevan el contenido de la hoja (reglas_layout → entregaPdf.format.content). La ventana muestra los mismos campos y tabla de revisiones que el plano (rotuloRender). Sin formato cargado, sigue el rótulo A3 propio y la ventana lo avisa.
+- Resultado: 195 tests; 131/131 interfaz; regresión OK.
+
 ## 2026-11-23 09:30 · Claude · Colores a ojo verificados con foto ABB
 - Hecho: medidos con perfil de color sobre las fotos ABB del repo los 7 bordes congelados de XT1C, XT2N y OT400E04P: 3 pegados a la línea del CAD (la foto coincide), 1 corregido a la foto (XT1 palanca, 1,4 mm), 3 confirmados como están → reglas_validacion.json → freeRectPhotoVerified (con la medición). El test acepta congelados ∪ verificados.
 - Quedan congelados 32 rectángulos de 9 carcasas sin foto frontal ABB en el repo (lección 38, MEJORAS).

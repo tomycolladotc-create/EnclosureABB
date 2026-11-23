@@ -1,216 +1,227 @@
 {
-  "_ayuda": "Criterios de armado automático (layout_auto.py). Son criterios de diseño propuestos, NO datos de ABB: ajustables acá. Medidas en mm.",
-  "margin": 40,
-  "rowGap": 40,
-  "colGap": 25,
-  "railLength": 600,
-  "railClearance": 25,
-  "mainTagPrefix": "QS",
-  "kitModuleHeightFromShell": true,
-  "fuente": "propuesta de Claude 2026-11-15; validar con un armador de tableros / ABB Argentina",
-  "minDepthForKitDevicesMm": 200,
-  "_ayuda_profundidad": "Propuesta de diseño (no dato de ABB): los gabinetes con menos profundidad no se usan si el tablero lleva equipos de kit (XT/OT).",
-  "ductClearanceMm": 5,
-  "ductMaxWidthMm": 80,
-  "ductPreferredDepthMm": 40,
-  "ductEdgeMm": 15,
-  "ductSlot": "8x12",
-  "_ayuda_canaletas": "Propuesta de diseño (no dato de ABB), según tablero armado por Thomas 2026-11-17: verticales a ambos lados de la placa (hasta ductSideMaxWidthMm) y horizontales arriba y abajo de cada fila de equipos, de vertical a vertical, siempre la más ancha del catálogo que entra (hasta ductMaxWidthMm). Entre filas: una compartida, o una pegada a cada fila si sobran ductMinFreeBetweenMm. Profundidad lo más cercana a ductPreferredDepthMm. No se dimensiona por llenado de cables.",
-  "railRowGapMm": 80,
-  "_ayuda_railRowGapMm": "Propuesta de diseño (no dato de ABB): separación vertical entre filas de riel libre = peine (~30) + portaetiqueta (14) + canaleta mínima (25) + aire (2×5) ≈ 80 mm (antes 110: incluía 30 mm del rótulo superior, quitado el 16/11). Con kit KD el paso es el del kit (185 mm).",
-  "ductSideMaxWidthMm": 60,
-  "ductMinFreeBetweenMm": 50,
-  "ductMinWidthMm": 25,
-  "peTerminalId": "te-dbl125-pe",
-  "_ayuda_pe": "Bornera de tierra por defecto (id de datos/accesorios_abb.json → earthTerminals). Con 'repartidor' se usa un bloque por cada N salidas (N del catálogo) y un tope en cada punta. 'entrelec-m4-6p' vuelve a los bornes individuales.",
-  "ductBandMm": 50,
-  "labelHolderMm": 14,
-  "_ayuda_ductBandMm": "Lección 2026-11-19 (revisión de los 24 tableros del GENERAL): toda fila de equipos lleva canaleta arriba y abajo. Se reserva una franja de canaleta (40 mm + 2×5 de aire) sobre la primera fila y entre filas de cajas moldeadas (además del portaetiqueta, labelHolderMm). Antes, con 40 mm de margen/separación, no entraba ninguna canaleta y las cajas quedaban sin cablear.",
-  "contiguousGapMm": 1.0,
-  "railTerminalBandMm": 22.25,
-  "busbarMarginMm": 40,
-  "combFaceFallbackMm": 18,
-  "_ayuda_constantes": "Antes estaban en el código (accesorios.py, normativa.py, colocar.py). contiguousGapMm: separación máxima para considerar dos equipos pegados (peine posible). railTerminalBandMm: mitad del alto de un borne de riel (44,5 mm), franja que ocupa alrededor del eje del riel. busbarMarginMm: separación de la barra al borde de la placa (criterio, no dato ABB). combFaceFallbackMm: alto esquemático del peine cuando el catálogo no lo trae (se marca provisorio). La separación entre equipos de distinta carcasa en el riel es colGap tanto en el armado automático como al ubicar a mano.",
-  "labels": {
-    "_ayuda": "Portaetiqueta bajo cada equipo (lección 28, 2026-11-19): en los equipos de 1 módulo el nombre salía con letra de 2–3 mm, ilegible impreso. La letra nunca baja de fontMinMm: si no entra en el ancho del equipo, la etiqueta se ensancha hacia el lugar libre de los costados y las de una misma fila se acomodan para no pisarse. Misma regla en etiquetas.py (DXF y auditoría) y web/index.html (labelBoxes), verificada igual por test.",
-    "heightMm": 12,
-    "gapBelowMm": 4,
-    "fontMaxMm": 8.5,
-    "fontMinMm": 5.0,
-    "charWidth": 0.62,
-    "padMm": 2,
-    "minWidthMm": 14,
-    "maxWidthMm": 64,
-    "betweenMm": 1
+ "_ayuda": "Criterios de armado automático (layout_auto.py). Son criterios de diseño propuestos, NO datos de ABB: ajustables acá. Medidas en mm.",
+ "margin": 40,
+ "rowGap": 40,
+ "colGap": 25,
+ "railLength": 600,
+ "railClearance": 25,
+ "mainTagPrefix": "QS",
+ "kitModuleHeightFromShell": true,
+ "fuente": "propuesta de Claude 2026-11-15; validar con un armador de tableros / ABB Argentina",
+ "minDepthForKitDevicesMm": 200,
+ "_ayuda_profundidad": "Propuesta de diseño (no dato de ABB): los gabinetes con menos profundidad no se usan si el tablero lleva equipos de kit (XT/OT).",
+ "ductClearanceMm": 5,
+ "ductMaxWidthMm": 80,
+ "ductPreferredDepthMm": 40,
+ "ductEdgeMm": 15,
+ "ductSlot": "8x12",
+ "_ayuda_canaletas": "Propuesta de diseño (no dato de ABB), según tablero armado por Thomas 2026-11-17: verticales a ambos lados de la placa (hasta ductSideMaxWidthMm) y horizontales arriba y abajo de cada fila de equipos, de vertical a vertical, siempre la más ancha del catálogo que entra (hasta ductMaxWidthMm). Entre filas: una compartida, o una pegada a cada fila si sobran ductMinFreeBetweenMm. Profundidad lo más cercana a ductPreferredDepthMm. No se dimensiona por llenado de cables.",
+ "railRowGapMm": 80,
+ "_ayuda_railRowGapMm": "Propuesta de diseño (no dato de ABB): separación vertical entre filas de riel libre = peine (~30) + portaetiqueta (14) + canaleta mínima (25) + aire (2×5) ≈ 80 mm (antes 110: incluía 30 mm del rótulo superior, quitado el 16/11). Con kit KD el paso es el del kit (185 mm).",
+ "ductSideMaxWidthMm": 60,
+ "ductMinFreeBetweenMm": 50,
+ "ductMinWidthMm": 25,
+ "peTerminalId": "te-dbl125-pe",
+ "_ayuda_pe": "Bornera de tierra por defecto (id de datos/accesorios_abb.json → earthTerminals). Con 'repartidor' se usa un bloque por cada N salidas (N del catálogo) y un tope en cada punta. 'entrelec-m4-6p' vuelve a los bornes individuales.",
+ "ductBandMm": 50,
+ "labelHolderMm": 14,
+ "_ayuda_ductBandMm": "Lección 2026-11-19 (revisión de los 24 tableros del GENERAL): toda fila de equipos lleva canaleta arriba y abajo. Se reserva una franja de canaleta (40 mm + 2×5 de aire) sobre la primera fila y entre filas de cajas moldeadas (además del portaetiqueta, labelHolderMm). Antes, con 40 mm de margen/separación, no entraba ninguna canaleta y las cajas quedaban sin cablear.",
+ "contiguousGapMm": 1.0,
+ "railTerminalBandMm": 22.25,
+ "busbarMarginMm": 40,
+ "combFaceFallbackMm": 18,
+ "_ayuda_constantes": "Antes estaban en el código (accesorios.py, normativa.py, colocar.py). contiguousGapMm: separación máxima para considerar dos equipos pegados (peine posible). railTerminalBandMm: mitad del alto de un borne de riel (44,5 mm), franja que ocupa alrededor del eje del riel. busbarMarginMm: separación de la barra al borde de la placa (criterio, no dato ABB). combFaceFallbackMm: alto esquemático del peine cuando el catálogo no lo trae (se marca provisorio). La separación entre equipos de distinta carcasa en el riel es colGap tanto en el armado automático como al ubicar a mano.",
+ "labels": {
+  "_ayuda": "Portaetiqueta bajo cada equipo (lección 28, 2026-11-19): en los equipos de 1 módulo el nombre salía con letra de 2–3 mm, ilegible impreso. La letra nunca baja de fontMinMm: si no entra en el ancho del equipo, la etiqueta se ensancha hacia el lugar libre de los costados y las de una misma fila se acomodan para no pisarse. Misma regla en etiquetas.py (DXF y auditoría) y web/index.html (labelBoxes), verificada igual por test.",
+  "heightMm": 12,
+  "gapBelowMm": 4,
+  "fontMaxMm": 8.5,
+  "fontMinMm": 5.0,
+  "charWidth": 0.62,
+  "padMm": 2,
+  "minWidthMm": 14,
+  "maxWidthMm": 64,
+  "betweenMm": 1
+ },
+ "planoUnifilar": {
+  "_ayuda": "Hoja de fabricación (plano_unifilar.py): unifilar del usuario + topográfico de la aplicación en el formato de ploteo del usuario. Nombres de bloques del formato, escalas normalizadas y separaciones. frameBlock/titleBlock sólo se usan si no se pueden detectar en el formato (detect_blocks). titleSuggestions: valor propuesto en la ventana previa cuando el formato trae ese texto.",
+  "frameBlock": "A2 594x420",
+  "titleBlock": "Rotulo_BA_ferial",
+  "sheetScale": 1.4142135623730951,
+  "paperSize": "ISO_full_bleed_A1_(841.00_x_594.00_MM)",
+  "paperWidthMm": 841.0,
+  "paperHeightMm": 594.0,
+  "scales": [
+   2,
+   2.5,
+   5,
+   7.5,
+   10,
+   12.5,
+   15,
+   20,
+   25,
+   30,
+   40,
+   50
+  ],
+  "gapMm": 8,
+  "viewTitleBandMm": 14,
+  "titleTextMm": 3.5,
+  "viewMarginMm": 30,
+  "modelGapMm": 3000,
+  "modelPitchMm": 4500,
+  "doorGapMm": 150,
+  "dropLayers": [
+   "ABB_BOM",
+   "ABB_NOTAS",
+   "ABB_CAJETIN"
+  ],
+  "doorLayers": [
+   "ABB_PUERTA_CERRADA",
+   "ABB_PUERTA_GRABADO",
+   "ABB_PUERTA_SENIALIZACION",
+   "ABB_PUERTA_CARTEL"
+  ],
+  "frontTitle": "PUERTA ABIERTA",
+  "doorTitle": "PUERTA CERRADA",
+  "viewportLayer": "TOPO-VENTANAS",
+  "textLayer": "TOPO-TEXTO",
+  "textWidthFactor": 0.62,
+  "titleSuggestions": {
+   "UNIFILAR": "UNIFILAR Y TOPOGRAFICO"
   },
-  "planoUnifilar": {
-    "_ayuda": "Hoja de fabricación (plano_unifilar.py): unifilar del usuario + topográfico de la aplicación en el formato de ploteo del usuario. Nombres de bloques del formato, escalas normalizadas y separaciones. frameBlock/titleBlock sólo se usan si no se pueden detectar en el formato (detect_blocks). titleSuggestions: valor propuesto en la ventana previa cuando el formato trae ese texto.",
-    "frameBlock": "A2 594x420",
-    "titleBlock": "Rotulo_BA_ferial",
-    "sheetScale": 1.4142135623730951,
-    "paperSize": "ISO_full_bleed_A1_(841.00_x_594.00_MM)",
-    "paperWidthMm": 841.0,
-    "paperHeightMm": 594.0,
-    "scales": [
-      2,
-      2.5,
-      5,
-      7.5,
-      10,
-      12.5,
-      15,
-      20,
-      25,
-      30,
-      40,
-      50
-    ],
-    "gapMm": 8,
-    "viewTitleBandMm": 14,
-    "titleTextMm": 3.5,
-    "viewMarginMm": 30,
-    "modelGapMm": 3000,
-    "modelPitchMm": 4500,
-    "doorGapMm": 150,
-    "dropLayers": [
-      "ABB_BOM",
-      "ABB_NOTAS",
-      "ABB_CAJETIN"
-    ],
-    "doorLayers": [
-      "ABB_PUERTA_CERRADA",
-      "ABB_PUERTA_GRABADO",
-      "ABB_PUERTA_SENIALIZACION",
-      "ABB_PUERTA_CARTEL"
-    ],
-    "frontTitle": "PUERTA ABIERTA",
-    "doorTitle": "PUERTA CERRADA",
-    "viewportLayer": "TOPO-VENTANAS",
-    "textLayer": "TOPO-TEXTO",
-    "textWidthFactor": 0.62,
-    "titleSuggestions": {
-      "UNIFILAR": "UNIFILAR Y TOPOGRAFICO"
-    },
-    "fieldLabels": {
-      "TITLE_1OF3": "Título – línea 1",
-      "TITLE_2OF3": "Título – línea 2",
-      "TITLE_3OF3": "Título – línea 3",
-      "REV": "Revisión",
-      "DOCN°": "N° de documento",
-      "SECTOR_DE_OBRA": "Sector de obra",
-      "TITULO1": "Título del proyecto 1",
-      "TITULO2": "Título del proyecto 2",
-      "TITULO3": "Título del proyecto 3",
-      "ETAPA": "Etapa",
-      "ARCHIVO": "Nombre de archivo (en el rótulo)",
-      "REV#": "Rev",
-      "MOT#": "Descripción",
-      "PROY#": "Proyectó",
-      "REVIS#": "Revisó",
-      "APR#": "Aprobó",
-      "FECHA#": "Fecha"
-    },
-    "revisionColumns": [
-      "REV",
-      "MOT",
-      "PROY",
-      "REVIS",
-      "APR",
-      "FECHA"
-    ]
+  "fieldLabels": {
+   "TITLE_1OF3": "Título – línea 1",
+   "TITLE_2OF3": "Título – línea 2",
+   "TITLE_3OF3": "Título – línea 3",
+   "REV": "Revisión",
+   "DOCN°": "N° de documento",
+   "SECTOR_DE_OBRA": "Sector de obra",
+   "TITULO1": "Título del proyecto 1",
+   "TITULO2": "Título del proyecto 2",
+   "TITULO3": "Título del proyecto 3",
+   "ETAPA": "Etapa",
+   "ARCHIVO": "Nombre de archivo (en el rótulo)",
+   "REV#": "Rev",
+   "MOT#": "Descripción",
+   "PROY#": "Proyectó",
+   "REVIS#": "Revisó",
+   "APR#": "Aprobó",
+   "FECHA#": "Fecha"
   },
-  "equipamientoExcel": {
-    "_ayuda": "Excel de equipamiento eléctrico (botón en Exportar). Pedido de Thomas 2026-11-19: sólo equipamiento eléctrico, sin canalizaciones; columnas código, cantidad, circuitos y tableros.",
-    "include": [
-      "Equipo",
-      "Equipo (no dibujado)",
-      "Accionamiento OT",
-      "Señalización",
-      "Peine",
-      "Bloque de distribución",
-      "Barra de distribución",
-      "Bornera de tierra (PE)",
-      "Barra de tierra (PE)"
-    ],
-    "exclude": [
-      "Canaleta",
-      "Montaje DIN",
-      "Envolvente",
-      "Envolvente (estructura)",
-      "Kit de montaje",
-      "Cubrebornes"
-    ],
-    "font": "Arial",
-    "colors": {
-      "header": "1F3A4D",
-      "missing": "F8CBAD",
-      "confirm": "FFF2CC"
-    }
-  },
-  "entregaPdf": {
-    "_ayuda": "PDF único de entrega (Exportar → «PDF de entrega»): carátula, índice, una hoja por tablero (puerta abierta y cerrada a escala normalizada) y lista consolidada, con rótulo y «Hoja n de N». Pedido de Thomas 2026-11-23.",
-    "pageMm": [
-      420,
-      297
-    ],
-    "marginMm": 10,
-    "titleBandMm": 28,
-    "viewGapMm": 20,
-    "viewTitleMm": 4,
-    "fontMm": {
-      "cell": 2.6,
-      "label": 1.9,
-      "title": 12,
-      "subtitle": 6,
-      "table": 2.6
-    },
-    "fields": [
-      {
-        "key": "proyecto",
-        "label": "Proyecto"
-      },
-      {
-        "key": "cliente",
-        "label": "Cliente"
-      },
-      {
-        "key": "documento",
-        "label": "N° de documento (base de los planos)"
-      },
-      {
-        "key": "revision",
-        "label": "Revisión"
-      },
-      {
-        "key": "fecha",
-        "label": "Fecha"
-      },
-      {
-        "key": "dibujo",
-        "label": "Dibujó"
-      },
-      {
-        "key": "reviso",
-        "label": "Revisó"
-      },
-      {
-        "key": "aprobo",
-        "label": "Aprobó"
-      }
-    ],
-    "sheetNumberFormat": "{documento}-{n:02d}",
-    "frontTitle": "PUERTA ABIERTA",
-    "doorTitle": "PUERTA CERRADA"
-  },
-  "taller": {
-    "_ayuda": "Hoja de taller por tablero (en el PDF de entrega): perforado de la puerta con cotas y vista lateral con la profundidad. Pedido de Thomas 2026-11-23.",
-    "dinRailDepthMm": 7.5,
-    "dinRailSource": "EN 60715 (riel TH35-7,5)",
-    "textMm": 3.0,
-    "smallTextMm": 2.4,
-    "dimOffsetMm": 12,
-    "gapMm": 60,
-    "doorTitle": "PERFORADO DE PUERTA (vista desde afuera)",
-    "sideTitle": "VISTA LATERAL · PROFUNDIDAD"
+  "revisionColumns": [
+   "REV",
+   "MOT",
+   "PROY",
+   "REVIS",
+   "APR",
+   "FECHA"
+  ]
+ },
+ "equipamientoExcel": {
+  "_ayuda": "Excel de equipamiento eléctrico (botón en Exportar). Pedido de Thomas 2026-11-19: sólo equipamiento eléctrico, sin canalizaciones; columnas código, cantidad, circuitos y tableros.",
+  "include": [
+   "Equipo",
+   "Equipo (no dibujado)",
+   "Accionamiento OT",
+   "Señalización",
+   "Peine",
+   "Bloque de distribución",
+   "Barra de distribución",
+   "Bornera de tierra (PE)",
+   "Barra de tierra (PE)"
+  ],
+  "exclude": [
+   "Canaleta",
+   "Montaje DIN",
+   "Envolvente",
+   "Envolvente (estructura)",
+   "Kit de montaje",
+   "Cubrebornes"
+  ],
+  "font": "Arial",
+  "colors": {
+   "header": "1F3A4D",
+   "missing": "F8CBAD",
+   "confirm": "FFF2CC"
   }
+ },
+ "entregaPdf": {
+  "_ayuda": "PDF único de entrega (Exportar → «PDF de entrega»): carátula, índice, una hoja por tablero (puerta abierta y cerrada a escala normalizada) y lista consolidada, con rótulo y «Hoja n de N». Pedido de Thomas 2026-11-23.",
+  "pageMm": [
+   420,
+   297
+  ],
+  "marginMm": 10,
+  "titleBandMm": 28,
+  "viewGapMm": 20,
+  "viewTitleMm": 4,
+  "fontMm": {
+   "cell": 2.6,
+   "label": 1.9,
+   "title": 12,
+   "subtitle": 6,
+   "table": 2.6
+  },
+  "fields": [
+   {
+    "key": "proyecto",
+    "label": "Proyecto"
+   },
+   {
+    "key": "cliente",
+    "label": "Cliente"
+   },
+   {
+    "key": "documento",
+    "label": "N° de documento (base de los planos)"
+   },
+   {
+    "key": "revision",
+    "label": "Revisión"
+   },
+   {
+    "key": "fecha",
+    "label": "Fecha"
+   },
+   {
+    "key": "dibujo",
+    "label": "Dibujó"
+   },
+   {
+    "key": "reviso",
+    "label": "Revisó"
+   },
+   {
+    "key": "aprobo",
+    "label": "Aprobó"
+   }
+  ],
+  "sheetNumberFormat": "{documento}-{n:02d}",
+  "frontTitle": "PUERTA ABIERTA",
+  "doorTitle": "PUERTA CERRADA",
+  "format": {
+   "_ayuda": "Con el formato del usuario cargado (Plano de fabricación), todas las hojas del PDF salen con su marco y su rótulo. content: texto de los atributos de contenido (los que en el formato dicen UNIFILAR) según la hoja; el atributo del nombre del tablero lleva el tablero (vacío en carátula, índice y lista). La carátula lista los campos del rótulo cargados (sin revisiones ni los que cambian por hoja).",
+   "gapMm": 8,
+   "content": {
+    "cover": "CARATULA",
+    "index": "INDICE",
+    "board": "TOPOGRAFICO",
+    "shop": "PERFORADO DE PUERTA Y VISTA LATERAL",
+    "bom": "LISTA DE EQUIPAMIENTO"
+   }
+  }
+ },
+ "taller": {
+  "_ayuda": "Hoja de taller por tablero (en el PDF de entrega): perforado de la puerta con cotas y vista lateral con la profundidad. Pedido de Thomas 2026-11-23.",
+  "dinRailDepthMm": 7.5,
+  "dinRailSource": "EN 60715 (riel TH35-7,5)",
+  "textMm": 3.0,
+  "smallTextMm": 2.4,
+  "dimOffsetMm": 12,
+  "gapMm": 60,
+  "doorTitle": "PERFORADO DE PUERTA (vista desde afuera)",
+  "sideTitle": "VISTA LATERAL · PROFUNDIDAD"
+ }
 }

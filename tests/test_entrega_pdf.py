@@ -51,3 +51,64 @@ class EntregaPdf(unittest.TestCase):
     def test_escala_normalizada(self):
         self.assertEqual(pick_scale(890, 2030, 394, 240), 10)
         self.assertEqual(pick_scale(300, 400, 394, 240), 2)
+
+
+class EntregaConFormatoDelUsuario(unittest.TestCase):
+    """Con el formato del usuario cargado, todas las hojas salen con SU marco y SU rótulo (pedido de Thomas 2026-11-23:
+    el PDF traía un rótulo propio del programa en vez del suyo)."""
+
+    @classmethod
+    def setUpClass(cls):
+        import sys
+        import tempfile
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from test_plano_unifilar import formato_minimo
+        from plano_unifilar import analyze_template
+        small = sorted(BOARDS, key=lambda p: p.stat().st_size)[:1]
+        p = build(small[0])["project"]
+        cls.name = p.get("project") or small[0].stem
+        cls.tmp = tempfile.TemporaryDirectory()
+        path = Path(cls.tmp.name) / "formato.dxf"
+        formato_minimo(path, "HOJA X")
+        meta = analyze_template(str(path))
+        meta["perBoardTag"] = "TITLE_3OF3"  # el formato mínimo tiene una sola hoja: el atributo del tablero se fija
+        (Path(cls.tmp.name) / "formato.json").write_text(json.dumps(meta), encoding="utf-8")
+        fronts, appearances = resolved_drawing_data()
+        values = {"DOCN°": "CLI-XYZ-77"}
+        # El rótulo se dibuja como el DXF (textos en trazos): se anota qué atributos tenía al dibujar cada hoja.
+        import entrega_pdf
+        cls.stamps, real = [], entrega_pdf._render
+
+        def spy(doc, *a):
+            from plano_unifilar import RULES as PR
+            ins = [i for i in doc.modelspace().query("INSERT") if i.dxf.name == PR["titleBlock"]]
+            if ins:
+                cls.stamps.append({x.dxf.tag: x.dxf.text for x in ins[0].attribs})
+            return real(doc, *a)
+        entrega_pdf._render = spy
+        try:
+            cls.doc = pymupdf.open("pdf", build_pdf({cls.name: p}, CATALOG, fronts, appearances, values, template=str(path)))
+        finally:
+            entrega_pdf._render = real
+        cls.texts = [page.get_text() for page in cls.doc]
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.tmp.cleanup()
+
+    def test_hoja_del_tamano_del_marco_del_usuario(self):
+        for page in self.doc:
+            self.assertAlmostEqual(page.rect.width / 72 * 25.4, 594, delta=0.5)
+            self.assertAlmostEqual(page.rect.height / 72 * 25.4, 420, delta=0.5)
+
+    def test_rotulo_del_usuario_en_todas_las_hojas_y_ninguno_propio(self):
+        from entrega_pdf import RULES
+        content = RULES["format"]["content"]
+        kinds = ["cover", "index", "board", "shop"] + ["bom"] * (len(self.texts) - 4)
+        self.assertEqual(len(self.stamps), len(self.texts))
+        for i, (t, a, kind) in enumerate(zip(self.texts, self.stamps, kinds), start=1):
+            with self.subTest(hoja=i):
+                self.assertEqual(a["DOCN°"], "CLI-XYZ-77")  # dato cargado por el usuario, en su rótulo
+                self.assertEqual(a["TITLE_2OF3"], content[kind])  # atributo de contenido según la hoja
+                self.assertEqual(a["TITLE_3OF3"], self.name if kind in ("board", "shop") else "")
+                self.assertNotIn("N° de plano", t)  # el rótulo propio del programa no aparece
