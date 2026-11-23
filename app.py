@@ -127,8 +127,10 @@ class Handler(BaseHTTPRequestHandler):
                 catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
                 devices, board = detect_devices(content, catalog), detect_board(content)
                 unused = apply_corrections(devices, board, catalog)  # cambios de equipo pedidos por el usuario (datos/correcciones_unifilar.json)
+                from verificacion_unifilar import check  # segunda lectura del plano, por posición: modelo, polos y corriente de cada circuito
+                verification = check(blob, devices, catalog)
                 return self.send_data(200, {"pages": len(reader.pages), "devices": devices, "signals": detect_signals(content, catalog), "board": board,
-                                            "correctionsNotApplied": unused, "textAvailable": bool(content.strip())})
+                                            "correctionsNotApplied": unused, "textAvailable": bool(content.strip()), "verification": verification})
             except Exception as exc:
                 return self.send_data(422, {"error": f"No se pudo leer el PDF: {exc}"})
         if route == "/api/signals-default":  # testigos de fase propuestos (regla única en accesorios.default_signals)

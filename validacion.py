@@ -33,6 +33,9 @@ def validate(project, catalog, rules):
     width, height = functional.get("width", 0), functional.get("height", 0)
     shells = {item["id"]: item for item in catalog.get("deviceShells", [])}
 
+    from verificacion_unifilar import findings as source_findings  # diferencias con el unifilar halladas al importar
+    findings.extend(source_findings(project))
+
     for device in devices:
         tag = device.get("tag", "sin etiqueta")
         x, y = device.get("x", 0), device.get("y", 0)

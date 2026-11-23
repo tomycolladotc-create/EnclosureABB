@@ -407,6 +407,9 @@ def main():
                 check(f"importar {name}: abre el editor", pg.is_visible("#screen-editor"))
                 check(f"importar {name}: con equipos", pg.evaluate("project.devices.length") > 0, str(pg.evaluate("project.devices.length")))
                 check(f"importar {name}: dentro de normativa", chip_ok(pg), chip(pg))
+                sc = pg.evaluate("project.sourceCheck")
+                check(f"importar {name}: verificado contra el unifilar", bool(sc) and sc["checked"] > 0 and not sc["issues"] and pg.is_hidden("#verifPanel"),
+                      str(sc and (sc["checked"], len(sc["issues"]))))
                 check(f"importar {name}: nombre del tablero corto", "Unifilares" not in pg.inner_text("#projectName"), pg.inner_text("#projectName"))
                 short = pg.inner_text("#projectName"); n_dev = pg.evaluate("project.devices.length")
                 pg.click(".brand"); wait_idle(pg, 2500)

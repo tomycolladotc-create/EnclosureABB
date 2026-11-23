@@ -1,90 +1,66 @@
-"""Lección 32: control independiente de los 24 tableros contra los unifilares ABB.
-Lee cada PDF con PyMuPDF (el importador usa pypdf) y compara modelo, circuito, polos y calibre (I Nom) de cada
-interruptor, seccionador y diferencial con el proyecto armado. También controla, dentro del propio unifilar, que el
-modelo coincida con la columna «I Nom - Icc» (calibre y polos). Las correcciones pedidas por el usuario
-(datos/correcciones_unifilar.json) se comparan con el modelo original del unifilar."""
-import re
+"""Verificación automática contra el unifilar antes de mostrar el tablero (pedido de Thomas 2026-11-23, TSB-1.12).
+
+Los 24 tableros reales tienen que coincidir enteros con su plano (modelo, polos y corriente de cada circuito), y un
+equipo cambiado tiene que aparecer como diferencia con el dato del plano."""
+import copy
+import json
 import sys
 import unittest
 from pathlib import Path
 
-import pymupdf
+from pypdf import PdfReader
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from test_regresion_general import BOARDS, result  # noqa: E402
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from importador import apply_corrections, detect_board, detect_devices  # noqa: E402
+from validacion import validate  # noqa: E402
+from verificacion_unifilar import check, findings, read_words  # noqa: E402
 
-TAG = re.compile(r"^-?(Q[A-Z]\d+)$")
-RATING = re.compile(r"^(\d)x(\d+(?:,\d+)?)\s*-\s*(\d+(?:,\d+)?)\s*kA$")
-STOP = re.compile(r"mm²|^INTERRUPTOR|^SECCIONADOR|^\d+(?:,\d+)?\s*kA$|^[RST]{1,3}N?$|^BARRA|^Uso$|^DIFERENCIAL")
-key = lambda m: re.sub(r"[\s\-]+", "", str(m or "")).upper()
-USE = {"IUG","TUG","IUE","TUE","OCE","ACU","ALIM"}
-STOP = re.compile(r"mm²|^INTERRUPTOR|^SECCIONADOR|^\d+(?:,\d+)?\s*kA$|^[RST]{1,3}N?$|^BARRA|^Uso$|^DIFERENCIAL")
-key = lambda m: re.sub(r"[\s\-]+", "", str(m or "")).upper()
-
-def parse(pdf):
-    lines = [l.strip() for p in pymupdf.open(pdf) for l in p.get_text().splitlines() if l.strip()]
-    header_tag = None
-    m = re.match(r"DE\s+.+?\s+-\s+-?(Q[A-Z]\d+)", lines[1]) if len(lines) > 1 else None
-    if m: header_tag = m.group(1)
-    idx = [i for i, l in enumerate(lines) if TAG.match(l)]
-    out = {}
-    for n, i in enumerate(idx):
-        tag = TAG.match(lines[i]).group(1)
-        block = lines[i + 1:(idx[n + 1] if n + 1 < len(idx) else len(lines))]
-        model = []
-        for l in block:
-            if STOP.search(l) or l in USE: break
-            model.append(l)
-        circ = next((block[j + 1] for j, l in enumerate(block[:-1]) if l in USE), None)
-        rat = next((RATING.match(l) for l in block if RATING.match(l)), None)
-        out[tag] = {"model": " ".join(model), "circuit": circ, "ratingPoles": int(rat.group(1)) if rat else None,
-                    "ratingIn": float(rat.group(2).replace(",", ".")) if rat else None, "kA": rat.group(3) if rat else None,
-                    "raw": " | ".join(block[:14])}
-    return out, header_tag
-
-def model_in(model):
-    for pat in (r"TMD\s+(\d+)-", r"Ekip\s+\w+\s+LI\s+(\d+)", r"PR\d+\S*\s+(\d+)A", r"\b[BCDKZ]\s?(\d+)\b", r"-[BCDKZ](\d+)", r"AC-(\d+)/", r"A-(\d+)/"):
-        m = re.search(pat, model)
-        if m: return float(m.group(1))
-    return None
-
-def model_poles(model):
-    m = re.match(r"^S\s?(\d)(\d)(\d)", model)  # S2xy: y = polos (S201..S204), NA = 1P+N
-    if m and m.group(1) in "28":
-        p = int(m.group(3)); return 2 if re.search(r"\bNA\b", model, re.I) and p == 1 else p
-    m = re.match(r"^S80(\d)", model)
-    if m: return int(m.group(1))
-    m = re.match(r"^F20(\d)", model)
-    if m: return int(m.group(1))
-    return None
+CATALOG = json.loads((ROOT / "datos" / "catalogo_abb.json").read_text(encoding="utf-8"))
+BOARDS = sorted((ROOT / "tests" / "unifilares" / "general").glob("*.pdf"))
 
 
+def importar(pdf):
+    text = "\n".join(p.extract_text() or "" for p in PdfReader(pdf).pages)
+    devices = detect_devices(text, CATALOG)
+    apply_corrections(devices, detect_board(text), CATALOG)
+    return devices
 
-class IgualAlUnifilar(unittest.TestCase):
-    def test_modelo_circuito_polos_y_calibre_iguales_al_unifilar(self):
+
+class VerificacionUnifilar(unittest.TestCase):
+    def test_los_24_tableros_coinciden_con_su_plano(self):
+        self.assertEqual(len(BOARDS), 24)
         for pdf in BOARDS:
-            pdfdev, header = parse(pdf)
-            proj = result(pdf)["project"]
-            pd = {d["tag"]: d for d in proj["devices"]}
-            nd = {d["tag"]: d for d in proj.get("devicesNotDrawn", [])}
-            for tag, u in pdfdev.items():
-                if tag == header and tag not in pd:
-                    continue
-                with self.subTest(tablero=pdf.stem, equipo=tag):
-                    d = pd.get(tag) or nd.get(tag)
-                    self.assertIsNotNone(d, "está en el unifilar y no en el proyecto")
-                    orig = (d.get("correctedFrom") or {}).get("model") or d.get("model")
-                    opol = (d.get("correctedFrom") or {}).get("poles") or d.get("poles")
-                    self.assertEqual(key(orig), key(u["model"]), "modelo")
-                    if u["circuit"]:
-                        self.assertEqual(d.get("circuit"), u["circuit"], "circuito")
-                    if u["ratingPoles"] and opol:
-                        self.assertEqual(opol, u["ratingPoles"], "polos")
-                    mi, mp = model_in(u["model"]), model_poles(u["model"])
-                    if u["ratingIn"] and mi:
-                        self.assertAlmostEqual(mi, u["ratingIn"], msg="el calibre del modelo no coincide con la columna I Nom")
-                    if mp and u["ratingPoles"]:
-                        self.assertEqual(mp, u["ratingPoles"], "los polos del modelo no coinciden con la columna I Nom")
-            for tag in set(pd) | set(nd):
-                with self.subTest(tablero=pdf.stem, equipo=tag):
-                    self.assertIn(tag, pdfdev, "está en el proyecto y no en el unifilar")
+            with self.subTest(tablero=pdf.stem):
+                r = check(pdf.read_bytes(), importar(pdf), CATALOG)
+                self.assertEqual(r["issues"], [])
+                self.assertEqual(r["unverified"], [], "cada equipo tiene que quedar verificado")
+                self.assertGreater(r["checked"], 0)
+
+    def test_un_equipo_distinto_al_plano_se_detecta(self):
+        pdf = next(p for p in BOARDS if p.stem.endswith("TSB"))
+        devices = importar(pdf)
+        words = read_words(pdf.read_bytes())
+        d = next(d for d in devices if d.get("circuit") == "TSB-1.12")
+        self.assertEqual(d["model"], "S201L-C10 NA")  # lo que dice el plano (rótulo y tabla «2x10 - 6kA»)
+        wrong = copy.deepcopy(devices)
+        next(x for x in wrong if x.get("circuit") == "TSB-1.12")["model"] = "S201L-C20 NA"
+        r = check(None, wrong, CATALOG, words=words)
+        kinds = {i["kind"] for i in r["issues"] if i["circuit"] == "TSB-1.12"}
+        self.assertEqual(kinds, {"modelo", "corriente"})
+        polos = copy.deepcopy(devices)
+        next(x for x in polos if x.get("circuit") == "TSB-1.12")["poles"] = 4
+        self.assertIn("polos", {i["kind"] for i in check(None, polos, CATALOG, words=words)["issues"]})
+
+    def test_la_diferencia_queda_como_error_en_la_validacion(self):
+        sys.path.insert(0, str(ROOT / "tests"))
+        from regresion_general import build
+        project = build(next(p for p in BOARDS if p.stem.endswith("TSB")))["project"]
+        next(d for d in project["devices"] if d["tag"] == "QF124")["model"] = "S201L-C20 NA"
+        project["sourceCheck"] = {"issues": [{"circuit": "TSB-1.12", "tag": "QF124", "kind": "corriente", "boardModel": "S201L-C20 NA",
+                                               "message": "TSB-1.12 (QF124): la tabla del plano dice 10 A"}], "unverified": []}
+        self.assertEqual([f["level"] for f in findings(project)], ["error"])
+        rules = json.loads((ROOT / "datos" / "reglas_validacion.json").read_text(encoding="utf-8"))
+        self.assertIn("unifilar_distinto", {f["code"] for f in validate(project, CATALOG, rules)["findings"]})
+        next(d for d in project["devices"] if d["tag"] == "QF124")["model"] = "S201L-C10 NA"  # el usuario lo cambió a mano: ya no hay diferencia comprobada
+        self.assertEqual([f["code"] for f in findings(project)], ["unifilar_sin_verificar"])

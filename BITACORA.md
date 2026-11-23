@@ -3,6 +3,12 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-23 14:50 · Claude · Verificación automática contra el unifilar
+- Reporte de Thomas: TSB-1.12 con S201L-C10 «cuando el unifilar dice C20». Revisado: el unifilar BAF-E-EL-PL-104-0 dice S201L-C10 NA en el rótulo de -QF124 y «2x10 - 6kA» en la tabla; el tablero y la lista de materiales (2CDS241801R0104, 7 u, incluye TSB-1.12) coinciden con el plano. No había error, pero el programa no lo comprobaba solo.
+- Hecho: verificacion_unifilar.py vuelve a leer el PDF por posición (PyMuPDF) y compara cada equipo con su rótulo (modelo) y con la fila de protección de su columna (polos y corriente). Corre en cada importación: si algo no coincide, la ventana «El tablero no coincide con el unifilar» aparece antes de abrir el tablero; las diferencias quedan como errores de validación (unifilar_distinto) mientras el equipo siga así. Reglas: catalogo_abb.json → importRules.sourceCheck.
+- requirements.txt: faltaban pymupdf, openpyxl, numpy y opencv (los usan el PDF, el Excel y la pintura de frentes).
+- Resultado: los 24 tableros, 100 % de equipos verificados y 0 diferencias; 198 tests; 136/136 interfaz; regresión OK.
+
 ## 2026-11-23 14:10 · Claude · Ploteo sin colores de capa
 - Pedido de Thomas: el PDF no debe mostrar los verdes/celestes de las capas (etiquetas, peines, accesorios, cotas); los colores propios sí.
 - Hecho: entrega_pdf._plot_color, como una tabla de plumas monocromática: todo color índice de CAD (directo o por capa) sale con la pluma negra; lo que tiene true color (carcasas y colores ABB) conserva su color. Regla en reglas_layout → entregaPdf.plot (indexColors "pen" | "keep"). El DXF no cambia.

@@ -23,6 +23,7 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 ## Estructura
 | Ruta | Qué es |
 |---|---|
+| `verificacion_unifilar.py` | segunda lectura del unifilar por posición: modelo, polos y corriente de cada equipo contra el plano, al importar |
 | `app.py` | servidor del editor (`iniciar_editor.bat` → http://127.0.0.1:8765) |
 | `importador.py` | lee el PDF y propone equipos; reglas en `catalogo_abb.json`: `importRules`, `series` (modelo → carcasa, con polos y fuente), `modelHints` |
 | `cad_export.py` | exporta DXF con bloques por familia + vista con la puerta cerrada (capas ABB_PUERTA_*) + lista de materiales y controles |

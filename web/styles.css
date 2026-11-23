@@ -61,3 +61,6 @@ table.plano-revs{width:100%;border-collapse:collapse;margin-top:10px}
 table.plano-revs th{font-size:12px;text-align:left;color:#4b5563;font-weight:600;padding:2px 4px}
 table.plano-revs td{padding:2px 4px}table.plano-revs input{width:100%;margin:0;padding:6px 8px}table.plano-revs th:nth-child(1),table.plano-revs td:nth-child(1){width:52px}table.plano-revs th:nth-child(2){width:34%}
 .modal-box label.check{display:flex;gap:8px;align-items:center;font-weight:400}.modal-box label.check input{width:auto;margin:0}
+
+.verif-list{max-height:40vh;overflow:auto;margin:8px 0 12px;padding-left:20px;color:#b42318}
+.verif-list li{margin:4px 0}

@@ -4203,7 +4203,14 @@
       "-\\s?[BCDKZ]\\s?(\\d+(?:[.,]\\d+)?)\\b"
     ],
     "_ayuda_ratedCurrentPatterns": "Corriente nominal leída del modelo, en orden: Emax (E2.2N 2000), Tmax T con relé electrónico (… 320A), Tmax XT (XT1S 160 TMD 125-…), OT (OT100F4), modulares (S804S-C100, S 293-C 80). Primero se usa marking.In.",
-    "ratedCurrentEvidencePattern": "\\b\\dx(\\d+)\\s*-\\s*\\d"
+    "ratedCurrentEvidencePattern": "\\b\\dx(\\d+)\\s*-\\s*\\d",
+    "sourceCheck": {
+      "_ayuda": "Verificación contra el unifilar (verificacion_unifilar.py): cada equipo se compara por posición con su rótulo en el plano (hasta modelLines renglones alineados debajo de la etiqueta) y, si tiene columna de circuito, con la fila de protección de esa columna (protectionPattern: polos x corriente - poder de corte). circuitPattern: nombres de circuito con número (TSB-1.12). defaultHalfColumn: media columna (pt) si la fila no tiene otras palabras.",
+      "circuitPattern": "[A-Z][A-Z0-9]*-\\d+(?:\\.\\d+)+",
+      "protectionPattern": "\\b(\\d)\\s*x\\s*(\\d+(?:[.,]\\d+)?)\\s*-\\s*\\d+(?:[.,]\\d+)?\\s*kA",
+      "modelLines": 6,
+      "defaultHalfColumn": 55
+    }
   },
   "modelHints": [
     {
