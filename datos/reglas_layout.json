@@ -211,6 +211,11 @@
     "shop": "PERFORADO DE PUERTA Y VISTA LATERAL",
     "bom": "LISTA DE EQUIPAMIENTO"
    }
+  },
+  "plot": {
+   "_ayuda": "Colores del ploteo (PDF de entrega). indexColors \"pen\": todo lo que usa un color índice de CAD (1–255, directo o por capa) sale con la pluma `pen`, como una tabla de plumas monocromática; lo que tiene color propio (true color: carcasas y colores ABB) conserva su color. \"keep\": cada color índice como en CAD. Pedido de Thomas 2026-11-23: nada de verdes/celestes de las capas en el ploteo.",
+   "indexColors": "pen",
+   "pen": "#000000"
   }
  },
  "taller": {

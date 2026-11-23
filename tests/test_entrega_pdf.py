@@ -112,3 +112,23 @@ class EntregaConFormatoDelUsuario(unittest.TestCase):
                 self.assertEqual(a["TITLE_2OF3"], content[kind])  # atributo de contenido según la hoja
                 self.assertEqual(a["TITLE_3OF3"], self.name if kind in ("board", "shop") else "")
                 self.assertNotIn("N° de plano", t)  # el rótulo propio del programa no aparece
+
+
+class PloteoMonocromatico(unittest.TestCase):
+    """Colores índice de CAD (verde, celeste…) salen en la pluma negra; los colores propios (true color ABB) se ven."""
+
+    def test_indice_negro_true_color_se_conserva(self):
+        import ezdxf
+        from entrega_pdf import _render
+        doc = ezdxf.new()
+        doc.layers.add("VERDE", color=3)
+        msp = doc.modelspace()
+        msp.add_line((0, 0), (100, 0), dxfattribs={"layer": "VERDE"})  # por capa, índice 3
+        msp.add_line((0, 10), (100, 10), dxfattribs={"color": 4})  # índice directo
+        msp.add_line((0, 20), (100, 20), dxfattribs={"true_color": ezdxf.rgb2int((200, 16, 46))})  # rojo ABB
+        page = pymupdf.open("pdf", _render(doc, 120, 40, 1))[0]
+        colors = {tuple(round(c, 2) for c in d["color"]) for d in page.get_drawings() if d.get("color")}
+        self.assertIn((0.0, 0.0, 0.0), colors)
+        self.assertIn((round(200 / 255, 2), round(16 / 255, 2), round(46 / 255, 2)), colors)
+        self.assertNotIn((0.0, 1.0, 0.0), colors)
+        self.assertNotIn((0.0, 1.0, 1.0), colors)

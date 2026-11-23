@@ -3,6 +3,11 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-23 14:10 · Claude · Ploteo sin colores de capa
+- Pedido de Thomas: el PDF no debe mostrar los verdes/celestes de las capas (etiquetas, peines, accesorios, cotas); los colores propios sí.
+- Hecho: entrega_pdf._plot_color, como una tabla de plumas monocromática: todo color índice de CAD (directo o por capa) sale con la pluma negra; lo que tiene true color (carcasas y colores ABB) conserva su color. Regla en reglas_layout → entregaPdf.plot (indexColors "pen" | "keep"). El DXF no cambia.
+- Resultado: tests, interfaz y regresión OK.
+
 ## 2026-11-23 10:30 · Claude · PDF de entrega con el rótulo del usuario
 - Error: el PDF de entrega dibujaba un rótulo propio del programa (A3) en vez del formato del cliente ya cargado en «Plano de fabricación» (lección 39).
 - Hecho: con el formato cargado, todas las hojas salen con SU marco y SU rótulo (plano_unifilar.sheet_frame copia marco + rótulo de la primera presentación; tamaño de hoja = marco, dibujo dentro del recuadro interior y sobre el rótulo). Atributos: los datos del usuario (los mismos del plano de fabricación, se guardan en formato.json); el del tablero lleva el tablero; los de contenido (los que en el formato dicen UNIFILAR) llevan el contenido de la hoja (reglas_layout → entregaPdf.format.content). La ventana muestra los mismos campos y tabla de revisiones que el plano (rotuloRender). Sin formato cargado, sigue el rótulo A3 propio y la ventana lo avisa.

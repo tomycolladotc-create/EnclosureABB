@@ -62,6 +62,22 @@ def _board_drawing(project, catalog, fronts, appearances, area_w, area_h):
     return _render(doc, area_w, area_h, n), n
 
 
+def _plot_color(entity, properties):
+    """Ploteo como una tabla de plumas monocromática para los colores índice (pedido de Thomas 2026-11-23): lo que tiene
+    color propio (true color: carcasas y colores ABB) sale con su color; lo que usa un color de la paleta índice de CAD
+    (verde de etiquetas, celeste de peines, rojo de cotas…), directo o por capa, sale en la pluma de RULES["plot"]."""
+    if RULES["plot"]["indexColors"] != "pen":
+        return
+    if entity.dxf.hasattr("true_color"):
+        return
+    color = entity.dxf.get("color", 256)
+    if color == 256 and entity.doc is not None:  # por capa: manda el color de la capa
+        layer = entity.doc.layers.get(entity.dxf.layer)
+        if layer is not None and layer.dxf.hasattr("true_color"):
+            return
+    properties.color = RULES["plot"]["pen"]
+
+
 def _render(doc, area_w, area_h, n):
     """Model space entero a escala 1:n en una página de area_w × area_h mm (PDF de una página). Fondo blanco: el color 7
     sale negro, como en el papel (draw_entities no aplica los colores de la hoja, por eso draw_layout)."""
@@ -69,7 +85,9 @@ def _render(doc, area_w, area_h, n):
     props = LayoutProperties.from_layout(msp)
     props.set_colors("#ffffff")
     backend = svg.SVGBackend()
-    Frontend(RenderContext(doc), backend).draw_layout(msp, layout_properties=props)
+    front = Frontend(RenderContext(doc), backend)
+    front.push_property_override_function(_plot_color)
+    front.draw_layout(msp, layout_properties=props)
     page = layout.Page(area_w, area_h, layout.Units.mm, margins=layout.Margins.all(0))
     text = backend.get_string(page, settings=layout.Settings(scale=1 / n, fit_page=False))
     return pymupdf.open(stream=_inline_css(text).encode("utf-8"), filetype="svg").convert_to_pdf()
