@@ -118,6 +118,12 @@ def _unifilar_viewport(layout):
 
 def board_views(project, catalog, fronts, appearances):
     """Topográfico de la aplicación sin lista, notas ni cajetín propio: (doc, caja_frente, caja_puerta) en mm 1:1."""
+    doc, front, door = split_views(project, catalog, fronts, appearances)
+    return doc, bbox.extents(front, fast=True), bbox.extents(door, fast=True)
+
+
+def split_views(project, catalog, fronts, appearances):
+    """(doc, entidades_frente, entidades_puerta) del DXF del programa, sin lista, notas ni cajetín (también lo usa el PDF de entrega)."""
     doc = ezdxf.read(io.StringIO(build_dxf(project, catalog, fronts, appearances).decode("utf-8")))
     msp = doc.modelspace()
     for e in list(msp):
@@ -137,7 +143,7 @@ def board_views(project, catalog, fronts, appearances):
         if not b.has_data:
             continue
         (door if (e.dxf.layer in door_layers or b.extmin.x >= door_x - 1) else front).append(e)
-    return doc, bbox.extents(front, fast=True), bbox.extents(door, fast=True)
+    return doc, front, door
 
 
 def _fit_scale(views, region_w, region_h, gap, scales):

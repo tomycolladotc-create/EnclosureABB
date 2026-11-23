@@ -46,7 +46,7 @@ def main():
     before = set(proj_dir.glob("*.json")) if proj_dir.exists() else set()
     if not url:
         port = "8797"
-        env = {**os.environ, "ABB_EDITOR_PORT": port}
+        env = {**os.environ, "ABB_EDITOR_PORT": port, "ABB_FORMATS_DIR": tempfile.mkdtemp()}  # no tocar los datos de rótulo del usuario
         server = subprocess.Popen([sys.executable, str(ROOT / "app.py")], cwd=ROOT, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         time.sleep(2)
         url = f"http://127.0.0.1:{port}"
@@ -348,6 +348,16 @@ def main():
             from openpyxl import load_workbook
             ws = load_workbook(xlsx)["Equipamiento eléctrico"]
             check("excel de equipamiento: baja con código, cantidad, circuitos y tableros", all(h in [c.value for c in ws[1]] for h in ("Código", "Cantidad", "Circuitos", "Tableros")) and ws.max_row > 1, ws.max_row)
+            # PDF de entrega (pedido 2026-11-23): rótulo completado en la ventana, hojas numeradas.
+            pg.click("#exportEntrega"); wait_idle(pg, 1000)
+            check("pdf de entrega: la ventana se ve con tableros y campos del rótulo", pg.is_visible("#entregaForm") and pg.locator("#entregaFields input").count() >= 6)
+            pg.fill("#entregaFields input[data-key='proyecto']", "Obra E2E")
+            with pg.expect_download(timeout=300000) as dl:
+                pg.click("#entregaGo")
+            pdfp = Path(tempfile.mkdtemp()) / "entrega.pdf"; dl.value.save_as(pdfp)
+            import pymupdf
+            ed = pymupdf.open(pdfp)
+            check("pdf de entrega: carátula, índice, tablero y lista con el rótulo cargado", ed.page_count >= 4 and all(f"de {ed.page_count}" in pgx.get_text() and "Obra E2E" in pgx.get_text() for pgx in ed), ed.page_count)
             pg.click("summary:has-text('Lista de materiales')")
             check("lista de materiales", pg.locator("#bomTable tr").count() > 3)
             codes = pg.eval_on_selector_all("#bomTable tr td:nth-child(2)", "els=>els.map(e=>e.textContent.trim())")

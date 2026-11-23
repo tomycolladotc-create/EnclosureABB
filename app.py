@@ -47,7 +47,7 @@ WEB = ROOT / "web" / "index.html"
 WEB_STYLES = ROOT / "web" / "styles.css"
 MAX_PDF = 30 * 1024 * 1024
 MAX_FORMAT = 200 * 1024 * 1024  # el DXF de formato con todos los unifilares puede pesar decenas de MB
-FORMATS = ROOT / "datos" / "formatos"  # formato de ploteo del usuario (DXF) y los últimos datos del rótulo; no se sube al repo
+FORMATS = Path(os.environ.get("ABB_FORMATS_DIR") or ROOT / "datos" / "formatos")  # (las pruebas usan una carpeta temporal) formato de ploteo del usuario (DXF) y los últimos datos del rótulo; no se sube al repo
 logging.getLogger("pypdf").setLevel(logging.ERROR)
 
 
@@ -91,6 +91,10 @@ class Handler(BaseHTTPRequestHandler):
             return self.send_data(200, data)
         if route == "/api/ducts":  # secciones estándar de canaleta (catálogo ABB) para dibujarlas a mano
             return self.send_data(200, load_accessory_catalog().get("wiringDucts", {}))
+        if route == "/api/entrega/datos":  # campos del rótulo del PDF de entrega y lo último que se cargó
+            rules = json.loads((ROOT / "datos" / "reglas_layout.json").read_text(encoding="utf-8"))["entregaPdf"]
+            saved = FORMATS / "entrega.json"
+            return self.send_data(200, {"fields": rules["fields"], "values": json.loads(saved.read_text(encoding="utf-8")) if saved.exists() else {}})
         if route == "/api/plano/formato":  # formato cargado la última vez, con los datos del rótulo que se usaron
             meta = FORMATS / "formato.json"
             if not meta.exists():
@@ -267,6 +271,24 @@ class Handler(BaseHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(body)
                 return None
+            except (ValueError, FileNotFoundError, KeyError) as exc:
+                return self.send_data(422, {"error": str(exc)})
+        if route == "/api/export/entrega":  # PDF único de entrega: carátula, índice, tableros y lista consolidada
+            try:
+                from entrega_pdf import build_pdf
+                req = json.loads(blob)
+                projects = {}
+                for pid in req.get("projects", []):
+                    p = proyectos.load(pid)
+                    projects[p.get("project", pid)] = p
+                if not projects:
+                    return self.send_data(422, {"error": "Elegí al menos un tablero."})
+                values = {k: str(v) for k, v in (req.get("values") or {}).items()}
+                FORMATS.mkdir(parents=True, exist_ok=True)  # la próxima vez la ventana arranca con lo último que se cargó
+                (FORMATS / "entrega.json").write_text(json.dumps(values, ensure_ascii=False, indent=1), encoding="utf-8")
+                catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
+                fronts, appearances = resolved_drawing_data()
+                return self.send_data(200, build_pdf(projects, catalog, fronts, appearances, values), "application/pdf")
             except (ValueError, FileNotFoundError, KeyError) as exc:
                 return self.send_data(422, {"error": str(exc)})
         if route == "/api/export/equipamiento":  # Excel de equipamiento eléctrico de los tableros elegidos

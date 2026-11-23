@@ -3,6 +3,12 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-23 05:40 · Claude · PDF único de entrega con rótulo completo
+- Hecho: Exportar → «PDF de entrega» (entrega_pdf.py, POST /api/export/entrega, GET /api/entrega/datos). A3: carátula, índice, una hoja por tablero (puerta abierta y cerrada a escala normalizada 1:N, títulos con la escala), lista consolidada (descripciones partidas en renglones, paginada por altura). Rótulo en todas las hojas: proyecto, cliente, contenido, escala, hoja n de N, N° de plano (documento-NN), revisión, fecha, dibujó/revisó/aprobó; los datos se recuerdan (datos/formatos/entrega.json). Reglas: reglas_layout.json → entregaPdf.
+- Cómo: el dibujo sale del mismo DXF del programa (plano_unifilar.split_views) → ezdxf SVG → PyMuPDF; el SVG de ezdxf usa clases CSS que PyMuPDF no aplica (se copian a cada elemento) y hay que dibujar con draw_layout para el fondo blanco. Tableros en paralelo (1 por núcleo): 24 tableros ≈ 106 s con 2 núcleos.
+- Ojo: ABB_FORMATS_DIR para que las pruebas no pisen los datos de rótulo del usuario.
+- Resultado: 186 tests; 130/130 interfaz.
+
 ## 2026-11-23 03:30 · Claude · Códigos de pedido para comprar y Excel de equipamiento desde el programa
 - Hecho: +46 códigos ABB verificados (cada uno aparece junto a su modelo en una ficha/distribuidor/catálogo; fuentes en fuentes_descargadas.json): S200/S200M/S200L/S200P/SN201L, S800N/S, F202, Tmax XT1/XT2/XT3/T2/T4, E2.2, OT. Campo `confirm`: código verificado pero el unifilar deja una variante abierta (OT…F4 seccionador/conmutador, E2.2 fijo/extraíble, S201P discontinuado) → la lista lo marca «a confirmar». Equipos sin código: de 57 renglones a 2 (S 251 Na C 10 no existe en catálogo vigente; F204-SX ambiguo), con motivo.
 - Hecho: Exportar → «Excel de equipamiento» (excel_equipamiento.py, POST /api/export/equipamiento; categorías en reglas_layout.json → equipamientoExcel). 24 tableros: 85 renglones, 74 con código.

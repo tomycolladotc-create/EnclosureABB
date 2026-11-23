@@ -54,7 +54,7 @@
 
 <main id="screen-export" class="screen"><div class="page narrow">
 <div class="page-head"><div><h1>Exportar <span id="exportProjectName"></span></h1><p id="exportSummary" class="muted"></p></div><button class="secondary" data-go="editor">Volver</button></div>
-<div class="formats"><button id="exportDxf" class="format main"><strong>DXF</strong><span>AutoCAD · bloques, capas y atributos</span></button><button id="exportPdf" class="format"><strong>PDF</strong><span>Imprimir o enviar</span></button><button id="exportPng" class="format"><strong>PNG</strong><span>Imagen frontal</span></button><button id="exportSvg" class="format"><strong>SVG</strong><span>Vectorial editable</span></button><button id="exportPlano" class="format"><strong>Plano de fabricación</strong><span>Tu formato · unifilar + topográfico</span></button><button id="exportEquip" class="format"><strong>Excel de equipamiento</strong><span>Códigos, cantidades, circuitos y tableros</span></button></div>
+<div class="formats"><button id="exportDxf" class="format main"><strong>DXF</strong><span>AutoCAD · bloques, capas y atributos</span></button><button id="exportPdf" class="format"><strong>PDF</strong><span>Imprimir o enviar</span></button><button id="exportPng" class="format"><strong>PNG</strong><span>Imagen frontal</span></button><button id="exportSvg" class="format"><strong>SVG</strong><span>Vectorial editable</span></button><button id="exportPlano" class="format"><strong>Plano de fabricación</strong><span>Tu formato · unifilar + topográfico</span></button><button id="exportEquip" class="format"><strong>Excel de equipamiento</strong><span>Códigos, cantidades, circuitos y tableros</span></button><button id="exportEntrega" class="format"><strong>PDF de entrega</strong><span>Carátula, índice, tableros y lista, con rótulo</span></button></div>
 <div class="exportview"><span>Vista para PDF, PNG y SVG</span><div class="viewtoggle inline" role="group" aria-label="Vista a exportar"><button id="expInt" class="on">Interior</button><button id="expDoor">Puerta cerrada</button></div><small class="muted">El DXF lleva las dos vistas, una al lado de la otra.</small></div>
 <div id="exportWarning" class="note"></div>
 <details class="fold"><summary>Lista de materiales <span id="bomCount" class="muted"></span></summary><div class="fold-body"><div id="bomIssues"></div><button id="exportBom" class="secondary">Descargar CSV</button><div class="tbl"><table><thead><tr><th>Categoría</th><th>Código</th><th>Descripción</th><th>Cant.</th><th>Unidad</th><th>Estado</th></tr></thead><tbody id="bomTable"></tbody></table></div></div></details>
@@ -72,6 +72,11 @@
 <fieldset class="plano-box"><legend>Tableros</legend><div class="plano-tools"><button type="button" class="secondary" id="equipAll">Todos</button><button type="button" class="secondary" id="equipNone">Ninguno</button></div><div id="equipBoards" class="plano-boards"></div></fieldset>
 <label>Nombre del archivo<input id="equipFile" autocomplete="off" value="Equipamiento electrico.xlsx"></label>
 <div class="row"><button type="button" id="equipCancel" class="secondary">Cancelar</button><button id="equipGo" class="primary" type="submit">Generar Excel</button></div></form></div>
+<div id="entregaPanel" class="modal" hidden><form class="modal-box wide" id="entregaForm"><h2>PDF de entrega</h2><p class="muted">Un solo PDF A3: carátula, índice, una hoja por tablero (puerta abierta y cerrada a escala) y la lista de equipamiento, con rótulo y hojas numeradas.</p>
+<fieldset class="plano-box"><legend>Tableros</legend><div class="plano-tools"><button type="button" class="secondary" id="entregaAll">Todos</button><button type="button" class="secondary" id="entregaNone">Ninguno</button></div><div id="entregaBoards" class="plano-boards"></div></fieldset>
+<fieldset class="plano-box"><legend>Rótulo</legend><div id="entregaFields" class="plano-grid"></div></fieldset>
+<label>Nombre del archivo<input id="entregaFile" autocomplete="off" value="Entrega tableros.pdf"></label>
+<div class="row"><button type="button" id="entregaCancel" class="secondary">Cancelar</button><button id="entregaGo" class="primary" type="submit">Generar PDF</button></div></form></div>
 <div id="message" class="toast" role="status"></div>
 <script>
 let ducts={sections:[]},selDuct=null,project,catalog,fronts,appearances,projectList=[],selected=null,history=[],future=[],drag=null,pan=null,view=null;
@@ -502,6 +507,19 @@ $('equipForm').onsubmit=async e=>{e.preventDefault();const ids=[...document.quer
  try{const r=await fetch('/api/export/equipamiento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({projects:ids})});
   if(!r.ok)return notice((await r.json()).error);download(name,await r.blob(),'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');$('equipPanel').hidden=true;notice(`Excel generado: ${ids.length} tablero(s).`)}
  finally{$('equipGo').disabled=false;$('equipGo').textContent='Generar Excel'}};
+/* PDF de entrega: los tableros elegidos con carátula, índice, lista y rótulo (los datos se recuerdan). */
+$('exportEntrega').onclick=async()=>{if(dirty)await saveProject(true);projectList=await fetch('/api/projects').then(x=>x.json());const meta=await fetch('/api/entrega/datos').then(x=>x.json());
+ $('entregaBoards').innerHTML=[...projectList].sort((a,b)=>a.name.localeCompare(b.name,'es',{numeric:true})).map(p=>`<label><input type="checkbox" value="${esc(p.id)}" ${p.id===projectId?'checked':''}>${esc(p.name)}</label>`).join('');
+ $('entregaFields').innerHTML=meta.fields.map(f=>`<label>${esc(f.label)}<input data-key="${esc(f.key)}" value="${esc(meta.values[f.key]||'')}" autocomplete="off"></label>`).join('');$('entregaPanel').hidden=false};
+$('entregaAll').onclick=()=>document.querySelectorAll('#entregaBoards input').forEach(c=>c.checked=true);
+$('entregaNone').onclick=()=>document.querySelectorAll('#entregaBoards input').forEach(c=>c.checked=false);
+$('entregaCancel').onclick=()=>{$('entregaPanel').hidden=true};
+$('entregaForm').onsubmit=async e=>{e.preventDefault();const ids=[...document.querySelectorAll('#entregaBoards input:checked')].map(c=>c.value);if(!ids.length)return notice('Elegí al menos un tablero.');
+ const values={};document.querySelectorAll('#entregaFields input').forEach(i=>values[i.dataset.key]=i.value.trim());let name=$('entregaFile').value.trim()||'Entrega tableros.pdf';if(!/\.pdf$/i.test(name))name+='.pdf';
+ $('entregaGo').disabled=true;$('entregaGo').textContent=ids.length>4?'Generando… (unos segundos por tablero)':'Generando…';
+ try{const r=await fetch('/api/export/entrega',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({projects:ids,values})});
+  if(!r.ok)return notice((await r.json()).error);download(name,await r.blob(),'application/pdf');$('entregaPanel').hidden=true;notice(`PDF de entrega generado: ${ids.length} tablero(s).`)}
+ finally{$('entregaGo').disabled=false;$('entregaGo').textContent='Generar PDF'}};
 $('planoForm').onsubmit=async e=>{e.preventDefault();const ids=[...document.querySelectorAll('#planoBoards input:checked')].map(c=>c.value);if(!ids.length)return notice('Elegí al menos un tablero.');
  const values={};document.querySelectorAll('#planoPanel input[data-tag]').forEach(i=>values[i.dataset.tag]=i.value);let name=$('planoFile').value.trim()||'Plano de fabricacion.dxf';if(!/\.dxf$/i.test(name))name+='.dxf';
  $('planoGo').disabled=true;$('planoGo').textContent='Generando…';

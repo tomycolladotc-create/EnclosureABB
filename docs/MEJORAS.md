@@ -67,3 +67,4 @@
 - Hecho 2026-11-23: Excel de equipamiento eléctrico de varios tableros desde Exportar.
 - Plano de fabricación: lista de materiales del tablero en el espacio libre de la hoja; opción A0 si el topográfico queda chico.
 - Plano de fabricación: guardar varios juegos de rótulo (uno por cliente) y elegir cuál usar.
+- Hecho 2026-11-23: PDF único de entrega (carátula, índice, tableros a escala, lista) con rótulo completo y hojas numeradas.
