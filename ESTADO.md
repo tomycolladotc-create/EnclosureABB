@@ -5,7 +5,7 @@
 ## Objetivo
 PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tablero con dispositivos y envolvente ABB reales → editar en interfaz → exportar DXF (AutoCAD, 1:1 mm, bloques y capas), PNG, SVG, PDF.
 
-- **Testigos de fase en la puerta** (⋯ → «Testigos de fase en la puerta»): luces + portafusibles E 91/32 en el riel, en la lista con código (2026-11-19).
+- **Testigos de fase en la puerta** (⋯ → «Testigos de fase en la puerta»): luces y portafusibles E 91/32 con código. Los fusibles van como genéricos en la lista, con formato, clase, calibre y cantidad.
 
 ## Reglas del usuario (no romper)
 - **No repetir errores**: `docs/LECCIONES.md` + auditoría (`auditoria.py`) en 0 errores antes de entregar un tablero (2026-11-19).

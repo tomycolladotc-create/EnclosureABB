@@ -369,7 +369,8 @@ def build_dxf(project, catalog, fronts, appearances):
     space.add_text(_ascii(f"LISTA DE MATERIALES - REV. {revision}"), dxfattribs={"height": 14, "layer": "ABB_BOM", "insert": (bom_x, bom_y)})
     rows = build_bom(project, catalog)
     for n, row in enumerate(rows):
-        line = f"{row['quantity']} {row.get('unit', 'u')} [{row['category']}] {row['code']} - {row['description']}"
+        code = f"{row['code']} - " if row["code"] else ""
+        line = f"{row['quantity']} {row.get('unit', 'u')} [{row['category']}] {code}{row['description']}"
         space.add_text(_ascii(line), dxfattribs={"height": 8, "layer": "ABB_BOM", "insert": (bom_x, bom_y - 22 - 13 * n)})
     issues = bom_issues(rows, project)
     for k, issue in enumerate(issues):

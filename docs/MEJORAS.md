@@ -14,7 +14,8 @@
 
 ## Testigos de fase (2026-11-19)
 - Hecho: opción en ⋯ para agregar/quitar testigos en la puerta con sus fusibles E 91/32 ubicados en el riel; van a la lista con código.
-- Pendiente: ubicar los fusibles al lado del general (hoy van al final del riel, junto a la bornera PE); elegir color de las luces desde el editor; confirmar el código del fusible E 9F10 GG1 con ABB Argentina.
+- Hecho: listar los fusibles como genéricos, con formato, clase, calibre y cantidad. El portafusible se lista con su código.
+- Pendiente: ubicar los fusibles al lado del general (hoy van al final del riel, junto a la bornera PE); elegir color de las luces desde el editor.
 
 ## Revisión de errores (2026-11-19, tarde) → ver `docs/LECCIONES.md`
 - Corregidos los 19 errores de la revisión (tabla en LECCIONES). La auditoría los detecta en la interfaz.
@@ -45,7 +46,7 @@
 - S290: hoy el frente sale del dibujo vectorial del catálogo ABB (no a escala en alto); si ABB publica CAD, reemplazarlo.
 - Bajar el STEP 3D de S800 (S803/S804N) de ABB Library y reemplazar el DXF 2D (hoy el frente se dibuja centrado con margen porque su proporción difiere de la ficha).
 1. ~~Cargar las carcasas que faltan~~ **Hecho 2026-11-18** con CAD ABB: OT100/125F4, OT125F3, OT160EV03/OT200-250E03, OT160EV04/OT200-250E04, F204, F202, SN201 (+ S200P como hipótesis). **2026-11-19:** cargados E2.2 4P, XT3 4P, XT1 3P, T4 4P, T2 3P, S803, OT63/80F3/F4. **Queda sin dibujar:** S 293-C 80 (S290, sin CAD en ABB Library: decidir reemplazo). Colores e inscripciones de las carcasas nuevas: medir con foto frontal ABB.
-2. **Códigos sin verificar** (quedan "FALTA CÓDIGO"): variante del OT100F4 (N2 seccionador / C conmutador), S 293-C 80, SN201L B16, F204-SX AC-40/0,3 (¿AC o A selectivo?). Fusible tabaquera y portafusible de los testigos; cubrebornes.
+2. **Códigos sin verificar** (quedan "FALTA CÓDIGO"): variante del OT100F4 (N2 seccionador / C conmutador), S 293-C 80, SN201L B16, F204-SX AC-40/0,3 (¿AC o A selectivo?); cubrebornes.
 3. **Accesorios del OT**: manija y eje (OT160EV03 no los trae; OT400E04P tampoco cargados).
 4. **Color de los pilotos**: el unifilar no lo indica; hoy se propone rojo (a confirmar). Permitir elegir color/función por piloto en el editor.
 5. **System pro E**: confirmar si montantes/travesaños se venden por unidad o por juego; conflicto PUPM2100 / PUPM2001; manija "una por puerta" con 2 hojas.
@@ -54,7 +55,7 @@
 8. **Gabinetes que faltan**: SR2 con puerta vidriada, zócalos, IS2, AM2; disponibilidad en Argentina sin verificar.
 9. Puerta cerrada: agregar otros elementos de puerta si el unifilar los trae (voltímetro/amperímetro, selectoras, pulsadores de emergencia).
 
-10. **Siempre "FALTA CÓDIGO" en todos los tableros**: cubrebornes (no hay producto elegido) y fusible "tabaquera" + portafusible de los testigos. Elegir productos reales (ABB) para que la lista salga completa.
+10. **Cubrebornes:** elegir producto para completar su código de pedido.
 11. Al agregar equipos el gabinete cambia solo (se avisa); evaluar pedir confirmación antes de cambiarlo.
 
 ## Propuestas para decidir (Thomas)

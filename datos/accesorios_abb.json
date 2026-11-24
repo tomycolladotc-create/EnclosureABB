@@ -752,23 +752,10 @@
       "status": "código y medidas de la ficha ABB; falta confirmar disponibilidad en Argentina"
     }
   ],
-  "signalFuses": [
-    {
-      "id": "abb-e9f10-gg1",
-      "marca": "ABB",
-      "orderCode": "2CSM277113R1801",
-      "tipo": "E 9F10 GG1",
-      "descripcion": "Fusible cilíndrico 10x38 gG 1 A",
-      "corrienteA": 1,
-      "tamano": "10x38",
-      "source": "aleta.hr (2CSM277113R1801, E 9F10 GG1, 10x38 gG 1 A)",
-      "status": "código de distribuidor (no de la ficha ABB): confirmar antes de comprar",
-      "purchaseCheck": "el código es de un distribuidor, no de la ficha ABB: confirmarlo con ABB antes de comprar"
-    }
-  ],
   "signalDefaults": {
     "voltage": "220 Vca",
     "fuseA": 1,
+    "fuseClass": "gG",
     "_ayuda": "Valores propuestos cuando el usuario agrega testigos y el unifilar no los trae (Argentina 3×380/220 V): luz a 220 Vca fase-neutro y fusible de 1 A como en los unifilares del proyecto. Confirmar. phasesByPoles: fases según los polos del equipo de entrada (2P = fase + neutro: una luz).",
     "phasesByPoles": {
       "2": [

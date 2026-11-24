@@ -218,14 +218,26 @@ class TestigosDeFase(unittest.TestCase):
             self.assertFalse(overlap, f"el fusible pisa {o.get('tag') or o.get('type')}")
         self.assertNotIn("signal_fuses_missing", codes(p))
 
-    def test_lista_con_portafusible_y_fusible_con_codigo(self):
+    def test_lista_con_portafusible_y_fusible_generico(self):
         p = self.armar([dev("QS1", "OT80F4", "abb.ot63_80f4.4p.front", evidence="SECCIONADOR")])
         rows = build_bom(p, CAT)
         sig = {r["code"]: r for r in rows if r["category"] == "Señalización"}
         self.assertEqual(sig["2CSM200923R1801"]["quantity"], 3)  # E 91/32
-        self.assertEqual(sig["2CSM277113R1801"]["quantity"], 3)  # E 9F10 GG1
+        self.assertEqual(sig[""]["quantity"], 3)
+        self.assertEqual(sig[""]["status"], "genérico")
+        self.assertEqual(sig[""]["description"], "Fusible cilíndrico 10x38 gG 1 A para los testigos de fase")
         self.assertEqual(sig["1SFA619403R5231"]["quantity"], 3)  # luces CL2-523R en la puerta
         self.assertFalse(any(r["code"] == "FALTA CÓDIGO" and "Fusible" in r["description"] for r in rows))
+
+        # Un tablero guardado con la versión anterior vuelve a exportar con su corriente nominal.
+        p["signals"]["fuses"]["rating"] = "2 A"
+        holder = next(a for a in p["accessories"] if a["type"] == "signal_fuses")
+        holder["bomExtra"] = [{"bomCategory": "Señalización", "orderCode": "2CSM277113R1801",
+                               "description": "Fusible E 9F10 GG1", "quantity": 3}]
+        rows = build_bom(p, CAT)
+        self.assertNotIn("2CSM277113R1801", {r["code"] for r in rows})
+        fuse = next(r for r in rows if r["code"] == "")
+        self.assertEqual(fuse["description"], "Fusible cilíndrico 10x38 gG 2 A para los testigos de fase")
 
     def test_tablero_solo_de_cajas_igual_tiene_riel_para_los_fusibles(self):
         p = self.armar([dev("QS1", "OT160EV03", "abb.ot160_250e03.3p.front", evidence="SECCIONADOR"),

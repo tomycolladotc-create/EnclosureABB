@@ -91,9 +91,10 @@ def build_bom(project, catalog, accessory_catalog=None, order_codes=None):
     codes = load_order_codes() if order_codes is None else order_codes
     rows = []
 
-    def add(category, code, description, quantity=1, unit="u", tags=(), status="verificado", source=""):
-        rows.append({"category": category, "code": _code(code), "description": description, "quantity": quantity, "unit": unit,
-                     "tags": ", ".join(tags), "status": status if _code(code) != MISSING else "falta código de pedido", "source": source})
+    def add(category, code, description, quantity=1, unit="u", tags=(), status="verificado", source="", *, generic=False):
+        code = "" if generic else _code(code)
+        rows.append({"category": category, "code": code, "description": description, "quantity": quantity, "unit": unit,
+                     "tags": ", ".join(tags), "status": status if code != MISSING else "falta código de pedido", "source": source})
 
     # 1) Envolvente. SR2 (monobloc): un solo artículo, con la placa incluida. Gabinetes de estructura (System pro E):
     # no hay un código de "gabinete"; se compra pieza por pieza (montantes, travesaños, fondo, puertas, laterales...).
@@ -197,9 +198,22 @@ def build_bom(project, catalog, accessory_catalog=None, order_codes=None):
         add("Señalización", pl.get("orderCode"), f"Luz piloto {pl.get('tipo', '')} {pl.get('descripcion', '')} (22 mm, en la puerta) · testigos de presencia de tensión {'-'.join(l['label'] for l in lights)} {lights[0].get('voltage', '')}"
             + (f" · {pl['status']}" if pl.get("status") else ""), len(lights), "u", [l["label"] for l in lights], "a confirmar (color)", pl.get("source", ""))
     fuses = sig.get("fuses") or {}
-    has_fuse_item = any(a.get("type") == "signal_fuses" for a in project.get("accessories", []))  # ya van como accesorio, con código
-    if fuses.get("count") and not has_fuse_item:
-        add("Señalización", None, f"Fusible {fuses.get('type', '')} {fuses.get('rating', '')} con su portafusible, para los testigos de fase (según unifilar)", int(fuses["count"]), "u")
+    fuse_holders = [a for a in project.get("accessories", []) if a.get("type") == "signal_fuses"]
+    active_holders = [a for a in fuse_holders if a.get("decision") != "discarded"]
+    fuse_quantity = sum(int(a.get("count", a.get("quantity", 1))) for a in active_holders)
+    if not fuse_holders:
+        fuse_quantity = int(fuses.get("count") or 0)
+    if fuse_quantity:
+        defaults = accessory_catalog.get("signalDefaults", {})
+        holder = next(iter(accessory_catalog.get("signalFuseHolders", [])), {})
+        rating = fuses.get("rating") or (f"{defaults['fuseA']:g} A" if defaults.get("fuseA") else "")
+        spec = " ".join(p for p in (holder.get("fusible"), defaults.get("fuseClass"), rating) if p)
+        add("Señalización", None, f"Fusible cilíndrico {spec} para los testigos de fase", fuse_quantity,
+            status="genérico", generic=True)
+        if not fuse_holders:
+            add("Señalización", holder.get("orderCode"),
+                f"Portafusible {holder.get('tipo', '')} 1P {holder.get('fusible', '')} para los testigos de fase",
+                fuse_quantity, source=holder.get("source", ""))
 
     # Seccionadores OT: se venden sin manija (y sin eje si se accionan desde la puerta); sin ellos no se pueden operar.
     ot = [d for d in project.get("devices", []) + project.get("devicesNotDrawn", []) if re.match(r"^OT\s?\d", str(d.get("model", ""))) and not re.search(r"WP\b", str(d.get("model", "")))]
@@ -246,7 +260,9 @@ def build_bom(project, catalog, accessory_catalog=None, order_codes=None):
             entry["spans"].append((item.get("poleCount", "?"), int(item.get("quantity", 1))))
         entry["q"] += int(item.get("quantity", 1))
         entry["tags"] += item.get("devices", [])
-        for extra in item.get("bomExtra", []):  # renglones asociados (p. ej. topes de la bornera)
+        # Los proyectos guardados antes del cambio contienen el fusible con el código antiguo.
+        extras = [] if item.get("type") == "signal_fuses" else item.get("bomExtra", [])
+        for extra in extras:  # renglones asociados (p. ej. topes de la bornera)
             k = (extra["bomCategory"], _code(extra.get("orderCode")), extra["description"])
             grouped_acc.setdefault(k, {"q": 0, "tags": [], "spans": [], "check": extra.get("purchaseCheck")})["q"] += int(extra.get("quantity", 1))
     for (code, sec, depth, slot), pieces in ducts.items():
@@ -281,7 +297,7 @@ def bom_issues(rows, project=None):
         issues.append(f"{sum(r['quantity'] for r in not_drawn)} equipo(s) del unifilar no están en el dibujo pero sí en la lista: " + "; ".join(r["tags"] for r in not_drawn))
     seen = {}
     for r in rows:
-        if r["code"] != MISSING:
+        if r["code"] and r["code"] != MISSING:
             seen.setdefault(r["code"], []).append(r)
     dup = [c for c, rs in seen.items() if len(rs) > 1]
     if dup:

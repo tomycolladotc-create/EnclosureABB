@@ -39,7 +39,7 @@ def collect(projects, catalog):
         for r in rows:
             if r["category"] not in order:
                 continue
-            has = r["code"] != MISSING
+            has = bool(r["code"]) and r["code"] != MISSING
             key = f"{r['category']}|{r['code'] if has else r['description'].split(' · ')[0]}"
             detail.append({"key": key, "board": board, **r})
             g = groups.setdefault(key, {"category": r["category"], "code": r["code"], "unit": r["unit"],
@@ -145,11 +145,13 @@ def build_xlsx(projects, catalog):
 
     ns = wb.create_sheet("Notas", 0)
     missing = sum(1 for _, g in items if g["code"] == MISSING)
+    generic = sum(1 for _, g in items if not g["code"])
     confirm = sum(1 for _, g in items if g["code"] != MISSING and any(str(s).startswith("a confirmar") for s in g["status"]))
     notes = [
         f"Equipamiento eléctrico · {len(projects)} tablero(s): " + ", ".join(projects),
         "",
-        f"Renglones: {rows_main}. Con código: {rows_main - missing}. Sin código: {missing}. A confirmar antes de comprar: {confirm}.",
+        f"Renglones: {rows_main}. Con código: {rows_main - missing - generic}. Genéricos: {generic}. "
+        f"Falta código: {missing}. A confirmar antes de comprar: {confirm}.",
         "Incluye: " + ", ".join(RULES["include"]) + ".",
         "Excluye (canalizaciones y montaje): " + ", ".join(RULES["exclude"]) + ".",
         "Cantidad = suma de la hoja «Detalle por tablero» (fórmula SUMIFS): si se corrige el detalle, el total se actualiza.",
