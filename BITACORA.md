@@ -3,6 +3,12 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-25 19:30 · Antigravity · Importación multi-tablero de informe ABB e-Design DOC
+- Hecho: soporte nativo para importar el informe completo PDF de ABB e-Design DOC (`correccion cargas v2.pdf`: 134 págs., 24 tableros, 161 equipos) desde `importador.detect_edesign_report` + `POST /api/import-batch` + ventana `#multiPdfPanel` y buscador de tableros en `web/index.html`.
+- Catálogo y armado: agregadas series `Formula A1` (3P/4P) y `S261/S271/S281` (1P+N) + `ratedCurrentPatterns` de A1 en `datos/catalogo_abb.json`; `layout_auto._conforme_loop` ahora descarta gabinetes donde alguna fila queda sin canaleta arriba/abajo (lección 41); `bom.py` distingue códigos importados del informe e-Design.
+- Archivos: `importador.py`, `app.py`, `layout_auto.py`, `bom.py`, `datos/catalogo_abb.json`, `web/index.html`, `web/styles.css`, `tests/test_edesign_report.py`, `docs/LECCIONES.md`.
+- Resultado: 24/24 tableros y 161/161 equipos generados, 0 sin dibujar, 0 errores y 0 avisos de auditoría, 0 equipos sin código ABB; tests y e2e OK.
+
 ## 2026-11-23 · Codex · Fusibles de pilotos
 - Por pedido de Thomas, la lista muestra el fusible genérico con el calibre del proyecto y la celda de código vacía. El portafusible tiene su propio código.
 - La exportación de proyectos guardados también aplica el criterio nuevo.

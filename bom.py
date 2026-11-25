@@ -165,16 +165,23 @@ def build_bom(project, catalog, accessory_catalog=None, order_codes=None):
     for (model, shell_id, poles, _corr), devices in grouped.items():
         shell = shells.get(shell_id, {})
         code = next((d.get("orderCode") for d in devices if d.get("orderCode")), None)
-        known = None if code else lookup_order_code(model, poles, codes)
+        code_src = next((d.get("orderCodeSource") for d in devices if d.get("orderCode") and d.get("orderCodeSource")), None)
+        known = lookup_order_code(model, poles, codes)
         ref = model or shell.get("label", shell_id)
         tags = [(f"{d['circuit']} ({d.get('tag', '?')})" if d.get("circuit") else d.get("tag", "?")) for d in devices]
-        extra = (f" · {known['descripcion']}" if known else "") + (f" · {known['note']}" if known and known.get("note") else "")
+        extra = (f" · {known['descripcion']}" if known and (not code or known.get("orderCode") == code) else "") + (f" · {known['note']}" if known and known.get("note") and (not code or known.get("orderCode") == code) else "")
         hint = None if (code or known) else unverified_note(model, codes)
         corr = devices[0].get("correctedFrom")
         if corr:  # cambio pedido por el usuario: la lista lo dice para que nadie compre lo que figura en el unifilar
             extra += f" · CAMBIADO por pedido del usuario: el unifilar dice {corr['model']} ({corr['poles']}P)"
+        if code and known and known.get("orderCode") == code:
+            status = _known_status(known)
+        elif code:
+            status = "código del informe e-Design" if code_src == "edesign" else "código cargado por el usuario"
+        else:
+            status = _known_status(known) if known else "falta código de pedido"
         add("Equipo", code or (known or {}).get("orderCode"), f"{ref}" + (f" · {poles} polos" if poles and str(poles) not in ref else "") + extra + (f" · {hint}" if hint else ""),
-            len(devices), "u", tags, "código cargado por el usuario" if code else (_known_status(known) if known else "falta código de pedido"),
+            len(devices), "u", tags, status,
             (known or {}).get("source") or shell.get("cadSource", ""))
     missing_drawn = {}
     for device in project.get("devicesNotDrawn", []):

@@ -4198,12 +4198,39 @@
     "ratedCurrentPatterns": [
       "^E\\d\\.\\d[A-Z]\\s+(\\d+)",
       "\\b(\\d+)\\s*A\\s*$",
-      "^XT\\d[A-Z]?\\s+\\d+\\s+TM[A-Z]+\\s+(\\d+)",
+      "^(?:XT\\d[A-Z]?|A1[ABCN])\\s+\\d+\\s+TM[A-Z]+\\s+(\\d+)",
       "^OT\\s?(\\d+)",
       "-\\s?[BCDKZ]\\s?(\\d+(?:[.,]\\d+)?)\\b"
     ],
-    "_ayuda_ratedCurrentPatterns": "Corriente nominal leída del modelo, en orden: Emax (E2.2N 2000), Tmax T con relé electrónico (… 320A), Tmax XT (XT1S 160 TMD 125-…), OT (OT100F4), modulares (S804S-C100, S 293-C 80). Primero se usa marking.In.",
+    "_ayuda_ratedCurrentPatterns": "Corriente nominal leída del modelo, en orden: Emax (E2.2N 2000), Tmax T con relé electrónico (… 320A), Tmax XT / Formula A1 (XT1S 160 TMD 125-…, A1C 125 TMF 70-700), OT (OT100F4), modulares (S804S-C100, S 293-C 80). Primero se usa marking.In.",
     "ratedCurrentEvidencePattern": "\\b\\dx(\\d+)\\s*-\\s*\\d",
+    "edesignReport": {
+      "_ayuda": "Importación directa del informe completo PDF de ABB e-Design DOC (varios tableros en un solo archivo: esquemas con barras -B#, informe de cables/protecciones y Lista de aparatos de BT).",
+      "apparatusHeader": "Lista de aparatos de BT",
+      "protectionMarkers": [
+        "Overload:",
+        "Short-circuit:"
+      ],
+      "busPattern": "-B\\d+",
+      "cablePattern": "-WC\\d+",
+      "titleOffsetY": -19.1,
+      "titleToleranceY": 0.9,
+      "rowToleranceY": 2.5,
+      "apparatusColumns": {
+        "codeMaxX": 138,
+        "modelMaxX": 225,
+        "desc1MinX": 350,
+        "desc1MaxX": 458
+      },
+      "systemPoles": {
+        "LLLN": 4,
+        "LLL": 3,
+        "LN": 2,
+        "LL": 2
+      },
+      "peCablePattern": "(?:(\\d+))?G(\\d+(?:[.,]\\d+)?)",
+      "mainBoardFallback": "TGBT"
+    },
     "sourceCheck": {
       "_ayuda": "Verificación contra el unifilar (verificacion_unifilar.py): cada equipo se compara por posición con su rótulo en el plano (hasta modelLines renglones alineados debajo de la etiqueta) y, si tiene columna de circuito, con la fila de protección de esa columna (protectionPattern: polos x corriente - poder de corte). circuitPattern: nombres de circuito con número (TSB-1.12). defaultHalfColumn: media columna (pt) si la fila no tiene otras palabras.",
       "circuitPattern": "[A-Z][A-Z0-9]*-\\d+(?:\\.\\d+)+",
@@ -4477,6 +4504,36 @@
       "shell": "abb.s290.3p.front",
       "verified": true,
       "basis": "Medidas de la ficha ABB S293-C100 (78,8 × 90 mm). Frente del dibujo vectorial de medidas del catálogo ABB NN31/05_04 (lección 2026-11-19: no dibujarlo dejaba el gabinete chico)."
+    },
+    {
+      "id": "formula-a1-4p",
+      "modelRegex": "^A1[ABCN]\\b",
+      "poles": [
+        4
+      ],
+      "shell": "abb.tmax.xt1.4p.fixed.front",
+      "verified": false,
+      "basis": "ABB Formula A1 4P (ej. A1C 125 TMF 70-700, 1SDA066752R1): 101,6 × 130 × 60 mm según ficha ABB; comparte dimensiones frontales de montaje con Tmax XT1 4P (101,6 × 130 mm). Frente CAD propio pendiente."
+    },
+    {
+      "id": "formula-a1-3p",
+      "modelRegex": "^A1[ABCN]\\b",
+      "poles": [
+        3
+      ],
+      "shell": "abb.tmax.xt1.3p.fixed.front",
+      "verified": false,
+      "basis": "ABB Formula A1 3P (ej. A1C 125 TMF 80-800, 1SDA066717R1): 76,2 × 130 × 60 mm según ficha ABB; comparte dimensiones frontales de montaje con Tmax XT1 3P (76,2 × 130 mm). Frente CAD propio pendiente."
+    },
+    {
+      "id": "s260-280-na",
+      "modelRegex": "^S\\s?2[678]1\\b.*\\bNA\\b",
+      "poles": [
+        2
+      ],
+      "shell": "abb.s200m.1pn.front",
+      "verified": false,
+      "basis": "Series históricas ABB S261/S271/S281 1P+N (2 módulos DIN, 35 × 88 × 69 mm según DIN 43880 / System pro M): mismo envolvente que S201M NA. Confirmar equivalencia vigente S201 NA."
     }
   ],
   "scope": {

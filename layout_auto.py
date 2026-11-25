@@ -306,6 +306,7 @@ def autolayout(project, catalog, rules=None, free_rails=False, exclude=(), only=
 
 def _conforme_loop(project, catalog, rules, free_rails, only, extra_rows):
     from accesorios import complete
+    from auditoria import audit
     exclude, first = [], None
     while True:
         try:
@@ -316,8 +317,11 @@ def _conforme_loop(project, catalog, rules, free_rails, only, extra_rows):
             return first, False
         complete(new, auto_confirm=True)
         first = first or (new, summary)
-        # Sólo se prueba un gabinete más grande si falta LUGAR; si el catálogo no tiene la pieza, agrandar no lo arregla.
-        if only or not any(a.get("placed") is False and a.get("catalogId") and a.get("type") in ("pe_terminal", "copper_busbar", "distribution_block") for a in new["accessories"]):
+        # Sólo se prueba un gabinete más grande si falta LUGAR (accesorios sin lugar o fila sin canaleta arriba/abajo);
+        # si el catálogo no tiene la pieza, agrandar no lo arregla.
+        unplaced_acc = any(a.get("placed") is False and a.get("catalogId") and a.get("type") in ("pe_terminal", "copper_busbar", "distribution_block") for a in new["accessories"])
+        missing_duct = not only and any(f.get("code") in ("row_without_duct_above", "row_without_duct_below") for f in audit(new, catalog))
+        if only or (not unplaced_acc and not missing_duct):
             summary["gabinetesDescartados"] = list(exclude)
             return (new, summary), True
         exclude.append(summary["gabinete"])

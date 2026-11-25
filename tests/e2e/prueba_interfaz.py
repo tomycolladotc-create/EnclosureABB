@@ -16,7 +16,12 @@ from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[2]
 PDFS = sorted((ROOT / "tests" / "unifilares").glob("*.pdf"))
-CHROME = next((c for c in ("/usr/bin/google-chrome", "/usr/bin/chromium") if Path(c).exists()), None)
+CHROME = next((c for c in (
+    "/usr/bin/google-chrome", "/usr/bin/chromium",
+    r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+    r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
+    r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+) if Path(c).exists()), None)
 results = []
 
 

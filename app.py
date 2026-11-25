@@ -9,7 +9,7 @@ import os
 
 from pypdf import PdfReader
 from cad_export import build_dxf
-from importador import apply_corrections, detect_board, detect_devices, detect_signals, ensure_marking, shell_size
+from importador import apply_corrections, detect_board, detect_devices, detect_edesign_report, detect_signals, ensure_marking, shell_size
 from accesorios import complete, load_accessory_catalog
 from colocar import place_din
 from layout_auto import autolayout, autolayout_conforme
@@ -121,10 +121,13 @@ class Handler(BaseHTTPRequestHandler):
             if not blob.startswith(b"%PDF"):
                 return self.send_data(400, {"error": "El archivo no es un PDF"})
             try:
+                catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
+                report = detect_edesign_report(blob, catalog)
+                if report is not None:
+                    return self.send_data(200, report)
                 from io import BytesIO
                 reader = PdfReader(BytesIO(blob))
                 content = "\n".join(page.extract_text() or "" for page in reader.pages)
-                catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
                 devices, board = detect_devices(content, catalog), detect_board(content)
                 unused = apply_corrections(devices, board, catalog)  # cambios de equipo pedidos por el usuario (datos/correcciones_unifilar.json)
                 from verificacion_unifilar import check  # segunda lectura del plano, por posición: modelo, polos y corriente de cada circuito
@@ -133,6 +136,61 @@ class Handler(BaseHTTPRequestHandler):
                                             "correctionsNotApplied": unused, "textAvailable": bool(content.strip()), "verification": verification})
             except Exception as exc:
                 return self.send_data(422, {"error": f"No se pudo leer el PDF: {exc}"})
+        if route == "/api/import-batch":
+            try:
+                data = json.loads(blob)
+                boards = data.get("boards") or []
+                if not boards:
+                    raise ValueError("No hay tableros seleccionados para importar.")
+                source = str(data.get("source") or "e-Design.pdf")
+                overwrite = bool(data.get("overwrite", True))
+                catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
+                template = proyectos.load("ts4")
+                from auditoria import audit
+                results, created, updated, skipped, failed = [], 0, 0, 0, 0
+                for b in boards:
+                    title = str(b.get("title") or "").strip() or "Tablero"
+                    pid = proyectos.slug(title)
+                    if pid in proyectos.LEGACY:
+                        pid = f"{pid}-imp"
+                    exists = proyectos.path_for(pid).exists()
+                    if exists and not overwrite:
+                        skipped += 1
+                        results.append({"id": pid, "name": title, "status": "skipped"})
+                        continue
+                    try:
+                        import copy
+                        proj = copy.deepcopy(template)
+                        for k in proyectos.TEMPLATE_CONTENT_KEYS:
+                            proj.pop(k, None)
+                        all_devs = [d for d in (b.get("devices") or []) if not d.get("upstream")]
+                        drawn = [{**d, "x": 150, "y": 150, "unplaced": True} for d in all_devs if d.get("shell")]
+                        not_drawn = [{k: d.get(k) for k in ("tag", "circuit", "model", "poles", "status", "orderCode") if d.get(k) is not None}
+                                     for d in all_devs if not d.get("shell")]
+                        proj.update(project=title, source=source, devices=drawn, devicesNotDrawn=not_drawn, accessories=[])
+                        if b.get("feeder"):
+                            proj["feeder"] = b["feeder"]
+                        if b.get("verification"):
+                            proj["sourceCheck"] = {"file": source, **b["verification"]}
+                        new_proj, summary = autolayout_conforme(proj, catalog)
+                        proyectos.save(pid, new_proj)
+                        aud = audit(new_proj, catalog, board_title=title)
+                        errs = [f for f in aud if f["level"] == "error"]
+                        warns = [f for f in aud if f["level"] != "error"]
+                        if exists:
+                            updated += 1
+                        else:
+                            created += 1
+                        results.append({"id": pid, "name": title, "status": "updated" if exists else "created",
+                                        "enclosure": summary["gabinete"], "devices": len(new_proj["devices"]),
+                                        "notDrawn": len(not_drawn), "errors": len(errs), "warnings": len(warns),
+                                        "errorMessages": [e["message"] for e in errs]})
+                    except Exception as exc:
+                        failed += 1
+                        results.append({"id": pid, "name": title, "status": "failed", "error": str(exc)})
+                return self.send_data(200, {"results": results, "created": created, "updated": updated, "skipped": skipped, "failed": failed})
+            except (ValueError, KeyError, TypeError) as exc:
+                return self.send_data(422, {"error": str(exc)})
         if route == "/api/signals-default":  # testigos de fase propuestos (regla única en accesorios.default_signals)
             try:
                 from accesorios import default_signals
