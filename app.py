@@ -233,11 +233,13 @@ class Handler(BaseHTTPRequestHandler):
             try:
                 project = json.loads(blob)
                 catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
-                rows = build_bom(project, catalog)
+                query = parse_qs(urlparse(self.path).query)
+                mode = "generic" if (query.get("mode") or ["abb"])[0] == "generic" else "abb"
+                rows = build_bom(project, catalog, mode=mode)
                 issues = bom_issues(rows, project)
                 if route == "/api/export-bom":
                     return self.send_data(200, to_csv(rows, issues), "text/csv")
-                return self.send_data(200, {"rows": rows, "issues": issues})
+                return self.send_data(200, {"rows": rows, "issues": issues, "mode": mode})
             except (ValueError, KeyError, TypeError) as exc:
                 return self.send_data(422, {"error": str(exc)})
         if route == "/api/revision":
@@ -365,7 +367,8 @@ class Handler(BaseHTTPRequestHandler):
                     (FORMATS / "entrega.json").write_text(json.dumps(values, ensure_ascii=False, indent=1), encoding="utf-8")
                 catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
                 fronts, appearances = resolved_drawing_data()
-                return self.send_data(200, build_pdf(projects, catalog, fronts, appearances, values, shop=bool(req.get("shop", True)), template=template), "application/pdf")
+                bom_mode = "generic" if req.get("bomMode") == "generic" else "abb"
+                return self.send_data(200, build_pdf(projects, catalog, fronts, appearances, values, shop=bool(req.get("shop", True)), template=template, bom_mode=bom_mode), "application/pdf")
             except (ValueError, FileNotFoundError, KeyError) as exc:
                 return self.send_data(422, {"error": str(exc)})
         if route == "/api/export/equipamiento":  # Excel de equipamiento eléctrico de los tableros elegidos
@@ -379,7 +382,8 @@ class Handler(BaseHTTPRequestHandler):
                 if not projects:
                     return self.send_data(422, {"error": "Elegí al menos un tablero."})
                 catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
-                return self.send_data(200, build_xlsx(projects, catalog),
+                mode = "generic" if req.get("mode") == "generic" else "abb"
+                return self.send_data(200, build_xlsx(projects, catalog, mode=mode),
                                       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
             except (ValueError, FileNotFoundError, KeyError) as exc:
                 return self.send_data(422, {"error": str(exc)})

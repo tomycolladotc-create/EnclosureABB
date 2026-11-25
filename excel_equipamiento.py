@@ -27,12 +27,13 @@ def unclassified(rows):
     return sorted({r["category"] for r in rows} - known)
 
 
-def collect(projects, catalog):
-    """projects: {nombre del tablero: proyecto}. Devuelve (detalle, grupos) sólo con las categorías incluidas."""
+def collect(projects, catalog, mode="abb"):
+    """projects: {nombre del tablero: proyecto}. Devuelve (detalle, grupos) sólo con las categorías incluidas.
+    mode='abb' (con códigos ABB) o 'generic' (especificación técnica sin marca)."""
     order = {c: i for i, c in enumerate(RULES["include"])}
     detail, groups = [], {}
     for board, project in projects.items():
-        rows = build_bom(project, catalog)
+        rows = build_bom(project, catalog, mode=mode)
         missing = unclassified(rows)
         if missing:
             raise ValueError("Categorías sin clasificar en equipamientoExcel: " + ", ".join(missing))
@@ -40,10 +41,11 @@ def collect(projects, catalog):
             if r["category"] not in order:
                 continue
             has = bool(r["code"]) and r["code"] != MISSING
-            key = f"{r['category']}|{r['code'] if has else r['description'].split(' · ')[0]}"
+            desc_base = _generic(r["category"], r["description"])
+            key = f"{r['category']}|{r['code'] if has else desc_base}"
             detail.append({"key": key, "board": board, **r})
             g = groups.setdefault(key, {"category": r["category"], "code": r["code"], "unit": r["unit"],
-                                        "description": _generic(r["category"], r["description"]) if has else r["description"],
+                                        "description": desc_base if (has or mode == "generic") else r["description"],
                                         "circuits": [], "boards": [], "status": set()})
             if r.get("tags"):
                 g["circuits"].append(r["tags"])
@@ -74,12 +76,12 @@ def nameplates(projects, catalog):
     return rows
 
 
-def build_xlsx(projects, catalog):
+def build_xlsx(projects, catalog, mode="abb"):
     from openpyxl import Workbook
     from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
     from openpyxl.utils import get_column_letter
 
-    detail, items = collect(projects, catalog)
+    detail, items = collect(projects, catalog, mode=mode)
     font, colors = RULES["font"], RULES["colors"]
     head = Font(name=font, bold=True, color="FFFFFF")
     head_fill = PatternFill("solid", fgColor=colors["header"])
@@ -147,8 +149,9 @@ def build_xlsx(projects, catalog):
     missing = sum(1 for _, g in items if g["code"] == MISSING)
     generic = sum(1 for _, g in items if not g["code"])
     confirm = sum(1 for _, g in items if g["code"] != MISSING and any(str(s).startswith("a confirmar") for s in g["status"]))
+    mode_label = "lista genérica (sin marca, especificación técnica)" if mode == "generic" else "códigos de pedido ABB"
     notes = [
-        f"Equipamiento eléctrico · {len(projects)} tablero(s): " + ", ".join(projects),
+        f"Equipamiento eléctrico ({mode_label}) · {len(projects)} tablero(s): " + ", ".join(projects),
         "",
         f"Renglones: {rows_main}. Con código: {rows_main - missing - generic}. Genéricos: {generic}. "
         f"Falta código: {missing}. A confirmar antes de comprar: {confirm}.",

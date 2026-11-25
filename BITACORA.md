@@ -3,6 +3,12 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-25 20:35 · Antigravity · Lista de materiales genérica (sin marca) vs ABB
+- Hecho: selector **ABB / Genérica** en la lista de materiales (pantalla Exportar + CSV), en **Excel de equipamiento** (`mode`) y en **PDF de entrega** (`bomMode`). En modo genérico cada equipo y accesorio sale con su especificación técnica completa (polos, curva/disparador, calibre In, poder de corte kA IEC, clase/sensibilidad diferencial, dimensiones de gabinete) sin marca ni códigos ABB, agrupando automáticamente ítems equivalentes.
+- Reglas: `datos/reglas_bom_generico.json` (tabla IEC de kA verificada por serie, etiquetas de disparador y peines).
+- Archivos: `datos/reglas_bom_generico.json`, `bom.py`, `excel_equipamiento.py`, `entrega_pdf.py`, `app.py`, `web/index.html`, `web/styles.css`, `tests/test_edesign_report.py`.
+- Resultado: verificado sobre los 24 tableros + TS4 con 0 filtraciones de marca/modelo ABB; tests unitarios, regresión y e2e OK.
+
 ## 2026-11-25 19:55 · Antigravity · Iteración 2: BOM códigos ABB, marcado Formula A1/S271, orden TSB y UI
 - Hecho: `bom.py` prioriza el código comercial ABB verificado (`codigos_pedido_abb.json`) sobre códigos legados del informe e-Design (`S598378`, `S529228`, `S120467`, etc.) → 32 equipos unificados y 0 renglones duplicados en Excel consolidado (70 renglones).
 - Marcado y orden: `Formula A1` imprime `FORMULA` (ya no `SACE Tmax`), `S 271 Na C 10/16` imprime curva y calibre (`C 10`/`C 16`); `auditoria.main_device` ignora circuitos de salida con nombre propio para que «Bomba principal 1» (`TSB-1.3`) no robe la cabecera al `QD137` (lección 42).

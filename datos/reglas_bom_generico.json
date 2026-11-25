@@ -1,0 +1,60 @@
+{
+  "_ayuda": "Reglas para generar la lista de materiales genérica (sin marca ni código de fabricante) a partir de los equipos y accesorios del tablero. Los poderes de corte (Icn/Icu en kA a 230/400-415 V AC) salen de las fichas IEC de cada serie ABB para garantizar una especificación técnica equivalente sin errores.",
+  "breakingCapacityKa": {
+    "_fuente": "Fichas técnicas ABB IEC 60898-1 (modulares S200/S260-S290/SN201) e IEC 60947-2 a 415 V AC (S800, Formula A1, Tmax XT/T, Emax 2). Si el unifilar trae el valor explícito en marking.kA, prevalece el del unifilar.",
+    "rules": [
+      { "regex": "^SN\\s?201L\\b", "kA": "4,5" },
+      { "regex": "^SN\\s?201M\\b", "kA": "10" },
+      { "regex": "^SN\\s?201\\b", "kA": "6" },
+      { "regex": "^S\\s?20[1-4]L\\b", "kA": "4,5" },
+      { "regex": "^S\\s?20[1-4]M\\b", "kA": "10" },
+      { "regex": "^S\\s?20[1-4]P\\b", "kA": "25", "maxInForKa": [[25, "25"], [40, "15"], [63, "10"]] },
+      { "regex": "^S\\s?20[1-4]\\b", "kA": "6" },
+      { "regex": "^S\\s?251\\b", "kA": "6" },
+      { "regex": "^S\\s?26[1-4]\\b", "kA": "6" },
+      { "regex": "^S\\s?27[1-4]\\b", "kA": "10" },
+      { "regex": "^S\\s?28[1-4]\\b", "kA": "6" },
+      { "regex": "^S\\s?29[1-4]\\b", "kA": "6" },
+      { "regex": "^S\\s?80[1-4]B\\b", "kA": "16" },
+      { "regex": "^S\\s?80[1-4]C\\b", "kA": "25" },
+      { "regex": "^S\\s?80[1-4]N\\b", "kA": "36" },
+      { "regex": "^S\\s?80[1-4]S\\b", "kA": "50" },
+      { "regex": "^A1A\\b", "kA": "10" },
+      { "regex": "^A1B\\b", "kA": "18" },
+      { "regex": "^A1C\\b", "kA": "25" },
+      { "regex": "^A1N\\b", "kA": "36" },
+      { "regex": "^XT1B\\b", "kA": "18" },
+      { "regex": "^XT1C\\b", "kA": "25" },
+      { "regex": "^XT1N\\b", "kA": "36" },
+      { "regex": "^XT1S\\b", "kA": "50" },
+      { "regex": "^XT1H\\b", "kA": "70" },
+      { "regex": "^XT2N\\b", "kA": "36" },
+      { "regex": "^XT2S\\b", "kA": "50" },
+      { "regex": "^XT2H\\b", "kA": "70" },
+      { "regex": "^XT2L\\b", "kA": "120" },
+      { "regex": "^XT3N\\b", "kA": "36" },
+      { "regex": "^XT3S\\b", "kA": "50" },
+      { "regex": "^T2N\\b", "kA": "36" },
+      { "regex": "^T2S\\b", "kA": "50" },
+      { "regex": "^T2H\\b", "kA": "70" },
+      { "regex": "^T4N\\b", "kA": "36" },
+      { "regex": "^T4S\\b", "kA": "50" },
+      { "regex": "^T4H\\b", "kA": "70" },
+      { "regex": "^E2\\.2B\\b", "kA": "42" },
+      { "regex": "^E2\\.2N\\b", "kA": "66" },
+      { "regex": "^E2\\.2S\\b", "kA": "85" },
+      { "regex": "^E2\\.2H\\b", "kA": "100" }
+    ]
+  },
+  "tripLabels": {
+    "TMF": "disparador termomagnético fijo (TMF)",
+    "TMD": "disparador termomagnético regulable (TMD)",
+    "TMG": "disparador termomagnético para generadores (TMG)",
+    "TMA": "disparador termomagnético regulable (TMA)"
+  },
+  "combLabels": {
+    "abb-ps2": "Peine de conexión bipolar (1P+N / 2P), paso 17,5 mm, 63 A",
+    "abb-ps3-12": "Peine de conexión tripolar (3P), paso 17,5 mm, 63 A",
+    "abb-ps4": "Peine de conexión tetrapolar (4P), paso 17,5 mm, 63 A"
+  }
+}

@@ -247,17 +247,17 @@ def _format_sheet(template, values):
             "stamp": stamp, "format": f"{pw:g} × {ph:g}", "cover": cover}
 
 
-def build_pdf(projects, catalog, fronts, appearances, values, shop=True, template=None):
+def build_pdf(projects, catalog, fronts, appearances, values, shop=True, template=None, bom_mode="abb"):
     """projects: {nombre: proyecto} en el orden de entrega. shop: agrega detrás de cada tablero su hoja de taller
     (perforado de puerta y vista lateral). template: formato DXF del usuario (marco y rótulo); con él, `values` son los
     atributos de su rótulo {tag: texto} y todas las hojas salen con ese rótulo. Sin formato, rótulo propio en A3 con
-    `values` de entregaPdf.fields. Devuelve bytes."""
+    `values` de entregaPdf.fields. bom_mode: 'abb' (códigos ABB) o 'generic' (sin marca). Devuelve bytes."""
     sheet = _format_sheet(template, values) if template else _generic_sheet(values)
     pw, ph = sheet["size"]
     cx, cy, area_w, area_h = sheet["content"]
     fs = RULES["fontMm"]
     base = values.get("documento") or "PL"
-    detail, items = collect(projects, catalog)
+    detail, items = collect(projects, catalog, mode=bom_mode)
     qty = {}
     for d in detail:
         qty[d["key"]] = qty.get(d["key"], 0) + d["quantity"]
