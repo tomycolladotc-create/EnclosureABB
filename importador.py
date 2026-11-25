@@ -56,6 +56,14 @@ def marking_fields(model, block, rules):
             fields["sufijoGuion"] = "-" + fields["sufijo"]
     if "serie" in fields:
         fields.setdefault("sufijoGuion", "")
+    # Modelos históricos con NA antes de la curva (ej. "S 271 Na C 10", "S 251 Na C 10")
+    if "serie" in fields and "curva" not in fields:
+        na_first = re.search(r"\bNA\s+(?P<curva>[BCDKZ])\s?(?P<In>\d+(?:[.,]\d+)?)\b", model, re.IGNORECASE)
+        if na_first:
+            fields["curva"] = na_first.group("curva").upper()
+            fields["In"] = na_first.group("In").replace(".", ",")
+            fields["sufijo"] = "NA"
+            fields["sufijoGuion"] = "-NA"
     # Los Tmax y Formula A1 escriben primero el bastidor (160/125) y recién después la unidad de
     # disparo y su corriente: "XT1C 160 TMD 80-800", "A1C 125 TMF 70-700". La regla genérica no debe
     # confundir el tamaño de bastidor con In.
@@ -66,8 +74,10 @@ def marking_fields(model, block, rules):
         model, re.IGNORECASE,
     )
     if tmax:
+        ser = tmax.group("serie").upper()
         fields.update({
-            "serie": tmax.group("serie").upper(),
+            "family": "FORMULA" if ser.startswith("A1") else "SACE Tmax",
+            "serie": ser,
             "frame": tmax.group("frame"),
             "trip": tmax.group("trip").upper(),
             "In": tmax.group("In").replace(".", ","),
@@ -182,6 +192,12 @@ def ensure_marking(device, catalog):
     """Proyectos guardados antes del marcado: deduce los datos impresos del modelo (y de la evidencia, si está)."""
     if "marking" not in device and device.get("model"):
         device["marking"] = marking_fields(device["model"], device.get("evidence", ""), catalog["importRules"])
+    elif isinstance(device.get("marking"), dict) and "family" not in device["marking"]:
+        ser = str(device["marking"].get("serie") or "").upper()
+        if ser.startswith("A1"):
+            device["marking"]["family"] = "FORMULA"
+        elif ser.startswith("XT"):
+            device["marking"]["family"] = "SACE Tmax"
     return device
 
 CORRECTIONS_FILE = Path(__file__).resolve().parent / "datos" / "correcciones_unifilar.json"

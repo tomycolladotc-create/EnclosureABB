@@ -49,6 +49,47 @@ class SeriesNuevasYCorriente(unittest.TestCase):
         self.assertEqual(eq["code"], "1SDA066752R1")
         self.assertEqual(eq["status"], "código del informe e-Design")
 
+    def test_bom_prioriza_codigo_verificado_sobre_legado_edesign(self):
+        proj = {
+            "project": "Test",
+            "enclosure": CATALOG["enclosures"][10],
+            "devices": [
+                {"tag": "QF1", "circuit": "C-1", "model": "S201L-C10 NA", "poles": 2,
+                 "shell": "abb.s200m.1pn.front", "orderCode": "S598378", "orderCodeSource": "edesign"},
+                {"tag": "QF2", "circuit": "C-2", "model": "S201L-C10 NA", "poles": 2,
+                 "shell": "abb.s200m.1pn.front", "orderCode": "2CDS241801R0104", "orderCodeSource": "edesign"},
+            ],
+            "accessories": [],
+        }
+        rows = bom.build_bom(proj, CATALOG)
+        eqs = [r for r in rows if r["category"] == "Equipo"]
+        self.assertEqual(len(eqs), 1)
+        self.assertEqual(eqs[0]["code"], "2CDS241801R0104")
+        self.assertEqual(eqs[0]["quantity"], 2)
+        self.assertEqual(eqs[0]["status"], "verificado")
+
+    def test_marcado_formula_a1_y_s271_na(self):
+        fa1 = importador.marking_fields("A1C 125 TMF 70-700", "", CATALOG["importRules"])
+        self.assertEqual(fa1["family"], "FORMULA")
+        self.assertEqual(fa1["serie"], "A1C")
+        self.assertEqual(fa1["In"], "70")
+
+        s271 = importador.marking_fields("S 271 Na C 10", "", CATALOG["importRules"])
+        self.assertEqual(s271["serieS"], "S 271")
+        self.assertEqual(s271["sufijoGuion"], "-NA")
+        self.assertEqual(s271["curva"], "C")
+        self.assertEqual(s271["In"], "10")
+
+    def test_bomba_principal_no_roba_el_general_de_entrada(self):
+        """Lección 42: un circuito de salida cuya descripción dice 'Bomba principal 1' no puede ser main_device."""
+        proj = {
+            "devices": [
+                {"tag": "QD137", "circuit": None, "model": "F204 AC-63/0,03", "evidence": "F204 AC-63/0,03 TSB"},
+                {"tag": "QF58", "circuit": "TSB-1.3", "model": "S 293-C 80", "evidence": "S 293-C 80 TSB-1.3 Bomba principal 1"},
+            ]
+        }
+        self.assertEqual(auditoria.main_device(proj)["tag"], "QD137")
+
 
 class CanaletaEnAutolayoutConforme(unittest.TestCase):
     def test_no_acepta_gabinete_sin_canaleta_abajo(self):

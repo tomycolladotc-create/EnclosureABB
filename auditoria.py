@@ -55,6 +55,9 @@ def main_device(project, rules=None):
             return d
     words = (rules or _import_rules())["mainDeviceKeywords"]
     for d in devices:
+        # Un circuito de salida con nombre propio (ej. TSB-1.3 «Bomba principal 1») nunca es el general de entrada.
+        if d.get("circuit"):
+            continue
         if re.search(r"\b(" + "|".join(map(re.escape, words)) + r")\b", str(d.get("evidence") or ""), re.IGNORECASE):
             return d
     sin_circuito = [d for d in devices if not d.get("circuit")]

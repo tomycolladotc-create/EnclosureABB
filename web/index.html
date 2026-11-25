@@ -33,7 +33,7 @@
 <main id="screen-projects" class="screen"><div class="page">
 <h1>Tableros</h1>
 <label class="drop" id="dropPdf"><span class="drop-title">Arrastrá o elegí el PDF del unifilar</span><span class="muted">Un tablero o un informe completo de ABB e-Design DOC (varios tableros a la vez). Cada tablero se arma solo, dentro de normativa.</span><span class="primary btn">Elegir PDF</span><input id="pdfNew" type="file" accept="application/pdf" hidden></label>
-<div id="projectFilterRow" class="filter-row" hidden><input id="projectSearch" type="search" placeholder="Buscar tablero por nombre o gabinete…" aria-label="Buscar tablero"><span id="projectTotal" class="muted"></span></div>
+<div id="projectFilterRow" class="filter-row" hidden><input id="projectSearch" type="search" placeholder="Buscar tablero por nombre o gabinete…" aria-label="Buscar tablero"><select id="projectSort" aria-label="Ordenar tableros"><option value="recent">Más recientes</option><option value="alpha">Nombre (A–Z)</option></select><span id="projectTotal" class="muted"></span></div>
 <div id="projectCards" class="cards"></div>
 <form id="newForm" class="newform"><input id="newProjectName" placeholder="Nuevo tablero vacío: nombre" aria-label="Nombre"><select id="newProjectEnclosure" aria-label="Gabinete"></select><button id="newProject" class="secondary" type="submit">Crear</button></form>
 </div></main>
@@ -43,7 +43,7 @@
 <section class="canvas"><div class="viewtoggle" role="group" aria-label="Vista"><button id="viewInt" class="on">Interior</button><button id="viewDoor">Puerta cerrada</button></div><svg id="board" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 2450"></svg>
 <div class="zoom"><button id="fit" class="icon" title="Ver tablero completo">⤢</button><button id="focus" class="icon" title="Acercar a los equipos">◎</button><button id="zoomOut" class="icon" aria-label="Alejar">−</button><span id="zoomLabel" class="muted">100%</span><button id="zoomIn" class="icon" aria-label="Acercar">＋</button></div>
 <div id="editor" class="card" hidden><div class="card-head"><strong id="selName"></strong><span id="selTag" class="muted"></span></div>
-<label>Circuito<input id="circuit" placeholder="ej. TS-4.2"></label><label>Modelo<input id="model"></label><label>Código ABB (para la lista de materiales)<input id="orderCode" placeholder="ej. 1SDA067415R1" autocomplete="off"></label>
+<label>Circuito<input id="circuit" placeholder="ej. TS-4.2"></label><label>Descripción de carga<input id="description" placeholder="ej. Equipo rooftop, Tomas…" autocomplete="off"></label><label>Modelo<input id="model"></label><label>Código ABB (para la lista de materiales)<input id="orderCode" placeholder="ej. 1SDA067415R1" autocomplete="off"></label>
 <div id="selInfo" class="muted"></div><div class="row"><button id="duplicate" class="secondary" title="Otro igual con el siguiente circuito">Duplicar</button><button id="remove" class="danger">Eliminar</button></div></div>
 <div id="ductCard" class="card" hidden><div class="card-head"><strong id="ductTitle">Canaleta</strong><span id="ductCode" class="muted"></span></div>
 <label>Sección (ancho × profundidad)<select id="ductSec"></select></label><label>Largo (mm)<input id="ductLen" type="number" min="50" step="5"></label>
@@ -158,7 +158,8 @@ function updateExportSummary(){
 }
 function renderProjectCards(){
  const q=($('projectSearch')?.value||'').trim().toLowerCase();
- const shown=q?projectList.filter(p=>(p.name||'').toLowerCase().includes(q)||(p.enclosure||'').toLowerCase().includes(q)):projectList;
+ let shown=q?projectList.filter(p=>(p.name||'').toLowerCase().includes(q)||(p.enclosure||'').toLowerCase().includes(q)):[...projectList];
+ if($('projectSort')?.value==='alpha')shown.sort((a,b)=>(a.name||'').localeCompare(b.name||'','es',{numeric:true}));
  if($('projectFilterRow')){$('projectFilterRow').hidden=projectList.length<=6;$('projectTotal').textContent=q?`${shown.length} de ${projectList.length} tableros`:`${projectList.length} tableros`}
  $('projectCards').innerHTML=shown.map(p=>`<article class="card-p ${p.id===projectId?'current':''}"><h3>${esc(p.name)}</h3><span class="muted">${p.devices} equipo${p.devices===1?'':'s'}${p.enclosure?' · '+esc((catalog?.enclosures.find(e=>e.id===p.enclosure)?.label||p.enclosure).split('·')[0].trim()):''}${p.modified?' · '+new Date(p.modified).toLocaleString('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):''}</span><div class="acts"><button class="primary grow" data-open="${esc(p.id)}">Abrir</button><button class="secondary" data-dup="${esc(p.id)}">Duplicar</button>${p.id==='ts4'?'':`<button class="danger" data-del="${esc(p.id)}">Borrar</button>`}</div></article>`).join('');
  $('projectCards').querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>{if(b.dataset.open===projectId)return showScreen('editor');location.href='?id='+encodeURIComponent(b.dataset.open)+'#editor'});
@@ -407,13 +408,13 @@ ${structureSvg(w,h,project.enclosure.plinthHeight)||`<rect y="${h-project.enclos
  </g>`}).join('');
  if(!view)setView();
  $('projectName').textContent=project.project;$('saveStatus').textContent=dirty?'Cambios pendientes':'Guardado';updateExportSummary();scheduleValidation();clearTimeout(normaTimer);normaTimer=setTimeout(()=>runNormativa(),500);
-  $('deviceCount').textContent=project.devices.length;$('deviceList').innerHTML=project.devices.map((d,i)=>`<button class="item ${i===selected?'active':''}" data-index="${i}">${esc(nameOf(d))}<small>${esc(d.model||'')}</small></button>`).join('');
+  $('deviceCount').textContent=project.devices.length;$('deviceList').innerHTML=project.devices.map((d,i)=>`<button class="item ${i===selected?'active':''}" data-index="${i}">${esc(nameOf(d))}<small>${esc(d.model||'')}</small>${d.description?`<small class="desc-sub">${esc(d.description)}</small>`:''}</button>`).join('');
   $('deviceList').querySelectorAll('.item').forEach(a=>a.onclick=()=>select(+a.dataset.index));
   $('editor').hidden=selected===null;const da=selDuct&&ductById(selDuct);if(selDuct&&!da)selDuct=null;$('ductCard').hidden=!da;$('autoDucts').hidden=project.ductMode!=='manual';
   if(da){$('ductTitle').textContent=ductName(da);$('ductCode').textContent=da.orderCode||'';const k=ducts.sections.findIndex(x=>x.widthMm===da.sectionMm&&x.heightMm===da.depthMm);if(document.activeElement!==$('ductSec'))$('ductSec').value=String(Math.max(0,k));if(document.activeElement!==$('ductLen'))$('ductLen').value=Math.round(da.orientation==='v'?da.h:da.w);$('ductRotate').textContent=da.orientation==='v'?'Pasar a horizontal':'Pasar a vertical'}
   if(selected!==null){const d=project.devices[selected];if(!d){selected=null;return render()}
   $('selName').textContent=nameOf(d);$('selTag').textContent=d.circuit?`Plano ${d.tag}`:'';
-  if(document.activeElement!==$('circuit'))$('circuit').value=d.circuit??'';if(document.activeElement!==$('model'))$('model').value=d.model??'';if(document.activeElement!==$('orderCode'))$('orderCode').value=d.orderCode??'';{const k=knownCode(d);$('orderCode').placeholder=k?`${k.orderCode} (verificado, va a la lista)`:'falta: cargá el código ABB'}
+  if(document.activeElement!==$('circuit'))$('circuit').value=d.circuit??'';if(document.activeElement!==$('description'))$('description').value=d.description??'';if(document.activeElement!==$('model'))$('model').value=d.model??'';if(document.activeElement!==$('orderCode'))$('orderCode').value=d.orderCode??'';{const k=knownCode(d);$('orderCode').placeholder=k?`${k.orderCode} (verificado, va a la lista)`:'falta: cargá el código ABB'}
   const k=d.mountingKit||shell(d.shell);$('selInfo').textContent=`${d.w} × ${d.h} mm`+(isDin(d)?' · sobre riel DIN':k?.type||k?.kit?` · kit ${k.type||k.kit}`:'');}
   encInfo();
 }
@@ -476,7 +477,7 @@ const updatePoles=()=>{$('polesRow').hidden=!shell($('shell').value)?.poleModule
    $('newCircuit').value='';$('newModel').value='';$('addPanel').hidden=true;notice('Rearmando el tablero…');const auto=await runAuto(false);if(auto.ok){select(project.devices.findIndex(x=>x.tag===tag));if(!auto.changed)notice(`${d.circuit||tag} agregado.`)}else notice('Equipo agregado, pero no se pudo rearmar solo: '+auto.error)};
   $('duplicate').onclick=async()=>{if(selected===null)return;const src=project.devices[selected],nums=project.devices.map(d=>+((/^QF(\d+)$/.exec(d.tag)||[])[1])).filter(Number.isFinite);let n=Math.max(0,...nums)+1,tag='QF'+n;while(project.devices.some(d=>d.tag===tag))tag='QF'+(++n);
    const circ=nextCircuit();snapshot();const d={...clone(src),tag,circuit:circ||undefined,unplaced:true};delete d.placementNote;project.devices.splice(selected+1,0,d);notice('Rearmando el tablero…');const auto=await runAuto(false);if(auto.ok){select(project.devices.findIndex(x=>x.tag===tag));if(!auto.changed)notice(`${circ||tag} agregado (copia de ${nameOf(src)}).`)}else notice('No se pudo rearmar: '+auto.error)};
-  for(const key of ['circuit','model','orderCode'])$(key).onchange=()=>{if(selected===null)return;snapshot();const v=$(key).value.trim();if(key==='orderCode'){const m=project.devices[selected].model;project.devices.forEach(d=>{if(d===project.devices[selected]||(m&&d.model===m))d.orderCode=v||undefined});notice(v?`Código ${v} asignado a todos los ${m||'equipos iguales'}.`:'Código borrado.');}else project.devices[selected][key]=v||(key==='model'?project.devices[selected][key]:undefined);render()};
+  for(const key of ['circuit','description','model','orderCode'])$(key).onchange=()=>{if(selected===null)return;snapshot();const v=$(key).value.trim();if(key==='orderCode'){const m=project.devices[selected].model;project.devices.forEach(d=>{if(d===project.devices[selected]||(m&&d.model===m)){d.orderCode=v||undefined;delete d.orderCodeSource}});notice(v?`Código ${v} asignado a todos los ${m||'equipos iguales'}.`:'Código borrado.');}else project.devices[selected][key]=v||(key==='model'?project.devices[selected][key]:undefined);render()};
  $('remove').onclick=()=>{if(selected===null)return;snapshot();project.devices.splice(selected,1);selected=null;render();notice('Equipo borrado. Ctrl+Z para deshacer.')};
  $('undo').onclick=()=>{if(!history.length)return;future.push(clone(project));project=history.pop();selected=null;$('undo').disabled=!history.length;$('redo').disabled=false;markDirty();render();notice('Último cambio deshecho.')};
  $('redo').onclick=()=>{if(!future.length)return;history.push(clone(project));project=future.pop();selected=null;$('undo').disabled=false;$('redo').disabled=!future.length;markDirty();render();notice('Cambio rehecho.')};
@@ -579,6 +580,7 @@ $('multiAll').onclick=()=>document.querySelectorAll('#multiPdfBoards input').for
 $('multiNone').onclick=()=>document.querySelectorAll('#multiPdfBoards input').forEach(c=>c.checked=false);
 $('multiCancel').onclick=()=>{$('multiPdfPanel').hidden=true};
 $('projectSearch').oninput=renderProjectCards;
+$('projectSort').onchange=renderProjectCards;
 $('multiPdfForm').onsubmit=async e=>{
  e.preventDefault();if(!multiPdfData)return;
  const idxs=[...document.querySelectorAll('#multiPdfBoards input:checked')].map(c=>+c.value);

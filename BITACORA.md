@@ -3,6 +3,13 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-25 19:55 · Antigravity · Iteración 2: BOM códigos ABB, marcado Formula A1/S271, orden TSB y UI
+- Hecho: `bom.py` prioriza el código comercial ABB verificado (`codigos_pedido_abb.json`) sobre códigos legados del informe e-Design (`S598378`, `S529228`, `S120467`, etc.) → 32 equipos unificados y 0 renglones duplicados en Excel consolidado (70 renglones).
+- Marcado y orden: `Formula A1` imprime `FORMULA` (ya no `SACE Tmax`), `S 271 Na C 10/16` imprime curva y calibre (`C 10`/`C 16`); `auditoria.main_device` ignora circuitos de salida con nombre propio para que «Bomba principal 1» (`TSB-1.3`) no robe la cabecera al `QD137` (lección 42).
+- UI: descripción de carga visible en lista lateral y editable en la tarjeta del equipo; selector de orden (Recientes / A–Z) en Tableros; link directo Abrir en el resumen de importación multi-tablero.
+- Archivos: `bom.py`, `importador.py`, `auditoria.py`, `datos/apariencias_abb.json`, `web/index.html`, `web/styles.css`, `tests/test_edesign_report.py`, `docs/LECCIONES.md`.
+- Resultado: 24/24 DXF (0 errores ezdxf), Excel consolidado sin duplicados, PDF de entrega con planos de taller OK; 208 tests + 136/136 e2e OK.
+
 ## 2026-11-25 19:30 · Antigravity · Importación multi-tablero de informe ABB e-Design DOC
 - Hecho: soporte nativo para importar el informe completo PDF de ABB e-Design DOC (`correccion cargas v2.pdf`: 134 págs., 24 tableros, 161 equipos) desde `importador.detect_edesign_report` + `POST /api/import-batch` + ventana `#multiPdfPanel` y buscador de tableros en `web/index.html`.
 - Catálogo y armado: agregadas series `Formula A1` (3P/4P) y `S261/S271/S281` (1P+N) + `ratedCurrentPatterns` de A1 en `datos/catalogo_abb.json`; `layout_auto._conforme_loop` ahora descarta gabinetes donde alguna fila queda sin canaleta arriba/abajo (lección 41); `bom.py` distingue códigos importados del informe e-Design.

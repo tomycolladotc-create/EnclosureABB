@@ -167,20 +167,27 @@ def build_bom(project, catalog, accessory_catalog=None, order_codes=None):
         code = next((d.get("orderCode") for d in devices if d.get("orderCode")), None)
         code_src = next((d.get("orderCodeSource") for d in devices if d.get("orderCode") and d.get("orderCodeSource")), None)
         known = lookup_order_code(model, poles, codes)
+        # Si el código vino automáticamente del informe e-Design (p. ej. códigos legados S598378) y nuestro catálogo
+        # tiene el código comercial ABB verificado (2CDS...), prevalece el verificado para no dividir renglones ni comprar obsoletos.
+        manual_code = code if (code and code_src != "edesign") else None
+        final_code = manual_code or (known or {}).get("orderCode") or code
+        use_known = bool(known) and (not manual_code or known.get("orderCode") == manual_code)
         ref = model or shell.get("label", shell_id)
         tags = [(f"{d['circuit']} ({d.get('tag', '?')})" if d.get("circuit") else d.get("tag", "?")) for d in devices]
-        extra = (f" · {known['descripcion']}" if known and (not code or known.get("orderCode") == code) else "") + (f" · {known['note']}" if known and known.get("note") and (not code or known.get("orderCode") == code) else "")
-        hint = None if (code or known) else unverified_note(model, codes)
+        extra = (f" · {known['descripcion']}" if use_known else "") + (f" · {known['note']}" if use_known and known.get("note") else "")
+        hint = None if final_code else unverified_note(model, codes)
         corr = devices[0].get("correctedFrom")
         if corr:  # cambio pedido por el usuario: la lista lo dice para que nadie compre lo que figura en el unifilar
             extra += f" · CAMBIADO por pedido del usuario: el unifilar dice {corr['model']} ({corr['poles']}P)"
-        if code and known and known.get("orderCode") == code:
+        if use_known:
             status = _known_status(known)
-        elif code:
-            status = "código del informe e-Design" if code_src == "edesign" else "código cargado por el usuario"
+        elif manual_code:
+            status = "código cargado por el usuario"
+        elif final_code:
+            status = "código del informe e-Design"
         else:
-            status = _known_status(known) if known else "falta código de pedido"
-        add("Equipo", code or (known or {}).get("orderCode"), f"{ref}" + (f" · {poles} polos" if poles and str(poles) not in ref else "") + extra + (f" · {hint}" if hint else ""),
+            status = "falta código de pedido"
+        add("Equipo", final_code, f"{ref}" + (f" · {poles} polos" if poles and str(poles) not in ref else "") + extra + (f" · {hint}" if hint else ""),
             len(devices), "u", tags, status,
             (known or {}).get("source") or shell.get("cadSource", ""))
     missing_drawn = {}
