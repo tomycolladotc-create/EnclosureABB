@@ -489,6 +489,47 @@ def build_bom(project, catalog, accessory_catalog=None, order_codes=None, mode="
             description += " · tramos (piezas × polos a puentear): " + ", ".join(f"{q}×{n}" for n, q in sorted(spans.items(), key=lambda x: -int(x[0]) if str(x[0]).isdigit() else 0))
         add(category, code, description, entry["q"], "u", entry["tags"],
             status=f"a confirmar: {entry['check']}" if entry.get("check") else "verificado" if code != MISSING else "falta código de pedido")
+
+    # 5) Cables de potencia y distribución (sección, material/aislación y longitud en metros extraídos de e-Design).
+    # Sólo la acometida principal sin tablero padre (upstreamTag=None) + las salidas propias del tablero, para no
+    # duplicar cables entre tablero padre e hijo al consolidar varios tableros en Excel o PDF de entrega.
+    cable_groups = {}
+    def _add_cable(sec, length_m, insulation, label, is_main=False):
+        sec_clean = str(sec or "").strip()
+        if not sec_clean:
+            return
+        ins_clean = str(insulation or "").strip()
+        key = (sec_clean, ins_clean, bool(is_main))
+        g = cable_groups.setdefault(key, {"length": 0.0, "has_len": False, "missing_len": False, "tags": []})
+        if length_m is not None:
+            val = float(length_m)
+            g["length"] += val
+            g["has_len"] = True
+            l_txt = f"{int(val) if val.is_integer() else round(val, 1)} m"
+            g["tags"].append(f"{label} ({l_txt})")
+        else:
+            g["missing_len"] = True
+            g["tags"].append(label)
+
+    feeder = project.get("feeder") or {}
+    if feeder.get("cable") and not feeder.get("upstreamTag") and feeder.get("lengthM") is not None:
+        _add_cable(feeder["cable"], feeder.get("lengthM"), feeder.get("insulation"),
+                   feeder.get("from") or "Alimentación principal", is_main=True)
+    for device in project.get("devices", []) + project.get("devicesNotDrawn", []):
+        if device.get("cable"):
+            lbl = device.get("circuit") or device.get("tag") or "Circuito"
+            _add_cable(device["cable"], device.get("cableLengthM"), device.get("cableInsulation"), lbl)
+    for (sec_clean, ins_clean, is_main), g in cable_groups.items():
+        sec_fmt = sec_clean.replace("x", "×")
+        ins_txt = f"{ins_clean} · " if ins_clean else ""
+        main_txt = " (acometida principal)" if is_main else ""
+        if g["has_len"]:
+            qty_m = int(round(g["length"])) if abs(g["length"] - round(g["length"])) < 1e-6 else round(g["length"], 1)
+            st = "a confirmar: falta longitud en algún circuito" if g["missing_len"] else "genérico"
+            add("Cable", None, f"Cable {ins_txt}{sec_fmt} mm²{main_txt}", qty_m, "m", g["tags"], st, generic=True)
+        else:
+            add("Cable", None, f"Cable {ins_txt}{sec_fmt} mm²{main_txt}", 1, "u", g["tags"],
+                "a confirmar: definir longitud en metros", generic=True)
     return rows
 
 
@@ -511,7 +552,7 @@ def bom_issues(rows, project=None):
     dup = [c for c, rs in seen.items() if len(rs) > 1]
     if dup:
         issues.append("Código repetido en más de un renglón (revisar que no se pida dos veces): " + ", ".join(dup))
-    if any(not isinstance(r["quantity"], int) or r["quantity"] <= 0 for r in rows):
+    if any(isinstance(r["quantity"], bool) or not isinstance(r["quantity"], (int, float)) or r["quantity"] <= 0 for r in rows):
         issues.append("Hay renglones con cantidad inválida.")
     odd = [r["code"] for r in rows if r["code"] != MISSING and re.search(r"[\s+/,]", r["code"])]
     if odd:

@@ -4229,7 +4229,15 @@
         "LL": 2
       },
       "peCablePattern": "(?:(\\d+))?G(\\d+(?:[.,]\\d+)?)",
-      "mainBoardFallback": "TGBT"
+      "mainBoardFallback": "TGBT",
+      "cableListHeaders": ["List of Lv Cables", "Lista de cables"],
+      "cableLengthLabel": "Longitud",
+      "cableLengthOffsetY": 54.0,
+      "cableLengthToleranceY": 4.0,
+      "cableLengthMinX": 140,
+      "cableLengthMaxX": 205,
+      "cableInsulationPattern": "^(?:Cu|Al)\\s*/\\s*[A-Za-z0-9/]+",
+      "unifilarLengthPattern": "^L\\s*=\\s*(\\d+(?:[.,]\\d+)?)\\s*m\\b"
     },
     "sourceCheck": {
       "_ayuda": "Verificación contra el unifilar (verificacion_unifilar.py): cada equipo se compara por posición con su rótulo en el plano (hasta modelLines renglones alineados debajo de la etiqueta) y, si tiene columna de circuito, con la fila de protección de esa columna (protectionPattern: polos x corriente - poder de corte). circuitPattern: nombres de circuito con número (TSB-1.12). defaultHalfColumn: media columna (pt) si la fila no tiene otras palabras.",

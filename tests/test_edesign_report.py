@@ -168,12 +168,21 @@ class InformeEdesignMultiTablero(unittest.TestCase):
         p1.insert_text((488, 383), "-B1", fontsize=8)
         p1.insert_text((143, 393), "-QF1", fontsize=8)
         p1.insert_text((163, 393), "-QF2", fontsize=8)
+        p1.insert_text((30, 120), "-WC119", fontsize=7)
+        p1.insert_text((30, 130), "18x(1x300)+6x(1x150)+6G150", fontsize=7)
+        p1.insert_text((30, 140), "L = 40 m", fontsize=7)
+        p1.insert_text((30, 160), "-WC1", fontsize=7)
+        p1.insert_text((30, 170), "3x(1x16)+1x(1x16)+1G16", fontsize=7)
+        p1.insert_text((30, 180), "L = 25 m", fontsize=7)
         # Página 2: TSAA (-B2) con -QD144 arriba de barra y -QF31 abajo
         p2 = doc.new_page(width=595, height=842)
         p2.insert_text((56, 242.3), "TSAA", fontsize=8)
         p2.insert_text((56, 249.4), "-QD144", fontsize=8)
         p2.insert_text((113, 261.4), "-B2", fontsize=8)
         p2.insert_text((77, 268.4), "-QF31", fontsize=8)
+        p2.insert_text((30, 120), "-WC30", fontsize=7)
+        p2.insert_text((30, 130), "2x(1x4)+1G4", fontsize=7)
+        p2.insert_text((30, 140), "L = 18 m", fontsize=7)
         # Página 3: Informe de cables / protecciones
         p3 = doc.new_page(width=595, height=842)
         for idx, line in enumerate([
@@ -217,6 +226,25 @@ class InformeEdesignMultiTablero(unittest.TestCase):
         self.assertEqual(tsaa["feeder"]["peMm2"], 16.0)
         self.assertEqual([d["tag"] for d in tsaa["devices"]], ["QD144", "QF31"])
         self.assertEqual([d["poles"] for d in tsaa["devices"]], [2, 2])
+        # Cables extraídos (sección + longitud) y presentes en el BOM sin duplicar el alimentador del hijo
+        self.assertEqual(tgbt["feeder"]["lengthM"], 40)
+        self.assertEqual(tgbt["devices"][1]["cable"], "3x(1x16)+1x(1x16)+1G16")
+        self.assertEqual(tgbt["devices"][1]["cableLengthM"], 25)
+        self.assertEqual(tsaa["devices"][1]["cableLengthM"], 18)
+
+        import excel_equipamiento
+        proj_tgbt = {"project": "TGBT", "enclosure": CATALOG["enclosures"][0], "devices": tgbt["devices"], "feeder": tgbt["feeder"], "accessories": []}
+        proj_tsaa = {"project": "TSAA", "enclosure": CATALOG["enclosures"][10], "devices": tsaa["devices"], "feeder": tsaa["feeder"], "accessories": []}
+        bom_tgbt = bom.build_bom(proj_tgbt, CATALOG, mode="generic")
+        cables_tgbt = [r for r in bom_tgbt if r["category"] == "Cable"]
+        self.assertEqual(len(cables_tgbt), 2)
+        self.assertEqual({r["quantity"] for r in cables_tgbt}, {40, 25})
+        self.assertTrue(all(r["unit"] == "m" for r in cables_tgbt))
+        self.assertEqual(bom.bom_issues(bom_tgbt, proj_tgbt), [])
+        # Consolidado de TGBT + TSAA: 3 cables totales (40 m acometida + 25 m TSAA + 18 m TSAA-1.1), sin duplicar los 25 m
+        detail, _items = excel_equipamiento.collect({"TGBT": proj_tgbt, "TSAA": proj_tsaa}, CATALOG, mode="generic")
+        cable_sum = sum(d["quantity"] for d in detail if d["category"] == "Cable")
+        self.assertEqual(cable_sum, 40 + 25 + 18)
 
 
 if __name__ == "__main__":

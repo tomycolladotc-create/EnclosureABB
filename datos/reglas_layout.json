@@ -130,7 +130,8 @@
    "Bloque de distribución",
    "Barra de distribución",
    "Bornera de tierra (PE)",
-   "Barra de tierra (PE)"
+   "Barra de tierra (PE)",
+   "Cable"
   ],
   "exclude": [
    "Canaleta",

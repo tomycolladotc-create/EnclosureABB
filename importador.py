@@ -350,6 +350,68 @@ def detect_edesign_report(pdf_bytes, catalog):
                 "wc": ln.lstrip("-"),
             }
 
+    # 2b) Listado de cables BT ('List of Lv Cables') y longitudes en esquemas unifilares ('L = 98 m').
+    # Para cada -WC#: sección, longitud (m) y material/aislación (ej. Cu / PVC, Cu / EPR/XLPE).
+    cable_meta = {}
+    cl_headers = tuple(cfg.get("cableListHeaders") or ())
+    ins_re = re.compile(cfg.get("cableInsulationPattern", r"^(?:Cu|Al)\s*/\s*[A-Za-z0-9/]+"))
+    uni_len_re = re.compile(cfg.get("unifilarLengthPattern", r"^L\s*=\s*(\d+(?:[.,]\d+)?)\s*m\b"))
+    len_off = float(cfg.get("cableLengthOffsetY", 54.0))
+    len_tol = float(cfg.get("cableLengthToleranceY", 4.0))
+    len_x0 = float(cfg.get("cableLengthMinX", 140))
+    len_x1 = float(cfg.get("cableLengthMaxX", 205))
+    for p in range(len(doc)):
+        txt = doc[p].get_text("text") or ""
+        if cl_headers and any(h in txt for h in cl_headers):
+            lines = [ln.strip() for ln in txt.splitlines() if ln.strip()]
+            words = doc[p].get_text("words")
+            wc_y = {w[4].lstrip("-"): w[1] for w in words if wc_re.fullmatch(w[4])}
+            for i, ln in enumerate(lines):
+                if not wc_re.fullmatch(ln):
+                    continue
+                wc = ln.lstrip("-")
+                chunk = lines[max(0, i - 32):i + 1]
+                sec = next((c for c in reversed(chunk) if re.match(r"^\d+x\(", c) or re.match(r"^\d+x\d+", c)), None)
+                ins = next((c for c in reversed(chunk) if ins_re.match(c)), None)
+                length_m = None
+                wy = wc_y.get(wc)
+                if wy is not None:
+                    ty = wy + len_off
+                    nums = [w for w in words if abs(w[1] - ty) <= len_tol and len_x0 <= w[0] <= len_x1
+                            and re.fullmatch(r"\d+(?:[.,]\d+)?", w[4])]
+                    if nums:
+                        val = float(nums[0][4].replace(",", "."))
+                        length_m = int(val) if val.is_integer() else round(val, 2)
+                cable_meta[wc] = {"cable": sec, "insulation": ins, "lengthM": length_m}
+        else:
+            # Fallback: en páginas de esquema unifilar, cada -WC# trae 'L = XX m' en su bloque.
+            lines = [ln.strip() for ln in txt.splitlines() if ln.strip()]
+            for i, ln in enumerate(lines):
+                if not wc_re.fullmatch(ln):
+                    continue
+                wc = ln.lstrip("-")
+                m_len = next((uni_len_re.match(nxt) for nxt in lines[i + 1:i + 10] if uni_len_re.match(nxt)), None)
+                if m_len:
+                    val = float(m_len.group(1).replace(",", "."))
+                    length_m = int(val) if val.is_integer() else round(val, 2)
+                    entry = cable_meta.setdefault(wc, {})
+                    if entry.get("lengthM") is None:
+                        entry["lengthM"] = length_m
+                    if not entry.get("cable"):
+                        sec = next((nxt for nxt in lines[i + 1:i + 6] if re.match(r"^\d+x", nxt)), None)
+                        if sec:
+                            entry["cable"] = sec
+
+    # Enriquecemos sys_map con longitud y aislación del cable asociado a cada protección.
+    for sm in sys_map.values():
+        cm = cable_meta.get(sm.get("wc") or "", {})
+        if not sm.get("cable") and cm.get("cable"):
+            sm["cable"] = cm["cable"]
+        if cm.get("lengthM") is not None:
+            sm["cableLengthM"] = cm["lengthM"]
+        if cm.get("insulation"):
+            sm["cableInsulation"] = cm["insulation"]
+
     # 3) Páginas de esquema unifilar (cada página con barra -B# es un tablero).
     hints = catalog.get("modelHints", [])
     min_poles = catalog.get("scope", {}).get("minPoles")
@@ -411,6 +473,10 @@ def detect_edesign_report(pdf_bytes, catalog):
                 **({"orderCode": order_code, "orderCodeSource": "edesign"} if order_code else {}),
                 **({"description": desc2} if desc2 else {}),
                 **({"mounting": hint["mounting"]} if hint and not shell else {}),
+                **({"cable": sm["cable"]} if not is_entry and sm.get("cable") else {}),
+                **({"cableLengthM": sm["cableLengthM"]} if not is_entry and sm.get("cableLengthM") is not None else {}),
+                **({"cableInsulation": sm["cableInsulation"]} if not is_entry and sm.get("cableInsulation") else {}),
+                **({"cableTag": sm["wc"]} if not is_entry and sm.get("wc") else {}),
             }
             devs.append(dev)
             if info and model and poles:
@@ -434,7 +500,10 @@ def detect_edesign_report(pdf_bytes, catalog):
             sm = sys_map.get(d["tag"], {})
             if sm.get("cable"):
                 entry = {"from": b["title"], "upstreamTag": d["tag"], "upstreamModel": d["model"],
-                         "cable": sm["cable"], "peMm2": sm["peMm2"], "peParallel": sm["peParallel"]}
+                         "cable": sm["cable"], "peMm2": sm["peMm2"], "peParallel": sm["peParallel"],
+                         **({"lengthM": sm["cableLengthM"]} if sm.get("cableLengthM") is not None else {}),
+                         **({"insulation": sm["cableInsulation"]} if sm.get("cableInsulation") else {}),
+                         **({"wc": sm["wc"]} if sm.get("wc") else {})}
                 k = _norm_board_key(d["circuit"])
                 outgoing_by_key.setdefault(k, entry)
                 outgoing_by_key.setdefault(k.replace("L", "I"), entry)  # tolera errata TSl2 vs TSI2 en e-Design
@@ -447,7 +516,10 @@ def detect_edesign_report(pdf_bytes, catalog):
             first_sm = sys_map.get(b["devices"][0]["tag"], {})
             if first_sm.get("cable") and not b["devices"][0].get("circuit"):
                 b["feeder"] = {"from": "Alimentación principal", "upstreamTag": None, "upstreamModel": None,
-                               "cable": first_sm["cable"], "peMm2": first_sm["peMm2"], "peParallel": first_sm["peParallel"]}
+                               "cable": first_sm["cable"], "peMm2": first_sm["peMm2"], "peParallel": first_sm["peParallel"],
+                               **({"lengthM": first_sm["cableLengthM"]} if first_sm.get("cableLengthM") is not None else {}),
+                               **({"insulation": first_sm["cableInsulation"]} if first_sm.get("cableInsulation") else {}),
+                               **({"wc": first_sm["wc"]} if first_sm.get("wc") else {})}
 
     unmatched = sorted(set(apparatus) - seen_all_tags)
     return {
