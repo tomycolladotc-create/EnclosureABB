@@ -106,7 +106,7 @@ def generic_device_spec(device, rules=None):
         frame = acb.group("frame")
         in_a = acb.group("in") or frame
         rel = f", relé electrónico {acb.group('rel').upper()}" if acb.group("rel") else ""
-        return f"Interruptor automático abierto (ACB) {p_txt}, marco {frame} A, In {in_a} A{rel}{ka_txt}"
+        return f"Interruptor automático abierto (ACB) {p_txt} fijo, marco {frame} A, In {in_a} A{rel}{ka_txt}"
 
     # 3) Interruptor en caja moldeada (MCCB: Formula A1, Tmax XT, Tmax T)
     mccb_tm = re.match(r"^(?:XT\d[A-Z]?|A1[ABCN]|T\d[A-Z]?)\s+(?P<frame>\d+)\s+(?P<trip>TM[A-Z]+)\s+(?P<in>\d+(?:[.,]\d+)?)", model, re.IGNORECASE)
@@ -250,16 +250,11 @@ def build_bom(project, catalog, accessory_catalog=None, order_codes=None, mode="
         nom = spec.get("nominal") or enclosure.get("externalBody") or {}
         fun = spec.get("functional") or enclosure.get("functional") or {}
         ext = spec.get("externalBody") or enclosure.get("externalBody") or {}
-        if monobloc:
-            add("Envolvente", None,
-                f"Gabinete metálico mural con puerta ciega y placa de montaje · alto {nom.get('height', ext.get('height', '?')):g} × ancho {nom.get('width', ext.get('width', '?')):g} × prof. {nom.get('depth', ext.get('depth', '?')):g} mm"
-                + (f" (placa {fun['height']:g} × {fun['width']:g} mm)" if fun.get("height") and fun.get("width") else ""),
-                generic=True)
-        else:
-            add("Envolvente", None,
-                f"Gabinete metálico autosoportado de piso con zócalo y puerta ciega · útil alto {fun.get('height', '?'):g} × ancho {fun.get('width', '?'):g} × prof. {fun.get('depth', '?'):g} mm"
-                + (f" (ext. {ext['height']:g} × {ext['width']:g} × {ext['depth']:g} mm)" if ext.get("height") else ""),
-                generic=True)
+        material = spec.get("material") or enclosure.get("material") or "chapa de acero"
+        dims = (nom if nom.get("height") else ext) if monobloc else (ext if ext.get("height") else fun)
+        add("Envolvente", None,
+            f"Gabinete de {material} · alto {dims.get('height', '?'):g} × ancho {dims.get('width', '?'):g} × prof. {dims.get('depth', '?'):g} mm",
+            generic=True)
     elif monobloc:
         plate_note = " · incluye placa interna galvanizada (no comprar PF aparte)" if spec.get("line", "").startswith("SR2") or (enc_code or "").startswith("SRN") else ""
         add("Envolvente", enc_code, (spec.get("label") or enclosure.get("line", "Envolvente ABB")) + plate_note,
@@ -327,8 +322,7 @@ def build_bom(project, catalog, accessory_catalog=None, order_codes=None, mode="
             g_drawn.setdefault(spec_txt, []).append(device)
         for spec_txt, devices in g_drawn.items():
             tags = [(f"{d['circuit']} ({d.get('tag', '?')})" if d.get("circuit") else d.get("tag", "?")) for d in devices]
-            st = "a confirmar: definir versión fija o extraíble" if "(ACB)" in spec_txt else "genérico"
-            add("Equipo", None, spec_txt, len(devices), "u", tags, st, generic=True)
+            add("Equipo", None, spec_txt, len(devices), "u", tags, "genérico", generic=True)
         g_nd = {}
         for device in project.get("devicesNotDrawn", []):
             spec_txt = generic_device_spec(device, gen_rules)

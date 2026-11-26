@@ -3,6 +3,11 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-25 21:35 · Antigravity · BOM: ACB siempre fijos y gabinete genérico conciso
+- Hecho: quitada la advertencia de extraíble en ACB/Emax 2 (`datos/codigos_pedido_abb.json` y `bom.py`: siempre versión fija, sin `a confirmar`); en modo genérico el gabinete muestra solo material y dimensiones (`Gabinete de chapa de acero · alto × ancho × prof. mm`).
+- Archivos: `bom.py`, `datos/codigos_pedido_abb.json`, `tests/test_edesign_report.py`, `ESTADO.md`.
+- Resultado: 209/209 tests unitarios y prueba de interfaz OK.
+
 ## 2026-11-25 20:35 · Antigravity · Lista de materiales genérica (sin marca) vs ABB
 - Hecho: selector **ABB / Genérica** en la lista de materiales (pantalla Exportar + CSV), en **Excel de equipamiento** (`mode`) y en **PDF de entrega** (`bomMode`). En modo genérico cada equipo y accesorio sale con su especificación técnica completa (polos, curva/disparador, calibre In, poder de corte kA IEC, clase/sensibilidad diferencial, dimensiones de gabinete) sin marca ni códigos ABB, agrupando automáticamente ítems equivalentes.
 - Reglas: `datos/reglas_bom_generico.json` (tabla IEC de kA verificada por serie, etiquetas de disparador y peines).

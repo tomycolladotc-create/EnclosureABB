@@ -503,8 +503,7 @@
       "orderCode": "1SDA071661R1",
       "descripcion": "Emax 2 E2.2N 2000 Ekip Dip LI 4p F HR (fijo, terminales posteriores horizontales)",
       "source": "https://shop.tecogrp.com/?p=15986",
-      "note": "versión fija F HR; si se prefiere extraíble (WMP) es otro código: confirmar antes de comprar",
-      "confirm": "se toma la versión fija con terminales posteriores horizontales (F HR); si el tablero lleva el interruptor extraíble (WMP) el código es otro",
+      "note": "versión fija con terminales posteriores horizontales (F HR)",
       "status": "verificado (ficha/distribuidor con el código ABB)"
     },
     {

@@ -102,22 +102,28 @@ class SeriesNuevasYCorriente(unittest.TestCase):
                 {"tag": "QF2", "circuit": "C-2", "model": "S201-C16 NA", "poles": 2, "shell": "abb.s200m.1pn.front", "x": 115, "y": 100, "w": 35, "h": 88},
                 {"tag": "QF3", "circuit": "C-3", "model": "A1C 125 TMF 70-700", "poles": 4, "shell": "abb.tmax.xt1.4p.fixed.front", "x": 10, "y": 220, "w": 101.6, "h": 130},
                 {"tag": "QF4", "circuit": "C-4", "model": "S804S-C50", "poles": 4, "shell": "abb.s804n.4p.front", "x": 150, "y": 100, "w": 106, "h": 95},
+                {"tag": "QF0", "circuit": "Main", "model": "E2.2N 2000 Ekip Dip LI 2000", "poles": 4, "shell": "abb.emax2.e22.4p.fixed.front", "x": 10, "y": 400, "w": 366, "h": 371},
             ],
             "accessories": [],
         }
         rows = bom.build_bom(proj, CATALOG, mode="generic")
         self.assertEqual(bom.bom_issues(rows, proj), [])
+        enc_row = next(r for r in rows if r["category"] == "Envolvente")
+        self.assertRegex(enc_row["description"], r"^Gabinete de chapa de acero · alto \d+ × ancho \d+ × prof\. \d+ mm$")
         for r in rows:
             self.assertEqual(r["code"], "")
             self.assertNotIn("ABB", r["description"])
             self.assertNotIn("S201", r["description"])
             self.assertNotIn("A1C", r["description"])
+            self.assertNotIn("extraíble", r["description"].lower())
+            self.assertNotIn("extraíble", r["status"].lower())
         descs = {r["description"]: r["quantity"] for r in rows if r["category"] == "Equipo"}
         # QF1 (6 kA por unifilar) y QF2 (S200 6 kA) tienen idéntica especificación técnica → se agrupan en 2 u
         self.assertEqual(descs["Interruptor termomagnético 1P+N, curva C, 16 A, 6 kA (riel DIN)"], 2)
         self.assertEqual(descs["Interruptor diferencial 4P, 40 A, 30 mA, clase AC (riel DIN)"], 1)
         self.assertEqual(descs["Interruptor en caja moldeada (MCCB) 4P, marco 125 A, In 70 A, disparador termomagnético fijo (TMF), 25 kA"], 1)
         self.assertEqual(descs["Interruptor termomagnético de alta capacidad 4P, curva C, 50 A, 50 kA (riel DIN)"], 1)
+        self.assertEqual(descs["Interruptor automático abierto (ACB) 4P fijo, marco 2000 A, In 2000 A, relé electrónico LI, 66 kA"], 1)
         xlsx = excel_equipamiento.build_xlsx({"Tablero Prueba": proj}, CATALOG, mode="generic")
         self.assertGreater(len(xlsx), 2000)
 
