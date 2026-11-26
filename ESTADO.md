@@ -1,6 +1,6 @@
 # ESTADO — Topográficos de tableros ABB
 > Foto actual del proyecto. Se reescribe (no se acumula). El historial va en BITACORA.md.
-> Actualizado: 2026-11-19 · Claude
+> Actualizado: 2026-11-26 · Codex
 
 ## Objetivo
 PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tablero con dispositivos y envolvente ABB reales → editar en interfaz → exportar DXF (AutoCAD, 1:1 mm, bloques y capas), PNG, SVG, PDF.
@@ -36,6 +36,7 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 | `work/cobertura_catalogo.py` | genera `docs/cobertura_unifilares.md` (familias que faltan) |
 
 ## Situación
+- **Entrega eléctrica OT1 de Pabellón 6** (24 tableros, 77 hojas A1 y seis plantas A0): revisión final documentada en `docs/REVISION_PABELLON6_OT1.md`. Coinciden 161 equipos y 150 tendidos de 6.774 m. El cierre requiere acreditar poder de corte o filiación, definir barras pendientes, completar la identificación de recorridos, corregir cinco ploteos y conciliar los rótulos y partidas identificados en el informe.
 - Editor funcionando con el TS4: importa, edita, rieles por envolvente, zoom, DXF/PNG/SVG/PDF con colores. Un proyecto por tablero (`proyectos.py`), accesorios y normativa (`accesorios.py`, `normativa.py`), ubicación en riel (`colocar.py`).
 - **Armado automático** (`layout_auto.py`, botón 'Armar tablero automático', ruta `/api/autolayout`): elige el gabinete más chico del catálogo donde entra el contenido y acomoda seccionadores, equipos de kit y equipos de riel. Criterios en `datos/reglas_layout.json` (**propuestas de diseño, no datos de ABB**). TS4 hoy cae en SR2 SRN12630K (1200×600×300) con riel GD4006.
 - **Gabinetes en `datos/catalogo_abb.json -> enclosures`** (31): 8 de estructura System pro E power 185 (catálogo ABB 1STC803009D0103, `structure` con banda 50 mm, hojas de puerta, lista de partes con página) y 23 SR2 monobloc con puerta ciega (catálogo ABB 1STC804013D0201 de 2011; externo = nominal + 3 mm; placa interna = (ancho-40)×(alto-40); `railOptions` GD4006/6006/8006). Cada gabinete trae `functionalOffset` y `railOptions`. Colores RAL 7035 (gabinete) y RAL 7012 (zócalo, sólo System pro E); hex aproximados.
@@ -45,7 +46,7 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 - Series sin confirmar con fuente (`verified: false`): XT1 y XT2 para todas las versiones de poder de corte.
 - **Pintura de los frentes (2026-11-19)**: los colores se ponen sobre las superficies cerradas del CAD (semillas, `pintura.cad_regions`); el servidor resuelve todo (`pintura.resolve` → `/api/fronts`, `/api/appearances`) y la pantalla y el DXF dibujan lo mismo. Etiquetas con letra mínima (`etiquetas.label_boxes`, misma regla en el editor). Encuadre de exportación medido sobre lo dibujado.
 - **Plano de fabricación** (2026-11-22): `python3 plano_unifilar.py formato.dxf carpeta_proyectos salida.dxf [tableros]` → unifilar del usuario + topográfico (puerta abierta/cerrada) en su formato. En la interfaz: Exportar → «Plano de fabricación» (carga el formato una vez, se completa el rótulo por cliente antes de generar, sale DXF sólo con las hojas elegidas).
-- Pruebas: 167 + 24 tableros de regresión (`python -m pytest -q`) y `python3 tests/e2e/prueba_interfaz.py` (122 controles). Correrlas antes de cada push. Las pruebas automáticas usan `ABB_PROJECTS_DIR`, nunca `datos/proyectos`.
+- Pruebas: 210 unitarias, incluida la regresión de 24 tableros, y 136 controles de interfaz. Correr `python -m unittest discover tests` y `python tests/e2e/prueba_interfaz.py` antes de cada push. Las pruebas automáticas usan `ABB_PROJECTS_DIR`, nunca `datos/proyectos`.
 
 ## PRÓXIMA SESIÓN — empezar por acá (escrito por Claude, 2026-11-16 01:50)
 
@@ -86,7 +87,6 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 
 ## Pendiente (anotarse con [Claude] / [Codex] antes de empezar)
 > Lista resumida y priorizada de mejoras, agregados y pendientes: `docs/MEJORAS.md`.
-- [Codex] Revisión final de Pabellón 6: cotejar unifilares, circuitos, topográficos, ploteos y cómputo de materiales. Corregir y verificar diferencias que afecten la entrega.
 13. **Lista de materiales anti-error y puerta cerrada (Claude, 2026-11-18):** hecho (ver BITACORA). Códigos de pedido: todos los equipos verificados salvo S 251 Na C 10 (no está en el catálogo vigente) y F204-SX (ambiguo); variantes abiertas marcadas «a confirmar» (2026-11-23); carcasas OT/F200/SN201 cargadas (2026-11-18); falta S 293 (sin CAD ABB); color de los pilotos (el unifilar no lo dice: se propone rojo); confirmar si los montantes/travesaños System pro E se venden por unidad o por juego.
 12. **BOM y revisiones completadas:** `bom.py` agrupa envolvente, estructura, rieles, equipos, kits y accesorios; exporta CSV UTF-8/Excel y dibuja la tabla en la capa DXF `ABB_BOM`. `revisiones.py` emite revisiones numéricas con fecha, descripción y responsable, persistidas en el JSON del proyecto y mostradas en Exportar/DXF. TS4 genera 18 renglones agrupados. No se tocaron datos ni geometría KD de Claude.
 11. **Seguridad y validación completadas:** autoguardado con borrador local recuperable, indicador Guardado/Cambios pendientes/Error, advertencia al salir, deshacer/rehacer y validación visual/manual. `validacion.py` controla superposición, límites de placa, posición/capacidad de riel y profundidad; si falta el dato ABB emite advertencia sin inventarlo. Reglas en `datos/reglas_validacion.json`, ruta `/api/validate` y pruebas dedicadas. No modifica la geometría KD asignada a Claude.

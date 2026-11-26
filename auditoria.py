@@ -94,6 +94,29 @@ def _layout_rules():
     return json.loads((Path(__file__).resolve().parent / "datos" / "reglas_layout.json").read_text(encoding="utf-8"))
 
 
+def audit_feeder_names(boards):
+    """Coteja el rótulo de cada hijo con el circuito del padre que lo alimenta.
+
+    `boards` está indexado por el nombre de cada tablero. El vínculo lo da la
+    etiqueta de la protección aguas arriba, incluso si el circuito tiene una errata.
+    """
+    findings = []
+    for title, board in boards.items():
+        feeder = board.get("feeder") or {}
+        parent_title = feeder.get("from")
+        parent = boards.get(parent_title)
+        tag = feeder.get("upstreamTag")
+        if not parent or not tag:
+            continue
+        devices = parent.get("devices", []) + parent.get("devicesNotDrawn", [])
+        supply = next((d for d in devices if d.get("tag") == tag), None)
+        if supply is not None and supply.get("circuit") != title:
+            circuit = supply.get("circuit") or "sin nombre"
+            findings.append(_f("error", "feeder_name_mismatch",
+                               f"{parent_title} ({tag}) indica «{circuit}», pero alimenta el tablero «{title}».", [tag]))
+    return findings
+
+
 def audit(project, catalog, rules=None, board_title=None):
     """Hallazgos de armado. Los criterios salen de datos/reglas_validacion.json (y el portaetiqueta de reglas_layout.json)."""
     rules = {**_validation_rules(), **(rules or {})}

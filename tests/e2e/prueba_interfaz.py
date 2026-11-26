@@ -2,10 +2,10 @@
 
 Uso:  python tests/e2e/prueba_interfaz.py [URL]   (por defecto levanta app.py en un puerto libre)
 Recorre todos los botones visibles; imprime PASS/FAIL y termina con código 1 si algo falla.
-No toca datos/ts4_topografia.json: trabaja sobre copias en datos/proyectos/ que borra al final.
+Sin URL, levanta un servidor con una copia del TS4 y proyectos en una carpeta temporal.
+Si se pasa una URL, tiene que ser la de un servidor de pruebas.
 """
 import os
-import shutil
 import subprocess
 import sys
 import tempfile
@@ -43,16 +43,21 @@ def wait_idle(pg, ms=2500):
 
 
 def main():
+    sys.stdout.reconfigure(encoding="utf-8")
     url = sys.argv[1] if len(sys.argv) > 1 else None
     server = None
-    ts4 = ROOT / "datos" / "ts4_topografia.json"
-    ts4_backup = ts4.read_bytes()
-    proj_dir = ROOT / "datos" / "proyectos"
-    before = set(proj_dir.glob("*.json")) if proj_dir.exists() else set()
+    workspace = None
     if not url:
+        workspace = tempfile.TemporaryDirectory(prefix="abb-e2e-")
+        project_dir = Path(workspace.name) / "proyectos"
+        project_dir.mkdir()
+        fixture = project_dir / "ts4.json"
+        fixture.write_bytes((ROOT / "datos" / "ts4_topografia.json").read_bytes())
         port = "8797"
-        env = {**os.environ, "ABB_EDITOR_PORT": port, "ABB_FORMATS_DIR": tempfile.mkdtemp()}  # no tocar los datos de rótulo del usuario
-        server = subprocess.Popen([sys.executable, str(ROOT / "app.py")], cwd=ROOT, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        env = {**os.environ, "ABB_EDITOR_PORT": port, "ABB_PROJECTS_DIR": str(project_dir),
+               "ABB_FORMATS_DIR": str(Path(workspace.name) / "formatos")}
+        start = "import proyectos, runpy; proyectos.LEGACY['ts4'] = proyectos.PROJECTS_DIR / 'ts4.json'; runpy.run_module('app', run_name='__main__')"
+        server = subprocess.Popen([sys.executable, "-c", start], cwd=ROOT, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         time.sleep(2)
         url = f"http://127.0.0.1:{port}"
     try:
@@ -427,11 +432,8 @@ def main():
         if server:
             server.terminate()
             server.wait(10)
-        ts4.write_bytes(ts4_backup)
-        for f in (set(proj_dir.glob("*.json")) if proj_dir.exists() else set()) - before:
-            f.unlink()
-        if proj_dir.exists() and not any(proj_dir.iterdir()) and not before:
-            shutil.rmtree(proj_dir)
+        if workspace:
+            workspace.cleanup()
     failed = [n for n, ok in results if not ok]
     print(f"\n{len(results) - len(failed)}/{len(results)} OK" + (f" · fallan: {', '.join(failed)}" if failed else ""))
     sys.exit(1 if failed else 0)

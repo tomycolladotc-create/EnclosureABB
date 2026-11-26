@@ -8,7 +8,7 @@ import unittest
 from pathlib import Path
 
 from accesorios import complete, propose
-from auditoria import audit, main_device, rated_current
+from auditoria import audit, audit_feeder_names, main_device, rated_current
 from bom import build_bom
 from importador import detect_board
 from layout_auto import autolayout_conforme
@@ -35,6 +35,22 @@ def project(devices, **extra):
 
 def codes(p):
     return {f["code"] for f in audit(p, CAT)}
+
+
+class NombresDeAlimentadores(unittest.TestCase):
+    def test_el_alimentador_coincide_con_el_rotulo_del_tablero_hijo(self):
+        supply = {"tag": "QF104", "circuit": "TSl2"}
+        boards = {
+            "TS5-PORT 15-16-17": {"devices": [supply]},
+            "TSI2": {"feeder": {"from": "TS5-PORT 15-16-17", "upstreamTag": "QF104"}},
+        }
+        finding, = audit_feeder_names(boards)
+        self.assertEqual((finding["level"], finding["code"], finding["tags"]),
+                         ("error", "feeder_name_mismatch", ["QF104"]))
+        self.assertIn("TSI2", finding["message"])
+        supply["circuit"] = "TSI2"
+        self.assertEqual(audit_feeder_names(boards), [])
+        self.assertEqual(audit_feeder_names({"TSI2": boards["TSI2"]}), [])
 
 
 class CorrienteYEntrada(unittest.TestCase):

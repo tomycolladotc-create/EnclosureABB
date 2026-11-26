@@ -3,6 +3,12 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-26 · Codex · Revisión final de Pabellón 6 OT1
+- Hecho: cotejados 24 tableros, 161 equipos, 150 tendidos, 83 hojas de ploteo, cuatro DWG, dos planillas y pliego. Informe en `docs/REVISION_PABELLON6_OT1.md`.
+- Archivos: auditoría de nombres de alimentadores, test de QF104 y prueba de interfaz aislada de los proyectos del usuario.
+- Ojo: 53 salidas necesitan acreditar poder de corte o filiación, hay barras pendientes, 22 recorridos sin identificar en planta y cinco ploteos con escalas superpuestas. ZIP original preservado.
+- Verificado: 210 pruebas unitarias, regresión de 24 tableros y 136/136 pruebas de interfaz con capturas revisadas.
+
 ## 2026-11-26 02:35 · Antigravity · Topográficos DXF/PDF: etiquetas de circuito y títulos en Arial Bold sólido
 - Hecho: asignado estilo `ABB_ARIAL_BOLD` a las etiquetas de portaetiquetas (`ABB_ETIQUETAS` en `cad_export.py`) y a los títulos `PUERTA ABIERTA / PUERTA CERRADA` (`entrega_pdf.py`) para eliminar el trazo fino/grisáceo de SHX y obtener texto negro sólido nítido en PDF/ploteo.
 - Archivos: `cad_export.py`, `entrega_pdf.py`.
