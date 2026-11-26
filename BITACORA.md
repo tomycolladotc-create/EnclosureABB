@@ -3,6 +3,11 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-26 01:35 · Antigravity · BOM genérico: regulación Ir (`setting`) y categoría Accionamiento sin serie
+- Hecho: `bom.generic_device_spec` incluye automáticamente el ajuste térmico/magnético del campo `setting` (ej. `, regulado Ir = 63 A`), separando y documentando equipos regulables en el cómputo genérico; en modo genérico la categoría de manija de seccionador sale como `Accionamiento` (sin `OT`), habilitada en `datos/reglas_layout.json -> equipamientoExcel.include`.
+- Archivos: `bom.py`, `datos/reglas_layout.json`.
+- Resultado: 209/209 tests unitarios + prueba de interfaz OK; verificado en los 24 tableros de Pabellón 6 (0 errores de auditoría, 0 fugas de marca, 78 págs. PDF unificado).
+
 ## 2026-11-25 21:50 · Antigravity · Cables (sección, aislación y longitud) desde PDF raw e-Design en la lista de materiales
 - Hecho: `importador.detect_edesign_report` extrae de `List of Lv Cables` (y fallback `L = X m` de unifilares) la sección, aislación (`Cu / PVC`, `Cu / EPR/XLPE`) y longitud en metros de cada `-WC#`; `bom.build_bom` suma los metros por formación en la categoría `Cable` (tanto en modo ABB como Genérica, sin duplicar el alimentador entre tablero padre e hijo) y `equipamientoExcel` consolida todos los tableros con `SUMIFS`.
 - Archivos: `importador.py`, `bom.py`, `datos/catalogo_abb.json`, `datos/reglas_layout.json`, `tests/test_edesign_report.py`.

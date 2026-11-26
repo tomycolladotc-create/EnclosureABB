@@ -84,6 +84,14 @@ def _ka_for_device(device, rules):
 def generic_device_spec(device, rules=None):
     """Descripción técnica genérica (sin marca ni serie ABB) pero completa y sin ambigüedades:
     tipo de aparato, polos, curva/disparador, calibre In y poder de corte kA."""
+    spec = _generic_device_spec_base(device, rules)
+    setting = str(device.get("setting") or "").strip()
+    if setting and setting.lower() not in spec.lower():
+        spec = f"{spec}, regulado {setting}"
+    return spec
+
+
+def _generic_device_spec_base(device, rules=None):
     rules = rules or load_generic_rules()
     model = str(device.get("model") or "").strip()
     poles = device.get("poles")
@@ -411,7 +419,7 @@ def build_bom(project, catalog, accessory_catalog=None, order_codes=None, mode="
     # Seccionadores OT: se venden sin manija (y sin eje si se accionan desde la puerta); sin ellos no se pueden operar.
     ot = [d for d in project.get("devices", []) + project.get("devicesNotDrawn", []) if re.match(r"^OT\s?\d", str(d.get("model", ""))) and not re.search(r"WP\b", str(d.get("model", "")))]
     if ot:
-        add("Accionamiento OT", None,
+        add("Accionamiento" if is_generic else "Accionamiento OT", None,
             ("Manija de accionamiento para seccionador bajo carga (directa sobre el equipo o de puerta con eje)" if is_generic
              else "Manija para el seccionador OT (directa sobre el equipo, o de puerta con su eje): elegir según la variante; el OT se vende sin manija"),
             len(ot), "u", [d.get("tag", "?") for d in ot], "genérico" if is_generic else "falta código de pedido")

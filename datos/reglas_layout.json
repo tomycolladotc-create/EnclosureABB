@@ -124,6 +124,7 @@
   "include": [
    "Equipo",
    "Equipo (no dibujado)",
+   "Accionamiento",
    "Accionamiento OT",
    "Señalización",
    "Peine",
