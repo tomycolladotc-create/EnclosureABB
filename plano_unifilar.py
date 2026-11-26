@@ -1,9 +1,9 @@
 """Plano de fabricación por tablero: el UNIFILAR del usuario y, al lado, el TOPOGRÁFICO armado por la aplicación
 (vista con la puerta abierta y con la puerta cerrada), dentro del formato de ploteo del usuario.
 
-Entrada: el DXF de formato del usuario (guardado desde su DWG, p. ej. BAF-E-EL-PL-104-0 Unifilares) con una
-presentación (layout) por tablero que ya muestra su unifilar en el espacio modelo, el marco «A2 594x420» y el
-rótulo «Rotulo_BA_ferial». Salida: el mismo DXF, con cada presentación de tablero convertida en una hoja A1 a
+Entrada: el DXF de formato del usuario (guardado desde su DWG) con una presentación (layout) por tablero
+que ya muestra su unifilar en el espacio modelo, un marco de hoja y un bloque de rótulo con atributos.
+Salida: el mismo DXF, con cada presentación de tablero convertida en una hoja A1 a
 escala 1:1 que contiene:
   - el unifilar del usuario, tal cual (misma ventana, escala 1:1, arriba a la izquierda);
   - el topográfico de la aplicación (cad_export.build_dxf, sin la lista ni las notas), dibujado 1:1 en el espacio

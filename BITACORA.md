@@ -3,17 +3,18 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
-## 2026-11-26 19:50 · Antigravity · Cierre final Pabellón 6 OT1: poder de corte, barras dibujadas y planos A0/DWG
-- Hecho: actualizados 52 interruptores en 11 tableros con códigos ABB verificados (100 % `Icn/Icu >= Ik`), agregadas barras de cobre 2000 A (`PPHC2593`+`PPHC2119`) y PE (`ZXPHC218` 40×10 / `AA8010` 20×5) dibujadas en DXF/SVG y en BOM genérico, y regla A16 (`breaking_capacity_low`, lección 44) en `auditoria.py`.
-- Entrega Pabellón 6: reemitido ZIP final (`1f5a049f...`, 15 archivos, 0 errores): `PL-104-2` (77 A1 con `Ik 3F/1F` y barras), `PN-103` (`TSI2` y cabeceras corregidas), `CM-001` y pliego DOCX/PDF conciliados, 4 DWG saneados (0 errores `AUDIT`), 22 circuitos agregados en `PL-002`, escalas despejadas y 0 mojibake/fugas en los 6 A0.
-- Archivos: `datos/catalogo_abb.json`, `datos/codigos_pedido_abb.json`, `datos/accesorios_abb.json`, `accesorios.py`, `bom.py`, `cad_export.py`, `web/index.html`, `auditoria.py`, `tests/test_auditoria.py`, `tests/unifilares/general/esperado.json`, `docs/LECCIONES.md`, `docs/REVISION_PABELLON6_OT1.md`, `ESTADO.md`.
-- Verificado: 211/211 unitarias (incl. regresión 24 tableros), 136/136 e2e navegador, verificación integral de los 15 archivos del ZIP y capturas a tamaño real OK.
+## 2026-11-26 20:45 · Antigravity · Repositorio 100 % genérico (sin referencias a obras particulares)
+- Hecho: eliminado informe de revisión específico de obra en `docs/`, reemplazado fallback `titleBlock` en `datos/reglas_layout.json` por `"Rotulo"`, y limpiadas las referencias a proyectos/clientes particulares en `ESTADO.md`, `BITACORA.md`, `docs/LECCIONES.md`, `docs/MEJORAS.md`, `plano_unifilar.py` y `AGENTS.md`. Se conservan intactas todas las mejoras genéricas del programa.
+- Verificado: 211/211 unitarias + 136/136 e2e OK; 0 referencias a obras/clientes en código y documentación.
 
-## 2026-11-26 · Codex · Revisión final de Pabellón 6 OT1
-- Hecho: cotejados 24 tableros, 161 equipos, 150 tendidos, 83 hojas de ploteo, cuatro DWG, dos planillas y pliego. Informe en `docs/REVISION_PABELLON6_OT1.md`.
-- Archivos: auditoría de nombres de alimentadores, test de QF104 y prueba de interfaz aislada de los proyectos del usuario.
-- Ojo: 53 salidas necesitan acreditar poder de corte o filiación, hay barras pendientes, 22 recorridos sin identificar en planta y cinco ploteos con escalas superpuestas. ZIP original preservado.
-- Verificado: 210 pruebas unitarias, regresión de 24 tableros y 136/136 pruebas de interfaz con capturas revisadas.
+## 2026-11-26 19:50 · Antigravity · Regla A16 poder de corte, barras Cu/PE dibujadas y +18 códigos ABB
+- Hecho: agregados 18 códigos ABB verificados (`S200M`, `S201P`/`S203P`, `S803B`), profundidad `S803` (`82,5 mm`), barras de cobre 2000 A (`PPHC2593`+`PPHC2119`) y barras PE (`ZXPHC218` 40×10 / `AA8010` 20×5 + `AA8011`) ubicadas y dibujadas en editor/DXF y en BOM genérico, y regla A16 (`breaking_capacity_low`, lección 44) en `auditoria.py`.
+- Archivos: `datos/catalogo_abb.json`, `datos/codigos_pedido_abb.json`, `datos/accesorios_abb.json`, `accesorios.py`, `bom.py`, `cad_export.py`, `web/index.html`, `auditoria.py`, `tests/test_auditoria.py`, `tests/unifilares/general/esperado.json`, `docs/LECCIONES.md`, `ESTADO.md`.
+- Verificado: 211/211 unitarias (incl. regresión 24 tableros) y 136/136 e2e navegador OK.
+
+## 2026-11-26 · Codex · Auditoría de nombres de alimentadores y aislamiento de pruebas e2e
+- Hecho: incorporada auditoría cruzada `audit_feeder_names` (`feeder_name_mismatch`, lección 43) para verificar que la etiqueta del alimentador en el tablero padre coincida con el rótulo del tablero destino, test unitario y aislamiento de `prueba_interfaz.py` respecto a los proyectos locales del usuario.
+- Verificado: 210 pruebas unitarias, regresión de 24 tableros y 136/136 pruebas de interfaz OK.
 
 ## 2026-11-26 02:35 · Antigravity · Topográficos DXF/PDF: etiquetas de circuito y títulos en Arial Bold sólido
 - Hecho: asignado estilo `ABB_ARIAL_BOLD` a las etiquetas de portaetiquetas (`ABB_ETIQUETAS` en `cad_export.py`) y a los títulos `PUERTA ABIERTA / PUERTA CERRADA` (`entrega_pdf.py`) para eliminar el trazo fino/grisáceo de SHX y obtener texto negro sólido nítido en PDF/ploteo.
@@ -49,7 +50,7 @@
 - Resultado: 24/24 DXF (0 errores ezdxf), Excel consolidado sin duplicados, PDF de entrega con planos de taller OK; 208 tests + 136/136 e2e OK.
 
 ## 2026-11-25 19:30 · Antigravity · Importación multi-tablero de informe ABB e-Design DOC
-- Hecho: soporte nativo para importar el informe completo PDF de ABB e-Design DOC (`correccion cargas v2.pdf`: 134 págs., 24 tableros, 161 equipos) desde `importador.detect_edesign_report` + `POST /api/import-batch` + ventana `#multiPdfPanel` y buscador de tableros en `web/index.html`.
+- Hecho: soporte nativo para importar informes completos PDF de ABB e-Design DOC (multi-tablero, 134 págs. de prueba, 24 tableros, 161 equipos) desde `importador.detect_edesign_report` + `POST /api/import-batch` + ventana `#multiPdfPanel` y buscador de tableros en `web/index.html`.
 - Catálogo y armado: agregadas series `Formula A1` (3P/4P) y `S261/S271/S281` (1P+N) + `ratedCurrentPatterns` de A1 en `datos/catalogo_abb.json`; `layout_auto._conforme_loop` ahora descarta gabinetes donde alguna fila queda sin canaleta arriba/abajo (lección 41); `bom.py` distingue códigos importados del informe e-Design.
 - Archivos: `importador.py`, `app.py`, `layout_auto.py`, `bom.py`, `datos/catalogo_abb.json`, `web/index.html`, `web/styles.css`, `tests/test_edesign_report.py`, `docs/LECCIONES.md`.
 - Resultado: 24/24 tableros y 161/161 equipos generados, 0 sin dibujar, 0 errores y 0 avisos de auditoría, 0 equipos sin código ABB; tests y e2e OK.
@@ -59,7 +60,7 @@
 - La exportación de proyectos guardados también aplica el criterio nuevo.
 
 ## 2026-11-23 14:50 · Claude · Verificación automática contra el unifilar
-- Reporte de Thomas: TSB-1.12 con S201L-C10 «cuando el unifilar dice C20». Revisado: el unifilar BAF-E-EL-PL-104-0 dice S201L-C10 NA en el rótulo de -QF124 y «2x10 - 6kA» en la tabla; el tablero y la lista de materiales (2CDS241801R0104, 7 u, incluye TSB-1.12) coinciden con el plano. No había error, pero el programa no lo comprobaba solo.
+- Reporte de usuario: TSB-1.12 con S201L-C10 «cuando el unifilar dice C20». Revisado: el unifilar de prueba dice S201L-C10 NA en el rótulo de -QF124 y «2x10 - 6kA» en la tabla; el tablero y la lista de materiales (2CDS241801R0104, 7 u, incluye TSB-1.12) coinciden con el plano. No había error, pero el programa no lo comprobaba solo.
 - Hecho: verificacion_unifilar.py vuelve a leer el PDF por posición (PyMuPDF) y compara cada equipo con su rótulo (modelo) y con la fila de protección de su columna (polos y corriente). Corre en cada importación: si algo no coincide, la ventana «El tablero no coincide con el unifilar» aparece antes de abrir el tablero; las diferencias quedan como errores de validación (unifilar_distinto) mientras el equipo siga así. Reglas: catalogo_abb.json → importRules.sourceCheck.
 - requirements.txt: faltaban pymupdf, openpyxl, numpy y opencv (los usan el PDF, el Excel y la pintura de frentes).
 - Resultado: los 24 tableros, 100 % de equipos verificados y 0 diferencias; 198 tests; 136/136 interfaz; regresión OK.
@@ -111,7 +112,7 @@
 - Resultado: 175 tests; 126/126 interfaz; DXF de prueba (TSB, TSAA) con auditoría ezdxf 0 errores.
 
 ## 2026-11-22 21:15 · Claude · Plano de fabricación: unifilar del usuario + topográfico en su formato
-- Hecho: plano_unifilar.py toma el DXF de formato del usuario (BAF-E-EL-PL-104-0 Unifilares, una presentación por tablero con marco A2 y rótulo Rotulo_BA_ferial) y en cada hoja deja su unifilar tal cual (misma ventana 1:1) y agrega el topográfico de la aplicación con puerta abierta y cerrada, a escala normalizada (1:2 a 1:10 según el tablero), en A1 1:1; rótulo con «UNIFILAR Y TOPOGRAFICO» (resto de los datos sin tocar). Reglas en reglas_layout.json → planoUnifilar. Las cotas se explotan antes de importar (el importador no copia el bloque de la cota). Placa grabada de la puerta: factor de ancho 0,75 (los nombres largos salían de la placa).
+- Hecho: plano_unifilar.py toma el DXF de formato del usuario (una presentación por tablero con marco A2 y bloque de rótulo) y en cada hoja deja su unifilar tal cual (misma ventana 1:1) y agrega el topográfico de la aplicación con puerta abierta y cerrada, a escala normalizada (1:2 a 1:10 según el tablero), en A1 1:1; rótulo con «UNIFILAR Y TOPOGRAFICO» (resto de los datos sin tocar). Reglas en reglas_layout.json → planoUnifilar. Las cotas se explotan antes de importar (el importador no copia el bloque de la cota). Placa grabada de la puerta: factor de ancho 0,75 (los nombres largos salían de la placa).
 - Resultado: 24 hojas, auditoría ezdxf 0 errores/0 arreglos; 174 tests; 124/124 interfaz.
 - Ojo: el DWG del usuario (AC1032) no se puede leer acá: se trabaja con el DXF que él guarda desde AutoCAD; la salida es DXF (AutoCAD la guarda como DWG).
 

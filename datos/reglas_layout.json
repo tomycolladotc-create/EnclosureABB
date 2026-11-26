@@ -46,7 +46,7 @@
  "planoUnifilar": {
   "_ayuda": "Hoja de fabricación (plano_unifilar.py): unifilar del usuario + topográfico de la aplicación en el formato de ploteo del usuario. Nombres de bloques del formato, escalas normalizadas y separaciones. frameBlock/titleBlock sólo se usan si no se pueden detectar en el formato (detect_blocks). titleSuggestions: valor propuesto en la ventana previa cuando el formato trae ese texto.",
   "frameBlock": "A2 594x420",
-  "titleBlock": "Rotulo_BA_ferial",
+  "titleBlock": "Rotulo",
   "sheetScale": 1.4142135623730951,
   "paperSize": "ISO_full_bleed_A1_(841.00_x_594.00_MM)",
   "paperWidthMm": 841.0,

@@ -24,6 +24,7 @@
 
 Después de un cambio grande, actualizar `ESTADO.md` y `BITACORA.md` inmediatamente. Si la sesión está por terminar o el límite está cerca, actualizar ambos archivos y subir el trabajo parcial antes de continuar en otra sesión.
 
-No subir: salidas generadas (`salida/`), ZIPs, capturas de prueba. Los CAD de ABB sí van, en `cad/abb/<familia>/`, registrados en `datos/cad_argentina.json`.
+- **Programa 100 % genérico** (pedido de Thomas, 2026-11-26): este repositorio contiene únicamente el programa genérico, catálogo ABB, reglas, documentación técnica y pruebas. No subir informes de obra, entregas, rótulos ni referencias a proyectos o clientes particulares.
+- No subir: salidas generadas (`salida/`), ZIPs, capturas de prueba. Los CAD de ABB sí van, en `cad/abb/<familia>/`, registrados en `datos/cad_argentina.json`.
 Idioma: español.
 - Todo archivo descargado (catálogos, CAD, hojas de datos) se guarda en el repo y se registra en `datos/fuentes_descargadas.json` (origen, fecha, hash, uso). Pedido del usuario 2026-11-15.

@@ -42,7 +42,6 @@
 
 ## Por hacer (prioridad)
 
-- **Cierre de Pabellón 6 OT1 (2026-11-26).** Resolver el poder de corte o la filiación, dimensionar las barras de fase y PE pendientes y conciliar recorridos, rótulos, cómputo y ploteos según `docs/REVISION_PABELLON6_OT1.md`.
 - En la exportación del editor, distinguir el resultado de la revisión geométrica de las verificaciones eléctricas pendientes, como las barras por dimensionar que el cómputo ya informa.
 - Códigos de pedido de los equipos: 63 renglones de interruptores/seccionadores sin código (XT, S200, S800, OT…): cargarlos desde las tablas de pedido de los catálogos ABB (no deducirlos del modelo).
 - Colores a ojo: **2026-11-23** revisados con foto ABB XT1, XT2 y OT400 (3 bordes pegados al CAD, 1 corregido a la foto, 3 confirmados → freeRectPhotoVerified). Quedan 32 rectángulos de 9 carcasas sin foto frontal ABB en docs/imagenes_abb (S804N, S200M 1P/1P+N, OT100/125F3/F4, OT160–250E04, XT3, T2, S803): conseguir la foto y medir con el mismo método.
