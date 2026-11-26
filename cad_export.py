@@ -317,10 +317,24 @@ def build_dxf(project, catalog, fronts, appearances):
                     if phase:
                         space.add_text(_ascii(str(phase)), dxfattribs={"height": min(5, pw * 0.35), "layer": "ABB_ETIQUETAS"}).set_placement(
                             (bx + pw / 2, fy + acc["y"] + acc["h"] * 0.3), align=ezdxf.enums.TextEntityAlignment.MIDDLE_CENTER)
-            if acc["type"] == "copper_busbar":  # agujeros M6 cada 25 mm
-                pitch = acc.get("holePitchMm")  # del catálogo de la barra; sin dato, la barra va sin agujeros dibujados
-                for k in range(int((acc["w"] - pitch / 2) // pitch) if pitch else 0):
-                    space.add_circle((fx + acc["x"] + pitch / 2 + k * pitch, fy + acc["y"] + acc["h"] / 2), 3.2, dxfattribs={"layer": layer})
+            if acc["type"] == "copper_busbar":  # barra de cobre / juego de 3 barras de fase
+                pitch = acc.get("holePitchMm")  # del catálogo de la barra; sin dato, dibuja las barras paralelas de fase
+                if pitch:
+                    for k in range(int((acc["w"] - pitch / 2) // pitch)):
+                        space.add_circle((fx + acc["x"] + pitch / 2 + k * pitch, fy + acc["y"] + acc["h"] / 2), 3.2, dxfattribs={"layer": layer})
+                elif (acc.get("poles") or 1) >= 3:
+                    nb = int(acc.get("poles") or 3)
+                    bh = acc["h"] / (nb * 1.5)
+                    step = (acc["h"] - bh) / max(1, nb - 1)
+                    for i in range(nb):
+                        rect(fx + acc["x"] + 6, fy + acc["y"] + i * step, acc["w"] - 12, bh, layer)
+            if acc["type"] == "pe_bar":  # barra colectora de tierra (PE) con agujeros M6/M10 y símbolo de tierra
+                pitch = acc.get("holePitchMm") or 25
+                for k in range(int((acc["w"] - pitch / 2) // pitch)):
+                    space.add_circle((fx + acc["x"] + pitch / 2 + k * pitch, fy + acc["y"] + acc["h"] / 2), 3.0, dxfattribs={"layer": layer})
+                ex, ey, es = fx + acc["x"] + 12, fy + acc["y"] + acc["h"] * 0.5, min(5.0, acc["h"] * 0.35)
+                for x1, y1, x2, y2 in ((ex, ey + es, ex, ey), (ex - es * .9, ey, ex + es * .9, ey), (ex - es * .6, ey - es * .38, ex + es * .6, ey - es * .38), (ex - es * .3, ey - es * .76, ex + es * .3, ey - es * .76)):
+                    space.add_line((x1, y1), (x2, y2), dxfattribs={"layer": layer})
             if acc["type"] == "comb":  # una clavija por polo
                 n = acc.get("poleCount") or max(1, round(acc["w"] / (acc.get("pitchMm") or 17.5)))
                 for i in range(n):

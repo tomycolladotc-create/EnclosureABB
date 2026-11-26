@@ -265,4 +265,27 @@ def audit(project, catalog, rules=None, board_title=None):
         for b in labels[i + 1:]:
             if a["x"] < b["x"] + b["w"] - 0.5 and b["x"] < a["x"] + a["w"] - 0.5 and a["y"] < b["y"] + b["h"] and b["y"] < a["y"] + a["h"]:
                 out.append(_f("error", "labels_overlap", f"Las etiquetas de {a['tag']} y {b['tag']} se pisan.", [a["tag"], b["tag"]]))
+
+    # A16 · poder de corte frente a la Ik de barras del tablero (lección 44).
+    busbar = project.get("busbar") or {}
+    ik_3f = busbar.get("ik3fKa")
+    ik_1f = busbar.get("ik1fKa")
+    if ik_3f or ik_1f:
+        from bom import _ka_for_device, load_generic_rules
+        gen_rules = load_generic_rules()
+        for d in project.get("devices", []) + project.get("devicesNotDrawn", []):
+            ka_txt = _ka_for_device(d, gen_rules)
+            if not ka_txt:
+                continue
+            try:
+                ka_val = float(str(ka_txt).replace(",", "."))
+            except ValueError:
+                continue
+            poles = int(d.get("poles") or 0)
+            req = float(ik_1f) if (poles <= 2 and ik_1f) else (float(ik_3f) if ik_3f else float(ik_1f))
+            if ka_val < req - 1e-6:
+                tag = d.get("tag", "?")
+                lbl = d.get("circuit") or tag
+                out.append(_f("error", "breaking_capacity_low",
+                              f"{lbl} ({tag}, {d.get('model')}): poder de corte {ka_txt} kA < Ik {req:g} kA.", [tag]))
     return out

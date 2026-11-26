@@ -115,7 +115,18 @@ def _describe(item, catalog):
                         description=f"Barra/juego de barras de distribución de al menos {item.get('needA', 0):g} A (lo que entra por el general), a dimensionar")
     elif t == "copper_busbar":
         bar = by("distributionBars")
-        item.update(bomCategory="Barra de cobre", quantity=1, orderCode=bar.get("orderCode"), description=f"Barra de distribución {bar.get('tipo', '')} {bar.get('corrienteA', '')} A; soportes {bar.get('soportes', {}).get('orderCode', 'por definir')} x{bar.get('soportes', {}).get('cantidad', '?')}")
+        n_bar = bar.get("neutro") or {}
+        sup = bar.get("soportes") or {}
+        extra = []
+        if n_bar:
+            extra.append({"bomCategory": "Barra de distribución", "orderCode": n_bar.get("orderCode"), "quantity": 1,
+                          "description": f"Barra horizontal de neutro {n_bar.get('tipo', '')}: {n_bar.get('descripcion', '')}".strip()})
+        elif sup:
+            extra.append({"bomCategory": "Barra de distribución", "orderCode": sup.get("orderCode"), "quantity": 1,
+                          "description": f"Soportes para barra de cobre {sup.get('orderCode', '')} ({sup.get('descripcion', '')})"})
+        item.update(bomCategory="Barra de distribución", quantity=1, orderCode=bar.get("orderCode"),
+                    description=f"Barra de distribución {bar.get('tipo', '')} {bar.get('corrienteA', '')} A" + (f" (Icw {bar['icwKA']} kA)" if bar.get("icwKA") else ""),
+                    **({"bomExtra": extra} if extra else {}))
     elif t == "signal_fuses":
         holder = by("signalFuseHolders")
         phases = "-".join(p for p in item.get("phases", []) if p)
@@ -123,7 +134,15 @@ def _describe(item, catalog):
                     description=f"Portafusible {holder.get('tipo', '')} 1P 10x38 (tabaquera) para los testigos de fase {phases} ({holder.get('marca', 'ABB')})",
                     **({"purchaseCheck": holder["purchaseCheck"]} if holder.get("purchaseCheck") else {}))
     elif t == "pe_bar":
-        item.update(quantity=1)
+        bar = by("distributionBars")
+        if bar:
+            sup = bar.get("soportes") or {}
+            extra = [{"bomCategory": "Barra de tierra (PE)", "orderCode": sup.get("orderCode"), "quantity": 1,
+                      "description": f"Juego de {sup.get('cantidad', 5)} soportes aislantes {sup.get('orderCode', '')} para barra de tierra (PE)"}] if sup else []
+            item.update(bomCategory="Barra de tierra (PE)", quantity=1, orderCode=bar.get("orderCode"),
+                        **({"bomExtra": extra} if extra else {}))
+        else:
+            item.update(quantity=1)
     elif t == "wiring_duct":
         item.update(bomCategory="Canaleta", quantity=1,
                     description=f"Canaleta ranurada {item.get('sectionMm', item['h']):g}x{item['depthMm']:g} mm, gris RAL 7035, ranura {item['slot']}; largo a cortar {item['lengthMm']:g} mm (tira de 2000 mm)")
@@ -176,8 +195,13 @@ def _propose_ducts(project, catalog, rails, devices, placed_acc):
     fw, fh = project["enclosure"]["functional"]["width"], project["enclosure"]["functional"]["height"]
     holder = rules["labelHolderMm"]  # portaetiqueta bajo cada equipo (la misma regla que usan el armado y la auditoría)
     boxes = [{"x": d["x"], "y": d["y"] - holder, "w": d["w"], "h": d["h"] + holder} for d in devices]
+    # Barras de fase y PE van al borde inferior de la placa: reservan esa franja sin convertirse en fila de equipos.
+    bottom_bars = [a for a in placed_acc if a.get("type") in ("pe_bar", "copper_busbar") and a.get("placed", True) and a.get("y") is not None and a.get("h")]
+    bar_top = max((a["y"] + a["h"] for a in bottom_bars), default=0.0)
+    y_bot = max(edge, bar_top + clear) if bar_top > 0 else edge
     boxes += [{"x": a["x"], "y": a["y"], "w": a["w"], "h": a["h"]} for a in placed_acc
-              if a.get("placed", True) and a.get("x") is not None and a.get("w") and a.get("h")]
+              if a.get("placed", True) and a.get("x") is not None and a.get("w") and a.get("h")
+              and a.get("type") not in ("pe_bar", "copper_busbar")]
     if not boxes:
         return []
 
@@ -199,13 +223,14 @@ def _propose_ducts(project, catalog, rails, devices, placed_acc):
     left_free = min(b["x"] for b in spans) - edge - clear
     right_free = fw - edge - max(b["x"] + b["w"] for b in spans) - clear
     x0, x1 = edge, fw - edge  # tramo horizontal disponible
+    v_h = max(0.0, fh - edge - y_bot)
     sec = pick(left_free, side_max)
-    if sec:
-        out.append(duct(sec, edge, edge, sec["widthMm"], fh - 2 * edge, "v"))
+    if sec and v_h >= sec["widthMm"]:
+        out.append(duct(sec, edge, y_bot, sec["widthMm"], v_h, "v"))
         x0 = edge + sec["widthMm"]
     sec = pick(right_free, side_max)
-    if sec:
-        out.append(duct(sec, fw - edge - sec["widthMm"], edge, sec["widthMm"], fh - 2 * edge, "v"))
+    if sec and v_h >= sec["widthMm"]:
+        out.append(duct(sec, fw - edge - sec["widthMm"], y_bot, sec["widthMm"], v_h, "v"))
         x1 = fw - edge - sec["widthMm"]
 
     # 2) Filas de equipos: cajas que se solapan en altura forman una fila.
@@ -216,7 +241,7 @@ def _propose_ducts(project, catalog, rails, devices, placed_acc):
         else:
             rows.append([b["y"], b["y"] + b["h"]])
     # 3) Huecos: bajo la primera fila, entre filas y sobre la última. Cada fila lleva canaleta arriba y abajo.
-    gaps = [(edge, rows[0][0], "below")] + [(rows[k][1], rows[k + 1][0], "between") for k in range(len(rows) - 1)] + [(rows[-1][1], fh - edge, "above")]
+    gaps = [(y_bot, rows[0][0], "below")] + [(rows[k][1], rows[k + 1][0], "between") for k in range(len(rows) - 1)] + [(rows[-1][1], fh - edge, "above")]
     for lo, hi, kind in gaps:
         free = hi - lo - 2 * clear
         sec = pick(free, max_w)
@@ -285,15 +310,50 @@ def propose(project, catalog=None):
             item.update(placed=True, x=spot[0], y=spot[1]["y"] - height / 2)
         out.append(item)
 
-    # 1b) PE de alimentación más grueso que lo que admite la bornera: hace falta barra de tierra (lección 2026-11-19: TGBT con 6×PE150 y TS con PE70/95).
+    # 1b) PE de alimentación más grueso que lo que admite la bornera: barra colectora de tierra PE del catálogo ABB (lección 2026-11-19).
     feeder = project.get("feeder") or {}
     pe_max = pe_input_max_mm2(pe)
+    enc = project.get("enclosure") or {}
+    fw, fh = enc.get("functional", {}).get("width", 0), enc.get("functional", {}).get("height", 0)
+    is_floor = bool(enc.get("floorStanding"))
+    bar_edge = rules.get("ductEdgeMm", 15)
     if circuits and feeder.get("peMm2") and pe_max and feeder["peMm2"] > pe_max:
         n = feeder.get("peParallel") or 1
-        out.append({"type": "pe_bar", "auto": True, "provisional": True, "catalogId": None, "placed": False, "orderCode": None,
-                    "label": "Barra de tierra PE", "bomCategory": "Barra de tierra (PE)",
-                    "description": f"Barra de cobre de tierra (PE) para recibir el PE de alimentación {(str(n) + '×') if n > 1 else ''}{feeder['peMm2']:g} mm² y repartir a los circuitos",
-                    "note": f"la bornera {pe.get('tipo')} admite hasta {pe_max:g} mm² de entrada: dimensionar la barra según IEC 61439-1 / AEA 90364 (no hay barra de tierra en el catálogo)"})
+        pe_total = float(feeder["peMm2"]) * int(n)
+        pe_label_sec = f"{(str(n) + '×') if n > 1 else ''}{feeder['peMm2']:g} mm²"
+        pe_bars = [b for b in catalog.get("distributionBars", [])
+                   if _abb(b) and b.get("uso") in ("tierra", "neutro-tierra")
+                   and (not b.get("floorStandingOnly") or is_floor)
+                   and (not b.get("maxPeMm2") or b["maxPeMm2"] >= pe_total)]
+        # Preferir barra dedicada de piso en tableros autosoportados y barra SR2 en murales
+        pe_bars.sort(key=lambda b: (0 if (bool(b.get("floorStandingOnly")) == is_floor) else 1, b.get("seccionMm2") or 9999))
+        if pe_bars and fw > 2 * bar_edge and fh > 0:
+            pbar = pe_bars[0]
+            face = float(re.match(r"(\d+(?:[.,]\d+)?)", str(pbar.get("seccion", "20"))).group(1).replace(",", "."))
+            w_bar = min(float(pbar.get("largoMm") or (fw - 2 * bar_edge)), fw - 2 * bar_edge)
+            x_bar = round((fw - w_bar) / 2.0, 2)
+            y_bar = float(bar_edge)
+            pitch = re.search(r"cada (\d+) mm", str(pbar.get("paso", "")))
+            min_dev_y = min((d["y"] - rules.get("labelHolderMm", 14) for d in devices), default=fh)
+            fits_bottom = (y_bar + face + rules.get("ductClearanceMm", 5) + rules.get("ductMinWidthMm", 25) <= min_dev_y)
+            out.append({
+                "type": "pe_bar", "auto": True, "provisional": False, "catalogId": pbar["id"],
+                "placed": bool(fits_bottom), "orderCode": pbar.get("orderCode"),
+                "x": x_bar, "y": y_bar, "w": round(w_bar, 2), "h": face,
+                "holePitchMm": float(pitch.group(1)) if pitch else 25.0,
+                "supports": (pbar.get("soportes") or {}).get("cantidad") or 2,
+                "seccion": pbar.get("seccion"), "seccionMm2": pbar.get("seccionMm2"),
+                "largoMm": round(w_bar, 2), "feederPe": pe_label_sec,
+                "label": f"Barra PE {pbar.get('seccion', '')} ({pe_label_sec})".strip(),
+                "bomCategory": "Barra de tierra (PE)",
+                "description": f"Barra colectora de tierra (PE) {pbar.get('tipo', '')} · recibe PE de alimentación {pe_label_sec} y reparte a los circuitos",
+                "note": None if fits_bottom else "sin lugar libre en la franja inferior de la placa para ubicar la barra PE",
+            })
+        else:
+            out.append({"type": "pe_bar", "auto": True, "provisional": True, "catalogId": None, "placed": False, "orderCode": None,
+                        "label": "Barra de tierra PE", "bomCategory": "Barra de tierra (PE)",
+                        "description": f"Barra de cobre de tierra (PE) para recibir el PE de alimentación {pe_label_sec} y repartir a los circuitos",
+                        "note": f"la bornera {pe.get('tipo')} admite hasta {pe_max:g} mm² de entrada: dimensionar la barra según IEC 61439-1 / AEA 90364 (no hay barra de tierra en el catálogo)"})
 
     # 2) Cubrebornes transparentes (barrera aislante): uno general; sin geometría hasta tener el CAD.
     if devices:
@@ -342,21 +402,30 @@ def propose(project, catalog=None):
         item = {"type": "distribution_block", "auto": True, "provisional": True, "needsConfirmation": True, "decision": None, "devices": [tag for _, tag in heavy], "needA": need}
         if not usable:
             # Sin bloque que alcance: barra de cobre del catálogo (distributionBars) si su corriente alcanza; el usuario confirma o descarta.
-            bars = sorted((b for b in catalog.get("distributionBars", []) if _abb(b) and b.get("uso", "fase") == "fase" and b.get("corrienteA") and b["corrienteA"] >= need), key=lambda b: b["corrienteA"])
+            bars = sorted((b for b in catalog.get("distributionBars", [])
+                           if _abb(b) and b.get("uso", "fase") == "fase"
+                           and (not b.get("floorStandingOnly") or is_floor)
+                           and b.get("corrienteA") and b["corrienteA"] >= need),
+                          key=lambda b: b["corrienteA"])
             if not bars:
                 item.update(catalogId=None, label="Barra de distribución", placed=False,
                             note=f"el catálogo no tiene bloque ni barra de {need:g} A o más: dimensionar la barra según IEC 61439 o tabla del fabricante")
             else:
                 bar = bars[0]
-                fw, fh = project["enclosure"]["functional"]["width"], project["enclosure"]["functional"]["height"]
                 margin = rules["busbarMarginMm"]
-                face = float(re.match(r"(\d+(?:[.,]\d+)?)", str(bar.get("seccion", ""))).group(1).replace(",", "."))  # cara de la barra: «20x5 mm» → 20
-                width, height = min(bar["largoMm"], fw - 2 * margin), face
-                y = margin
-                if any(d["y"] < y + height + 10 and d["x"] < margin + width and margin < d["x"] + d["w"] for d in devices):
+                face = float(bar.get("altoDibujoMm") or float(re.match(r"(\d+(?:[.,]\d+)?)", str(bar.get("seccion", ""))).group(1).replace(",", ".")))
+                width, height = min(float(bar["largoMm"]), fw - 2 * margin), face
+                x_bar = round((fw - width) / 2.0, 2)
+                pe_top = max((a["y"] + a["h"] for a in out if a.get("type") == "pe_bar" and a.get("placed")), default=0.0)
+                y = round(pe_top + 25.0, 2) if pe_top > 0 else float(margin)
+                if any(d["y"] < y + height + 10 and d["x"] < x_bar + width and x_bar < d["x"] + d["w"] for d in devices):
                     y = fh - margin - height  # el borde inferior está ocupado: va arriba
                 pitch = re.search(r"cada (\d+) mm", str(bar.get("paso", "")))
-                item.update(type="copper_busbar", catalogId=bar["id"], corrienteA=bar["corrienteA"], holePitchMm=float(pitch.group(1)) if pitch else None, supports=(bar.get("soportes") or {}).get("cantidad"), label=f"{bar['orderCode']} {bar['corrienteA']:g} A", x=margin, y=y, w=width, h=height, placed=True,
+                item.update(type="copper_busbar", catalogId=bar["id"], corrienteA=bar["corrienteA"], icwKA=bar.get("icwKA"),
+                            seccion=bar.get("seccion"), poles=bar.get("polos"), largoMm=round(width, 2),
+                            holePitchMm=float(pitch.group(1)) if pitch else None, supports=(bar.get("soportes") or {}).get("cantidad") or 3,
+                            label=f"{bar['orderCode']} {bar['corrienteA']:g} A", x=x_bar, y=y, w=round(width, 2), h=height, placed=True,
+                            provisional=False,
                             note=("barra de cobre propuesta: confirmar o descartar. " + ("Se acortó a la placa; el catálogo no dice que se corte a medida. " if width < bar["largoMm"] else "")
                                   + bar.get("status", "")))
         else:

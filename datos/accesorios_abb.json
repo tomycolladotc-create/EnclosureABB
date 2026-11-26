@@ -344,7 +344,50 @@
       "source": "ficha ABB AA8010 reproducida por Sonepar (res.cloudinary.com/sonepar-fr .../472440_FT.pdf: 320 A, 20x5 mm); catálogo ABB 1STC804013D0201 pág. 2/9 (barras 20x5 con agujeros M6 a 25 mm, soportes AA8011; se montan sobre las placas de fondo)",
       "status": "la ficha ABB da 320 A, pero el catálogo la describe como barra de neutro o tierra, no de fase; el catálogo no dice que se corte a medida; falta confirmar Argentina",
       "uso": "neutro-tierra",
-      "usoNota": "Lección 2026-11-19: el catálogo ABB la describe como barra de neutro o tierra; no se propone para repartir fases."
+      "maxPeMm2": 120,
+      "seccionMm2": 100,
+      "usoNota": "Lección 2026-11-19: el catálogo ABB la describe como barra de neutro o tierra; no se propone para repartir fases. Sí aplica como barra colectora de tierra (PE) en SR2 cuando el cable PE supera 35 mm²."
+    },
+    {
+      "id": "abb-pphc2593",
+      "marca": "ABB",
+      "orderCode": "1STQ005108B0000",
+      "tipo": "PPHC2593 — Juego de barras principales 3P de cobre electrolítico 100×10 mm, L=570 mm (2 FB)",
+      "familia": "System pro E power 185 mm",
+      "corrienteA": 2000,
+      "icwKA": 75,
+      "seccion": "100x10 mm",
+      "largoMm": 570,
+      "altoDibujoMm": 100,
+      "polos": 3,
+      "floorStandingOnly": true,
+      "neutro": {
+        "orderCode": "1STQ005150B0000",
+        "tipo": "PPHC2119",
+        "descripcion": "Barra horizontal de neutro (N) 100 % de cobre electrolítico, In 2000 A, L=578 mm (hasta 7×240 mm² M10, con soportes)"
+      },
+      "availability": "por-confirmar",
+      "source": "Catálogo ABB System pro E power 185 mm Busbar System 1STC803009D0103 (en el repo), págs. 3–26 (PPHC2593 / 1STQ005108B0000: 3×570 mm, 100×10 mm, 2000 A, 75 kA) y 3–35 (PPHC2119 / 1STQ005150B0000: barra N 100 %, 578 mm, 2000 A, hasta 7×240 mm² M10)",
+      "status": "verificado en catálogo ABB 1STC803009D0103; incluye soportes de barra; confirmar stock Argentina",
+      "uso": "fase"
+    },
+    {
+      "id": "abb-zxphc218",
+      "marca": "ABB",
+      "orderCode": "2CPX043139R9999",
+      "tipo": "ZXPHC218 — Barra horizontal de tierra (PE) de cobre electrolítico 40×10 mm (400 mm²), L=578 mm, hasta 8×240 mm² (M10)",
+      "familia": "System pro E power 185 mm",
+      "corrienteA": 2000,
+      "seccion": "40x10 mm",
+      "seccionMm2": 400,
+      "maxPeMm2": 1920,
+      "largoMm": 578,
+      "paso": "agujeros M10 cada 40 mm",
+      "floorStandingOnly": true,
+      "availability": "por-confirmar",
+      "source": "Catálogo ABB System pro E power 185 mm Busbar System 1STC803009D0103 (en el repo), pág. 3–36 (ZXPHC218 / 2CPX043139R9999: 40×10 mm, L=578 mm, 1600/2000 A, hasta 8×240 mm² M10 con soportes y bulonería)",
+      "status": "verificado en catálogo ABB 1STC803009D0103; confirmar stock Argentina",
+      "uso": "tierra"
     },
     {
       "id": "abb-pbfc2005",

@@ -53,6 +53,24 @@ class NombresDeAlimentadores(unittest.TestCase):
         self.assertEqual(audit_feeder_names({"TSI2": boards["TSI2"]}), [])
 
 
+class PoderDeCorte(unittest.TestCase):
+    """Lección 44: ningún equipo puede tener poder de corte inferior a la Ik de barras del tablero."""
+
+    def test_detecta_poder_de_corte_inferior_a_ik_3f_y_1f(self):
+        devs = [
+            dev("QF1", "S204-C32", "abb.s200m.1p.front", "CS-1.2", poles=4),   # 6 kA < Ik3F 9.3 kA
+            dev("QF2", "S201L-C16 NA", "abb.s200m.1pn.front", "CSI-1", poles=2),  # 4.5 kA < Ik1F 6.5 kA
+            dev("QF3", "S201P-B6 NA", "abb.s200m.1pn.front", "CSI-8", poles=2),   # 25 kA >= Ik1F 13.6 kA (OK)
+        ]
+        p = project(devs, busbar={"ik3fKa": 30.6, "ik1fKa": 13.6})
+        bad = [f for f in audit(p, CAT) if f["code"] == "breaking_capacity_low"]
+        self.assertEqual([t for f in bad for t in f["tags"]], ["QF1", "QF2"])
+
+        devs[0]["model"] = "S804N-C32"     # 36 kA >= 30.6 kA
+        devs[1]["model"] = "S201P-C16 NA"  # 25 kA >= 13.6 kA
+        self.assertEqual([f for f in audit(p, CAT) if f["code"] == "breaking_capacity_low"], [])
+
+
 class CorrienteYEntrada(unittest.TestCase):
     def test_corriente_nominal_de_cada_familia(self):
         casos = {"E2.2N 2000 Ekip Dip LI 2000": 2000, "T4S 320 PR221DS-LS/I 320A": 320, "XT1S 160 TMD 125-1250": 125,

@@ -607,6 +607,168 @@
       "note": "manija y eje no incluidos (ver renglón Accionamiento OT)",
       "confirm": "el unifilar dice «OT100F4» sin sufijo: se toma el seccionador OT100F4N2 (4 polos, el 4.º conmuta el neutro); si en realidad es conmutador de redes (sufijo C) el código es otro",
       "status": "verificado (ficha/distribuidor con el código ABB)"
+    },
+    {
+      "model": "S201M-C16NA",
+      "poles": 2,
+      "orderCode": "2CDS271103R0164",
+      "descripcion": "S200M 1P+N C 16 A (10 kA)",
+      "source": "https://new.abb.com/products/2CDS271103R0164/s201m-c16na",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S201M-C25NA",
+      "poles": 2,
+      "orderCode": "2CDS271103R0254",
+      "descripcion": "S200M 1P+N C 25 A (10 kA)",
+      "source": "https://new.abb.com/products/2CDS271103R0254/s201m-c25na",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S204M-C20",
+      "poles": 4,
+      "orderCode": "2CDS274001R0204",
+      "descripcion": "S200M 4P C 20 A (10 kA)",
+      "source": "https://new.abb.com/products/2CDS274001R0204/s204m-c20",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S203M-Z25",
+      "poles": 3,
+      "orderCode": "2CDS273001R0518",
+      "descripcion": "S200M 3P Z 25 A (10 kA)",
+      "source": "https://new.abb.com/products/2CDS273001R0518/s203m-z25",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S203M-Z40",
+      "poles": 3,
+      "orderCode": "2CDS273001R0558",
+      "descripcion": "S200M 3P Z 40 A (10 kA)",
+      "source": "https://new.abb.com/products/2CDS273001R0558/s203m-z40",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S201P-B16NA",
+      "poles": 2,
+      "orderCode": "2CDS281103R0165",
+      "descripcion": "S200P 1P+N B 16 A (25 kA)",
+      "source": "https://new.abb.com/products/2CDS281103R0165/s201p-b16na",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S201P-D16NA",
+      "poles": 2,
+      "orderCode": "2CDS281103R0161",
+      "descripcion": "S200P 1P+N D 16 A (25 kA)",
+      "source": "https://new.abb.com/products/2CDS281103R0161/s201p-d16na",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S201P-C10NA",
+      "poles": 2,
+      "orderCode": "2CDS281103R0104",
+      "descripcion": "S200P 1P+N C 10 A (25 kA)",
+      "source": "https://new.abb.com/products/2CDS281103R0104/s201p-c10na",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S201P-C16NA",
+      "poles": 2,
+      "orderCode": "2CDS281103R0164",
+      "descripcion": "S200P 1P+N C 16 A (25 kA)",
+      "source": "https://new.abb.com/products/2CDS281103R0164/s201p-c16na",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S201P-C20NA",
+      "poles": 2,
+      "orderCode": "2CDS281103R0204",
+      "descripcion": "S200P 1P+N C 20 A (25 kA)",
+      "source": "https://new.abb.com/products/2CDS281103R0204/s201p-c20na",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S203P-C16",
+      "poles": 3,
+      "orderCode": "2CDS283001R0164",
+      "descripcion": "S200P 3P C 16 A (25 kA)",
+      "source": "https://new.abb.com/products/2CDS283001R0164/s203p-c16",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S203P-C20",
+      "poles": 3,
+      "orderCode": "2CDS283001R0204",
+      "descripcion": "S200P 3P C 20 A (25 kA)",
+      "source": "https://new.abb.com/products/2CDS283001R0204/s203p-c20",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S203P-C25",
+      "poles": 3,
+      "orderCode": "2CDS283001R0254",
+      "descripcion": "S200P 3P C 25 A (25 kA)",
+      "source": "https://new.abb.com/products/2CDS283001R0254/s203p-c25",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S203P-C40",
+      "poles": 3,
+      "orderCode": "2CDS283001R0404",
+      "descripcion": "S200P 3P C 40 A (15 kA)",
+      "source": "https://new.abb.com/products/2CDS283001R0404/s203p-c40",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S803B-C40",
+      "poles": 3,
+      "orderCode": "2CCS813001R0404",
+      "descripcion": "S800B 3P C 40 A (16 kA)",
+      "source": "https://new.abb.com/products/2CCS813001R0404/s803b-c40",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S803B-C50",
+      "poles": 3,
+      "orderCode": "2CCS813001R0504",
+      "descripcion": "S800B 3P C 50 A (16 kA)",
+      "source": "https://new.abb.com/products/2CCS813001R0504/s803b-c50",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S803B-C80",
+      "poles": 3,
+      "orderCode": "2CCS813001R0804",
+      "descripcion": "S800B 3P C 80 A (16 kA)",
+      "source": "https://new.abb.com/products/2CCS813001R0804/s803b-c80",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
+    },
+    {
+      "model": "S803B-K80",
+      "poles": 3,
+      "orderCode": "2CCS813001R0627",
+      "descripcion": "S800B 3P K 80 A (16 kA)",
+      "source": "https://new.abb.com/products/2CCS813001R0627/s803b-k80",
+      "status": "verificado (ficha/distribuidor con el código ABB)",
+      "note": null
     }
   ],
   "sinVerificar": [

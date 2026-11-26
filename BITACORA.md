@@ -3,6 +3,12 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-26 19:50 · Antigravity · Cierre final Pabellón 6 OT1: poder de corte, barras dibujadas y planos A0/DWG
+- Hecho: actualizados 52 interruptores en 11 tableros con códigos ABB verificados (100 % `Icn/Icu >= Ik`), agregadas barras de cobre 2000 A (`PPHC2593`+`PPHC2119`) y PE (`ZXPHC218` 40×10 / `AA8010` 20×5) dibujadas en DXF/SVG y en BOM genérico, y regla A16 (`breaking_capacity_low`, lección 44) en `auditoria.py`.
+- Entrega Pabellón 6: reemitido ZIP final (`1f5a049f...`, 15 archivos, 0 errores): `PL-104-2` (77 A1 con `Ik 3F/1F` y barras), `PN-103` (`TSI2` y cabeceras corregidas), `CM-001` y pliego DOCX/PDF conciliados, 4 DWG saneados (0 errores `AUDIT`), 22 circuitos agregados en `PL-002`, escalas despejadas y 0 mojibake/fugas en los 6 A0.
+- Archivos: `datos/catalogo_abb.json`, `datos/codigos_pedido_abb.json`, `datos/accesorios_abb.json`, `accesorios.py`, `bom.py`, `cad_export.py`, `web/index.html`, `auditoria.py`, `tests/test_auditoria.py`, `tests/unifilares/general/esperado.json`, `docs/LECCIONES.md`, `docs/REVISION_PABELLON6_OT1.md`, `ESTADO.md`.
+- Verificado: 211/211 unitarias (incl. regresión 24 tableros), 136/136 e2e navegador, verificación integral de los 15 archivos del ZIP y capturas a tamaño real OK.
+
 ## 2026-11-26 · Codex · Revisión final de Pabellón 6 OT1
 - Hecho: cotejados 24 tableros, 161 equipos, 150 tendidos, 83 hojas de ploteo, cuatro DWG, dos planillas y pliego. Informe en `docs/REVISION_PABELLON6_OT1.md`.
 - Archivos: auditoría de nombres de alimentadores, test de QF104 y prueba de interfaz aislada de los proyectos del usuario.

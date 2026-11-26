@@ -1,6 +1,6 @@
 # ESTADO — Topográficos de tableros ABB
 > Foto actual del proyecto. Se reescribe (no se acumula). El historial va en BITACORA.md.
-> Actualizado: 2026-11-26 · Codex
+> Actualizado: 2026-11-26 · Antigravity
 
 ## Objetivo
 PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tablero con dispositivos y envolvente ABB reales → editar en interfaz → exportar DXF (AutoCAD, 1:1 mm, bloques y capas), PNG, SVG, PDF.
@@ -36,7 +36,7 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 | `work/cobertura_catalogo.py` | genera `docs/cobertura_unifilares.md` (familias que faltan) |
 
 ## Situación
-- **Entrega eléctrica OT1 de Pabellón 6** (24 tableros, 77 hojas A1 y seis plantas A0): revisión final documentada en `docs/REVISION_PABELLON6_OT1.md`. Coinciden 161 equipos y 150 tendidos de 6.774 m. El cierre requiere acreditar poder de corte o filiación, definir barras pendientes, completar la identificación de recorridos, corregir cinco ploteos y conciliar los rótulos y partidas identificados en el informe.
+- **Entrega eléctrica OT1 de Pabellón 6** (24 tableros, 77 hojas A1, seis plantas A0, cuatro DWG saneados, dos Excel y pliego DOCX/PDF): revisión final **cerrada con 0 errores** en `docs/REVISION_PABELLON6_OT1.md` (ZIP SHA-256 `1f5a049f6b48197c9c9cde71ff82883529005c88b2ea3b0ec4a29b9c5531047d`). 161/161 protecciones cubren `Ik` con poder de corte propio (`Icn/Icu >= Ik 3F` en 3P/4P y `>= Ik 1F` en 1P+N), 150 tendidos en 27 formaciones = 6.774 m, barras 2.000 A y PE 40×10/20×5 dibujadas en TGBT y TS1–TS4, 22 circuitos faltantes agregados en `PL-002`, escalas despejadas en los cinco A0 y 0 errores `AUDIT` en los 4 DWG. Regla A16 (`breaking_capacity_low`) incorporada en `auditoria.py`.
 - Editor funcionando con el TS4: importa, edita, rieles por envolvente, zoom, DXF/PNG/SVG/PDF con colores. Un proyecto por tablero (`proyectos.py`), accesorios y normativa (`accesorios.py`, `normativa.py`), ubicación en riel (`colocar.py`).
 - **Armado automático** (`layout_auto.py`, botón 'Armar tablero automático', ruta `/api/autolayout`): elige el gabinete más chico del catálogo donde entra el contenido y acomoda seccionadores, equipos de kit y equipos de riel. Criterios en `datos/reglas_layout.json` (**propuestas de diseño, no datos de ABB**). TS4 hoy cae en SR2 SRN12630K (1200×600×300) con riel GD4006.
 - **Gabinetes en `datos/catalogo_abb.json -> enclosures`** (31): 8 de estructura System pro E power 185 (catálogo ABB 1STC803009D0103, `structure` con banda 50 mm, hojas de puerta, lista de partes con página) y 23 SR2 monobloc con puerta ciega (catálogo ABB 1STC804013D0201 de 2011; externo = nominal + 3 mm; placa interna = (ancho-40)×(alto-40); `railOptions` GD4006/6006/8006). Cada gabinete trae `functionalOffset` y `railOptions`. Colores RAL 7035 (gabinete) y RAL 7012 (zócalo, sólo System pro E); hex aproximados.
@@ -46,7 +46,7 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 - Series sin confirmar con fuente (`verified: false`): XT1 y XT2 para todas las versiones de poder de corte.
 - **Pintura de los frentes (2026-11-19)**: los colores se ponen sobre las superficies cerradas del CAD (semillas, `pintura.cad_regions`); el servidor resuelve todo (`pintura.resolve` → `/api/fronts`, `/api/appearances`) y la pantalla y el DXF dibujan lo mismo. Etiquetas con letra mínima (`etiquetas.label_boxes`, misma regla en el editor). Encuadre de exportación medido sobre lo dibujado.
 - **Plano de fabricación** (2026-11-22): `python3 plano_unifilar.py formato.dxf carpeta_proyectos salida.dxf [tableros]` → unifilar del usuario + topográfico (puerta abierta/cerrada) en su formato. En la interfaz: Exportar → «Plano de fabricación» (carga el formato una vez, se completa el rótulo por cliente antes de generar, sale DXF sólo con las hojas elegidas).
-- Pruebas: 210 unitarias, incluida la regresión de 24 tableros, y 136 controles de interfaz. Correr `python -m unittest discover tests` y `python tests/e2e/prueba_interfaz.py` antes de cada push. Las pruebas automáticas usan `ABB_PROJECTS_DIR`, nunca `datos/proyectos`.
+- Pruebas: 211 unitarias, incluida la regresión de 24 tableros y control A16 de poder de corte, y 136 controles de interfaz. Correr `python -m unittest discover tests` y `python tests/e2e/prueba_interfaz.py` antes de cada push. Las pruebas automáticas usan `ABB_PROJECTS_DIR`, nunca `datos/proyectos`.
 
 ## PRÓXIMA SESIÓN — empezar por acá (escrito por Claude, 2026-11-16 01:50)
 

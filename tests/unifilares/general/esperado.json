@@ -19,14 +19,14 @@
   "noDibujados": 0,
   "rieles": 2,
   "accesorios": {
-   "distribution_block": 1,
+   "copper_busbar": 1,
    "pe_bar": 1,
    "pe_terminal": 1,
    "signal_fuses": 1,
    "terminal_cover": 1,
    "wiring_duct": 8
   },
-  "renglonesLista": 40
+  "renglonesLista": 41
  },
  "TS1-PORT_1-2-3": {
   "gabinete": "sr2-srn10625k",
@@ -90,7 +90,7 @@
    "terminal_cover": 1,
    "wiring_duct": 8
   },
-  "renglonesLista": 21
+  "renglonesLista": 22
  },
  "TS5-PORT_15-16-17": {
   "gabinete": "sr2-srn10625k",

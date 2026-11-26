@@ -199,6 +199,25 @@ def _generic_accessory_desc(item, gen_rules):
         if base:
             return base
         return f"Peine de conexión modular, paso {item.get('pitchMm') or 17.5:g} mm"
+    if t == "copper_busbar":
+        amp = item.get("corrienteA")
+        sec = str(item.get("seccion") or "100×10 mm").replace("x", "×")
+        icw = f", Icw {item['icwKA']:g} kA" if item.get("icwKA") else ""
+        l_mm = f", L = {item['largoMm']:g} mm" if item.get("largoMm") else ""
+        p = item.get("poles") or 3
+        return f"Juego de barras principales de cobre electrolítico {p}P ({p}×{sec}{l_mm}), In {amp:g} A{icw}, con soportes aislantes (IEC 61439)"
+    if t == "pe_bar":
+        sec = str(item.get("seccion") or "").replace("x", "×")
+        sec_mm2 = item.get("seccionMm2")
+        f_pe = item.get("feederPe") or ""
+        l_mm = f", L = {item['largoMm']:g} mm" if item.get("largoMm") else ""
+        if sec and item.get("placed") is not False:
+            cap = f" ({sec_mm2:g} mm²)" if sec_mm2 else ""
+            perf = "perforaciones M10 (hasta 8×240 mm²)" if (sec_mm2 or 0) >= 300 else "agujeros roscados M6 cada 25 mm"
+            f_txt = f", para PE de alimentación {f_pe} y derivaciones" if f_pe else ""
+            return f"Barra colectora de tierra (PE) de cobre electrolítico {sec}{cap}{l_mm}, {perf}, con soportes{f_txt}"
+        desc = item.get("description") or item.get("label") or "Barra de tierra (PE)"
+        return re.sub(r"\bla bornera [A-Z0-9\-]+\b", "la bornera repartidora PE", desc)
     if t == "distribution_block":
         if item.get("placed") is False and not item.get("catalogId"):
             return item.get("description") or item.get("label") or "Barra de distribución"
@@ -477,7 +496,15 @@ def build_bom(project, catalog, accessory_catalog=None, order_codes=None, mode="
         extras = [] if item.get("type") == "signal_fuses" else item.get("bomExtra", [])
         for extra in extras:
             if is_generic:
-                ex_desc = "Tope de fin para riel DIN (10 mm), uno en cada punta" if "Tope" in str(extra.get("description", "")) else extra["description"]
+                raw_ex = str(extra.get("description", ""))
+                if "Tope" in raw_ex:
+                    ex_desc = "Tope de fin para riel DIN (10 mm), uno en cada punta"
+                elif "neutro" in raw_ex.lower():
+                    ex_desc = "Barra horizontal de neutro (N) 100 % de cobre electrolítico, In 2000 A, L = 578 mm (hasta 7×240 mm² M10, con soportes)"
+                elif "soportes aislantes" in raw_ex.lower() and "tierra" in raw_ex.lower():
+                    ex_desc = "Juego de 5 soportes aislantes para barra colectora de tierra (PE) 20×5 mm"
+                else:
+                    ex_desc = re.sub(r"\b(?:AA\d{4}|PPHC\d+|ZXPHC\d+|BAM\d+|1STQ\w+|2CPX\w+)\b", "", raw_ex).replace("  ", " ").strip()
                 k = (extra["bomCategory"], "", ex_desc)
             else:
                 k = (extra["bomCategory"], _code(extra.get("orderCode")), extra["description"])

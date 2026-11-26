@@ -4113,6 +4113,8 @@
       "frontGeometry": "datos/frentes_cad.json",
       "appearance": "datos/apariencias_abb.json",
       "dimensionsSource": "https://files.kempstoncontrols.com/files/7bbef7da969ae43c8e0c7babd504edd4/2CCS863001R0804 ; https://www.farnell.com/datasheets/2912218.pdf",
+      "depthMm": 82.5,
+      "depthSource": "Ficha ABB S803S-C80 / S803B-C80 / S803C-C80 (built-in depth 82,5 mm): https://www.farnell.com/datasheets/2912218.pdf",
       "cadAspectNote": "El DXF 2D de ABB tiene otra proporción que la ficha (ancho/alto): el armado usa la ficha y el frente se dibuja sin deformar, centrado (queda un margen a los costados). Pendiente: reemplazar por el STEP 3D de S800 de ABB Library."
     },
     {
