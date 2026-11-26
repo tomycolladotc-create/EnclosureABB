@@ -55,7 +55,10 @@ def _board_drawing(project, catalog, fronts, appearances, area_w, area_h):
         if not part:
             continue
         b = bbox.extents(part, fast=True)
-        t = msp.add_text(f"{label}  ESC. 1:{n}", dxfattribs={"height": RULES["viewTitleMm"] * n, "layer": "TITULOS"})
+        t_att = {"height": RULES["viewTitleMm"] * n, "layer": "TITULOS"}
+        if doc.styles.has_entry("ABB_ARIAL_BOLD"):
+            t_att["style"] = "ABB_ARIAL_BOLD"
+        t = msp.add_text(f"{label}  ESC. 1:{n}", dxfattribs=t_att)
         t.set_placement(((b.extmin.x + b.extmax.x) / 2, box.extmin.y - RULES["viewTitleMm"] * 1.8 * n), align=__import__("ezdxf").enums.TextEntityAlignment.TOP_CENTER)
         ents.append(t)
     # split_views ya dejó en el model space sólo el frente, la puerta y estos títulos.

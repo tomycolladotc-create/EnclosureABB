@@ -265,7 +265,7 @@ def build_dxf(project, catalog, fronts, appearances):
         lx, ly = fx + box["x"], y - LABEL_RULES["gapBelowMm"] - lh
         rect(lx, ly, lw, lh, "ABB_ETIQUETAS")
         tag_h = box["font"] * 0.716  # alto de mayúscula de la letra del editor (Arial)
-        space.add_text(name, dxfattribs={"height": tag_h, "layer": "ABB_ETIQUETAS"}).set_placement(
+        space.add_text(name, dxfattribs={"height": tag_h, "layer": "ABB_ETIQUETAS", "style": "ABB_ARIAL_BOLD"}).set_placement(
             (lx + lw / 2, ly + lh / 2), align=ezdxf.enums.TextEntityAlignment.MIDDLE_CENTER)
     # Accesorios de normativa (bornes de tierra, peines): geometría esquemática marcada como provisoria.
     for acc in project.get("accessories", []):

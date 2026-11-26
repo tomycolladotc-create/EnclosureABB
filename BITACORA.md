@@ -3,6 +3,11 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-26 02:35 · Antigravity · Topográficos DXF/PDF: etiquetas de circuito y títulos en Arial Bold sólido
+- Hecho: asignado estilo `ABB_ARIAL_BOLD` a las etiquetas de portaetiquetas (`ABB_ETIQUETAS` en `cad_export.py`) y a los títulos `PUERTA ABIERTA / PUERTA CERRADA` (`entrega_pdf.py`) para eliminar el trazo fino/grisáceo de SHX y obtener texto negro sólido nítido en PDF/ploteo.
+- Archivos: `cad_export.py`, `entrega_pdf.py`.
+- Resultado: 209/209 tests unitarios y regresión de 24 tableros OK; verificado visualmente en zoom a tamaño real (`QD139`, `CSFT3-1`, `TSB`).
+
 ## 2026-11-26 01:35 · Antigravity · BOM genérico: regulación Ir (`setting`) y categoría Accionamiento sin serie
 - Hecho: `bom.generic_device_spec` incluye automáticamente el ajuste térmico/magnético del campo `setting` (ej. `, regulado Ir = 63 A`), separando y documentando equipos regulables en el cómputo genérico; en modo genérico la categoría de manija de seccionador sale como `Accionamiento` (sin `OT`), habilitada en `datos/reglas_layout.json -> equipamientoExcel.include`.
 - Archivos: `bom.py`, `datos/reglas_layout.json`.
