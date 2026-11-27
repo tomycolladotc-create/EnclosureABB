@@ -12,7 +12,8 @@ from pathlib import Path
 
 from bom import MISSING, build_bom
 
-RULES = json.loads((Path(__file__).resolve().parent / "datos" / "reglas_layout.json").read_text(encoding="utf-8"))["equipamientoExcel"]
+import rutas
+RULES = rutas.read_json("reglas_layout.json")["equipamientoExcel"]
 
 
 def _generic(category, description):

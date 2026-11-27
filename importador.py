@@ -200,7 +200,8 @@ def ensure_marking(device, catalog):
             device["marking"]["family"] = "SACE Tmax"
     return device
 
-CORRECTIONS_FILE = Path(__file__).resolve().parent / "datos" / "correcciones_unifilar.json"
+import rutas
+CORRECTIONS_FILE = rutas.data_file("correcciones_unifilar.json")
 
 
 def _model_key(model):

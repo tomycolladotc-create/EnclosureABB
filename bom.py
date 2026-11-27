@@ -43,8 +43,10 @@ def _strips(pieces, strip):
     return bins
 
 
-ORDER_CODES_FILE = __import__("pathlib").Path(__file__).resolve().parent / "datos" / "codigos_pedido_abb.json"
-GENERIC_RULES_FILE = __import__("pathlib").Path(__file__).resolve().parent / "datos" / "reglas_bom_generico.json"
+import rutas
+
+ORDER_CODES_FILE = rutas.data_file("codigos_pedido_abb.json")
+GENERIC_RULES_FILE = rutas.data_file("reglas_bom_generico.json")
 
 
 def load_generic_rules(path=GENERIC_RULES_FILE):

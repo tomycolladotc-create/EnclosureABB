@@ -9,7 +9,8 @@ from pathlib import Path
 
 # La misma regla que el armado automático (layout_auto.py): distinta carcasa → colGap; misma carcasa → pegados (peine).
 # Antes acá había 4 mm fijos y el armado usaba 25 mm: ubicar a mano y armar solo daban resultados distintos (2026-11-19).
-GAP_OTHER_SERIES_MM = float(json.loads((Path(__file__).resolve().parent / "datos" / "reglas_layout.json").read_text(encoding="utf-8"))["colGap"])
+import rutas
+GAP_OTHER_SERIES_MM = float(rutas.read_json("reglas_layout.json")["colGap"])
 GAP_SAME_SERIES_MM = 0.0
 
 

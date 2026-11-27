@@ -10,13 +10,13 @@ No se inventa nada: lo que el programa no puede comprobar se devuelve como 'manu
 import json
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent
-RULES_FILE = ROOT / "datos" / "normativa_argentina.json"
+import rutas
+
+ROOT = rutas.BUNDLE_ROOT
+RULES_FILE = rutas.data_file("normativa_argentina.json")
 def _contiguous_gap():
     """Separación máxima para considerar dos equipos pegados (peine posible): datos/reglas_layout.json → contiguousGapMm."""
-    import json
-    from pathlib import Path
-    return json.loads((Path(__file__).resolve().parent / "datos" / "reglas_layout.json").read_text(encoding="utf-8"))["contiguousGapMm"]
+    return rutas.read_json("reglas_layout.json")["contiguousGapMm"]
 
 
 def load_rules(path=RULES_FILE):

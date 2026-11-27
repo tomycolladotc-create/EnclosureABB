@@ -18,9 +18,8 @@ def _f(level, code, message, tags=()):
 
 
 def _import_rules():
-    import json
-    from pathlib import Path
-    return json.loads((Path(__file__).resolve().parent / "datos" / "catalogo_abb.json").read_text(encoding="utf-8"))["importRules"]
+    import rutas
+    return rutas.read_json("catalogo_abb.json")["importRules"]
 
 
 def rated_current(device, rules=None):
@@ -47,9 +46,9 @@ def main_device(project, rules=None):
     """El interruptor/seccionador de entrada: etiqueta con mainTagPrefix (reglas_layout.json), o el que el plano nombra con
     importRules.mainDeviceKeywords, o el único sin circuito. Única fuente: la usan el armado, los accesorios, la auditoría y la interfaz."""
     import json
-    from pathlib import Path
+    import rutas
     devices = project.get("devices", [])
-    prefix = json.loads((Path(__file__).resolve().parent / "datos" / "reglas_layout.json").read_text(encoding="utf-8"))["mainTagPrefix"]
+    prefix = rutas.read_json("reglas_layout.json")["mainTagPrefix"]
     for d in devices:
         if str(d.get("tag", "")).startswith(prefix):
             return d
@@ -83,15 +82,13 @@ def _natural(text):
 
 
 def _validation_rules():
-    import json
-    from pathlib import Path
-    return json.loads((Path(__file__).resolve().parent / "datos" / "reglas_validacion.json").read_text(encoding="utf-8"))
+    import rutas
+    return rutas.read_json("reglas_validacion.json")
 
 
 def _layout_rules():
-    import json
-    from pathlib import Path
-    return json.loads((Path(__file__).resolve().parent / "datos" / "reglas_layout.json").read_text(encoding="utf-8"))
+    import rutas
+    return rutas.read_json("reglas_layout.json")
 
 
 def audit_feeder_names(boards):

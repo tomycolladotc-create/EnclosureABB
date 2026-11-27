@@ -13,3 +13,4 @@ work/imagenes_ref/
 work/*.png
 work/*.html
 datos/formatos/
+datos/frentes_resueltos.json.gz

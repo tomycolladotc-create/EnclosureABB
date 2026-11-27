@@ -10,13 +10,24 @@ import unicodedata
 import os
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent
-DATA = ROOT / "datos"
+import rutas
+
+ROOT = rutas.BUNDLE_ROOT
+DATA = rutas.DATA_DIR
 # ABB_PROJECTS_DIR: carpeta de proyectos para pruebas automáticas (lección 30: una corrida de prueba dejó 24 tableros
 # en datos/proyectos y se subieron al repositorio; las pruebas nunca escriben en los proyectos del usuario).
-PROJECTS_DIR = Path(os.environ["ABB_PROJECTS_DIR"]) if os.environ.get("ABB_PROJECTS_DIR") else DATA / "proyectos"
+PROJECTS_DIR = rutas.projects_dir()
 LEGACY = {"ts4": DATA / "ts4_topografia.json"}
 ID_PATTERN = re.compile(r"[a-z0-9][a-z0-9_-]{0,40}")
+
+
+def _sanitize_frozen_sample(data):
+    """En el ejecutable distribuido, la plantilla base se muestra con nombre y origen 100 % genéricos."""
+    out = copy.deepcopy(data)
+    out["project"] = "Tablero de ejemplo"
+    out["source"] = "Ejemplo incluido"
+    out["notes"] = ["Tablero de ejemplo incluido para probar el editor. Importá tu propio unifilar PDF o creá un tablero nuevo."]
+    return out
 
 
 def slug(name):
@@ -29,20 +40,28 @@ def slug(name):
 def path_for(project_id, projects_dir=PROJECTS_DIR):
     if not ID_PATTERN.fullmatch(project_id or ""):
         raise ValueError("Id de proyecto inválido (solo minúsculas, números, guion y guion bajo)")
-    return LEGACY.get(project_id) or Path(projects_dir) / f"{project_id}.json"
+    if project_id in LEGACY:
+        if rutas.IS_FROZEN:
+            user_copy = Path(projects_dir) / f"{project_id}.json"
+            if user_copy.exists():
+                return user_copy
+        return LEGACY[project_id]
+    return Path(projects_dir) / f"{project_id}.json"
 
 
 def list_projects(projects_dir=PROJECTS_DIR):
     found = {}
-    for pid, file in LEGACY.items():
-        if file.exists():
-            found[pid] = file
     if Path(projects_dir).exists():
         for file in sorted(Path(projects_dir).glob("*.json")):
-            found.setdefault(file.stem, file)
+            found[file.stem] = (file, False)
+    for pid, file in LEGACY.items():
+        if pid not in found and file.exists():
+            found[pid] = (file, rutas.IS_FROZEN)
     out = []
-    for pid, file in found.items():
+    for pid, (file, is_frozen_tpl) in found.items():
         data = json.loads(file.read_text(encoding="utf-8"))
+        if is_frozen_tpl:
+            data = _sanitize_frozen_sample(data)
         out.append({"id": pid, "name": data.get("project", pid), "devices": len(data.get("devices", [])),
                     "enclosure": data.get("enclosure", {}).get("id"), "modified": int(file.stat().st_mtime * 1000)})
     return sorted(out, key=lambda p: -p["modified"])  # el último que tocaste, primero
@@ -52,11 +71,17 @@ def load(project_id, projects_dir=PROJECTS_DIR):
     file = path_for(project_id, projects_dir)
     if not file.exists():
         raise FileNotFoundError(f"No existe el proyecto '{project_id}'")
-    return json.loads(file.read_text(encoding="utf-8"))
+    data = json.loads(file.read_text(encoding="utf-8"))
+    if rutas.IS_FROZEN and project_id in LEGACY and file == LEGACY[project_id]:
+        return _sanitize_frozen_sample(data)
+    return data
 
 
 def save(project_id, project, projects_dir=PROJECTS_DIR):
-    file = path_for(project_id, projects_dir)
+    if rutas.IS_FROZEN and project_id in LEGACY:
+        file = Path(projects_dir) / f"{project_id}.json"
+    else:
+        file = path_for(project_id, projects_dir)
     file.parent.mkdir(parents=True, exist_ok=True)
     file.write_text(json.dumps(project, ensure_ascii=False, indent=2), encoding="utf-8")
 

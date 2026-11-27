@@ -2,13 +2,15 @@
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import quote, unquote, parse_qs, urlparse
+import gc
+import gzip
 import json
 import threading
 import logging
 import os
+import sys
 
-from pypdf import PdfReader
-from cad_export import build_dxf
+import rutas
 from importador import apply_corrections, detect_board, detect_devices, detect_edesign_report, detect_signals, ensure_marking, shell_size
 from accesorios import complete, load_accessory_catalog
 from colocar import place_din
@@ -19,39 +21,105 @@ from bom import build_bom, bom_issues, to_csv
 from revisiones import add_revision
 import proyectos
 
-ROOT = Path(__file__).resolve().parent
-CATALOG = ROOT / "datos" / "catalogo_abb.json"
-FRONTS = ROOT / "datos" / "frentes_cad.json"
-APPEARANCES = ROOT / "datos" / "apariencias_abb.json"
+ROOT = rutas.BUNDLE_ROOT
+CATALOG = rutas.data_file("catalogo_abb.json")
+FRONTS = rutas.data_file("frentes_cad.json")
+APPEARANCES = rutas.data_file("apariencias_abb.json")
+PRECOMPUTED_FRONTS = rutas.data_file("frentes_resueltos.json.gz")
+ICON = rutas.data_file("icon.ico")
 _RESOLVED = {}
+_RESOLVED_BYTES = {}
 _RESOLVE_LOCK = threading.Lock()
+DESKTOP_MODE = False
+ON_PING = None
+ON_BYE = None
+ON_REQ_START = None
+ON_REQ_END = None
+
+
+def _load_precomputed_dict():
+    if not PRECOMPUTED_FRONTS.exists():
+        return None
+    stamp = ("precomputed", PRECOMPUTED_FRONTS.stat().st_mtime_ns) if rutas.IS_FROZEN else ("precomputed", rutas.drawing_sources_stamp())
+    try:
+        with gzip.open(PRECOMPUTED_FRONTS, "rt", encoding="utf-8") as fh:
+            cached = json.load(fh)
+        if rutas.IS_FROZEN or cached.get("stamp") == stamp[1]:
+            return stamp, cached["fronts"], cached["appearances"]
+    except Exception:
+        return None
+    return None
 
 
 def resolved_drawing_data():
     """Frentes CAD y apariencias resueltos por pintura.resolve; se recalculan sólo si cambió algún archivo.
-    Con candado: dos pedidos a la vez (p. ej. al recargar la página) no lo calculan dos veces."""
-    from pintura import resolve
+    En modo congelado (ejecutable) se leen desde frentes_resueltos.json.gz sin retener dicts pesados en RAM."""
     with _RESOLVE_LOCK:
-        return _resolved_locked(resolve)
+        pre = _load_precomputed_dict()
+        if pre is not None:
+            stamp, fronts, appearances = pre
+            if rutas.IS_FROZEN:
+                return fronts, appearances
+            _RESOLVED.update(stamp=stamp, data=(fronts, appearances))
+            return _RESOLVED["data"]
+        return _resolved_locked()
 
 
-def _resolved_locked(resolve):
+def resolved_drawing_bytes(kind):
+    """JSON UTF-8 compacto de fronts/appearances para /api/fronts y /api/appearances (~2 MB en vez de ~25 MB de dicts)."""
+    with _RESOLVE_LOCK:
+        if PRECOMPUTED_FRONTS.exists():
+            stamp = ("precomputed", PRECOMPUTED_FRONTS.stat().st_mtime_ns) if rutas.IS_FROZEN else ("precomputed", rutas.drawing_sources_stamp())
+            if _RESOLVED_BYTES.get("stamp") == stamp:
+                return _RESOLVED_BYTES[kind]
+            pre = _load_precomputed_dict()
+            if pre is not None:
+                st, fronts, appearances = pre
+                _RESOLVED_BYTES.clear()
+                _RESOLVED_BYTES.update(
+                    stamp=st,
+                    fronts=json.dumps(fronts, separators=(",", ":"), ensure_ascii=False).encode("utf-8"),
+                    appearances=json.dumps(appearances, separators=(",", ":"), ensure_ascii=False).encode("utf-8"),
+                )
+                del fronts, appearances
+                gc.collect()
+                return _RESOLVED_BYTES[kind]
+        fronts, appearances = _resolved_locked()
+        return json.dumps(fronts if kind == "fronts" else appearances, ensure_ascii=False).encode("utf-8")
+
+
+def _resolved_locked():
+    from pintura import resolve
     stamp = tuple(p.stat().st_mtime_ns for p in (FRONTS, APPEARANCES, CATALOG))
     if _RESOLVED.get("stamp") != stamp:
         _RESOLVED.update(stamp=stamp, data=resolve(json.loads(FRONTS.read_text(encoding="utf-8")),
                                                   json.loads(APPEARANCES.read_text(encoding="utf-8")),
                                                   json.loads(CATALOG.read_text(encoding="utf-8"))))
     return _RESOLVED["data"]
-VALIDATION_RULES = ROOT / "datos" / "reglas_validacion.json"
-WEB = ROOT / "web" / "index.html"
-WEB_STYLES = ROOT / "web" / "styles.css"
+
+
+VALIDATION_RULES = rutas.data_file("reglas_validacion.json")
+WEB = rutas.WEB_DIR / "index.html"
+WEB_STYLES = rutas.WEB_DIR / "styles.css"
 MAX_PDF = 30 * 1024 * 1024
 MAX_FORMAT = 200 * 1024 * 1024  # el DXF de formato con todos los unifilares puede pesar decenas de MB
-FORMATS = Path(os.environ.get("ABB_FORMATS_DIR") or ROOT / "datos" / "formatos")  # (las pruebas usan una carpeta temporal) formato de ploteo del usuario (DXF) y los últimos datos del rótulo; no se sube al repo
+FORMATS = rutas.formats_dir()  # (las pruebas usan una carpeta temporal) formato de ploteo del usuario (DXF) y los últimos datos del rótulo; no se sube al repo
 logging.getLogger("pypdf").setLevel(logging.ERROR)
 
 
 class Handler(BaseHTTPRequestHandler):
+    def handle_one_request(self):
+        if callable(ON_REQ_START):
+            ON_REQ_START()
+        try:
+            super().handle_one_request()
+        finally:
+            if callable(ON_REQ_END):
+                ON_REQ_END()
+
+    def log_message(self, format, *args):
+        if sys.stderr is not None and not DESKTOP_MODE:
+            super().log_message(format, *args)
     def send_data(self, status, body, mime="application/json"):
         blob = (json.dumps(body, ensure_ascii=False).encode() if isinstance(body, (dict, list)) else body)
         self.send_response(status)
@@ -70,6 +138,14 @@ class Handler(BaseHTTPRequestHandler):
             return self.send_data(200, WEB.read_bytes(), "text/html")
         if route == "/styles.css":
             return self.send_data(200, WEB_STYLES.read_bytes(), "text/css")
+        if route == "/favicon.ico":
+            if ICON.exists():
+                return self.send_data(200, ICON.read_bytes(), "image/x-icon")
+            return self.send_data(204, b"", "image/x-icon")
+        if route == "/api/ping":
+            if callable(ON_PING):
+                ON_PING()
+            return self.send_data(200, {"app": "EnclosureABB", "desktop": bool(DESKTOP_MODE)})
         if route == "/api/projects":
             return self.send_data(200, proyectos.list_projects())
         if route == "/api/project":
@@ -107,12 +183,15 @@ class Handler(BaseHTTPRequestHandler):
                 return self.send_data(404, {"error": "Todavía no se cargó un formato"})
             return self.send_data(200, json.loads(meta.read_text(encoding="utf-8")))
         if route in ("/api/fronts", "/api/appearances"):  # ya resueltos (pintura.resolve): pantalla y DXF usan lo mismo
-            fronts, appearances = resolved_drawing_data()
-            return self.send_data(200, fronts if route == "/api/fronts" else appearances)
+            return self.send_data(200, resolved_drawing_bytes("fronts" if route == "/api/fronts" else "appearances"))
         self.send_data(404, {"error": "Ruta inexistente"})
 
     def do_POST(self):
         route = urlparse(self.path).path
+        if route == "/api/bye":
+            if callable(ON_BYE):
+                ON_BYE()
+            return self.send_data(204, b"", "text/plain")
         length = int(self.headers.get("Content-Length", "0"))
         if length <= 0 or length > (MAX_FORMAT if route == "/api/plano/formato" else MAX_PDF):
             return self.send_data(400, {"error": "Archivo vacío o demasiado grande (máximo 30 MB)"})
@@ -124,16 +203,20 @@ class Handler(BaseHTTPRequestHandler):
                 catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
                 report = detect_edesign_report(blob, catalog)
                 if report is not None:
+                    gc.collect()
                     return self.send_data(200, report)
                 from io import BytesIO
+                from pypdf import PdfReader
                 reader = PdfReader(BytesIO(blob))
                 content = "\n".join(page.extract_text() or "" for page in reader.pages)
                 devices, board = detect_devices(content, catalog), detect_board(content)
                 unused = apply_corrections(devices, board, catalog)  # cambios de equipo pedidos por el usuario (datos/correcciones_unifilar.json)
                 from verificacion_unifilar import check  # segunda lectura del plano, por posición: modelo, polos y corriente de cada circuito
                 verification = check(blob, devices, catalog)
-                return self.send_data(200, {"pages": len(reader.pages), "devices": devices, "signals": detect_signals(content, catalog), "board": board,
-                                            "correctionsNotApplied": unused, "textAvailable": bool(content.strip()), "verification": verification})
+                res = {"pages": len(reader.pages), "devices": devices, "signals": detect_signals(content, catalog), "board": board,
+                       "correctionsNotApplied": unused, "textAvailable": bool(content.strip()), "verification": verification}
+                gc.collect()
+                return self.send_data(200, res)
             except Exception as exc:
                 return self.send_data(422, {"error": f"No se pudo leer el PDF: {exc}"})
         if route == "/api/import-batch":
@@ -368,7 +451,9 @@ class Handler(BaseHTTPRequestHandler):
                 catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
                 fronts, appearances = resolved_drawing_data()
                 bom_mode = "generic" if req.get("bomMode") == "generic" else "abb"
-                return self.send_data(200, build_pdf(projects, catalog, fronts, appearances, values, shop=bool(req.get("shop", True)), template=template, bom_mode=bom_mode), "application/pdf")
+                pdf_bytes = build_pdf(projects, catalog, fronts, appearances, values, shop=bool(req.get("shop", True)), template=template, bom_mode=bom_mode)
+                gc.collect()
+                return self.send_data(200, pdf_bytes, "application/pdf")
             except (ValueError, FileNotFoundError, KeyError) as exc:
                 return self.send_data(422, {"error": str(exc)})
         if route == "/api/export/equipamiento":  # Excel de equipamiento eléctrico de los tableros elegidos
@@ -383,16 +468,21 @@ class Handler(BaseHTTPRequestHandler):
                     return self.send_data(422, {"error": "Elegí al menos un tablero."})
                 catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
                 mode = "generic" if req.get("mode") == "generic" else "abb"
-                return self.send_data(200, build_xlsx(projects, catalog, mode=mode),
+                xlsx_bytes = build_xlsx(projects, catalog, mode=mode)
+                gc.collect()
+                return self.send_data(200, xlsx_bytes,
                                       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
             except (ValueError, FileNotFoundError, KeyError) as exc:
                 return self.send_data(422, {"error": str(exc)})
         if route == "/api/export-dxf":
             try:
+                from cad_export import build_dxf
                 project = json.loads(blob)
                 catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
                 fronts, appearances = resolved_drawing_data()
-                return self.send_data(200, build_dxf(project, catalog, fronts, appearances), "application/dxf")
+                dxf_bytes = build_dxf(project, catalog, fronts, appearances)
+                gc.collect()
+                return self.send_data(200, dxf_bytes, "application/dxf")
             except (ValueError, UnicodeDecodeError, KeyError) as exc:
                 return self.send_data(422, {"error": str(exc)})
         self.send_data(404, {"error": "Ruta inexistente"})

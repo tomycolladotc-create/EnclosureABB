@@ -26,8 +26,9 @@ from ezdxf.addons.importer import Importer
 
 from cad_export import build_dxf
 
-ROOT = Path(__file__).resolve().parent
-RULES = json.loads((ROOT / "datos" / "reglas_layout.json").read_text(encoding="utf-8"))["planoUnifilar"]
+import rutas
+ROOT = rutas.BUNDLE_ROOT
+RULES = rutas.read_json("reglas_layout.json")["planoUnifilar"]
 
 
 def _block_size(doc, name):

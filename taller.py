@@ -15,8 +15,9 @@ from ezdxf.enums import TextEntityAlignment
 from cad_export import door_features
 from validacion import _is_din
 
-ROOT = Path(__file__).resolve().parent
-RULES = json.loads((ROOT / "datos" / "reglas_layout.json").read_text(encoding="utf-8"))["taller"]
+import rutas
+ROOT = rutas.BUNDLE_ROOT
+RULES = rutas.read_json("reglas_layout.json")["taller"]
 DIM = {"dimlfac": 1, "dimdec": 1, "dimdsep": ord(","), "dimzin": 8}  # dimlfac 1: el estilo EZDXF supone metros y multiplica por 100; cotas en mm con coma decimal, un decimal y sin ceros sobrantes (349,5 / 250)
 
 

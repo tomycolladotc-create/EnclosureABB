@@ -3,6 +3,12 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-26 22:00 · Antigravity · Ejecutable Windows e instalador de baja RAM (`EnclosureABB-Setup.exe`)
+- Hecho: creado módulo central `rutas.py` (recursos en `_MEIPASS`, proyectos/formatos en `%LOCALAPPDATA%\EnclosureABB` o `./datos_usuario` en modo portable), lanzador `escritorio.py` (instancia única, ventana `--app` en Edge/Chrome sin WebView2, autocierre limpio tras `/api/bye` respetando requests activos), ícono `datos/icon.ico` y pipeline `packaging/build_exe.py` (PyInstaller `--onedir` + Inno Setup por usuario + ZIP portable).
+- Optimización RAM/peso: `frentes_resueltos.json.gz` precalculado en build (0 OpenCV en runtime), bytes JSON cacheados sin retener dicts pesados, imports perezosos (`pypdf`/`ezdxf`), recorte de modelos ONNX/`mupdf-devel`/`lxml` (~60 MB menos) y `store_shrink` + `gc.collect()` en `entrega_pdf.py` (1 proceso en modo congelado). Arranque 1,0 s · 34 MB RAM en reposo · instalador 38,9 MB.
+- Archivos: `rutas.py`, `escritorio.py`, `app.py`, `proyectos.py`, `entrega_pdf.py`, `accesorios.py`, `auditoria.py`, `bom.py`, `cad_export.py`, `colocar.py`, `excel_equipamiento.py`, `importador.py`, `layout_auto.py`, `normativa.py`, `plano_unifilar.py`, `taller.py`, `web/index.html`, `datos/icon.ico`, `packaging/*`, `tests/test_rutas_escritorio.py`, `.gitignore`, `ESTADO.md`.
+- Verificado: smoke test completo sobre `EnclosureABB.exe` (arranque, ejemplo genérico, guardado aislado, importar PDF, DXF, Excel, PDF entrega 2 tableros + taller, autocierre), 214/214 unitarias y 136/136 e2e OK.
+
 ## 2026-11-26 20:45 · Antigravity · Repositorio 100 % genérico (sin referencias a obras particulares)
 - Hecho: eliminado informe de revisión específico de obra en `docs/`, reemplazado fallback `titleBlock` en `datos/reglas_layout.json` por `"Rotulo"`, y limpiadas las referencias a proyectos/clientes particulares en `ESTADO.md`, `BITACORA.md`, `docs/LECCIONES.md`, `docs/MEJORAS.md`, `plano_unifilar.py` y `AGENTS.md`. Se conservan intactas todas las mejoras genéricas del programa.
 - Verificado: 211/211 unitarias + 136/136 e2e OK; 0 referencias a obras/clientes en código y documentación.

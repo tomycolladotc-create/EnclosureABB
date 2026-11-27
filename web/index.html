@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="es">
-<head><link rel="icon" href="data:,">
+<head><link rel="icon" href="/favicon.ico">
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Topográficos ABB</title>
 <link rel="stylesheet" href="/styles.css">
@@ -654,6 +654,7 @@ const importPdf=async(file,fresh)=>{if(!file)return;notice('Leyendo PDF…');
  if(location.hash==='#editor')await openCheck();
  const pendingNotice=sessionStorage.getItem('abb-notice');if(pendingNotice){sessionStorage.removeItem('abb-notice');notice(pendingNotice)}
 });
-window.addEventListener('beforeunload',event=>{if(!dirty)return;event.preventDefault();event.returnValue=''})
+window.addEventListener('beforeunload',event=>{if(!dirty)return;event.preventDefault();event.returnValue=''});
+fetch('/api/ping').then(r=>r.ok?r.json():null).then(p=>{if(!p?.desktop)return;setInterval(()=>fetch('/api/ping').catch(()=>{}),5000);window.addEventListener('pagehide',()=>navigator.sendBeacon&&navigator.sendBeacon('/api/bye'))}).catch(()=>{});
 </script>
 </body></html>

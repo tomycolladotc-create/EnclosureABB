@@ -25,6 +25,9 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 ## Estructura
 | Ruta | Qué es |
 |---|---|
+| `rutas.py` | resolución única de rutas (desarrollo vs ejecutable congelado: recursos en `_MEIPASS`, datos de usuario en `%LOCALAPPDATA%\EnclosureABB` o modo portable) |
+| `escritorio.py` | lanzador Windows de baja RAM (instancia única, ventana `--app` en Edge/Chrome sin WebView2, autocierre limpio tras cerrar la ventana) |
+| `packaging/` | build ejecutable (`build_exe.py`, `enclosure_abb.spec`, `enclosure_abb.iss`, `make_icon.py`) → `EnclosureABB-Setup.exe` y `EnclosureABB-Portable.zip` en `salida/instalador/` |
 | `verificacion_unifilar.py` | segunda lectura del unifilar por posición: modelo, polos y corriente de cada equipo contra el plano, al importar |
 | `app.py` | servidor del editor (`iniciar_editor.bat` → http://127.0.0.1:8765) |
 | `importador.py` | lee el PDF y propone equipos; reglas en `catalogo_abb.json`: `importRules`, `series` (modelo → carcasa, con polos y fuente), `modelHints` |
@@ -47,7 +50,8 @@ PDF de unifilar de ABB e-Design DOC → topográfico (vista frontal 2D) del tabl
 - Series sin confirmar con fuente (`verified: false`): XT1 y XT2 para todas las versiones de poder de corte.
 - **Pintura de los frentes (2026-11-19)**: los colores se ponen sobre las superficies cerradas del CAD (semillas, `pintura.cad_regions`); el servidor resuelve todo (`pintura.resolve` → `/api/fronts`, `/api/appearances`) y la pantalla y el DXF dibujan lo mismo. Etiquetas con letra mínima (`etiquetas.label_boxes`, misma regla en el editor). Encuadre de exportación medido sobre lo dibujado.
 - **Plano de fabricación** (2026-11-22): `python3 plano_unifilar.py formato.dxf carpeta_proyectos salida.dxf [tableros]` → unifilar del usuario + topográfico (puerta abierta/cerrada) en su formato. En la interfaz: Exportar → «Plano de fabricación» (carga el formato una vez, se completa el rótulo por cliente antes de generar, sale DXF sólo con las hojas elegidas).
-- Pruebas: 211 unitarias, incluida la regresión de 24 tableros y control A16 de poder de corte, y 136 controles de interfaz. Correr `python -m unittest discover tests` y `python tests/e2e/prueba_interfaz.py` antes de cada push. Las pruebas automáticas usan `ABB_PROJECTS_DIR`, nunca `datos/proyectos`.
+- **Ejecutable Windows de baja RAM (2026-11-26)**: `python packaging/build_exe.py` genera `salida/instalador/EnclosureABB-Setup.exe` (38,9 MB, Inno Setup por usuario sin Admin) y `EnclosureABB-Portable.zip` (52,0 MB). Precalcula `frentes_resueltos.json.gz` (elimina OpenCV y ~60 MB de modelos ONNX/headers), usa imports perezosos, bytes JSON directos y ventana `--app` de Edge/Chrome (arranque ~1 s, ~34 MB RAM en reposo, autocierre en 4,5 s).
+- Pruebas: 214 unitarias, incluida la regresión de 24 tableros, control A16 de poder de corte y pruebas de rutas/escritorio, y 136 controles de interfaz. Correr `python -m unittest discover tests` y `python tests/e2e/prueba_interfaz.py` antes de cada push. Las pruebas automáticas usan `ABB_PROJECTS_DIR`, nunca `datos/proyectos`.
 
 ## PRÓXIMA SESIÓN — empezar por acá (escrito por Claude, 2026-11-16 01:50)
 

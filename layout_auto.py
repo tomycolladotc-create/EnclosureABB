@@ -12,8 +12,9 @@ from pathlib import Path
 
 from accesorios import load_accessory_catalog
 
-ROOT = Path(__file__).resolve().parent
-RULES_FILE = ROOT / "datos" / "reglas_layout.json"
+import rutas
+ROOT = rutas.BUNDLE_ROOT
+RULES_FILE = rutas.data_file("reglas_layout.json")
 
 
 def load_rules(path=RULES_FILE):

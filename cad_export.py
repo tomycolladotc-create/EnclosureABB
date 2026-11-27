@@ -9,9 +9,10 @@ from io import StringIO
 from pathlib import Path
 
 import ezdxf
+import rutas
 from pintura import fit as paint_fit, resolve as paint_resolve
 from etiquetas import label_boxes
-LABEL_RULES = json.loads((Path(__file__).resolve().parent / "datos" / "reglas_layout.json").read_text(encoding="utf-8"))["labels"]
+LABEL_RULES = rutas.read_json("reglas_layout.json")["labels"]
 from ezdxf.colors import rgb2int
 
 from importador import shell_size

@@ -18,11 +18,12 @@ from ezdxf import bbox
 from ezdxf.addons.drawing import Frontend, RenderContext, layout, svg
 from ezdxf.addons.drawing.properties import LayoutProperties
 
+import rutas
 from excel_equipamiento import collect
 from plano_unifilar import RULES as PLANO_RULES
 from plano_unifilar import split_views
 
-RULES = json.loads((Path(__file__).resolve().parent / "datos" / "reglas_layout.json").read_text(encoding="utf-8"))["entregaPdf"]
+RULES = rutas.read_json("reglas_layout.json")["entregaPdf"]
 MM = 72 / 25.4  # puntos PDF por mm
 FONT = "helv"
 
@@ -93,7 +94,10 @@ def _render(doc, area_w, area_h, n):
     front.draw_layout(msp, layout_properties=props)
     page = layout.Page(area_w, area_h, layout.Units.mm, margins=layout.Margins.all(0))
     text = backend.get_string(page, settings=layout.Settings(scale=1 / n, fit_page=False))
-    return pymupdf.open(stream=_inline_css(text).encode("utf-8"), filetype="svg").convert_to_pdf()
+    with pymupdf.open(stream=_inline_css(text).encode("utf-8"), filetype="svg") as svg_doc:
+        pdf_bytes = svg_doc.convert_to_pdf()
+    pymupdf.TOOLS.store_shrink(100)
+    return pdf_bytes
 
 
 def _shop_drawing(project, catalog, accessories, area_w, area_h):
@@ -116,12 +120,19 @@ def _board_and_shop(project, catalog, fronts, appearances, accessories, area_w, 
 
 
 def _draw_all(projects, catalog, fronts, appearances, area_w, area_h, accessories=None):
-    """Dibujo de cada tablero; con varios, en paralelo (uno por núcleo): cada tablero es independiente."""
+    """Dibujo de cada tablero; en modo ejecutable corre en un solo proceso para mantener RAM mínima."""
+    import gc
     import os
     from concurrent.futures import ProcessPoolExecutor
-    workers = min(len(projects), os.cpu_count() or 1)
+    max_w = 1 if rutas.IS_FROZEN else min(4, os.cpu_count() or 1)
+    workers = min(len(projects), max_w)
     if workers <= 1:
-        return [_board_and_shop(p, catalog, fronts, appearances, accessories, area_w, area_h) for p in projects]
+        out = []
+        for p in projects:
+            out.append(_board_and_shop(p, catalog, fronts, appearances, accessories, area_w, area_h))
+            if rutas.IS_FROZEN:
+                gc.collect()
+        return out
     with ProcessPoolExecutor(max_workers=workers) as pool:
         futures = [pool.submit(_board_and_shop, p, catalog, fronts, appearances, accessories, area_w, area_h) for p in projects]
         return [f.result() for f in futures]
@@ -270,7 +281,7 @@ def build_pdf(projects, catalog, fronts, appearances, values, shop=True, templat
     bom_pages = len(bom_chunks)
     per_board = 2 if shop else 1
     total = 2 + per_board * len(projects) + bom_pages
-    accessories = json.loads((Path(__file__).resolve().parent / "datos" / "accesorios_abb.json").read_text(encoding="utf-8")) if shop else None
+    accessories = rutas.read_json("accesorios_abb.json") if shop else None
     number = (lambda n: RULES["sheetNumberFormat"].format(documento=base, n=n)) if not template else (lambda n: f"Hoja {n}")  # noqa: E731
     out = pymupdf.open()
 

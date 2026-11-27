@@ -7,9 +7,10 @@ La geometría es esquemática (rectángulos con las medidas del catálogo) hasta
 import json
 import re
 from pathlib import Path
+import rutas
 
-ROOT = Path(__file__).resolve().parent
-CATALOG_FILE = ROOT / "datos" / "accesorios_abb.json"
+ROOT = rutas.BUNDLE_ROOT
+CATALOG_FILE = rutas.data_file("accesorios_abb.json")
 # Criterios de armado: datos/reglas_layout.json (contiguousGapMm, railTerminalBandMm, busbarMarginMm, combFaceFallbackMm, labelHolderMm).
 
 
