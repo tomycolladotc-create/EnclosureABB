@@ -610,3 +610,120 @@ def to_csv(rows, issues=()):
     for text in issues:
         writer.writerow({"category": "CONTROL", "description": text})
     return ("﻿" + output.getvalue()).encode("utf-8")
+
+
+def _pretty_catalog_model(raw):
+    """Normaliza la clave compacta de codigos_pedido_abb.json a un nombre legible ABB sin perder el match de clave."""
+    m = str(raw or "").strip()
+    m = re.sub(r"^(F20[24])(AC|A|B|F)(-)", r"\1 \2\3", m, flags=re.I)
+    m = re.sub(
+        r"^(XT\d[A-Z]?|A1[ABCN]|T\d[A-Z]?)(\d{2,4})(TM[A-Z]+|PR\d+[A-Z]*(?:-[A-Z/]+)?|Ekip[A-Za-z]*)(.*)",
+        lambda g: " ".join(x for x in (g.group(1), g.group(2), g.group(3), g.group(4).strip()) if x),
+        m,
+        flags=re.I,
+    )
+    m = re.sub(r"^(XT\d[A-Z]?\s+\d+\s+TM[A-Z]+)(\d)", r"\1 \2", m, flags=re.I)
+    m = re.sub(r"(?<!\s)(N=50%)", r" \1", m, flags=re.I)
+    m = re.sub(r"^(E\d\.\d[A-Z])(\d+)(Ekip)(Dip|Touch)([A-Z/]+)(\d+)", r"\1 \2 \3 \4 \5 \6", m, flags=re.I)
+    return re.sub(r"\s+", " ", m).strip()
+
+
+def _parse_catalog_in(model, desc, mk):
+    if mk.get("In"):
+        try:
+            return float(str(mk["In"]).replace(",", "."))
+        except ValueError:
+            pass
+    for pat, src in (
+        (r"F20[24]\s*(?:-SX?)?\s*(?:AC|A|B|F)\s*-\s*(\d+(?:[.,]\d+)?)\s*/", model),
+        (r"^OT\s*(\d+(?:[.,]\d+)?)", model),
+        (r"^E\d\.\d[A-Z]\s+\d+\s+.*\b(\d{3,4})$", model),
+        (r"In\s*=\s*(\d+(?:[.,]\d+)?)\s*A\b", desc),
+        (r"\b(\d+(?:[.,]\d+)?)\s*A\b", desc),
+    ):
+        found = re.search(pat, src, re.I)
+        if found:
+            return float(found.group(1).replace(",", "."))
+    return None
+
+
+def _device_category(model):
+    if re.match(r"^F20[24]\b", model, re.I):
+        return "rcd", "Diferencial"
+    if re.match(r"^OT\s*\d", model, re.I):
+        return "switch", "Seccionador"
+    if re.match(r"^E\d\.\d", model, re.I):
+        return "acb", "Interruptor abierto"
+    if re.match(r"^(?:XT\d|T[24]|A1[ABCN])", model, re.I):
+        return "mccb", "Caja moldeada"
+    return "mcb", "Termomagnética"
+
+
+def catalog_devices(catalog, order_codes=None, generic_rules=None):
+    """Lista filtrable de equipos ABB verificados listos para arrastrar/agregar en el editor.
+    Deriva polos, calibre (In), poder de corte (kA), carcasa, medidas y marcado desde la fuente única del catálogo."""
+    from importador import find_series, marking_fields, shell_size
+
+    codes = load_order_codes() if order_codes is None else order_codes
+    rules = load_generic_rules() if generic_rules is None else generic_rules
+    min_poles = (catalog.get("scope") or {}).get("minPoles", 2)
+    import_rules = catalog.get("importRules") or {}
+    cat_order = {"mcb": 0, "rcd": 1, "mccb": 2, "switch": 3, "acb": 4}
+    out = []
+    seen = set()
+    for item in codes.get("items", []):
+        poles = item.get("poles")
+        if poles is not None and int(poles) < min_poles:
+            continue
+        model = _pretty_catalog_model(item.get("model", ""))
+        probe = re.sub(r"(\d)NA$", r"\1 NA", model, flags=re.I)
+        _serie, sh, _reason = find_series(probe, poles, catalog)
+        if not sh:
+            continue
+        dedup = (model_key(model), poles, item.get("orderCode"))
+        if dedup in seen:
+            continue
+        seen.add(dedup)
+        mk = marking_fields(probe, "", import_rules)
+        in_a = _parse_catalog_in(model, item.get("descripcion", ""), mk)
+        ka_str = _ka_for_device(
+            {"model": model, "poles": poles, "marking": {**mk, **({"In": str(in_a)} if in_a is not None else {})}},
+            rules,
+        )
+        ka_num = float(ka_str.replace(",", ".")) if ka_str else None
+        if ka_str:
+            mk.setdefault("kA", ka_str)
+            mk.setdefault("Icn", str(int(round(ka_num * 1000))))
+        w, h = shell_size(sh, poles)
+        cat_id, cat_label = _device_category(model)
+        is_1pn = bool(re.search(r"NA\b|^SN\s?201", probe, re.I))
+        poles_label = "1P+N (1M)" if re.match(r"^SN\s?201", model, re.I) else ("1P+N" if is_1pn else (f"{poles}P" if poles else ""))
+        entry = {
+            "id": f"{item['orderCode']}-{poles or 0}",
+            "model": model,
+            "orderCode": item["orderCode"],
+            "description": item.get("descripcion") or model,
+            "category": cat_id,
+            "categoryLabel": cat_label,
+            "poles": int(poles) if poles is not None else None,
+            "polesLabel": poles_label,
+            "inA": int(in_a) if in_a is not None and abs(in_a - round(in_a)) < 1e-6 else in_a,
+            "ka": int(ka_num) if ka_num is not None and abs(ka_num - round(ka_num)) < 1e-6 else ka_num,
+            "kaLabel": f"{ka_str} kA" if ka_str else None,
+            "curve": mk.get("curva") or mk.get("trip") or None,
+            "shell": sh["id"],
+            "w": w,
+            "h": h,
+            "mounting": sh.get("mounting") or "plate",
+            "marking": mk,
+            "status": f"a confirmar: {item['confirm']}" if item.get("confirm") else "catálogo ABB verificado",
+        }
+        if sh.get("kit"):
+            entry["mountingKit"] = {
+                "type": sh["kit"],
+                "orderCode": sh.get("kitOrderCode"),
+                "moduleHeight": sh.get("kitHeight"),
+            }
+        out.append(entry)
+    out.sort(key=lambda e: (cat_order.get(e["category"], 9), e["poles"] or 0, e["inA"] or 0, e["ka"] or 0, e["model"]))
+    return out

@@ -159,8 +159,10 @@ class Handler(BaseHTTPRequestHandler):
             return self.send_data(200, project)
         if route == "/api/catalog":
             data = json.loads(CATALOG.read_text(encoding="utf-8"))
-            from bom import load_order_codes
-            data["orderCodes"] = load_order_codes()  # códigos verificados: el editor muestra cuál irá a la lista
+            from bom import catalog_devices, load_order_codes
+            codes = load_order_codes()
+            data["orderCodes"] = codes  # códigos verificados: el editor muestra cuál irá a la lista
+            data["deviceCatalog"] = catalog_devices(data, codes)
             rules = json.loads((ROOT / "datos" / "reglas_layout.json").read_text(encoding="utf-8"))
             data["layoutRules"] = {"labels": rules["labels"], "plano": {k: rules["planoUnifilar"][k] for k in ("fieldLabels", "revisionColumns")}}
 

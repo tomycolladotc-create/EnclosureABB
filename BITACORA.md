@@ -3,6 +3,11 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-27 00:12 · Antigravity · Catálogo ABB filtrable (polos, calibre, kA) y arrastre con popup de circuito (`v1.0.2`)
+- Hecho: creado `bom.catalog_devices` expuesto en `/api/catalog` con los 83 equipos ABB verificados (≥ 2 polos) derivados de la fuente única (`codigos_pedido_abb.json`, `catalogo_abb.json`, `reglas_bom_generico.json`). Agregada pestaña lateral **Catálogo ABB** y selector en **＋ Agregar equipo** con filtros por **Polos**, **Calibre (A)**, **Cortocircuito (kA)**, tipo y texto, miniaturas CAD reales y arrastre fluido al tablero con fantasma 1:1 que despliega la ventana emergente **Nuevo circuito** al soltar (con inserción directa en riel/placa o rearmado automático y deshacer en un solo `Ctrl+Z`).
+- Archivos: `bom.py`, `app.py`, `web/index.html`, `web/styles.css`, `tests/test_bom.py`, `tests/test_web_ui.py`, `tests/e2e/prueba_interfaz.py`, `ESTADO.md`.
+- Verificado: 217/217 unitarias, 145/145 e2e en navegador real (incl. filtros, fantasma 1:1, popup, código ABB en BOM y `Ctrl+Z`), revisión visual de capturas y rebuild + smoke test `v1.0.2` OK (0,87 s · 34,5 MB RAM).
+
 ## 2026-11-26 23:45 · Antigravity · Arrastre fluido (60–120 FPS) y líneas finas en DXF/DWG (`v1.0.1`)
 - Hecho: eliminada la reconstrucción del SVG y los filtros `feDropShadow` al arrastrar equipos o canaletas (`<defs id="boardDefs">` persistente, desplazamiento por `transform` en `requestAnimationFrame`, offset de agarre preservado, vista previa liviana al estirar canaletas y `preventDefault`+`user-select: none` para evitar `pointercancel` en arrastres largos). Agregada tabla única `dxfLayers` en `datos/reglas_layout.json` con espesores explícitos (`0,05 mm` frentes CAD/marcado/cotas, `0,09 mm` interior/canaletas/etiquetas, `0,18 mm` envolvente/puerta, `0,00 mm` rellenos), `$LWDISPLAY=0`, `$CELWEIGHT=9`, capa `0` y dimstyle `EZDXF` en `cad_export.py`, `taller.py`, `plano_unifilar.py` y `entrega_pdf.py` (lección 45).
 - Archivos: `web/index.html`, `web/styles.css`, `datos/reglas_layout.json`, `cad_export.py`, `taller.py`, `plano_unifilar.py`, `entrega_pdf.py`, `tests/test_dxf_puerta.py`, `tests/test_taller.py`, `docs/LECCIONES.md`, `ESTADO.md`.

@@ -174,6 +174,28 @@ class GabineteDeEstructura(unittest.TestCase):
         lateral = next(r for r in rows if "lateral" in r["description"].lower())
         self.assertEqual(lateral["quantity"], 2)
 
+    def test_catalogo_filtrable_de_equipos_verificados(self):
+        from bom import catalog_devices, load_order_codes, lookup_order_code
+        codes = load_order_codes()
+        items = catalog_devices(CAT, codes)
+        self.assertGreaterEqual(len(items), 80)
+        self.assertTrue(all((it["poles"] or 0) >= 2 for it in items), "no debe incluir equipos monopolares")
+        self.assertTrue(all(it["inA"] is not None for it in items), [it["model"] for it in items if it["inA"] is None])
+        self.assertTrue(all(it["shell"] and it["w"] > 0 and it["h"] > 0 for it in items))
+        # Cada equipo del selector tiene que re-encontrar su código de pedido verificado en la BOM
+        for it in items:
+            found = lookup_order_code(it["model"], it["poles"], codes)
+            self.assertIsNotNone(found, it["model"])
+            self.assertEqual(found["orderCode"], it["orderCode"], it["model"])
+        # Filtros representativos: 3P / 16 A / 10 kA y 25 kA, MCCB 4P / 80 A / 25 kA, ACB 2000 A
+        s203m16 = [it for it in items if it["poles"] == 3 and it["inA"] == 16 and it["ka"] == 10]
+        self.assertTrue(any("S203M-C16" in it["model"] for it in s203m16), s203m16)
+        s203p40 = next(it for it in items if it["model"] == "S203P-C40")
+        self.assertEqual(s203p40["ka"], 15)  # maxInForKa de reglas_bom_generico.json
+        e22 = next(it for it in items if "E2.2N" in it["model"])
+        self.assertEqual(e22["inA"], 2000)
+        self.assertEqual(e22["ka"], 66)
+
 
 if __name__ == "__main__":
     unittest.main()

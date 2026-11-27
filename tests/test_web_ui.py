@@ -46,6 +46,11 @@ class WebUi(unittest.TestCase):
         self.assertIn('href="/styles.css"', INDEX.read_text(encoding="utf-8"))
         self.assertIn('route == "/styles.css"', (ROOT / "app.py").read_text(encoding="utf-8"))
 
+    def test_catalogo_filtrable_y_popup_arrastre(self):
+        html = INDEX.read_text(encoding="utf-8")
+        for token in ("tabCatalog", "catPoles", "catIn", "catKa", "catalogList", "dropCircuitPanel", "dropCircuit", "addPoles", "addIn", "addKa"):
+            self.assertIn(f'id="{token}"', html)
+
 
 if __name__ == "__main__":
     unittest.main()
