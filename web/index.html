@@ -104,14 +104,30 @@ const rails=()=>project.enclosure.mountingLayout?.dinRails||[];
 // Montaje en riel: lo dice la carcasa del catálogo, el importador (d.mounting) o catalog.modelHints para modelos sin CAD.
 const isDin=d=>shell(d.shell)?.mounting==='din'||d.mounting==='din'||(catalog.modelHints||[]).some(h=>h.mounting==='din'&&new RegExp(h.modelRegex,'i').test(d.model||''));
 function alignDin(d){const rs=rails();if(!rs.length||!isDin(d))return;const cy=d.y+d.h/2,rail=rs.reduce((b,r)=>Math.abs(r.y-cy)<Math.abs(b.y-cy)?r:b,rs[0]);d.y=rail.y-d.h/2;d.x=Math.max(rail.x,Math.min(rail.x+rail.length-d.w,d.x))}
-function frontDefs(){
- return `<defs><pattern id="gPE" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="9" height="9" fill="#2a9a48"/><rect width="4.5" height="9" fill="#f1d21a"/></pattern><radialGradient id="gBrass" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#f6e2a0"/><stop offset=".55" stop-color="#cfa548"/><stop offset="1" stop-color="#8a6a24"/></radialGradient>${Object.entries(fronts.items).map(([id,front],i)=>{
-  // Pintura calculada en el servidor (pintura.resolve → front.paint): la pantalla sólo la dibuja, no repite la regla.
-  const paint=appearances.items[id],rings=r=>r.map(q=>'M'+q.map(p=>p.join(' ')).join('L')+'Z').join('');
-  const blocks=front.paint?`<g transform="translate(0 1) scale(1 -1)">${front.paint.map(z=>`<path d="${rings(z.rings)}" style="fill:${z.color};stroke:none" fill-rule="evenodd"/>`).join('')}</g>`:'';
-  const logo=paint?.logo?`<text x="${paint.logo[0]}" y="${1-paint.logo[1]}" fill="white" font-size="0.035" font-weight="bold" font-family="Arial">${esc(paint.logo[2])}</text>`:'';
-  return `<symbol id="abb-front-${i}" viewBox="0 0 1 1" overflow="visible">${blocks}${logo}<g transform="translate(0 1) scale(1 -1)" fill="none" stroke="${paint?.lineColor||'#263744'}" stroke-width="0.004" stroke-linecap="round" stroke-linejoin="round">${front.paths.map(path=>`<path d="M${path.map(p=>p.join(' ')).join('L')}"/>`).join('')}</g></symbol>`;
- }).join('')}</defs>`;
+let cachedDefsKey='',cachedDefsHtml='';
+function ensureBoardDefs(){
+ const svg=$('board');if(!svg||!fronts||!appearances)return;
+ const key=(doorView?'door:':'int:')+Object.keys(fronts.items).join(',');
+ let defs=document.getElementById('boardDefs');
+ let scene=document.getElementById('boardScene');
+ if(!defs){defs=document.createElementNS('http://www.w3.org/2000/svg','defs');defs.id='boardDefs';svg.appendChild(defs)}
+ if(!scene){scene=document.createElementNS('http://www.w3.org/2000/svg','g');scene.id='boardScene';svg.appendChild(scene)}
+ if(cachedDefsKey===key&&defs.childNodes.length)return;
+ cachedDefsKey=key;
+ if(doorView){
+  const lc=['#ff6b5e','#c0170c'];
+  defs.innerHTML=`<radialGradient id="gLens" cx=".4" cy=".35" r=".75"><stop offset="0" stop-color="${lc[0]}"/><stop offset="1" stop-color="${lc[1]}"/></radialGradient><linearGradient id="gDoor" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".08"/></linearGradient>`;
+  return;
+ }
+ if(!cachedDefsHtml){
+  cachedDefsHtml=`<pattern id="gPE" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="9" height="9" fill="#2a9a48"/><rect width="4.5" height="9" fill="#f1d21a"/></pattern><radialGradient id="gBrass" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#f6e2a0"/><stop offset=".55" stop-color="#cfa548"/><stop offset="1" stop-color="#8a6a24"/></radialGradient><filter id="shPlate" x="-5%" y="-3%" width="110%" height="108%"><feDropShadow dx="3" dy="6" stdDeviation="6" flood-color="#0b1824" flood-opacity=".4"/></filter><linearGradient id="gBody" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e3e7e4"/><stop offset=".08" stop-color="#cbd0cc"/><stop offset=".92" stop-color="#c3c8c4"/><stop offset="1" stop-color="#a9afab"/></linearGradient><linearGradient id="gPlate" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d3d8db"/><stop offset=".5" stop-color="#bfc5c9"/><stop offset="1" stop-color="#aab1b6"/></linearGradient><linearGradient id="gRail" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#eef2f5"/><stop offset=".18" stop-color="#b9c2cb"/><stop offset=".5" stop-color="#8f9aa5"/><stop offset=".85" stop-color="#b3bcc5"/><stop offset="1" stop-color="#7c8792"/></linearGradient><radialGradient id="gScrew"><stop offset="0" stop-color="#f4f6f7"/><stop offset=".6" stop-color="#9aa3aa"/><stop offset="1" stop-color="#5d666d"/></radialGradient><linearGradient id="gInset" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset=".04" stop-color="#000" stop-opacity="0"/></linearGradient>${Object.entries(fronts.items).map(([id,front],i)=>{
+   const paint=appearances.items[id],rings=r=>r.map(q=>'M'+q.map(p=>p.join(' ')).join('L')+'Z').join('');
+   const blocks=front.paint?`<g transform="translate(0 1) scale(1 -1)">${front.paint.map(z=>`<path d="${rings(z.rings)}" style="fill:${z.color};stroke:none" fill-rule="evenodd"/>`).join('')}</g>`:'';
+   const logo=paint?.logo?`<text x="${paint.logo[0]}" y="${1-paint.logo[1]}" fill="white" font-size="0.035" font-weight="bold" font-family="Arial">${esc(paint.logo[2])}</text>`:'';
+   return `<symbol id="abb-front-${i}" viewBox="0 0 1 1" overflow="visible">${blocks}${logo}<g transform="translate(0 1) scale(1 -1)" fill="none" stroke="${paint?.lineColor||'#263744'}" stroke-width="0.004" stroke-linecap="round" stroke-linejoin="round">${front.paths.map(path=>`<path d="M${path.map(p=>p.join(' ')).join('L')}"/>`).join('')}</g></symbol>`;
+  }).join('')}`;
+ }
+ defs.innerHTML=cachedDefsHtml;
 }
 function shadeHex(c,f){c=String(c||'#888888').replace('#','');return '#'+[0,2,4].map(i=>Math.max(0,Math.min(255,Math.round(parseInt(c.slice(i,i+2),16)*f))).toString(16).padStart(2,'0')).join('')}
 function frontSvg(d,x,y){
@@ -240,11 +256,11 @@ function labelBoxes(devices,plateW,r){const out=devices.map(d=>{const name=Strin
 let labelCache=null;
 function labelHolder(d,x,y){const r=catalog.layoutRules.labels,i=project.devices.indexOf(d),b=(labelCache||(labelCache=labelBoxes(project.devices,project.enclosure.functional.width,r)))[i],fx=project.enclosure.functionalAreaOffset.x;
  const lw=b.w,lh=r.heightMm,lx=fx+b.x,ly=y+d.h+r.gapBelowMm;
- return `<g style="pointer-events:none"><g filter="url(#shDev)"><rect x="${lx}" y="${ly}" width="${lw}" height="${lh}" rx="1.5" fill="#f4f1e6" stroke="#6d6a5c" stroke-width=".8"/></g><text x="${lx+lw/2}" y="${ly+lh/2}" dominant-baseline="central" text-anchor="middle" font-size="${b.font}" fill="#1c1c1c" font-weight="700">${esc(nameOf(d))}</text></g>`}
+ return `<g style="pointer-events:none"><rect x="${lx+1.5}" y="${ly+2}" width="${lw}" height="${lh}" rx="1.5" fill="#10202e" opacity=".16"/><rect x="${lx}" y="${ly}" width="${lw}" height="${lh}" rx="1.5" fill="#f4f1e6" stroke="#6d6a5c" stroke-width=".8"/><text x="${lx+lw/2}" y="${ly+lh/2}" dominant-baseline="central" text-anchor="middle" font-size="${b.font}" fill="#1c1c1c" font-weight="700">${esc(nameOf(d))}</text></g>`}
 // Canaleta ranurada (esquemática): uñas laterales con ranuras verticales y tapa central; paso de ranura 12 o 6 mm según el catálogo (8x12 / 4x6).
 function ductSvg(a,fx,h,fy){const v=a.orientation==='v',L=v?a.h:a.w,S=v?a.w:a.h,x=fx+a.x,y=h-fy-a.y-a.h,pitch=a.slot==='4x6'?6:12,slotW=a.slot==='4x6'?4:8,fing=Math.max(3,S*.3),n=Math.floor(L/pitch);
  const slots=Array.from({length:n},(_,i)=>{const sx=i*pitch+(pitch-slotW)/2;return `<rect x="${sx}" y="1" width="${slotW*.5}" height="${fing-1}" fill="#8e9599"/><rect x="${sx}" y="${S-fing}" width="${slotW*.5}" height="${fing-1}" fill="#8e9599"/>`}).join('');
- return `<g style="pointer-events:none" transform="${v?`translate(${x} ${y+a.h}) rotate(-90)`:`translate(${x} ${y})`}"><g filter="url(#shDev)"><rect width="${L}" height="${S}" rx="1" fill="#d3d6d8" stroke="#7d868c" stroke-width=".8" style="stroke-dasharray:${a.provisional?'6 2':'0'}"/></g>${slots}<rect y="${fing}" width="${L}" height="${S-2*fing}" fill="#e6e8e9" stroke="#aeb4b8" stroke-width=".5"/><rect y="${fing}" width="${L}" height="${(S-2*fing)*.3}" fill="#fff" opacity=".5"/></g>`}
+ return `<g style="pointer-events:none" transform="${v?`translate(${x} ${y+a.h}) rotate(-90)`:`translate(${x} ${y})`}"><rect x="2" y="2.5" width="${L}" height="${S}" rx="1" fill="#10202e" opacity=".18"/><rect width="${L}" height="${S}" rx="1" fill="#d3d6d8" stroke="#7d868c" stroke-width=".8" style="stroke-dasharray:${a.provisional?'6 2':'0'}"/>${slots}<rect y="${fing}" width="${L}" height="${S-2*fing}" fill="#e6e8e9" stroke="#aeb4b8" stroke-width=".5"/><rect y="${fing}" width="${L}" height="${(S-2*fing)*.3}" fill="#fff" opacity=".5"/></g>`}
 // Canaletas dibujadas a mano: se seleccionan, arrastran y editan (sección estándar del catálogo ABB).
 function ductById(id){return (project.accessories||[]).find(a=>a.type==='wiring_duct'&&a.id===id)}
 function manualDucts(){return (project.accessories||[]).filter(a=>a.type==='wiring_duct'&&a.manual)}
@@ -253,7 +269,7 @@ function ductName(a){return `Canaleta ${a.sectionMm||Math.min(a.w,a.h)}×${a.dep
 function clampDuct(a){const f=project.enclosure.functional;a.w=Math.min(a.w,f.width);a.h=Math.min(a.h,f.height);a.x=Math.max(0,Math.min(f.width-a.w,a.x));a.y=Math.max(0,Math.min(f.height-a.h,a.y))}
 function ductSvgManual(a,fx,h,fy){const x=fx+a.x,y=h-fy-a.y-a.h,on=a.manual&&a.id===selDuct,v=a.orientation==='v',L=v?a.h:a.w,g=Math.min(14,Math.max(6,L*.12)),key=a.manual?`data-duct="${esc(a.id)}"`:`data-auto="${project.accessories.indexOf(a)}"`;
  const grips=v?[['end',x,y,a.w,g],['start',x,y+a.h-g,a.w,g]]:[['start',x,y,g,a.h],['end',x+a.w-g,y,g,a.h]];
- return `<g class="duct" ${key}><title>${ductName(a)} · ${v?'vertical':'horizontal'} · ${Math.round(L)} mm · arrastrá un extremo para estirarla</title>${ductSvg(a,fx,h,fy)}<rect x="${x}" y="${y}" width="${a.w}" height="${a.h}" style="fill:transparent;stroke:none;pointer-events:all"/>${grips.map(([e,gx,gy,gw,gh])=>`<rect class="grip" data-end="${e}" x="${gx}" y="${gy}" width="${gw}" height="${gh}" style="fill:${on?'#156bca':'transparent'};opacity:${on?.55:1};cursor:${v?'ns-resize':'ew-resize'};pointer-events:all"/>`).join('')}${on?`<rect x="${x-2}" y="${y-2}" width="${a.w+4}" height="${a.h+4}" style="fill:none;stroke:#156bca;stroke-width:3;stroke-dasharray:6 3;pointer-events:none"/>`:''}</g>`}
+ return `<g class="duct" ${key}><title>${ductName(a)} · ${v?'vertical':'horizontal'} · ${Math.round(L)} mm · arrastrá un extremo para estirarla</title>${ductSvg(a,fx,h,fy)}<rect x="${x}" y="${y}" width="${a.w}" height="${a.h}" style="fill:transparent;stroke:none;pointer-events:all"/>${grips.map(([e,gx,gy,gw,gh])=>`<rect class="grip" data-end="${e}" x="${gx}" y="${gy}" width="${gw}" height="${gh}" style="fill:${on?'#156bca':'transparent'};opacity:${on?.55:1};cursor:${v?'ns-resize':'ew-resize'};pointer-events:all"/>`).join('')}${on?`<rect class="sel-box" x="${x-2}" y="${y-2}" width="${a.w+4}" height="${a.h+4}" style="fill:none;stroke:#156bca;stroke-width:3;stroke-dasharray:6 3;pointer-events:none"/>`:''}</g>`}
 function toManualDucts(){if(project.ductMode==='manual')return;project.ductMode='manual';(project.accessories||[]).forEach((a,i)=>{if(a.type==='wiring_duct'&&a.auto){Object.assign(a,{auto:false,manual:true,provisional:false,orientation:a.orientation||'h',sectionMm:a.sectionMm||(a.orientation==='v'?a.w:a.h),id:'duct-'+Date.now()+'-'+i})}})}
 function placeDuctFree(a){const f=project.enclosure.functional,others=manualDucts(),clearOf=b=>!others.some(o=>o!==a&&o.x<b.x+b.w&&b.x<o.x+o.w&&o.y<b.y+b.h&&b.y<o.y+o.h);
  // primero un hueco que no toque equipos ni otras canaletas; si no hay, uno que sólo no toque equipos (cruzar canaletas es un empalme)
@@ -262,7 +278,7 @@ function placeDuctFree(a){const f=project.enclosure.functional,others=manualDuct
  a.x=Math.round((f.width-a.w)/2);a.y=Math.round((f.height-a.h)/2);return false}
 // Peine: cuerpo aislante apoyado sobre los equipos y una clavija de cobre por polo (paso del catálogo, 17,5 mm).
 function combSvg(a,fx,h,fy){const x=fx+a.x,y=h-fy-a.y-a.h,pitch=a.pitchMm||17.5,n=a.poleCount||Math.round(a.w/pitch),pins=Array.from({length:n},(_,i)=>{const cx=x+(i+.5)*a.w/n;return `<rect x="${cx-2.2}" y="${y+a.h*.2}" width="4.4" height="${a.h*.6}" rx="1" fill="#c8773a" stroke="#7a4420" stroke-width=".4"/><circle cx="${cx}" cy="${y+a.h*.5}" r="1" fill="#7a4420"/>`}).join('');
- return `<g style="pointer-events:none"><g filter="url(#shDev)"><rect x="${x}" y="${y}" width="${a.w}" height="${a.h}" rx="2" fill="#5d6772" stroke="#2f3a45" stroke-width="1" style="stroke-dasharray:${a.provisional?'4 2':'0'}"/></g><rect x="${x}" y="${y}" width="${a.w}" height="${a.h*.25}" rx="2" fill="#fff" opacity=".22"/>${pins}</g>`}
+ return `<g style="pointer-events:none"><rect x="${x+1.5}" y="${y+2}" width="${a.w}" height="${a.h}" rx="2" fill="#10202e" opacity=".18"/><rect x="${x}" y="${y}" width="${a.w}" height="${a.h}" rx="2" fill="#5d6772" stroke="#2f3a45" stroke-width="1" style="stroke-dasharray:${a.provisional?'4 2':'0'}"/><rect x="${x}" y="${y}" width="${a.w}" height="${a.h*.25}" rx="2" fill="#fff" opacity=".22"/>${pins}</g>`}
 // Bornera equipotencial PE: repartidores unipolares (gris, tapa transparente) con entrada grande arriba y salidas abajo, marcador PE y topes en las puntas.
 // Medidas, cantidad y diámetros de bornes del catálogo; la ubicación de cada borne en el frente es esquemática (el fabricante no publica el frente acotado).
 function signalFusesSvg(a,fx,h,fy){const x=fx+a.x,y=h-fy-a.y-a.h,H=a.h,n=a.count||1,pw=a.poleW||a.w/n,ph=a.phases||[];let g='';
@@ -286,7 +302,7 @@ function peBlockSvg(a,fx,h,fy){const x=fx+a.x,y=h-fy-a.y-a.h,H=a.h,sw=a.stopW||0
  // rótulo amarillo de la bornera (como el de obra): símbolo de tierra + PAT, de punta a punta de los bloques
  const lx=x+sw+1.5,lw=a.w-2*sw-3,ly=y+H*0.83,lh=H*0.14,fs=Math.min(lh*.72,lw/7);
  const label=`<rect x="${lx}" y="${ly}" width="${lw}" height="${lh}" rx="1.2" fill="#ffe100" stroke="#1d1d1b" stroke-width=".7"/>${earth(lx+lh*.75,ly+lh*.42,lh*.38,'#1d1d1b')}<text x="${lx+lw/2+lh*.4}" y="${ly+lh*.74}" text-anchor="middle" font-size="${fs.toFixed(1)}" font-weight="800" font-family="Arial" fill="#1d1d1b" letter-spacing=".6">PAT</text>`;
- return `<g style="pointer-events:none"><title>Bornera equipotencial de puesta a tierra (PAT) · ${n} × DBL125</title><g filter="url(#shDev)">${stop(x)}${blocks}${stop(x+a.w-sw)}</g>${label}</g>`}
+ return `<g style="pointer-events:none"><title>Bornera equipotencial de puesta a tierra (PAT) · ${n} × DBL125</title><rect x="${x+2}" y="${y+3}" width="${a.w}" height="${H}" rx="2" fill="#10202e" opacity=".18"/>${stop(x)}${blocks}${stop(x+a.w-sw)}${label}</g>`}
 // Bloque de distribución tetrapolar (BRT125A): 4 barras horizontales L1 L2 L3 N (colores IRAM), 1 entrada + 11 salidas por polo, tapa y etiqueta de advertencia.
 // Medidas y cantidad de bornes del catálogo; la ubicación exacta de cada borne es esquemática.
 function distBlockSvg(a,fx,h,fy){const x=fx+a.x,y=h-fy-a.y-a.h,W=a.w,H=a.h,np=a.poles||4,ins=a.inputsPerPole||1,outs=a.outputsPerPole||11,cols=['#7a4a26','#1d1d1b','#c62828','#4fa3d9'],names=['L1','L2','L3','N'];
@@ -298,24 +314,24 @@ function distBlockSvg(a,fx,h,fy){const x=fx+a.x,y=h-fy-a.y-a.h,W=a.w,H=a.h,np=a.
   for(let k=0;k<ins;k++)rows+=screw(bx+6+k*10,cy,Math.min(4.2,rowH*.3));
   for(let k=0;k<outs;k++)rows+=screw(bx+6+ins*10+3+k*((bw-ins*10-12)/Math.max(1,outs-1)),cy,Math.min(2.6,rowH*.2))}
  const tri=`<g transform="translate(${x+W-15} ${y+2.2})"><path d="M5 0L10 8.6H0Z" fill="#ffe100" stroke="#1d1d1b" stroke-width=".6"/><path d="M5.6 2.2L4 5.2h1.6L4.4 7.6" stroke="#1d1d1b" stroke-width=".6" fill="none"/></g>`;
- return `<g style="pointer-events:none"><title>Bloque de distribución ${esc(a.label||'')} · ${np} polos · ${ins}+${outs} conexiones por polo</title><g filter="url(#shDev)"><rect x="${x}" y="${y}" width="${W}" height="${H}" rx="3" fill="#c7ccd0" stroke="#5f6b75" stroke-width=".9"/>
+ return `<g style="pointer-events:none"><title>Bloque de distribución ${esc(a.label||'')} · ${np} polos · ${ins}+${outs} conexiones por polo</title><rect x="${x+2}" y="${y+3}" width="${W}" height="${H}" rx="3" fill="#10202e" opacity=".18"/><rect x="${x}" y="${y}" width="${W}" height="${H}" rx="3" fill="#c7ccd0" stroke="#5f6b75" stroke-width=".9"/>
   <rect x="${x+2}" y="${top-2}" width="${W-4}" height="${H*0.82+4}" rx="2" fill="#24303a"/>${rows}
-  <rect x="${x+2}" y="${top-2}" width="${W-4}" height="${H*0.82+4}" rx="2" fill="#dfeaf2" opacity=".2" stroke="#9db3c4" stroke-width=".7"/><rect x="${x+3}" y="${top-1}" width="${(W-6)*.3}" height="${H*0.82+2}" fill="#fff" opacity=".12"/>${tri}</g></g>`}
+  <rect x="${x+2}" y="${top-2}" width="${W-4}" height="${H*0.82+4}" rx="2" fill="#dfeaf2" opacity=".2" stroke="#9db3c4" stroke-width=".7"/><rect x="${x+3}" y="${top-1}" width="${(W-6)*.3}" height="${H*0.82+2}" fill="#fff" opacity=".12"/>${tri}</g>`}
 // Barra de cobre (AA8010 20x5): agujeros M6 cada 25 mm (catálogo ABB) y soportes aislantes; los soportes se dibujan esquemáticos.
 function busbarSvg(a,fx,h,fy){const x=fx+a.x,y=h-fy-a.y-a.h,W=a.w,H=a.h,p=a.holePitchMm||25,n=Math.floor((W-p/2)/p),ns=a.supports||Math.max(2,Math.round(W/250));
  let holes='';for(let k=0;k<n;k++){const cx=x+p/2+k*p;holes+=`<circle cx="${cx}" cy="${y+H/2}" r="3.2" fill="#3b2a1a"/><circle cx="${cx}" cy="${y+H/2}" r="2.2" fill="#2a1d12"/>`}
  let sup='';for(let k=0;k<ns;k++){const sx=x+(W-14)*k/Math.max(1,ns-1);sup+=`<rect x="${sx}" y="${y-5}" width="14" height="${H+10}" rx="2" fill="#c9302c" stroke="#7d1c19" stroke-width=".6"/>`}
- return `<g style="pointer-events:none"><title>${esc(a.label||'Barra de cobre')}</title><g filter="url(#shDev)">${sup}<rect x="${x}" y="${y}" width="${W}" height="${H}" rx="1" fill="#c47a3c" stroke="#7a4420" stroke-width=".7"/><rect x="${x}" y="${y}" width="${W}" height="${H*.3}" fill="#f1b27c" opacity=".55"/>${holes}</g></g>`}
+ return `<g style="pointer-events:none"><title>${esc(a.label||'Barra de cobre')}</title><rect x="${x+2}" y="${y+2.5}" width="${W}" height="${H}" rx="1" fill="#10202e" opacity=".18"/>${sup}<rect x="${x}" y="${y}" width="${W}" height="${H}" rx="1" fill="#c47a3c" stroke="#7a4420" stroke-width=".7"/><rect x="${x}" y="${y}" width="${W}" height="${H*.3}" fill="#f1b27c" opacity=".55"/>${holes}</g>`}
 function peBarSvg(a,fx,h,fy){const x=fx+a.x,y=h-fy-a.y-a.h,W=a.w,H=a.h,p=a.holePitchMm||25,n=Math.floor((W-p/2)/p),ns=a.supports||2;
  let holes='';for(let k=0;k<n;k++){const cx=x+p/2+k*p;holes+=`<circle cx="${cx}" cy="${y+H/2}" r="3" fill="#2a3b1a"/><circle cx="${cx}" cy="${y+H/2}" r="2" fill="#1b2610"/>`}
  let sup='';for(let k=0;k<ns;k++){const sx=x+(W-12)*k/Math.max(1,ns-1);sup+=`<rect x="${sx}" y="${y-4}" width="12" height="${H+8}" rx="2" fill="#4f9b2c" stroke="#2d5e17" stroke-width=".6"/>`}
- return `<g style="pointer-events:none"><title>${esc(a.label||'Barra colectora PE')}</title><g filter="url(#shDev)">${sup}<rect x="${x}" y="${y}" width="${W}" height="${H}" rx="1" fill="#c47a3c" stroke="#3c7a20" stroke-width="1"/><rect x="${x}" y="${y}" width="${W}" height="${Math.min(5,H*.28)}" fill="#c9d400" opacity=".75"/>${holes}</g></g>`}
+ return `<g style="pointer-events:none"><title>${esc(a.label||'Barra colectora PE')}</title><rect x="${x+2}" y="${y+2.5}" width="${W}" height="${H}" rx="1" fill="#10202e" opacity=".18"/>${sup}<rect x="${x}" y="${y}" width="${W}" height="${H}" rx="1" fill="#c47a3c" stroke="#3c7a20" stroke-width="1"/><rect x="${x}" y="${y}" width="${W}" height="${Math.min(5,H*.28)}" fill="#c9d400" opacity=".75"/>${holes}</g>`}
 function accessoriesSvg(fx,fy,h){return (project.accessories||[]).filter(a=>a.placed!==false&&a.decision!=='discarded'&&a.w&&a.x!==undefined).map(a=>{
  if(a.type==='wiring_duct')return ductSvgManual(a,fx,h,fy);if(a.type==='comb')return combSvg(a,fx,h,fy);if(a.type==='pe_terminal'&&a.style==='repartidor')return peBlockSvg(a,fx,h,fy);if(a.type==='distribution_block')return distBlockSvg(a,fx,h,fy);if(a.type==='copper_busbar')return busbarSvg(a,fx,h,fy);if(a.type==='pe_bar')return peBarSvg(a,fx,h,fy);if(a.type==='signal_fuses')return signalFusesSvg(a,fx,h,fy);
  const color=a.type==='pe_terminal'?'#c9d400':a.type==='copper_busbar'?'#c8773a':a.type==='distribution_block'?'#b8865b':'#9aa7b4',x=fx+a.x,y=h-fy-a.y-a.h;
  const n=a.type==='pe_terminal'?+((/x\s*(\d+)/i.exec(a.label||'')||[])[1]||0):0,seps=n>1?Array.from({length:n-1},(_,i)=>`<line x1="${x+a.w*(i+1)/n}" y1="${y}" x2="${x+a.w*(i+1)/n}" y2="${y+a.h}" stroke="#5f6a00" stroke-width=".8"/>`).join(''):'',
   screws=n?Array.from({length:n},(_,i)=>`<circle cx="${x+a.w*(i+.5)/n}" cy="${y+a.h*.3}" r="${Math.min(2.2,a.w/n*.28).toFixed(2)}" fill="#6d7478" stroke="#3d4a57" stroke-width=".4"/>`).join(''):'';
- return `<g style="pointer-events:none"><g filter="url(#shDev)"><rect x="${x}" y="${y}" width="${a.w}" height="${a.h}" rx="1.5" style="fill:${color};stroke:#3d4a57;stroke-width:1;stroke-dasharray:${a.provisional?'4 2':'0'}"/></g><rect x="${x}" y="${y}" width="${a.w}" height="${a.h*.22}" rx="1.5" fill="#fff" opacity=".35"/>${seps}${screws}</g>`}).join('')}
+ return `<g style="pointer-events:none"><rect x="${x+1.5}" y="${y+2}" width="${a.w}" height="${a.h}" rx="1.5" fill="#10202e" opacity=".18"/><rect x="${x}" y="${y}" width="${a.w}" height="${a.h}" rx="1.5" style="fill:${color};stroke:#3d4a57;stroke-width:1;stroke-dasharray:${a.provisional?'4 2':'0'}"/><rect x="${x}" y="${y}" width="${a.w}" height="${a.h*.22}" rx="1.5" fill="#fff" opacity=".35"/>${seps}${screws}</g>`}).join('')}
 // Propuestas de accesorios que el usuario confirma o descarta (bloque o barra de distribución).
 
 
@@ -334,17 +350,6 @@ async function placeUnplaced(){const r=await fetch('/api/place',{method:'POST',h
 async function runNormativa(){const sent=JSON.stringify(project),r=await fetch('/api/normativa/complete',{method:'POST',headers:{'Content-Type':'application/json'},body:sent});const data=await r.json();if(!r.ok)return notice(data.error||'No se pudo revisar la normativa.');
  if(JSON.stringify(project)!==sent)return; // el usuario cambió algo mientras tanto: esta respuesta es vieja y ya hay otra revisión en camino
  findings=data.findings;if(JSON.stringify(data.accessories)!==JSON.stringify(project.accessories||[])){project.accessories=data.accessories;markDirty();render();return}updateChip()}
-// Capas de profundidad: sombras, degradados de chapa y riel con relieve (sólo estética; las medidas siguen siendo las del catálogo).
-function depthDefs(){return `<defs>
- <filter id="shDev" x="-10%" y="-10%" width="125%" height="130%"><feDropShadow dx="2.5" dy="4" stdDeviation="3" flood-color="#10202e" flood-opacity=".45"/></filter>
- <filter id="shPlate" x="-5%" y="-3%" width="110%" height="108%"><feDropShadow dx="3" dy="6" stdDeviation="6" flood-color="#0b1824" flood-opacity=".4"/></filter>
- <filter id="shRail" x="-5%" y="-30%" width="110%" height="190%"><feDropShadow dx="1.5" dy="3" stdDeviation="2" flood-color="#0b1824" flood-opacity=".5"/></filter>
- <linearGradient id="gBody" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e3e7e4"/><stop offset=".08" stop-color="#cbd0cc"/><stop offset=".92" stop-color="#c3c8c4"/><stop offset="1" stop-color="#a9afab"/></linearGradient>
- <linearGradient id="gPlate" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d3d8db"/><stop offset=".5" stop-color="#bfc5c9"/><stop offset="1" stop-color="#aab1b6"/></linearGradient>
- <linearGradient id="gRail" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#eef2f5"/><stop offset=".18" stop-color="#b9c2cb"/><stop offset=".5" stop-color="#8f9aa5"/><stop offset=".85" stop-color="#b3bcc5"/><stop offset="1" stop-color="#7c8792"/></linearGradient>
- <radialGradient id="gScrew"><stop offset="0" stop-color="#f4f6f7"/><stop offset=".6" stop-color="#9aa3aa"/><stop offset="1" stop-color="#5d666d"/></radialGradient>
- <linearGradient id="gInset" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset=".04" stop-color="#000" stop-opacity="0"/></linearGradient>
-</defs>`}
 const screw=(x,y,r=6)=>`<g style="pointer-events:none"><circle cx="${x}" cy="${y}" r="${r}" fill="url(#gScrew)" stroke="#4a535a" stroke-width="1"/><line x1="${x-r*.6}" y1="${y-r*.6}" x2="${x+r*.6}" y2="${y+r*.6}" stroke="#4a535a" stroke-width="1.4"/></g>`;
 // Herrajes de la puerta (vista con puerta retirada): cerraduras en las posiciones del catálogo (F desde el borde); bisagras esquemáticas del lado izquierdo.
 // Vista con la puerta cerrada: puerta ciega RAL 7035, cerraduras y bisagras del catálogo, placa grabada con la nomenclatura del tablero,
@@ -360,8 +365,7 @@ function doorSvg(w,h){const st=encSpec()?.structure,col=st?.colors?.enclosure?.h
   <rect x="${-ts*0.08}" y="${ts*0.95}" width="${ts*1.16}" height="${ts*0.28}" rx="2" fill="#ffd400" stroke="#111" stroke-width="1.2"/><text x="${ts/2}" y="${ts*1.06}" text-anchor="middle" font-size="${ts*0.1}" font-weight="800" font-family="Arial" fill="#111">PELIGRO</text><text x="${ts/2}" y="${ts*1.18}" text-anchor="middle" font-size="${ts*0.1}" font-weight="800" font-family="Arial" fill="#111">RIESGO ELÉCTRICO</text></g>`;
  const lockSvg=locks.map(y=>`<circle cx="${w-34}" cy="${y}" r="15" fill="#4b545b" stroke="#262c30" stroke-width="1.2"/><circle cx="${w-34}" cy="${y}" r="9.5" fill="#2b3136"/><rect x="${w-37}" y="${y-7}" width="6" height="14" rx="1" fill="#0f1214"/>`).join('');
  const hinges=[H*.12,H*.88].map(y=>`<rect x="0" y="${y-22}" width="9" height="44" rx="3" fill="#9aa2a8" stroke="#4a535a" stroke-width="1.2"/>`).join('');
- return `<defs><radialGradient id="gLens" cx=".4" cy=".35" r=".75"><stop offset="0" stop-color="${lc[0]}"/><stop offset="1" stop-color="${lc[1]}"/></radialGradient><linearGradient id="gDoor" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".08"/></linearGradient></defs>
- <rect width="${w}" height="${H}" rx="4" fill="${col}" stroke="#172c43" stroke-width="6"/>${ph?`<rect y="${H}" width="${w}" height="${ph}" fill="#9aa3aa" stroke="#4a535a" stroke-width="2"/>`:''}
+ return `<rect width="${w}" height="${H}" rx="4" fill="${col}" stroke="#172c43" stroke-width="6"/>${ph?`<rect y="${H}" width="${w}" height="${ph}" fill="#9aa3aa" stroke="#4a535a" stroke-width="2"/>`:''}
  <rect x="7" y="7" width="${w-14}" height="${H-14}" rx="3" fill="${col}" stroke="#8d969c" stroke-width="2"/><rect x="7" y="7" width="${w-14}" height="${H-14}" rx="3" fill="url(#gDoor)"/>
  <rect x="18" y="18" width="${w-36}" height="${H-36}" rx="2" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="1.2"/>${hinges}${lockSvg}
  <rect x="${px+1.5}" y="${py+2}" width="${pw}" height="${phh}" rx="3" fill="#000" opacity=".2"/><rect x="${px}" y="${py}" width="${pw}" height="${phh}" rx="3" fill="#1d2125" stroke="#0c0e10" stroke-width="1"/><rect x="${px+3}" y="${py+3}" width="${pw-6}" height="${phh-6}" rx="2" fill="none" stroke="#e9ecef" stroke-opacity=".5" stroke-width=".8"/>
@@ -372,7 +376,7 @@ function hardwareSvg(w,h){const st=encSpec()?.structure;if(!st?.locks||st.kind!=
  [h*.12,h*.88].map(y=>`<rect x="2" y="${y-18}" width="16" height="36" rx="3" fill="#a3abb1" stroke="#4a535a" stroke-width="1.3"/><line x1="2" y1="${y}" x2="18" y2="${y}" stroke="#4a535a" stroke-width="1.2"/>`).join('')+`</g>`}
 // Riel DIN con relieve: perfil con degradado, ranuras y tornillos de fijación en los extremos.
 function railSvg(r,fx,h,fy){const x=fx+r.x,y=h-fy-r.y-r.height/2,slots=[];for(let sx=x+18;sx<x+r.length-12;sx+=25)slots.push(`<rect x="${sx}" y="${y+r.height/2-3}" width="14" height="6" rx="3" fill="#4d5862" opacity=".85"/>`);
- return `<g filter="url(#shRail)"><rect x="${x}" y="${y}" width="${r.length}" height="${r.height}" fill="url(#gRail)" stroke="#4e5e70" stroke-width="1.5"/><line x1="${x}" y1="${y+r.height*.2}" x2="${x+r.length}" y2="${y+r.height*.2}" stroke="#fff" stroke-opacity=".7"/><line x1="${x}" y1="${y+r.height*.8}" x2="${x+r.length}" y2="${y+r.height*.8}" stroke="#46525d" stroke-opacity=".6"/>${slots.join('')}</g>${screw(x+7,y+r.height/2,4)}${screw(x+r.length-7,y+r.height/2,4)}`}
+ return `<rect x="${x+1.5}" y="${y+2.5}" width="${r.length}" height="${r.height}" fill="#0b1824" opacity=".2"/><rect x="${x}" y="${y}" width="${r.length}" height="${r.height}" fill="url(#gRail)" stroke="#4e5e70" stroke-width="1.5"/><line x1="${x}" y1="${y+r.height*.2}" x2="${x+r.length}" y2="${y+r.height*.2}" stroke="#fff" stroke-opacity=".7"/><line x1="${x}" y1="${y+r.height*.8}" x2="${x+r.length}" y2="${y+r.height*.8}" stroke="#46525d" stroke-opacity=".6"/>${slots.join('')}${screw(x+7,y+r.height/2,4)}${screw(x+r.length-7,y+r.height/2,4)}`}
 // Placa de montaje / área funcional: chapa con degradado, sombra proyectada sobre el fondo del gabinete y tornillos de fijación.
 function plateSvg(fx,fy,h,f){const st=encSpec()?.structure,mono=st?.kind==='monobloc',y=h-fy-f.height,inset=st?.locks?.plateScrews?.inset;
  return `<g filter="url(#shPlate)"><rect x="${fx}" y="${y}" width="${f.width}" height="${f.height}" fill="${mono?'url(#gPlate)':'#d6dbdf'}" stroke="#7d8a96" stroke-width="2"/></g><rect x="${fx}" y="${y}" width="${f.width}" height="${f.height}" fill="url(#gInset)" style="pointer-events:none"/>`+
@@ -398,19 +402,20 @@ function titleSvg(w,view){const t=Math.max(14,Math.min(25,w*0.045)),u=Math.max(9
 function render(){const _st=document.getElementById('signalsToggle');if(_st)_st.checked=!!(project.signals?.pilotLights||[]).length;
  const {w,h,fx,fy}=dimensions(),f=project.enclosure.functional;
  if(view)setView(); // sin encuadre todavía: se calcula al final, sobre lo dibujado (contentBounds)
- if(doorView){$('board').innerHTML=frontDefs()+doorSvg(w,h)+cotasSvg(w,h,fx,fy,f,true)+`${titleSvg(w,'vista con la puerta cerrada')}`;if(!view)setView();$('editor').hidden=true;$('ductCard').hidden=true;$('viewInt').classList.toggle('on',false);$('viewDoor').classList.toggle('on',true);return}
+ ensureBoardDefs();const scene=$('boardScene');
+ if(doorView){scene.innerHTML=doorSvg(w,h)+cotasSvg(w,h,fx,fy,f,true)+`${titleSvg(w,'vista con la puerta cerrada')}`;if(!view)setView();$('editor').hidden=true;$('ductCard').hidden=true;$('viewInt').classList.toggle('on',false);$('viewDoor').classList.toggle('on',true);return}
  $('viewInt').classList.toggle('on',true);$('viewDoor').classList.toggle('on',false);
- $('board').innerHTML=frontDefs()+depthDefs()+`<rect width="${w}" height="${h}" fill="url(#gBody)" stroke="#172c43" stroke-width="6"/>
+ scene.innerHTML=`<rect width="${w}" height="${h}" fill="url(#gBody)" stroke="#172c43" stroke-width="6"/>
 ${structureSvg(w,h,project.enclosure.plinthHeight)||`<rect y="${h-project.enclosure.plinthHeight}" width="${w}" height="${project.enclosure.plinthHeight}" fill="#e4eaf0" stroke="#66778a" stroke-width="2"/>`}
  ${plateSvg(fx,fy,h,f)}${hardwareSvg(w,h)}${cotasSvg(w,h,fx,fy,f)}
  ${titleSvg(w,'vista frontal con la puerta retirada')}`+
  rails().map(r=>railSvg(r,fx,h,fy)).join('')+
  accessoriesSvg(fx,fy,h)+
  (labelCache=null,'')+project.devices.map((d,i)=>{const yy=h-fy-d.y-d.h,pending=/confirm|placeholder|conflict|variant|revisar|pendiente/i.test(d.status||'');return `<g class="device ${i===selected?'active':''} ${pending?'pending':''}" data-index="${i}">
- <title>${esc(nameOf(d))} · ${esc(d.model||'')} · ${esc(d.tag)}</title><g filter="url(#shDev)">${frontSvg(d,fx+d.x,yy)}</g>
+ <title>${esc(nameOf(d))} · ${esc(d.model||'')} · ${esc(d.tag)}</title><rect x="${fx+d.x+2}" y="${yy+3}" width="${d.w}" height="${d.h}" rx="1.5" fill="#10202e" opacity=".18" style="pointer-events:none"/>${frontSvg(d,fx+d.x,yy)}
  ${labelHolder(d,fx+d.x,yy)}
  <rect class="hitbox" x="${fx+d.x}" y="${yy}" width="${d.w}" height="${d.h}" style="fill:transparent;stroke:none;pointer-events:all"/>
- ${i===selected?`<rect x="${fx+d.x-2}" y="${yy-2}" width="${d.w+4}" height="${d.h+4}" style="fill:none;stroke:#156bca;stroke-width:3;stroke-dasharray:6 3;pointer-events:none"/>`:''}
+ ${i===selected?`<rect class="sel-box" x="${fx+d.x-2}" y="${yy-2}" width="${d.w+4}" height="${d.h+4}" style="fill:none;stroke:#156bca;stroke-width:3;stroke-dasharray:6 3;pointer-events:none"/>`:''}
  </g>`}).join('');
  if(!view)setView();
  $('projectName').textContent=project.project;$('saveStatus').textContent=dirty?'Cambios pendientes':'Guardado';updateExportSummary();scheduleValidation();clearTimeout(normaTimer);normaTimer=setTimeout(()=>runNormativa(),500);
@@ -633,19 +638,135 @@ const importPdf=async(file,fresh)=>{if(!file)return;notice('Leyendo PDF…');
    const auto=await runAuto(false,project.enclosure.id);if(!auto.ok){const auto2=await runAuto(false);if(!auto2.ok)return}
    syncSignalsToggle();notice(e.target.checked?`Testigos ${project.signals.pilotLights.map(l=>l.label).join('-')} en la puerta y sus fusibles en el riel.`:'Testigos y fusibles quitados.')};
   const dz=$('dropPdf');dz.ondragover=e=>{e.preventDefault();dz.classList.add('over')};dz.ondragleave=()=>dz.classList.remove('over');dz.ondrop=async e=>{e.preventDefault();dz.classList.remove('over');await importPdf(e.dataTransfer.files[0],true)};
- const svg=$('board');const plateXY=e=>{const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const p=pt.matrixTransform(svg.getScreenCTM().inverse()),{fx,fy,h}=dimensions();return {x:p.x-fx,y:h-fy-p.y}};
- svg.onpointerdown=e=>{const dg=e.target.closest('.duct');if(dg){const a=dg.dataset.duct?ductById(dg.dataset.duct):project.accessories[+dg.dataset.auto];if(a){if(!a.manual){snapshot();toManualDucts();notice('Canaletas en edición manual: ya no se recalculan solas (menú ⋯ → volver a automáticas).')}selected=null;selDuct=a.id;const p=plateXY(e);drag={duct:a.id,grip:e.target.closest('.grip')?.dataset.end,start:{x:a.x,y:a.y,w:a.w,h:a.h},off:{x:p.x-a.x,y:p.y-a.y},saved:false};svg.setPointerCapture(e.pointerId);render();return}}const g=e.target.closest('.device');if(!g){pan={x:e.clientX,y:e.clientY,x0:e.clientX,y0:e.clientY};svg.setPointerCapture(e.pointerId);return}select(+g.dataset.index);drag={index:selected,point:svg.createSVGPoint(),start:clone(project.devices[selected]),saved:false};svg.setPointerCapture(e.pointerId)};
- svg.onpointermove=e=>{if(pan){view.x-=(e.clientX-pan.x)*view.w/svg.clientWidth;view.y-=(e.clientY-pan.y)*view.h/svg.clientHeight;pan={x:e.clientX,y:e.clientY};setView();return}if(!drag)return;if(!drag.saved){snapshot();drag.saved=true}if(drag.duct){const a=ductById(drag.duct),p=plateXY(e);if(!a)return;
-   if(drag.grip){const f=project.enclosure.functional,st=drag.start,mn=50,r5=v=>Math.round(v/5)*5,cl=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
+ const svg=$('board');let panRaf=0;
+ const plateXY=(e,inv)=>{const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const m=inv||svg.getScreenCTM().inverse(),p=pt.matrixTransform(m),{fx,fy,h}=dimensions();return {x:p.x-fx,y:h-fy-p.y}};
+ const applyDragVisual=()=>{
+  if(!drag)return;drag.raf=0;
+  if(drag.duct){
+   const a=ductById(drag.duct);if(!a)return;
+   const hit=!!ductHits(a);
+   if(drag.grip){
+    const {fx,fy,h}=dimensions(),x=fx+a.x,y=h-fy-a.y-a.h;
+    if(!drag.preview){
+     const NS='http://www.w3.org/2000/svg';
+     const grp=document.createElementNS(NS,'g');
+     const rc=document.createElementNS(NS,'rect');rc.setAttribute('class','duct-preview');
+     const tx=document.createElementNS(NS,'text');tx.setAttribute('text-anchor','middle');tx.setAttribute('dominant-baseline','central');tx.setAttribute('font-size','14');tx.setAttribute('font-weight','700');tx.setAttribute('fill','#156bca');tx.style.pointerEvents='none';
+     grp.appendChild(rc);grp.appendChild(tx);$('boardScene').appendChild(grp);
+     drag.preview={grp,rc,tx};
+     if(drag.el)drag.el.style.opacity='.28';
+    }
+    const {rc,tx}=drag.preview;
+    rc.setAttribute('x',x);rc.setAttribute('y',y);rc.setAttribute('width',a.w);rc.setAttribute('height',a.h);
+    rc.setAttribute('class','duct-preview'+(hit?' hit':''));
+    tx.setAttribute('x',x+a.w/2);tx.setAttribute('y',y+a.h/2);
+    tx.setAttribute('fill',hit?'#d92d20':'#156bca');
+    tx.textContent=`${Math.round(a.orientation==='v'?a.h:a.w)} mm`;
+   }else if(drag.el){
+    drag.el.setAttribute('transform',`translate(${a.x-drag.base.x} ${-(a.y-drag.base.y)})`);
+    drag.el.classList.toggle('drag-hit',hit);
+   }
+   return;
+  }
+  const d=project.devices[drag.index];if(!d||!drag.el)return;
+  const hit=project.devices.find((o,j)=>j!==drag.index&&o.x<d.x+d.w-.5&&d.x<o.x+o.w-.5&&o.y<d.y+d.h-.5&&d.y<o.y+o.h-.5);
+  const blocked=!!(hit&&!(isDin(d)&&isDin(hit)&&Math.abs(hit.y-d.y)<1));
+  drag.el.setAttribute('transform',`translate(${d.x-drag.baseX} ${-(d.y-drag.baseY)})`);
+  drag.el.classList.toggle('drag-hit',blocked);
+ };
+ const clearDragVisual=()=>{
+  if(!drag)return;
+  if(drag.raf){cancelAnimationFrame(drag.raf);drag.raf=0}
+  if(drag.preview){drag.preview.grp.remove();drag.preview=null}
+  if(drag.el){drag.el.style.opacity='';drag.el.classList.remove('dragging','drag-hit');drag.el.removeAttribute('transform')}
+ };
+ svg.ondragstart=e=>e.preventDefault();
+ svg.onpointerdown=e=>{
+  if(e.button!==0)return;
+  if(document.activeElement&&/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName))document.activeElement.blur();
+  e.preventDefault();
+  const dg=e.target.closest('.duct');
+  if(dg){
+   const a=dg.dataset.duct?ductById(dg.dataset.duct):project.accessories[+dg.dataset.auto];
+   if(a){
+    const gripEnd=e.target.closest('.grip')?.dataset.end;
+    const wasManual=!!a.manual;
+    if(!wasManual){snapshot();toManualDucts();notice('Canaletas en edición manual: ya no se recalculan solas (menú ⋯ → volver a automáticas).')}
+    const needRender=!wasManual||selDuct!==a.id||selected!==null;
+    selected=null;selDuct=a.id;
+    if(needRender)render();
+    const inv=svg.getScreenCTM().inverse(),p=plateXY(e,inv);
+    const el=svg.querySelector(`.duct[data-duct="${CSS.escape(a.id)}"]`);
+    if(el){el.classList.add('dragging');el.parentNode.appendChild(el)}
+    drag={duct:a.id,grip:gripEnd,el,inv,base:{x:a.x,y:a.y,w:a.w,h:a.h},start:{x:a.x,y:a.y,w:a.w,h:a.h},off:{x:p.x-a.x,y:p.y-a.y},saved:false,raf:0,preview:null};
+    svg.setPointerCapture(e.pointerId);return;
+   }
+  }
+  const g=e.target.closest('.device');
+  if(!g){pan={x:e.clientX,y:e.clientY,x0:e.clientX,y0:e.clientY};svg.setPointerCapture(e.pointerId);return}
+  const idx=+g.dataset.index;
+  if(selected!==idx||selDuct!==null)select(idx);
+  const d=project.devices[idx],inv=svg.getScreenCTM().inverse(),p=plateXY(e,inv);
+  const el=svg.querySelector(`.device[data-index="${idx}"]`);
+  if(el){el.classList.add('dragging');el.parentNode.appendChild(el)}
+  drag={index:idx,el,inv,baseX:d.x,baseY:d.y,off:{x:p.x-d.x,y:p.y-d.y},start:clone(d),saved:false,raf:0};
+  svg.setPointerCapture(e.pointerId);
+ };
+ svg.onpointermove=e=>{
+  if(pan){
+   view.x-=(e.clientX-pan.x)*view.w/svg.clientWidth;view.y-=(e.clientY-pan.y)*view.h/svg.clientHeight;
+   pan.x=e.clientX;pan.y=e.clientY;
+   if(!panRaf)panRaf=requestAnimationFrame(()=>{panRaf=0;setView()});
+   return;
+  }
+  if(!drag)return;
+  if(!drag.saved){snapshot();drag.saved=true}
+  if(drag.duct){
+   const a=ductById(drag.duct),p=plateXY(e,drag.inv);if(!a)return;
+   if(drag.grip){
+    const f=project.enclosure.functional,st=drag.start,mn=50,r5=v=>Math.round(v/5)*5,cl=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
     if(a.orientation==='v'){if(drag.grip==='end')a.h=cl(r5(p.y)-st.y,mn,f.height-st.y);else{const ny=cl(r5(p.y),0,st.y+st.h-mn);a.y=ny;a.h=st.y+st.h-ny}}
     else{if(drag.grip==='end')a.w=cl(r5(p.x)-st.x,mn,f.width-st.x);else{const nx=cl(r5(p.x),0,st.x+st.w-mn);a.x=nx;a.w=st.x+st.w-nx}}
-    render();return}a.x=Math.round((p.x-drag.off.x)/5)*5;a.y=Math.round((p.y-drag.off.y)/5)*5;clampDuct(a);render();return}const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const a=pt.matrixTransform(svg.getScreenCTM().inverse()),{fx,fy,h}=dimensions(),d=project.devices[drag.index];d.x=Math.round(Math.max(0,Math.min(project.enclosure.functional.width-d.w,a.x-fx-d.w/2)));if(isDin(d))alignDin(d);else d.y=Math.round(Math.max(0,Math.min(project.enclosure.functional.height-d.h,h-fy-a.y-d.h/2)));render()};
- svg.onpointerup=ev=>{if(pan&&!drag&&Math.hypot(ev.clientX-pan.x0,ev.clientY-pan.y0)<4)clearSelection();if(drag&&drag.duct){const a=ductById(drag.duct),hit=a&&drag.saved&&ductHits(a);if(hit){Object.assign(a,drag.start);render();notice(`No hay lugar ahí: se superpone con ${nameOf(hit)}.`)}drag=null;pan=null;return}if(drag&&drag.saved&&project.devices[drag.index]){const d=project.devices[drag.index],hit=project.devices.find((o,j)=>j!==drag.index&&o.x<d.x+d.w-.5&&d.x<o.x+o.w-.5&&o.y<d.y+d.h-.5&&d.y<o.y+o.h-.5);
-  if(hit&&isDin(d)&&isDin(hit)&&Math.abs(hit.y-d.y)<1){const sameRow=Math.abs(drag.start.y-d.y)<1,row=project.devices.filter(o=>o!==d&&isDin(o)&&Math.abs(o.y-d.y)<1).sort((a,b)=>a.x-b.x),start=Math.min(...row.map(o=>o.x),sameRow?drag.start.x:Infinity),after=d.x+d.w/2>hit.x+hit.w/2,rail=rails().reduce((b,r)=>Math.abs(r.y-(d.y+d.h/2))<Math.abs(b.y-(d.y+d.h/2))?r:b,rails()[0]);
-   row.splice(row.indexOf(hit)+(after?1:0),0,d);const total=row.reduce((t,o)=>t+o.w,0);
-   if(rail&&start+total>rail.x+rail.length+.5){Object.assign(d,{x:drag.start.x,y:drag.start.y});render();notice('No entra en ese riel.')}
-   else{let x=start;row.forEach(o=>{o.x=Math.round(x*10)/10;x+=o.w});const arr=project.devices;arr.splice(arr.indexOf(d),1);arr.splice(arr.indexOf(hit)+(after?1:0),0,d);delete d.unplaced;delete d.placementNote;selected=arr.indexOf(d);render();notice(`${nameOf(d)} movido ${after?'después':'antes'} de ${nameOf(hit)}.`)}}
-  else if(hit){Object.assign(d,{x:drag.start.x,y:drag.start.y});render();notice(`No hay lugar ahí: se superpone con ${nameOf(hit)}.`)}else{delete d.unplaced;delete d.placementNote}}drag=null;pan=null};svg.onpointercancel=()=>{drag=null;pan=null};
+   }else{
+    a.x=Math.round((p.x-drag.off.x)/5)*5;a.y=Math.round((p.y-drag.off.y)/5)*5;clampDuct(a);
+   }
+   if(!drag.raf)drag.raf=requestAnimationFrame(applyDragVisual);
+   return;
+  }
+  const p=plateXY(e,drag.inv),d=project.devices[drag.index];if(!d)return;
+  d.x=Math.round(Math.max(0,Math.min(project.enclosure.functional.width-d.w,p.x-drag.off.x)));
+  d.y=Math.round(Math.max(0,Math.min(project.enclosure.functional.height-d.h,p.y-drag.off.y)));
+  if(isDin(d))alignDin(d);
+  if(!drag.raf)drag.raf=requestAnimationFrame(applyDragVisual);
+ };
+ svg.onpointerup=ev=>{
+  if(panRaf){cancelAnimationFrame(panRaf);panRaf=0;setView()}
+  if(pan&&!drag&&Math.hypot(ev.clientX-pan.x0,ev.clientY-pan.y0)<4)clearSelection();
+  if(drag&&drag.duct){
+   const a=ductById(drag.duct),saved=drag.saved,st=drag.start;
+   clearDragVisual();drag=null;pan=null;
+   const hit=a&&saved&&ductHits(a);
+   if(hit){Object.assign(a,st);notice(`No hay lugar ahí: se superpone con ${nameOf(hit)}.`)}
+   if(saved)render();return;
+  }
+  if(drag){
+   const idx=drag.index,saved=drag.saved,st=drag.start;
+   clearDragVisual();drag=null;pan=null;
+   if(saved&&project.devices[idx]){
+    const d=project.devices[idx],hit=project.devices.find((o,j)=>j!==idx&&o.x<d.x+d.w-.5&&d.x<o.x+o.w-.5&&o.y<d.y+d.h-.5&&d.y<o.y+o.h-.5);
+    if(hit&&isDin(d)&&isDin(hit)&&Math.abs(hit.y-d.y)<1){const sameRow=Math.abs(st.y-d.y)<1,row=project.devices.filter(o=>o!==d&&isDin(o)&&Math.abs(o.y-d.y)<1).sort((a,b)=>a.x-b.x),start=Math.min(...row.map(o=>o.x),sameRow?st.x:Infinity),after=d.x+d.w/2>hit.x+hit.w/2,rail=rails().reduce((b,r)=>Math.abs(r.y-(d.y+d.h/2))<Math.abs(b.y-(d.y+d.h/2))?r:b,rails()[0]);
+     row.splice(row.indexOf(hit)+(after?1:0),0,d);const total=row.reduce((t,o)=>t+o.w,0);
+     if(rail&&start+total>rail.x+rail.length+.5){Object.assign(d,{x:st.x,y:st.y});notice('No entra en ese riel.')}
+     else{let x=start;row.forEach(o=>{o.x=Math.round(x*10)/10;x+=o.w});const arr=project.devices;arr.splice(arr.indexOf(d),1);arr.splice(arr.indexOf(hit)+(after?1:0),0,d);delete d.unplaced;delete d.placementNote;selected=arr.indexOf(d);notice(`${nameOf(d)} movido ${after?'después':'antes'} de ${nameOf(hit)}.`)}}
+    else if(hit){Object.assign(d,{x:st.x,y:st.y});notice(`No hay lugar ahí: se superpone con ${nameOf(hit)}.`)}
+    else{delete d.unplaced;delete d.placementNote}
+    render();
+   }
+   return;
+  }
+  pan=null;
+ };
+ svg.onpointercancel=()=>{if(drag&&drag.saved){if(drag.duct){const a=ductById(drag.duct);if(a)Object.assign(a,drag.start)}else if(project.devices[drag.index])Object.assign(project.devices[drag.index],{x:drag.start.x,y:drag.start.y});clearDragVisual();drag=null;pan=null;render();return}clearDragVisual();drag=null;pan=null};
  svg.addEventListener('wheel',e=>{e.preventDefault();zoomView(e.deltaY<0?.85:1.18)},{passive:false});
  document.querySelectorAll('[data-screen]').forEach(b=>b.onclick=()=>showScreen(b.dataset.screen));
  document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>showScreen(b.dataset.go));

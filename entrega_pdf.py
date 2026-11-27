@@ -51,7 +51,7 @@ def _board_drawing(project, catalog, fronts, appearances, area_w, area_h):
     n = pick_scale(box.extmax.x - box.extmin.x, box.extmax.y - box.extmin.y, area_w, area_h - title_band)
     msp = doc.modelspace()
     if not doc.layers.has_entry("TITULOS"):
-        doc.layers.add("TITULOS", color=7)
+        doc.layers.add("TITULOS", color=7, lineweight=9)
     for part, label in ((front, RULES["frontTitle"]), (door, RULES["doorTitle"])):
         if not part:
             continue

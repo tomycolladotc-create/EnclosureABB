@@ -230,5 +230,29 @@
   "gapMm": 60,
   "doorTitle": "PERFORADO DE PUERTA (vista desde afuera)",
   "sideTitle": "VISTA LATERAL · PROFUNDIDAD"
+ },
+ "dxfLayers": {
+  "_ayuda": "Color ACI y espesor de línea DXF (en centésimas de mm: 5 = 0,05 mm, 9 = 0,09 mm, 18 = 0,18 mm) de todas las capas exportadas. Evita el espesor DEFAULT (0,25 mm) de AutoCAD que empasta los frentes CAD finos al abrir o plotear el DWG.",
+  "ABB_ENVOLVENTE": {"color": 7, "lineweight": 18},
+  "ABB_AREA_FUNCIONAL": {"color": 8, "lineweight": 9},
+  "ABB_RIEL_DIN_PROPUESTO": {"color": 4, "lineweight": 9},
+  "ABB_CAD_COLORES": {"color": 7, "lineweight": 0},
+  "ABB_CAD_FRENTE": {"color": 7, "lineweight": 5},
+  "ABB_SIN_CAD": {"color": 2, "lineweight": 9},
+  "ABB_ETIQUETAS": {"color": 3, "lineweight": 9},
+  "ABB_NOTAS": {"color": 1, "lineweight": 9},
+  "ABB_MARCADO": {"color": 7, "lineweight": 5},
+  "ABB_ACCESORIOS": {"color": 3, "lineweight": 9},
+  "ABB_CANALETAS": {"color": 8, "lineweight": 9},
+  "ABB_PEINES": {"color": 30, "lineweight": 9},
+  "ABB_ESTRUCTURA": {"color": 8, "lineweight": 9},
+  "ABB_PUERTAS": {"color": 9, "lineweight": 9},
+  "ABB_CAJETIN": {"color": 7, "lineweight": 9},
+  "ABB_COTAS": {"color": 6, "lineweight": 5},
+  "ABB_BOM": {"color": 5, "lineweight": 9},
+  "ABB_PUERTA_CERRADA": {"color": 7, "lineweight": 18},
+  "ABB_PUERTA_GRABADO": {"color": 7, "lineweight": 9},
+  "ABB_PUERTA_SENIALIZACION": {"color": 1, "lineweight": 9},
+  "ABB_PUERTA_CARTEL": {"color": 2, "lineweight": 9}
  }
 }

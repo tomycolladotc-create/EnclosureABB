@@ -65,10 +65,18 @@ def shop_doc(project, catalog, accessories, scale=1):
     """DXF (ezdxf) con el perforado de puerta acotado y la vista lateral, en mm 1:1. `scale` = N de la escala 1:N con que
     se va a imprimir: los textos, cotas y separaciones se dan en mm de papel (reglas) y se multiplican por N."""
     doc = ezdxf.new("R2010", setup=True)
+    doc.header["$INSUNITS"] = 4
+    doc.header["$LWDISPLAY"] = 0
+    doc.header["$CELWEIGHT"] = 9
+    doc.layers.get("0").dxf.lineweight = 9
+    if "EZDXF" in doc.dimstyles:
+        ds = doc.dimstyles.get("EZDXF")
+        ds.dxf.dimlwd = 5
+        ds.dxf.dimlwe = 5
     msp = doc.modelspace()
     t, ts, off = RULES["textMm"] * scale, RULES["smallTextMm"] * scale, RULES["dimOffsetMm"] * scale
-    for name, color in (("TALLER", 7), ("TALLER_FABRICA", 8), ("TALLER_COTAS", 1), ("TALLER_PEGADO", 5)):
-        doc.layers.add(name, color=color)
+    for name, color, lw in (("TALLER", 7, 18), ("TALLER_FABRICA", 8, 9), ("TALLER_COTAS", 1, 5), ("TALLER_PEGADO", 5, 9)):
+        doc.layers.add(name, color=color, lineweight=lw)
     f, holes = door_holes(project, catalog, accessories)
     w, h = f["w"], f["h"]
     Y = lambda y: h - y  # noqa: E731  (y desde el borde superior → eje hacia arriba)

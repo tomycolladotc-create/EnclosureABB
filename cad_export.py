@@ -12,7 +12,9 @@ import ezdxf
 import rutas
 from pintura import fit as paint_fit, resolve as paint_resolve
 from etiquetas import label_boxes
-LABEL_RULES = rutas.read_json("reglas_layout.json")["labels"]
+_LAYOUT_RULES = rutas.read_json("reglas_layout.json")
+LABEL_RULES = _LAYOUT_RULES["labels"]
+DXF_LAYERS = {k: v for k, v in _LAYOUT_RULES["dxfLayers"].items() if not k.startswith("_")}
 from ezdxf.colors import rgb2int
 
 from importador import shell_size
@@ -125,15 +127,17 @@ def build_dxf(project, catalog, fronts, appearances):
         fronts, appearances = paint_resolve(fronts, appearances, catalog)  # misma pintura y marcado que la pantalla
     doc = ezdxf.new("R2010", setup=True)
     doc.header["$INSUNITS"] = 4  # mm
+    doc.header["$LWDISPLAY"] = 0
+    doc.header["$CELWEIGHT"] = 9  # 0,09 mm por defecto (evita DEFAULT 0,25 mm)
+    doc.layers.get("0").dxf.lineweight = 9
+    if "EZDXF" in doc.dimstyles:
+        ds = doc.dimstyles.get("EZDXF")
+        ds.dxf.dimlwd = DXF_LAYERS["ABB_COTAS"]["lineweight"]
+        ds.dxf.dimlwe = DXF_LAYERS["ABB_COTAS"]["lineweight"]
     doc.styles.add("ABB_ARIAL", font="arial.ttf")
     doc.styles.add("ABB_ARIAL_BOLD", font="arialbd.ttf")
-    layers = {
-        "ABB_ENVOLVENTE": 7, "ABB_AREA_FUNCIONAL": 8,
-        "ABB_RIEL_DIN_PROPUESTO": 4, "ABB_CAD_COLORES": 7, "ABB_CAD_FRENTE": 7,
-        "ABB_SIN_CAD": 2, "ABB_ETIQUETAS": 3, "ABB_NOTAS": 1, "ABB_MARCADO": 7, "ABB_ACCESORIOS": 3, "ABB_CANALETAS": 8, "ABB_PEINES": 30, "ABB_ESTRUCTURA": 8, "ABB_PUERTAS": 9, "ABB_CAJETIN": 7, "ABB_COTAS": 6, "ABB_BOM": 5, "ABB_PUERTA_CERRADA": 7, "ABB_PUERTA_GRABADO": 7, "ABB_PUERTA_SENIALIZACION": 1, "ABB_PUERTA_CARTEL": 2,
-    }
-    for name, color in layers.items():
-        doc.layers.new(name, dxfattribs={"color": color})
+    for name, spec_l in DXF_LAYERS.items():
+        doc.layers.new(name, dxfattribs={"color": spec_l["color"], "lineweight": spec_l["lineweight"]})
     space = doc.modelspace()
 
     def rect(x, y, width, height, layer):
@@ -201,11 +205,12 @@ def build_dxf(project, catalog, fronts, appearances):
                     lx, ly, word = palette["logo"]
                     block.add_text(word, dxfattribs={"layer": "ABB_CAD_COLORES", "true_color": _color("#ffffff"),
                                                         "height": height * .035, "insert": (ox + lx * fw_, fy0 + ly * fh_)})
+            cad_lw = DXF_LAYERS["ABB_CAD_FRENTE"]["lineweight"]
             for path in front["paths"]:
                 if len(path) >= 2:
                     block.add_lwpolyline(
                         [(round(ox + x * fw_, 4), round(fy0 + y * fh_, 4)) for x, y in path],
-                        dxfattribs={"layer": "ABB_CAD_FRENTE", "true_color": _color(palette.get("lineColor", "#273746"))},
+                        dxfattribs={"layer": "ABB_CAD_FRENTE", "true_color": _color(palette.get("lineColor", "#273746")), "lineweight": cad_lw},
                     )
         bar = palette.get("tieBar")
         if bar and tiles >= bar.get("minPoles", 2):
@@ -213,7 +218,7 @@ def build_dxf(project, catalog, fronts, appearances):
             block.add_solid([(bx0, bar["y0"]), (bx1, bar["y0"]), (bx0, bar["y1"]), (bx1, bar["y1"])],
                             dxfattribs={"layer": "ABB_CAD_COLORES", "true_color": _color(bar["color"])})
             block.add_lwpolyline([(bx0, bar["y0"]), (bx1, bar["y0"]), (bx1, bar["y1"]), (bx0, bar["y1"])], close=True,
-                                 dxfattribs={"layer": "ABB_CAD_FRENTE", "true_color": _color(palette.get("lineColor", "#273746"))})
+                                 dxfattribs={"layer": "ABB_CAD_FRENTE", "true_color": _color(palette.get("lineColor", "#273746")), "lineweight": DXF_LAYERS["ABB_CAD_FRENTE"]["lineweight"]})
         # Marcado impreso (apariencias_abb.json -> marking): recuadros fijos en el bloque y un
         # atributo por texto, así el texto viaja con el equipo y se edita con doble clic en AutoCAD.
         marking = palette.get("marking")
@@ -221,7 +226,8 @@ def build_dxf(project, catalog, fronts, appearances):
             if "box" in item:
                 x0, y0, x1, y1 = item["box"]
                 block.add_lwpolyline([(x0, y0), (x1, y0), (x1, y1), (x0, y1)], close=True,
-                                     dxfattribs={"layer": "ABB_MARCADO", "true_color": _color(item["color"])})
+                                     dxfattribs={"layer": "ABB_MARCADO", "true_color": _color(item["color"]),
+                                                 "lineweight": DXF_LAYERS["ABB_MARCADO"]["lineweight"]})
             block.add_attdef(f"M{n + 1}", (item["x"], item["y"]), dxfattribs={
                 "layer": "ABB_MARCADO", "height": item["h"], "true_color": _color(item["color"]),
                 "style": "ABB_ARIAL_BOLD" if item.get("bold") else "ABB_ARIAL", "prompt": item["text"],
@@ -237,7 +243,7 @@ def build_dxf(project, catalog, fronts, appearances):
         poles = device.get("poles")
         width, height = shell_size(spec, poles) if spec else (device["w"], device["h"])
         if spec and device["shell"] in fronts["items"]:
-            ref = space.add_blockref(front_block(device["shell"], poles), (x, y))
+            ref = space.add_blockref(front_block(device["shell"], poles), (x, y), dxfattribs={"layer": "ABB_CAD_FRENTE"})
             marking = palettes.get(device["shell"], {}).get("marking")
             items = marking.get("items", []) if marking else []
             shown = {it["index"]: it for it in resolve(marking, device.get("marking", {}), poles)} if marking else {}

@@ -43,6 +43,9 @@ class Taller(unittest.TestCase):
         texts = {e.dxf.text for b in doc.blocks if b.name.startswith("*D") for e in b if e.dxftype() in ("MTEXT", "TEXT")}
         self.assertIn(f"{p['enclosure']['externalBody']['width']:g}", texts)  # ancho de la puerta tal cual, sin ×100
         self.assertFalse(any("." in t for t in texts))
+        self.assertEqual(doc.header.get("$LWDISPLAY"), 0)
+        for name in ("TALLER", "TALLER_FABRICA", "TALLER_COTAS", "TALLER_PEGADO"):
+            self.assertGreaterEqual(doc.layers.get(name).dxf.lineweight, 0, name)
 
     def test_placas_con_el_texto_del_dibujo(self):
         p = self.projects[0]

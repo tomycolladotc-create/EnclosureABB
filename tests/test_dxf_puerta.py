@@ -54,6 +54,22 @@ class PuertaCerradaDXF(unittest.TestCase):
         ys = [pt[1] for e in doc.modelspace().query('LWPOLYLINE[layer=="ABB_PUERTA_CARTEL"]') for pt in e.get_points()]
         self.assertGreaterEqual(min(ys), 0)
 
+    def test_espesores_de_linea_explicitos(self):
+        spec = {k: v for k, v in L("reglas_layout.json")["dxfLayers"].items() if not k.startswith("_")}
+        self.assertEqual(self.doc.header.get("$LWDISPLAY"), 0)
+        self.assertEqual(self.doc.header.get("$CELWEIGHT"), 9)
+        self.assertGreaterEqual(self.doc.layers.get("0").dxf.lineweight, 0)
+        self.assertEqual(self.doc.dimstyles.get("EZDXF").dxf.dimlwd, spec["ABB_COTAS"]["lineweight"])
+        for name, cfg in spec.items():
+            layer = self.doc.layers.get(name)
+            self.assertGreaterEqual(layer.dxf.lineweight, 0, name)
+            self.assertEqual(layer.dxf.lineweight, cfg["lineweight"], name)
+        cad_lw = spec["ABB_CAD_FRENTE"]["lineweight"]
+        self.assertLessEqual(cad_lw, 5)
+        polylines = [e for b in self.doc.blocks if b.name.startswith("ABB_") for e in b if e.dxftype() == "LWPOLYLINE" and e.dxf.layer == "ABB_CAD_FRENTE"]
+        self.assertTrue(polylines)
+        self.assertTrue(all(e.dxf.lineweight == cad_lw for e in polylines))
+
 
 if __name__ == "__main__":
     unittest.main()

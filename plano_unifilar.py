@@ -335,9 +335,9 @@ def compose(template_path, projects, catalog, fronts, appearances, layouts=None,
         for layout in list(doc.layouts):
             if layout.name != "Model" and layout.name not in done:
                 doc.layouts.delete(layout.name)
-    for vp_layer, color in ((RULES["viewportLayer"], 8), (RULES["textLayer"], 7)):
+    for vp_layer, color, lw in ((RULES["viewportLayer"], 8, 5), (RULES["textLayer"], 7, 9)):
         if vp_layer not in doc.layers:
-            doc.layers.add(vp_layer, color=color)
+            doc.layers.add(vp_layer, color=color, lineweight=lw)
     doc.layers.get(RULES["viewportLayer"]).dxf.plot = 0  # el borde de las ventanas no se plotea
     out = io.StringIO()
     doc.write(out)
