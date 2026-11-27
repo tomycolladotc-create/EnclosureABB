@@ -48,7 +48,8 @@ class WebUi(unittest.TestCase):
 
     def test_catalogo_filtrable_y_popup_arrastre(self):
         html = INDEX.read_text(encoding="utf-8")
-        for token in ("tabCatalog", "catPoles", "catIn", "catKa", "catalogList", "dropCircuitPanel", "dropCircuit", "addPoles", "addIn", "addKa"):
+        for token in ("tabCatalog", "catPoles", "catIn", "catKa", "catalogList", "dropCircuitPanel", "dropCircuit", "addPoles", "addIn", "addKa",
+                      "signalsBtn", "signalsPop", "signalsBtnLabel", "entregaUseFmt"):
             self.assertIn(f'id="{token}"', html)
 
 

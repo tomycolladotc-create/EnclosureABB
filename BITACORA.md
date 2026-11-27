@@ -3,6 +3,11 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-27 17:56 · Antigravity · Control directo de testigos en tapa (+ fusibles) y nuevo PDF de entrega con rótulo técnico (`v1.0.3`)
+- Hecho: agregado control visible en el editor junto a «Interior / Puerta cerrada» (`#signalsBtn`/`#signalsPop`, sincronizado con `⋯`) para elegir **Sin testigos / Trifásico (R-S-T) / Monofásico (R)** en cualquier tablero (incluso sin interruptor general propio), agregando/quitando automáticamente luces piloto Ø 22 mm, portafusibles `E 91/32` en riel y fusibles `10×38 gG 1 A` (sin desarmar equipos manuales si hay hueco). Rediseñado `entrega_pdf.py` (y textos de `taller.py`) con tipografía TrueType `LeelawUI`/`Lucida Console` (100 % fidelidad Unicode), carátula ejecutiva, índice paginado, tabla BOM estilizada y rótulo técnico de esquina inferior derecha con tabla de revisiones, marco IRAM con zonas y archivo lateral (sin logos de marcas comerciales), configurable en `datos/reglas_layout.json`.
+- Archivos: `accesorios.py`, `app.py`, `entrega_pdf.py`, `taller.py`, `datos/reglas_layout.json`, `web/index.html`, `web/styles.css`, `tests/test_auditoria.py`, `tests/test_entrega_pdf.py`, `tests/test_web_ui.py`, `tests/e2e/prueba_interfaz.py`, `ESTADO.md`.
+- Verificado: 219/219 unitarias, 151/151 e2e en navegador real, inspección visual de todas las páginas del PDF y capturas del editor, build + smoke test `v1.0.3` y publicación en GitHub Releases (`v1.0.3`).
+
 ## 2026-11-27 17:10 · Antigravity · Release pública `v1.0.2` en GitHub con ejecutable y release notes
 - Hecho: creado tag anotado `v1.0.2` sobre `18f938b` y publicada la Release `v1.0.2` (*Latest*) en GitHub con `EnclosureABB-Setup.exe` (38,9 MB), `EnclosureABB-Portable.zip` (52,0 MB), `SHA256SUMS.txt` y release notes en español 100 % genéricas.
 - Archivos: `BITACORA.md`, `ESTADO.md` (los instaladores y `SHA256SUMS.txt` quedan en `salida/instalador/`, fuera de git, y publicados como assets de la release).

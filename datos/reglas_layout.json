@@ -150,54 +150,168 @@
   }
  },
  "entregaPdf": {
-  "_ayuda": "PDF único de entrega (Exportar → «PDF de entrega»): carátula, índice, una hoja por tablero (puerta abierta y cerrada a escala normalizada) y lista consolidada, con rótulo y «Hoja n de N». Pedido de Thomas 2026-11-23.",
+  "_ayuda": "PDF único de entrega (Exportar → «PDF de entrega»): carátula, índice, una hoja por tablero (puerta abierta y cerrada a escala normalizada), planos de taller y lista consolidada, con marco técnico IRAM, rótulo de esquina inferior derecha (sin marcas comerciales) y tipografía TrueType prolija.",
   "pageMm": [
    420,
    297
   ],
-  "marginMm": 10,
-  "titleBandMm": 28,
+  "marginMm": 8,
+  "marginLeftMm": 18,
+  "zoneBandMm": 4.5,
+  "zoneCols": [
+   "C",
+   "B",
+   "A"
+  ],
+  "zoneRows": [
+   "2",
+   "1"
+  ],
+  "titleBlock": {
+   "widthMm": 156,
+   "heightMm": 75,
+   "revHeightMm": 19.7,
+   "revDataRows": 3,
+   "revHeaderMm": 5.9,
+   "revCols": [
+    {
+     "label": "Rev",
+     "frac": 0.1225
+    },
+    {
+     "label": "Descripción",
+     "frac": 0.4923
+    },
+    {
+     "label": "Proy",
+     "frac": 0.0903
+    },
+    {
+     "label": "Revis",
+     "frac": 0.0905
+    },
+    {
+     "label": "Apr",
+     "frac": 0.0903
+    },
+    {
+     "label": "Fecha",
+     "frac": 0.1141
+    }
+   ],
+   "splitX": 0.6148,
+   "revColX": 0.8859,
+   "bandHeightsMm": [
+    20.1,
+    13.4,
+    21.8
+   ],
+   "defaultStage": "DOCUMENTACIÓN DE TABLEROS",
+   "defaultRevDesc": "EMISIÓN PARA REVISIÓN"
+  },
+  "titleBandMm": 75,
   "viewGapMm": 20,
   "viewTitleMm": 4,
+  "typography": {
+   "regular": [
+    "LeelawUI.ttf",
+    "LiberationSans-Regular.ttf",
+    "bahnschrift.ttf"
+   ],
+   "semibold": [
+    "LeelaUIb.ttf",
+    "LiberationSans-Bold.ttf",
+    "bahnschrift.ttf"
+   ],
+   "bold": [
+    "LeelaUIb.ttf",
+    "LiberationSans-Bold.ttf",
+    "bahnschrift.ttf"
+   ],
+   "mono": [
+    "lucon.ttf",
+    "LeelawUI.ttf"
+   ],
+   "colors": {
+    "ink": [0.09, 0.13, 0.2],
+    "muted": [0.36, 0.42, 0.5],
+    "primary": [0.12, 0.23, 0.3],
+    "accentAbb": [0.78, 0.06, 0.18],
+    "accentGeneric": [0.28, 0.36, 0.45],
+    "softBg": [0.965, 0.975, 0.985],
+    "zebra": [0.975, 0.98, 0.988],
+    "rule": [0.82, 0.86, 0.9],
+    "danger": [0.71, 0.14, 0.1],
+    "warn": [0.6, 0.36, 0.0]
+   }
+  },
   "fontMm": {
    "cell": 2.6,
    "label": 1.9,
-   "title": 12,
-   "subtitle": 6,
-   "table": 2.6
+   "title": 8.5,
+   "subtitle": 4.0,
+   "table": 2.45
   },
   "fields": [
    {
     "key": "proyecto",
-    "label": "Proyecto"
+    "label": "Proyecto",
+    "placeholder": "Ej. Tableros eléctricos planta industrial"
+   },
+   {
+    "key": "sector",
+    "label": "Sector de obra",
+    "placeholder": "Ej. Sector producción / Nave principal"
+   },
+   {
+    "key": "etapa",
+    "label": "Etapa del proyecto",
+    "placeholder": "Ej. PROYECTO EJECUTIVO"
    },
    {
     "key": "cliente",
-    "label": "Cliente"
+    "label": "Cliente",
+    "placeholder": "Nombre del cliente o comitente"
    },
    {
     "key": "documento",
-    "label": "N° de documento (base de los planos)"
+    "label": "N° de documento (DOC N°)",
+    "placeholder": "Ej. E-EL-PL-104"
    },
    {
     "key": "revision",
-    "label": "Revisión"
+    "label": "Revisión",
+    "placeholder": "Ej. 0"
+   },
+   {
+    "key": "descripcion_rev",
+    "label": "Descripción de revisión",
+    "placeholder": "Ej. Emisión preliminar"
    },
    {
     "key": "fecha",
-    "label": "Fecha"
+    "label": "Fecha",
+    "placeholder": "Ej. 27/11/2026"
    },
    {
     "key": "dibujo",
-    "label": "Dibujó"
+    "label": "Proyectó / Dibujó",
+    "placeholder": "Iniciales o nombre"
    },
    {
     "key": "reviso",
-    "label": "Revisó"
+    "label": "Revisó",
+    "placeholder": "Iniciales o nombre"
    },
    {
     "key": "aprobo",
-    "label": "Aprobó"
+    "label": "Aprobó",
+    "placeholder": "Iniciales o nombre"
+   },
+   {
+    "key": "asesor",
+    "label": "Nombre asesor / Responsable",
+    "placeholder": "Opcional (firma / estudio)"
    }
   ],
   "sheetNumberFormat": "{documento}-{n:02d}",

@@ -74,6 +74,10 @@ def shop_doc(project, catalog, accessories, scale=1):
         ds.dxf.dimlwd = 5
         ds.dxf.dimlwe = 5
     msp = doc.modelspace()
+    if not doc.styles.has_entry("ABB_UI"):
+        doc.styles.add("ABB_UI", font="segoeui.ttf")
+    if not doc.styles.has_entry("ABB_UI_BOLD"):
+        doc.styles.add("ABB_UI_BOLD", font="segoeuib.ttf")
     t, ts, off = RULES["textMm"] * scale, RULES["smallTextMm"] * scale, RULES["dimOffsetMm"] * scale
     for name, color, lw in (("TALLER", 7, 18), ("TALLER_FABRICA", 8, 9), ("TALLER_COTAS", 1, 5), ("TALLER_PEGADO", 5, 9)):
         doc.layers.add(name, color=color, lineweight=lw)
@@ -85,8 +89,9 @@ def shop_doc(project, catalog, accessories, scale=1):
         msp.add_lwpolyline([(x, Y(y)), (x + rw, Y(y)), (x + rw, Y(y + rh)), (x, Y(y + rh))], close=True,
                            dxfattribs={"layer": layer, "linetype": "DASHED" if dashed else "CONTINUOUS"})
 
-    def text(value, x, y, height, layer="TALLER", align=TextEntityAlignment.MIDDLE_CENTER):
-        msp.add_text(value, dxfattribs={"height": height, "layer": layer}).set_placement((x, y), align=align)
+    def text(value, x, y, height, layer="TALLER", align=TextEntityAlignment.MIDDLE_CENTER, bold=False):
+        style = "ABB_UI_BOLD" if bold else "ABB_UI"
+        msp.add_text(value, dxfattribs={"height": height, "layer": layer, "style": style}).set_placement((x, y), align=align)
 
     rect(0, 0, w, h, "TALLER")
     for hy, hh in f["hinges"]:
@@ -120,20 +125,23 @@ def shop_doc(project, catalog, accessories, scale=1):
                        override={**DIM, "dimtxt": t, "dimasz": t * 0.8}).render()
     # Tabla de perforaciones y referencias, debajo de la puerta.
     y = -off * 2.5
-    text(RULES["doorTitle"], w / 2, y, t * 1.3)
+    text(RULES["doorTitle"], w / 2, y, t * 1.3, bold=True)
     y -= t * 3
-    rows = [("N°", "X (mm)", "Y (mm)", "Ø (mm)", "Uso")] + [(str(hh["n"]), f"{hh['x']:g}", f"{hh['y']:g}", f"{hh['d']:g}", hh["uso"]) for hh in holes]
+    def _fmt(v):
+        return f"{v:g}".replace(".", ",")
+
+    rows = [("N°", "X (mm)", "Y (mm)", "Ø (mm)", "Uso")] + [(str(hh["n"]), _fmt(hh["x"]), _fmt(hh["y"]), _fmt(hh["d"]), hh["uso"]) for hh in holes]
     cols = [c * scale for c in (0, 12, 34, 56, 78)]
-    for row in rows or []:
+    for idx_r, row in enumerate(rows or []):
         for cx, value in zip(cols, row):
-            text(value, cx, y, ts, "TALLER", TextEntityAlignment.LEFT)
+            text(value, cx, y, ts, "TALLER", TextEntityAlignment.LEFT, bold=(idx_r == 0))
         y -= ts * 1.8
     if not holes:
-        text("Sin perforaciones: el unifilar no tiene luces piloto en la puerta.", 0, y, ts, "TALLER", TextEntityAlignment.LEFT)
+        text("Sin perforaciones: tablero sin testigos de tensión en la puerta.", 0, y, ts, "TALLER", TextEntityAlignment.LEFT)
         y -= ts * 1.8
     for note in ("Cotas al centro de cada agujero, desde el borde superior izquierdo de la puerta (vista desde afuera).",
-                 "Gris: cerradura y bisagras de fábrica (no se perforan).",
-                 "Azul punteado: placa grabada con el nombre y cartel de riesgo eléctrico (pegados, sin perforar)."):
+                 "Trazo fino: cerradura y bisagras de fábrica (no se perforan).",
+                 "Línea punteada: placa grabada con el nombre y cartel de riesgo eléctrico (pegados, sin perforar)."):
         text(note, 0, y, ts, "TALLER", TextEntityAlignment.LEFT)
         y -= ts * 1.8
 
@@ -155,15 +163,15 @@ def shop_doc(project, catalog, accessories, scale=1):
         msp.add_linear_dim(base=(ox, h * 0.6 + off), p1=(dx, h * 0.6), p2=(ox + ext, h * 0.6), dxfattribs={"layer": "TALLER_COTAS"},
                            override={**DIM, "dimtxt": t, "dimasz": t * 0.8}).render()
     y = -off * 2.5
-    text(RULES["sideTitle"], ox + ext / 2, y, t * 1.3)
-    lines = [f"Profundidad exterior: {ext:g} mm · útil (catálogo ABB): {use:g} mm"]
+    text(RULES["sideTitle"], ox + ext / 2, y, t * 1.3, bold=True)
+    lines = [f"Profundidad exterior: {_fmt(ext)} mm · útil (catálogo ABB): {_fmt(use)} mm"]
     if d:
-        lines.append(f"Equipo más profundo: {d['tag']} {d['model']} · {d['depth']:g} mm" + (f" + riel DIN {RULES['dinRailDepthMm']:g} mm ({RULES['dinRailSource']})" if d["rail"] else ""))
-        lines.append(("ENTRA" if dc["margin"] >= 0 else "NO ENTRA") + f": margen {dc['margin']:g} mm hasta el fondo útil (sin contar la separación de la placa, que el catálogo no da)")
+        lines.append(f"Equipo más profundo: {d['tag']} {d['model']} · {_fmt(d['depth'])} mm" + (f" + riel DIN {_fmt(RULES['dinRailDepthMm'])} mm ({RULES['dinRailSource']})" if d["rail"] else ""))
+        lines.append(("ENTRA" if dc["margin"] >= 0 else "NO ENTRA") + f": margen {_fmt(dc['margin'])} mm hasta el fondo útil (sin contar la separación de la placa, que el catálogo no da)")
     from validacion import rail_reserve
     rr = rail_reserve(project, catalog, json.loads((ROOT / "datos" / "reglas_validacion.json").read_text(encoding="utf-8")))
     if rr["freePercent"] is not None:
-        lines.append(f"Reserva libre en los rieles DIN: {rr['freePercent']:g} % de {rr['railMm']:g} mm" + (f" (pedida {rr['requested']:g} %)" if rr["requested"] else ""))
+        lines.append(f"Reserva libre en los rieles DIN: {_fmt(rr['freePercent'])} % de {_fmt(rr['railMm'])} mm" + (f" (pedida {_fmt(rr['requested'])} %)" if rr["requested"] else ""))
     if dc["unknown"]:
         lines.append("Sin profundidad en el catálogo: " + ", ".join(dc["unknown"]) + " (confirmar con la ficha ABB)")
     y -= t * 3

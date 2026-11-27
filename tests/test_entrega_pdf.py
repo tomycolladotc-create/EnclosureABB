@@ -10,8 +10,10 @@ from entrega_pdf import build_pdf, pick_scale
 from regresion_general import BOARDS, build
 
 CATALOG = json.loads((Path(__file__).resolve().parent.parent / "datos" / "catalogo_abb.json").read_text(encoding="utf-8"))
-VALUES = {"proyecto": "Obra de prueba", "cliente": "Cliente X", "documento": "CLI-PL-1", "revision": "B", "fecha": "23/11/2026",
-          "dibujo": "TC", "reviso": "RV", "aprobo": "AP"}
+VALUES = {"proyecto": "Obra de prueba", "sector": "Sector industrial", "etapa": "PROYECTO EJECUTIVO",
+          "cliente": "Cliente X", "documento": "CLI-PL-1", "revision": "B", "descripcion_rev": "EMISIÓN PARA REVISIÓN",
+          "fecha": "23/11/2026", "dibujo": "TC", "reviso": "RV", "aprobo": "AP", "asesor": "Estudio Técnico",
+          "archivo": "Entrega_prueba.pdf"}
 
 
 class EntregaPdf(unittest.TestCase):
@@ -51,6 +53,18 @@ class EntregaPdf(unittest.TestCase):
     def test_escala_normalizada(self):
         self.assertEqual(pick_scale(890, 2030, 394, 240), 10)
         self.assertEqual(pick_scale(300, 400, 394, 240), 2)
+
+    def test_rotulo_tecnico_esquina_y_tipografia_truetype(self):
+        # Todas las hojas llevan la estructura del rótulo técnico (revisiones, sector, DOC N°, REV, contenido, asesor) sin logos
+        for i, t in enumerate(self.texts, start=1):
+            with self.subTest(hoja=i):
+                for lbl in ("Rev", "Descripción", "Proy", "Revis", "Apr", "Fecha",
+                            "SECTOR DE OBRA", "DOC N°:", "REV:", "CONTENIDO:", "NOMBRE ASESOR:",
+                            "Sector industrial", "PROYECTO EJECUTIVO", "Estudio Técnico", "Entrega_prueba.pdf"):
+                    self.assertIn(lbl, t)
+        # Tipografía embebida TrueType prolija con fidelidad Unicode (LeelawUI / Liberation / Bahnschrift)
+        fonts = {f[3] for f in self.doc[0].get_fonts(full=True)}
+        self.assertTrue(any(any(k in fn.lower() for k in ("leelaw", "liberation", "bahn", "artifakt", "dejavu")) for fn in fonts), fonts)
 
 
 class EntregaConFormatoDelUsuario(unittest.TestCase):

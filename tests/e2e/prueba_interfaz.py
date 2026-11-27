@@ -318,11 +318,19 @@ def main():
             pg.click("#moreBtn"); pg.select_option("#enclosure", big); wait_idle(pg, 4000)
             check("cambiar a gabinete grande", pg.evaluate("project.enclosure.id") == big)
             check("cambiar gabinete: dentro de normativa", chip_ok(pg) and pg.evaluate("validationResult.errors") == 0, chip(pg))
-            # Testigos de fase en la puerta con sus fusibles en el riel (pedido 2026-11-19).
-            had = pg.evaluate("!!(project.signals&&project.signals.pilotLights&&project.signals.pilotLights.length)")
-            if had:
-                pg.click("#moreBtn"); pg.click("#signalsToggle"); wait_idle(pg, 4000)
-                check("testigos: se pueden quitar", not pg.evaluate("project.accessories.some(a=>a.type==='signal_fuses')"))
+            # Testigos de tensión en la tapa (botón directo + menú ⋯) con sus portafusibles/fusibles en el riel.
+            check("testigos: botón visible en la barra del lienzo", pg.is_visible("#signalsBtn"))
+            pg.click("#signalsBtn"); wait_idle(pg, 200)
+            check("testigos: selector despliega opciones 3F/1F/Sin", pg.is_visible("#signalsPop") and pg.locator("#signalsPop .sig-opt").count() == 3)
+            pg.click("#signalsPop .sig-opt[data-sig='none']"); wait_idle(pg, 2000)
+            check("testigos: quitar desde botón elimina luces y fusibles", not pg.evaluate("!!(project.signals&&project.signals.pilotLights&&project.signals.pilotLights.length)") and not pg.evaluate("project.accessories.some(a=>a.type==='signal_fuses')"))
+            pg.click("#signalsBtn"); pg.click("#signalsPop .sig-opt[data-sig='2']"); wait_idle(pg, 2500)
+            check("testigos: monofásico agrega 1 luz y 1 portafusible en riel", pg.evaluate("(project.signals?.pilotLights||[]).length===1 && project.accessories.some(a=>a.type==='signal_fuses'&&a.placed&&a.count===1)"))
+            pg.click("#signalsBtn"); pg.click("#signalsPop .sig-opt[data-sig='3']"); wait_idle(pg, 2500)
+            check("testigos: trifásico agrega 3 luces (R-S-T) y 3 portafusibles en riel", pg.evaluate("(project.signals?.pilotLights||[]).length===3 && project.accessories.some(a=>a.type==='signal_fuses'&&a.placed&&a.count===3)"))
+            # Compatibilidad con el toggle del menú ⋯
+            pg.click("#moreBtn"); pg.click("#signalsToggle"); wait_idle(pg, 2500)
+            check("testigos: se pueden quitar desde menú", not pg.evaluate("project.accessories.some(a=>a.type==='signal_fuses')"))
             pg.click("#moreBtn"); pg.click("#signalsToggle"); wait_idle(pg, 4000)
             check("testigos: fusibles ubicados en el riel", pg.evaluate("project.accessories.some(a=>a.type==='signal_fuses'&&a.placed&&a.count===project.signals.pilotLights.length)"))
             check("testigos: fusibles dibujados", pg.locator("[data-acc=signal_fuses]").count() == 1)

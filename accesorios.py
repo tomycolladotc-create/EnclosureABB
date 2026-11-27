@@ -34,22 +34,48 @@ def pe_input_max_mm2(terminal):
     return max(nums) if nums else None
 
 
-def default_signals(project, catalog=None):
-    """Testigos de fase que se proponen cuando el usuario los agrega a mano: una luz por fase del equipo de entrada
+def suggested_signal_poles(project):
+    """Polos sugeridos para los testigos de tensión: primero la entrada del tablero; si no hay entrada
+    (p. ej. entrada directa a barras o tablero armado a mano), el máximo de polos entre los equipos, o 3F."""
+    from auditoria import main_device
+    main = main_device(project)
+    if main:
+        p = _poles(main)
+        if p:
+            return min(int(p), 4)
+    all_poles = [_poles(d) for d in (project.get("devices") or [])]
+    all_poles = [int(p) for p in all_poles if p]
+    if any(p >= 3 for p in all_poles):
+        return 3
+    if all_poles:
+        return 2
+    return 3
+
+
+def default_signals(project, catalog=None, poles=None):
+    """Testigos de fase que se proponen cuando el usuario los agrega a mano: una luz por fase
     (3 o 4 polos → R-S-T; 2 polos → una luz en la fase). Tensión y fusible de signalDefaults (accesorios_abb.json).
-    Única fuente de esta regla (la interfaz la pide a /api/signals-default). Error si no se sabe cuántos polos tiene la entrada."""
+    Única fuente de esta regla (la interfaz la pide a /api/signals-default).
+    - poles=None: exige detectar los polos del equipo de entrada (lanza ValueError si falta).
+    - poles='auto': deduce de la entrada y, si no existe, sugiere según los equipos presentes (3F/1F).
+    - poles=2|3|4: arma los testigos explícitamente para esa cantidad de polos."""
     from auditoria import main_device
     catalog = catalog or load_accessory_catalog()
     defaults = catalog.get("signalDefaults", {})
-    main = main_device(project)
-    if not main:
-        raise ValueError("No se encontró el equipo de entrada del tablero: no se puede saber cuántas fases tiene")
-    poles = main.get("poles")
-    if not poles:
-        found = re.search(r"\.(\d)p", str(main.get("shell", "")))
-        poles = int(found.group(1)) if found else None
-    if not poles:
-        raise ValueError(f"No se sabe cuántos polos tiene {main.get('tag')}: cargalos para proponer los testigos")
+    if poles == "auto":
+        poles = suggested_signal_poles(project)
+    elif poles is None:
+        main = main_device(project)
+        if not main:
+            raise ValueError("No se encontró el equipo de entrada del tablero: no se puede saber cuántas fases tiene")
+        poles = main.get("poles")
+        if not poles:
+            found = re.search(r"\.(\d)p", str(main.get("shell", "")))
+            poles = int(found.group(1)) if found else None
+        if not poles:
+            raise ValueError(f"No se sabe cuántos polos tiene {main.get('tag')}: cargalos para proponer los testigos")
+    else:
+        poles = int(poles)
     phases = defaults.get("phasesByPoles", {}).get(str(min(int(poles), 4)))
     if not phases:
         raise ValueError(f"signalDefaults.phasesByPoles no define {poles} polos")

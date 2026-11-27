@@ -279,7 +279,16 @@ class Handler(BaseHTTPRequestHandler):
         if route == "/api/signals-default":  # testigos de fase propuestos (regla única en accesorios.default_signals)
             try:
                 from accesorios import default_signals
-                return self.send_data(200, default_signals(json.loads(blob)))
+                query = parse_qs(urlparse(self.path).query)
+                payload = json.loads(blob)
+                poles = (query.get("poles") or [None])[0]
+                if isinstance(payload, dict) and isinstance(payload.get("project"), dict):
+                    if poles is None:
+                        poles = payload.get("poles")
+                    payload = payload["project"]
+                if poles is not None and str(poles).isdigit():
+                    poles = int(poles)
+                return self.send_data(200, default_signals(payload, poles=poles))
             except ValueError as exc:
                 return self.send_data(422, {"error": str(exc)})
         if route == "/api/save":

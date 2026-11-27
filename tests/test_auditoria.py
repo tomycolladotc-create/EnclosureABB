@@ -296,6 +296,23 @@ class TestigosDeFase(unittest.TestCase):
         with self.assertRaises(ValueError):
             default_signals(project([dev("QF1", "S202-C20", "abb.s200m.1p.front", "A-1", poles=2), dev("QF2", "S202-C20", "abb.s200m.1p.front", "A-2", poles=2)]))
 
+    def test_testigos_con_polos_explicitos_y_auto_en_tablero_sin_general(self):
+        from accesorios import default_signals
+        sin_gen_3f = project([dev("QF1", "S203M-C25", "abb.s200m.1p.front", "A-1", poles=3),
+                              dev("QF2", "S201M-C16 NA", "abb.s200m.1p.front", "A-2", poles=2)])
+        sig_auto = default_signals(sin_gen_3f, poles="auto")
+        self.assertEqual([l["label"] for l in sig_auto["pilotLights"]], ["R", "S", "T"])
+        self.assertEqual(sig_auto["fuses"]["count"], 3)
+        sig_1f = default_signals(sin_gen_3f, poles=2)
+        self.assertEqual([l["label"] for l in sig_1f["pilotLights"]], ["R"])
+        self.assertEqual(sig_1f["fuses"]["count"], 1)
+        p = self.armar(sin_gen_3f["devices"], signals=sig_auto)
+        fus = next(a for a in p["accessories"] if a["type"] == "signal_fuses")
+        self.assertTrue(fus["placed"] and fus["count"] == 3)
+        rows = build_bom(p, CAT)
+        self.assertTrue(any(r["code"] == "2CSM200923R1801" and r["quantity"] == 3 for r in rows))
+        self.assertTrue(any("Fusible cilíndrico" in r["description"] and r["quantity"] == 3 for r in rows))
+
     def test_dxf_dibuja_los_fusibles(self):
         from cad_export import build_dxf
         p = self.armar([dev("QS1", "OT80F4", "abb.ot63_80f4.4p.front", evidence="SECCIONADOR")])

@@ -57,7 +57,7 @@
 <div id="catalogList" class="items cat-list"></div>
 </div>
 </aside>
-<section class="canvas"><div class="viewtoggle" role="group" aria-label="Vista"><button id="viewInt" class="on">Interior</button><button id="viewDoor">Puerta cerrada</button></div><svg id="board" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 2450"></svg>
+<section class="canvas"><div class="canvas-bar"><div class="viewtoggle" role="group" aria-label="Vista"><button id="viewInt" class="on">Interior</button><button id="viewDoor">Puerta cerrada</button></div><div class="menu sig-wrap"><button type="button" id="signalsBtn" class="sig-btn" aria-haspopup="true" title="Agregar o quitar luces testigo de tensión en la tapa y sus portafusibles + fusibles 10×38 en el riel"><span class="sig-dot" aria-hidden="true"></span><span id="signalsBtnLabel">Testigos: No</span></button><div id="signalsPop" class="popover sig-pop" hidden><div class="sig-pop-head"><strong>Testigos de tensión en tapa</strong><span class="muted">Agrega las luces piloto Ø 22 mm en la puerta y los portafusibles E 91/32 + fusibles 10×38 gG en el riel DIN.</span></div><button type="button" class="sig-opt" data-sig="none"><strong>Sin testigos</strong><small>Quita las luces en tapa y sus portafusibles/fusibles</small></button><button type="button" class="sig-opt" data-sig="3"><strong>Trifásico (R-S-T)</strong><small>3 luces piloto en tapa + 3 portafusibles E 91/32 y 3 fusibles 1 A</small></button><button type="button" class="sig-opt" data-sig="2"><strong>Monofásico (R)</strong><small>1 luz piloto en tapa + 1 portafusible E 91/32 y 1 fusible 1 A</small></button></div></div></div><svg id="board" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 2450"></svg>
 <div class="zoom"><button id="fit" class="icon" title="Ver tablero completo">⤢</button><button id="focus" class="icon" title="Acercar a los equipos">◎</button><button id="zoomOut" class="icon" aria-label="Alejar">−</button><span id="zoomLabel" class="muted">100%</span><button id="zoomIn" class="icon" aria-label="Acercar">＋</button></div>
 <div id="editor" class="card" hidden><div class="card-head"><strong id="selName"></strong><span id="selTag" class="muted"></span></div>
 <label>Circuito<input id="circuit" placeholder="ej. TS-4.2"></label><label>Descripción de carga<input id="description" placeholder="ej. Equipo rooftop, Tomas…" autocomplete="off"></label><label>Modelo<input id="model"></label><label>Código ABB (para la lista de materiales)<input id="orderCode" placeholder="ej. 1SDA067415R1" autocomplete="off"></label>
@@ -118,7 +118,7 @@
 <div class="row"><button type="button" id="equipCancel" class="secondary">Cancelar</button><button id="equipGo" class="primary" type="submit">Generar Excel</button></div></form></div>
 <div id="entregaPanel" class="modal" hidden><form class="modal-box wide" id="entregaForm"><h2>PDF de entrega</h2><p class="muted">Un solo PDF: carátula, índice, una hoja por tablero (puerta abierta y cerrada a escala) y la lista de equipamiento, con rótulo y hojas numeradas.</p>
 <fieldset class="plano-box"><legend>Tableros</legend><div class="plano-tools"><button type="button" class="secondary" id="entregaAll">Todos</button><button type="button" class="secondary" id="entregaNone">Ninguno</button></div><div id="entregaBoards" class="plano-boards"></div></fieldset>
-<fieldset class="plano-box"><legend>Rótulo</legend><p id="entregaFmt" class="muted"></p><div id="entregaFields" class="plano-grid"></div><table id="entregaRevs" class="plano-revs"></table></fieldset>
+<fieldset class="plano-box"><legend>Rótulo</legend><label id="entregaFmtRow" class="check" hidden style="margin-bottom:6px"><input type="checkbox" id="entregaUseFmt"> <span id="entregaFmtChk"></span></label><p id="entregaFmt" class="muted"></p><div id="entregaFields" class="plano-grid"></div><table id="entregaRevs" class="plano-revs"></table></fieldset>
 <label>Lista de materiales<select id="entregaBomMode"><option value="abb">ABB (con códigos de pedido)</option><option value="generic">Genérica (especificación técnica sin marca)</option></select></label>
 <label class="check"><input type="checkbox" id="entregaShop" checked> Incluir planos de taller (perforado de puerta acotado y vista lateral con profundidad)</label>
 <label>Nombre del archivo<input id="entregaFile" autocomplete="off" value="Entrega tableros.pdf"></label>
@@ -435,7 +435,21 @@ function knownCode(d){const k=modelKey(d.model);return (catalog.orderCodes?.item
 // Título del dibujo: tamaño proporcional al ancho del gabinete para que no se salga en los chicos (300 mm).
 function titleSvg(w,view){const t=Math.max(14,Math.min(25,w*0.045)),u=Math.max(9,Math.min(15,w*0.024));
  return `<text x="0" y="${-28-u-8}" fill="#344962" font-size="${t.toFixed(1)}">${esc(project.project)}</text><text x="0" y="-28" fill="#6b7d90" font-size="${u.toFixed(1)}">${esc(encSpec()?.label||project.enclosure.line||'ABB')} · ${view}</text>`}
-function render(){const _st=document.getElementById('signalsToggle');if(_st)_st.checked=!!(project.signals?.pilotLights||[]).length;
+function syncSignalsUi(){
+ const lights=project?.signals?.pilotLights||[],n=lights.length;
+ const st=document.getElementById('signalsToggle');if(st)st.checked=n>0;
+ const btn=document.getElementById('signalsBtn'),lbl=document.getElementById('signalsBtnLabel');
+ if(btn&&lbl){
+  btn.classList.toggle('on',n>0);
+  lbl.textContent=n?`Testigos: ${lights.map(l=>l.label).join('-')} (${n} fus.)`:'Testigos: No';
+ }
+ const pop=document.getElementById('signalsPop');
+ if(pop){
+  const cur=!n?'none':(n===1?'2':'3');
+  pop.querySelectorAll('.sig-opt').forEach(b=>b.classList.toggle('on',b.dataset.sig===cur));
+ }
+}
+function render(){syncSignalsUi();
  const {w,h,fx,fy}=dimensions(),f=project.enclosure.functional;
  if(view)setView(); // sin encuadre todavía: se calcula al final, sobre lo dibujado (contentBounds)
  ensureBoardDefs();const scene=$('boardScene');
@@ -498,7 +512,7 @@ projectList=await fetch('/api/projects').then(x=>x.json());renderProjectCards();
 const runAuto=async(free,only,noSnap=false)=>{const q=new URLSearchParams();if(free)q.set('free','1');if(only)q.set('enclosure',only);const r=await fetch('/api/autolayout?'+q,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(project)});const data=await r.json();if(!r.ok){notice(data.error);return{ok:false,error:data.error}}if(!noSnap)snapshot();const prevEnc=project.enclosure.id,prevLabel=encSpec()?.label;project=data.project;selected=null;const e=catalog.enclosures.find(v=>v.id===data.summary.gabinete),s=data.summary,changed=prevEnc!==s.gabinete;$('enclosure').value=s.gabinete;findings=data.findings||[];
   if(changed)view=null;render();updateChip();notice((changed&&prevLabel?`El gabinete cambió: ${prevLabel} → ${e.label} (no entraba en el anterior).`:'Tablero armado en '+e.label)+(s.alternativaRielLibre?` · con riel libre entraría en ${s.alternativaRielLibre.label}`:'')+(changed&&manualDucts().length?' Revisá tus canaletas: el gabinete es otro.':''));return{ok:true,gabinete:e.label,changed}};window.runAuto=runAuto;
   $('autoLayout').onclick=()=>{$('moreMenu').hidden=true;runAuto(false)};$('autoFree').onclick=()=>{$('moreMenu').hidden=true;runAuto(true)};
-  $('normaChip').onclick=e=>{e.stopPropagation();$('moreMenu').hidden=true;$('normaPanel').hidden=!$('normaPanel').hidden};$('moreBtn').onclick=e=>{e.stopPropagation();$('normaPanel').hidden=true;$('moreMenu').hidden=!$('moreMenu').hidden};
+  $('normaChip').onclick=e=>{e.stopPropagation();$('moreMenu').hidden=true;$('signalsPop').hidden=true;$('normaPanel').hidden=!$('normaPanel').hidden};$('moreBtn').onclick=e=>{e.stopPropagation();$('normaPanel').hidden=true;$('signalsPop').hidden=true;$('moreMenu').hidden=!$('moreMenu').hidden};
   document.querySelectorAll('#moreMenu .menu-item').forEach(b=>b.addEventListener('click',()=>{$('moreMenu').hidden=true}));
   document.addEventListener('click',e=>{if(!e.target.closest('.menu'))document.querySelectorAll('.popover').forEach(p=>p.hidden=true)});
   document.addEventListener('keydown',e=>{const da=selDuct&&ductById(selDuct);if(da&&!/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)){const st=e.shiftKey?1:5,mv={ArrowLeft:[-st,0],ArrowRight:[st,0],ArrowUp:[0,st],ArrowDown:[0,-st]}[e.key];
@@ -506,7 +520,7 @@ const runAuto=async(free,only,noSnap=false)=>{const q=new URLSearchParams();if(f
    if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();$('ductRemove').click();return}}
   if(selected!==null&&(e.key==='Delete')&&!/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();$('remove').click();return}
   if(e.key==='Escape'){if($('addPanel').hidden&&$('ductPanel').hidden&&$('dropCircuitPanel').hidden&&!/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName))clearSelection();$('addPanel').hidden=true;$('ductPanel').hidden=true;$('dropCircuitPanel').hidden=true;document.querySelectorAll('.popover').forEach(p=>p.hidden=true)}if((e.ctrlKey||e.metaKey)&&!/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)){if(e.key==='z'){e.preventDefault();$('undo').click()}if(e.key==='y'){e.preventDefault();$('redo').click()}}});
- $('viewInt').onclick=()=>{doorView=false;render()};$('viewDoor').onclick=()=>{doorView=true;selected=null;selDuct=null;render();if(!(project.signals?.pilotLights||[]).length)notice('Este tablero no tiene testigos de fase: la puerta va sin orificios. Podés agregarlos desde ⋯ → Testigos de fase en la puerta.')};
+ $('viewInt').onclick=()=>{doorView=false;render()};$('viewDoor').onclick=()=>{doorView=true;selected=null;selDuct=null;render();if(!(project.signals?.pilotLights||[]).length)notice('Este tablero no tiene testigos de tensión en tapa. Podés agregarlos con sus fusibles desde «Testigos en tapa».')};
  $('fit').onclick=fitView;$('focus').onclick=focusView;$('zoomIn').onclick=()=>zoomView(.75);$('zoomOut').onclick=()=>zoomView(1.33);
  const nextTag=()=>{const nums=project.devices.map(d=>+((/^QF(\d+)$/.exec(d.tag)||[])[1])).filter(Number.isFinite);let n=Math.max(0,...nums)+1,tag='QF'+n;while(project.devices.some(d=>d.tag===tag))tag='QF'+(++n);return tag};
  const makeCatalogDevice=(item,opts={})=>{
@@ -594,20 +608,38 @@ $('equipForm').onsubmit=async e=>{e.preventDefault();const ids=[...document.quer
   if(!r.ok)return notice((await r.json()).error);download(name,await r.blob(),'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');$('equipPanel').hidden=true;notice(`Excel generado (${mode==='generic'?'genérica':'ABB'}): ${ids.length} tablero(s).`)}
  finally{$('equipGo').disabled=false;$('equipGo').textContent='Generar Excel'}};
 /* PDF de entrega: los tableros elegidos con carátula, índice, lista y rótulo (los datos se recuerdan). */
-$('exportEntrega').onclick=async()=>{if(dirty)await saveProject(true);projectList=await fetch('/api/projects').then(x=>x.json());const meta=await fetch('/api/entrega/datos').then(x=>x.json());
+let entregaFormat=false,entregaMeta=null;
+function renderEntregaRotulo(){
+ if(!entregaMeta)return;
+ const useFmt=!!(entregaMeta.format&&$('entregaUseFmt').checked);
+ entregaFormat=useFmt;
+ if(useFmt){
+  const f=entregaMeta.format,auto={};(f.contentTags||[]).forEach(t=>auto[t]='contenido de cada hoja');
+  rotuloRender(f,'entregaFields','entregaRevs',auto);
+  $('entregaFmt').textContent=`Formato DXF «${f.filename||'formato.dxf'}»: marco «${f.blocks.frameBlock}» y rótulo «${f.blocks.titleBlock}» en todas las hojas.`;
+ }else{
+  $('entregaRevs').innerHTML='';
+  $('entregaFmt').textContent='Rótulo técnico estándar A3 (sin marcas comerciales). Completá los datos que quieras mostrar en todas las hojas.';
+  $('entregaFields').innerHTML=entregaMeta.fields.map(f=>`<label>${esc(f.label)}<input data-key="${esc(f.key)}" value="${esc(entregaMeta.values[f.key]||'')}" placeholder="${esc(f.placeholder||'')}" autocomplete="off"></label>`).join('');
+ }
+}
+$('entregaUseFmt').onchange=renderEntregaRotulo;
+$('exportEntrega').onclick=async()=>{if(dirty)await saveProject(true);projectList=await fetch('/api/projects').then(x=>x.json());entregaMeta=await fetch('/api/entrega/datos').then(x=>x.json());
  $('entregaBoards').innerHTML=[...projectList].sort((a,b)=>a.name.localeCompare(b.name,'es',{numeric:true})).map(p=>`<label><input type="checkbox" value="${esc(p.id)}" ${p.id===projectId?'checked':''}>${esc(p.name)}</label>`).join('');
- entregaFormat=!!meta.format;
- if(entregaFormat){const f=meta.format,auto={};(f.contentTags||[]).forEach(t=>auto[t]='contenido de cada hoja');rotuloRender(f,'entregaFields','entregaRevs',auto);
-  $('entregaFmt').textContent=`Tu formato «${f.filename||'formato.dxf'}»: marco «${f.blocks.frameBlock}» y rótulo «${f.blocks.titleBlock}» en todas las hojas. Los datos son los mismos del plano de fabricación.`}
- else{$('entregaRevs').innerHTML='';$('entregaFmt').textContent='Sin formato cargado: rótulo propio en A3. Para usar el tuyo, cargalo en «Plano de fabricación».';
-  $('entregaFields').innerHTML=meta.fields.map(f=>`<label>${esc(f.label)}<input data-key="${esc(f.key)}" value="${esc(meta.values[f.key]||'')}" autocomplete="off"></label>`).join('')}
+ const hasFmt=!!entregaMeta.format;
+ $('entregaFmtRow').hidden=!hasFmt;
+ $('entregaUseFmt').checked=hasFmt;
+ if(hasFmt)$('entregaFmtChk').textContent=`Usar formato DXF cargado («${entregaMeta.format.filename||'formato.dxf'}»)`;
+ renderEntregaRotulo();
  $('entregaPanel').hidden=false};
-let entregaFormat=false;
 $('entregaAll').onclick=()=>document.querySelectorAll('#entregaBoards input').forEach(c=>c.checked=true);
 $('entregaNone').onclick=()=>document.querySelectorAll('#entregaBoards input').forEach(c=>c.checked=false);
 $('entregaCancel').onclick=()=>{$('entregaPanel').hidden=true};
 $('entregaForm').onsubmit=async e=>{e.preventDefault();const ids=[...document.querySelectorAll('#entregaBoards input:checked')].map(c=>c.value);if(!ids.length)return notice('Elegí al menos un tablero.');
- const values={};if(entregaFormat)document.querySelectorAll('#entregaFields input[data-tag],#entregaRevs input[data-tag]').forEach(i=>values[i.dataset.tag]=i.value.trim());else document.querySelectorAll('#entregaFields input').forEach(i=>values[i.dataset.key]=i.value.trim());let name=$('entregaFile').value.trim()||'Entrega tableros.pdf';if(!/\.pdf$/i.test(name))name+='.pdf';
+ let name=$('entregaFile').value.trim()||'Entrega tableros.pdf';if(!/\.pdf$/i.test(name))name+='.pdf';
+ const values={};
+ if(entregaFormat)document.querySelectorAll('#entregaFields input[data-tag],#entregaRevs input[data-tag]').forEach(i=>values[i.dataset.tag]=i.value.trim());
+ else{document.querySelectorAll('#entregaFields input').forEach(i=>values[i.dataset.key]=i.value.trim());values.archivo=name}
  $('entregaGo').disabled=true;$('entregaGo').textContent=ids.length>4?'Generando… (unos segundos por tablero)':'Generando…';
  try{const bomMode=$('entregaBomMode')?.value||'abb',r=await fetch('/api/export/entrega',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({projects:ids,values,shop:$('entregaShop').checked,format:entregaFormat,bomMode})});
   if(!r.ok)return notice((await r.json()).error);download(name,await r.blob(),'application/pdf');$('entregaPanel').hidden=true;notice(`PDF de entrega generado: ${ids.length} tablero(s).`)}
@@ -686,12 +718,45 @@ const importPdf=async(file,fresh)=>{if(!file)return;notice('Leyendo PDF…');
    const verMsg=ver.issues.length?` ${ver.issues.length} diferencia(s) con el unifilar: ver validación.`:` Verificado contra el unifilar: ${ver.checked} equipo(s) coinciden${ver.unverified.length?`, ${ver.unverified.length} sin verificar`:''}.`;
    showScreen('editor');notice(auto.ok?`Tablero armado en ${auto.gabinete} con ${add.length} equipo(s).`+verMsg+(nd.length?` Sin dibujar (no están en el catálogo, pero van a la lista de materiales): ${nd.map(d=>(d.circuit||d.tag)+' '+(d.model||'')).join(', ')}.`:''):`No se pudo armar solo: ${auto.error}`)};
   $('pdf').onchange=async e=>{await importPdf(e.target.files[0],false);e.target.value=''};$('pdfNew').onchange=async e=>{await importPdf(e.target.files[0],true);e.target.value=''};$('importMore').onclick=()=>{$('moreMenu').hidden=true;$('pdf').click()};
-  const syncSignalsToggle=()=>{$('signalsToggle').checked=!!(project.signals?.pilotLights||[]).length};
-  $('signalsToggle').onchange=async e=>{$('moreMenu').hidden=true;
-   if(e.target.checked){const r=await fetch('/api/signals-default',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(project)});const sig=await r.json();if(!r.ok){syncSignalsToggle();return notice(sig.error)}snapshot();project.signals=sig}
-   else{snapshot();project.signals=null}
-   const auto=await runAuto(false,project.enclosure.id);if(!auto.ok){const auto2=await runAuto(false);if(!auto2.ok)return}
-   syncSignalsToggle();notice(e.target.checked?`Testigos ${project.signals.pilotLights.map(l=>l.label).join('-')} en la puerta y sus fusibles en el riel.`:'Testigos y fusibles quitados.')};
+  const syncSignalsToggle=()=>syncSignalsUi();
+  const applySignals=async mode=>{
+   $('moreMenu').hidden=true;$('signalsPop').hidden=true;
+   if(mode==='none'){
+    if(!(project.signals?.pilotLights||[]).length){syncSignalsUi();return}
+    snapshot();project.signals=null;
+    const rc=await fetch('/api/normativa/complete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(project)});
+    if(rc.ok){const d=await rc.json();project.accessories=d.accessories;findings=d.findings||[]}
+    else{project.accessories=(project.accessories||[]).filter(a=>a.type!=='signal_fuses')}
+    render();await runValidation();updateChip();syncSignalsUi();
+    return notice('Testigos en tapa y sus portafusibles/fusibles quitados.');
+   }
+   const q=mode==='auto'?'?poles=auto':`?poles=${encodeURIComponent(mode)}`;
+   const r=await fetch('/api/signals-default'+q,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(project)});
+   const sig=await r.json();if(!r.ok){syncSignalsUi();return notice(sig.error)}
+   snapshot();project.signals=sig;
+   // Primero intentamos ubicar los portafusibles en el hueco libre del riel actual sin mover el armado manual.
+   const rc=await fetch('/api/normativa/complete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(project)});
+   let placedOk=false;
+   if(rc.ok){
+    const d=await rc.json();
+    const fus=(d.accessories||[]).find(a=>a.type==='signal_fuses');
+    if(fus&&fus.placed){
+     project.accessories=d.accessories;findings=d.findings||[];
+     const rv=await fetch('/api/validate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(project)});
+     if(rv.ok){const vr=await rv.json();if((vr.errors||0)===0){validationResult=vr;placedOk=true}}
+    }
+   }
+   if(!placedOk){
+    const auto=await runAuto(false,project.enclosure.id,true);
+    if(!auto.ok){const auto2=await runAuto(false,null,true);if(!auto2.ok){syncSignalsUi();return}}
+   }else{render();updateChip()}
+   syncSignalsUi();
+   const ph=project.signals.pilotLights.map(l=>l.label).join('-'),nf=project.signals.pilotLights.length;
+   notice(`Testigos ${ph} agregados en la tapa + ${nf} portafusible(s) E 91/32 y fusible(s) 10×38 en el riel.`);
+  };
+  $('signalsBtn').onclick=e=>{e.stopPropagation();$('moreMenu').hidden=true;$('normaPanel').hidden=true;$('signalsPop').hidden=!$('signalsPop').hidden};
+  $('signalsPop').querySelectorAll('.sig-opt').forEach(b=>b.onclick=()=>applySignals(b.dataset.sig));
+  $('signalsToggle').onchange=async e=>applySignals(e.target.checked?'auto':'none');
   const dz=$('dropPdf');dz.ondragover=e=>{e.preventDefault();dz.classList.add('over')};dz.ondragleave=()=>dz.classList.remove('over');dz.ondrop=async e=>{e.preventDefault();dz.classList.remove('over');await importPdf(e.dataTransfer.files[0],true)};
  const svg=$('board');let panRaf=0;
  const plateXY=(e,inv)=>{const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const m=inv||svg.getScreenCTM().inverse(),p=pt.matrixTransform(m),{fx,fy,h}=dimensions();return {x:p.x-fx,y:h-fy-p.y}};
