@@ -3,6 +3,11 @@
 > Si pasa de 15 entradas, mover las viejas a `docs/bitacora_vieja.md`.
 > Formato: `## fecha hora · agente` + Hecho / Archivos / Ojo / Siguiente.
 
+## 2026-11-27 17:10 · Antigravity · Release pública `v1.0.2` en GitHub con ejecutable y release notes
+- Hecho: creado tag anotado `v1.0.2` sobre `18f938b` y publicada la Release `v1.0.2` (*Latest*) en GitHub con `EnclosureABB-Setup.exe` (38,9 MB), `EnclosureABB-Portable.zip` (52,0 MB), `SHA256SUMS.txt` y release notes en español 100 % genéricas.
+- Archivos: `BITACORA.md`, `ESTADO.md` (los instaladores y `SHA256SUMS.txt` quedan en `salida/instalador/`, fuera de git, y publicados como assets de la release).
+- Verificado: 217/217 unitarias, 145/145 e2e en navegador real, smoke test completo sobre `EnclosureABB.exe` (arranque 0,61 s, catálogo 83 equipos, importación PDF, autolayout, validación 0 errores, DXF/BOM/Excel/PDF, autocierre limpio) y verificación pública de `/releases/latest` y sus 3 assets.
+
 ## 2026-11-27 00:12 · Antigravity · Catálogo ABB filtrable (polos, calibre, kA) y arrastre con popup de circuito (`v1.0.2`)
 - Hecho: creado `bom.catalog_devices` expuesto en `/api/catalog` con los 83 equipos ABB verificados (≥ 2 polos) derivados de la fuente única (`codigos_pedido_abb.json`, `catalogo_abb.json`, `reglas_bom_generico.json`). Agregada pestaña lateral **Catálogo ABB** y selector en **＋ Agregar equipo** con filtros por **Polos**, **Calibre (A)**, **Cortocircuito (kA)**, tipo y texto, miniaturas CAD reales y arrastre fluido al tablero con fantasma 1:1 que despliega la ventana emergente **Nuevo circuito** al soltar (con inserción directa en riel/placa o rearmado automático y deshacer en un solo `Ctrl+Z`).
 - Archivos: `bom.py`, `app.py`, `web/index.html`, `web/styles.css`, `tests/test_bom.py`, `tests/test_web_ui.py`, `tests/e2e/prueba_interfaz.py`, `ESTADO.md`.
